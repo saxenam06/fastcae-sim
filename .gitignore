@@ -1,0 +1,26 @@
+# Session and editor state
+.remember/
+.claude/settings.local.json
+.vscode/
+.idea/
+
+# Python environments and caches
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Credentials: read from the environment, never committed
+.env
+
+# Data: third-party part inputs (licensed) and run outputs (rebuilt by running)
+assets/
+results/
+data/
+
+# OS noise
+Thumbs.db
+.DS_Store
