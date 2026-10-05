@@ -1,0 +1,396 @@
+<title>Bracket Design Open Problem</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+<style>
+/* Layout: one reading column under an engineering-drawing title block; sections keep the document's own numbering */
+:root {
+  --bg: #f4f5f8;
+  --surface: #ffffff;
+  --fg: #19202c;
+  --muted: #586274;
+  --rule: #d4d9e2;
+  --accent: #2d3ca8;        /* machinist's layout-fluid blue */
+  --accent-soft: #e7eafa;
+  --font-display: "Barlow Condensed", "Arial Narrow", "Roboto Condensed", sans-serif;
+  --font-body: "Source Sans 3", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #11151c; --surface: #171c26; --fg: #e3e7ee; --muted: #9ba5b6;
+    --rule: #2b323f; --accent: #9aa6ff; --accent-soft: #1d2340;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #11151c; --surface: #171c26; --fg: #e3e7ee; --muted: #9ba5b6;
+  --rule: #2b323f; --accent: #9aa6ff; --accent-soft: #1d2340;
+  color-scheme: dark;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  padding-inline: clamp(16px, 4vw, 40px);
+  padding-block: 2rem 4rem;
+}
+.sheet { max-width: 46rem; margin-inline: auto; display: grid; gap: 2.25rem; }
+.sheet > * { min-width: 0; }
+
+h1, h2, h3 { font-family: var(--font-display); line-height: 1.1; text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(2rem, 5vw, 2.85rem); font-weight: 700; letter-spacing: 0.005em; }
+h2 { font-size: 1.7rem; font-weight: 600; display: flex; gap: 0.6rem; align-items: baseline; }
+h3 { font-size: 1.25rem; font-weight: 600; }
+h2 .num { font-family: var(--font-mono); font-size: 0.95rem; font-weight: 500; color: var(--accent); min-width: 1.6rem; }
+p { margin: 0; }
+a { color: var(--accent); text-underline-offset: 2px; }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+strong { font-weight: 700; }
+
+.label {
+  font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase;
+  letter-spacing: 0.08em; color: var(--muted);
+}
+
+/* Title block, as on a drawing sheet */
+.titleblock {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  border: 1.5px solid var(--fg); background: var(--surface);
+}
+.titleblock div { padding: 0.55rem 0.8rem; border-right: 1px solid var(--rule); border-bottom: 1px solid var(--rule); display: grid; gap: 0.15rem; }
+.titleblock .value { font-family: var(--font-mono); font-size: 0.86rem; }
+
+.hero { display: grid; gap: 1rem; }
+.lead { font-size: 1.18rem; color: var(--fg); }
+.note {
+  background: var(--accent-soft); padding: 1rem 1.15rem; display: grid; gap: 0.5rem;
+}
+.note p { font-size: 1rem; }
+
+section { display: grid; gap: 1rem; }
+section > * { min-width: 0; }
+ul, ol { margin: 0; padding-left: 1.3rem; display: grid; gap: 0.45rem; }
+
+/* Numbered challenge and question lists carry IDs that responses can cite */
+ol.ids { list-style: none; padding-left: 0; counter-reset: item; gap: 0.8rem; }
+ol.ids > li { counter-increment: item; display: grid; grid-template-columns: 2.6rem minmax(0, 1fr); gap: 0.5rem; }
+ol.ids > li::before { font-family: var(--font-mono); font-size: 0.85rem; color: var(--accent); padding-top: 0.2rem; }
+ol.challenges > li::before { content: "C" counter(item); }
+ol.questions > li::before { content: "Q" counter(item); }
+
+.table-wrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 0.98rem; }
+th, td { text-align: left; vertical-align: top; padding: 0.6rem 0.75rem 0.6rem 0; border-top: 1px solid var(--rule); }
+th { font-family: var(--font-mono); font-size: 0.74rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); border-top: 0; }
+td:first-child { font-weight: 600; white-space: nowrap; padding-right: 1.25rem; }
+td.id { font-family: var(--font-mono); font-weight: 500; color: var(--accent); }
+
+.requests { list-style: none; padding-left: 0; gap: 0.9rem; }
+.requests li { display: grid; gap: 0.2rem; }
+.requests .kind { font-family: var(--font-mono); font-size: 0.78rem; color: var(--accent); letter-spacing: 0.03em; }
+.requests q { font-style: italic; }
+
+figure { margin: 0; display: grid; gap: 0.5rem; }
+figure svg { width: 100%; max-width: 30rem; height: auto; color: var(--fg); }
+figcaption { font-size: 0.9rem; color: var(--muted); }
+.structure { fill: var(--rule); stroke: var(--fg); stroke-width: 1.2; }
+.payload { fill: var(--surface); stroke: var(--fg); stroke-width: 1.5; }
+.envelope { fill: none; stroke: var(--accent); stroke-width: 1.4; stroke-dasharray: 6 5; }
+.hole { fill: var(--bg); stroke: var(--fg); stroke-width: 1.2; }
+.cg-line { stroke: var(--fg); stroke-width: 1.2; fill: none; }
+.svg-label { fill: var(--muted); font-family: var(--font-mono); font-size: 10px; }
+.svg-open { fill: var(--accent); font-family: var(--font-mono); font-size: 11px; }
+
+.template { display: grid; gap: 0.6rem; }
+.template pre {
+  margin: 0; padding: 0.9rem 1rem; background: var(--surface); border: 1px solid var(--rule);
+  font-family: var(--font-mono); font-size: 0.85rem; line-height: 1.7; white-space: pre-wrap; overflow-x: auto;
+}
+.template button {
+  justify-self: start; font: 500 0.85rem var(--font-mono); color: var(--accent); background: transparent;
+  border: 1.5px solid var(--accent); padding: 0.4rem 0.8rem; cursor: pointer;
+}
+.template button:hover { background: var(--accent-soft); }
+
+dl { margin: 0; display: grid; grid-template-columns: minmax(0, 13rem) minmax(0, 1fr); gap: 0.6rem 1.25rem; }
+dt { font-weight: 600; }
+dd { margin: 0; color: var(--fg); }
+@media (max-width: 34rem) {
+  dl { grid-template-columns: minmax(0, 1fr); gap: 0.15rem; }
+  dd { margin-bottom: 0.6rem; }
+  td:first-child { white-space: normal; }
+}
+
+footer { border-top: 1.5px solid var(--fg); padding-top: 0.8rem; display: flex; flex-wrap: wrap; gap: 0.4rem 1.5rem; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<main class="sheet">
+
+  <div class="titleblock" aria-label="Document details">
+    <div><span class="label">Document</span><span class="value">Open problem brief</span></div>
+    <div><span class="label">Subject</span><span class="value">Mounting brackets, any process</span></div>
+    <div><span class="label">Status</span><span class="value">Open for ideas</span></div>
+    <div><span class="label">Contains</span><span class="value">Problem · motivation · goals</span></div>
+    <div><span class="label">Excludes</span><span class="value">Any proposed solution</span></div>
+    <div><span class="label">Date</span><span class="value">2026-10-05</span></div>
+  </div>
+
+  <header class="hero">
+    <h1>AI that designs verified brackets from plain-language requirements</h1>
+    <p class="lead">Mounting brackets hold electronic modules, sensors and other equipment to the structure of a vehicle, aircraft or machine. They are among the most common mechanical parts, and they are made in many ways: bent sheet metal, machined plate, castings, extrusions, 3D-printed metal or polymer, composites. A good one must balance vibration, fatigue, shock, heat, mass, cost and manufacturability. Today they are designed by hand through slow iterations, usually after committing early to a familiar process and concept.</p>
+    <p class="lead">We want AI that takes an engineer's plain-language requirement and returns several manufacturable bracket designs, possibly in different processes and materials, each verified against the requirements and explained by physics. We also want it to learn from every design it explores, successes and failures alike, getting faster, more reliable and more inventive over time.</p>
+  </header>
+
+  <div class="note">
+    <span class="label">Why we are sharing this</span>
+    <p>This brief describes a problem, why it matters and what we want to achieve. It deliberately contains no solution and does not fix the manufacturing process: we have early ideas of our own and left them out so they don't anchor yours.</p>
+    <p>We want different perspectives: approaches we haven't considered, research we may not know about, tools, datasets, pitfalls, and challenges to how we have framed the problem. Ideas from mechanical engineering, machine learning, optimisation, manufacturing or anywhere else are welcome. Section 11 explains how to respond.</p>
+  </div>
+
+  <figure>
+    <svg viewBox="0 0 360 170" role="img" aria-labelledby="setup-title">
+      <title id="setup-title">The fixed setup: a structure with two bolt positions on the left, a payload on the right, and an open design space between them inside a dashed envelope</title>
+      <rect x="14" y="14" width="18" height="142" class="structure"/>
+      <circle cx="23" cy="62" r="5" class="hole"/>
+      <circle cx="23" cy="108" r="5" class="hole"/>
+      <rect x="40" y="26" width="306" height="118" class="envelope"/>
+      <rect x="236" y="58" width="96" height="54" class="payload"/>
+      <circle cx="284" cy="85" r="7" class="cg-line"/>
+      <line x1="277" y1="85" x2="291" y2="85" class="cg-line"/>
+      <line x1="284" y1="78" x2="284" y2="92" class="cg-line"/>
+      <text x="136" y="82" class="svg-open" text-anchor="middle">bracket: open</text>
+      <text x="136" y="97" class="svg-label" text-anchor="middle">shape · material · process</text>
+      <text x="284" y="128" class="svg-label" text-anchor="middle">payload, CG fixed</text>
+      <text x="40" y="18" class="svg-label">allowed envelope</text>
+      <text x="14" y="168" class="svg-label">structure, bolts fixed</text>
+    </svg>
+    <figcaption>The setup: the bolt positions on the structure and the payload's location are fixed. Everything in between, including the bracket's shape, material and manufacturing process, is open.</figcaption>
+  </figure>
+
+  <section aria-labelledby="s2">
+    <h2 id="s2"><span class="num">2</span>How brackets are designed today</h2>
+    <ol>
+      <li>An engineer receives requirements: the module, where it mounts, the vibration and shock environment, temperatures, the available space, the production volume, and mass or cost targets.</li>
+      <li>The manufacturing process is often chosen early, by habit or by the supplier base, before alternatives have been compared.</li>
+      <li>They pick a concept from experience and rules of thumb, model it in CAD, set up a finite-element (FE) analysis, run it, read the results, change the design, and repeat.</li>
+      <li>Every loop crosses several tools and needs manual set-up. Boundary conditions, units and assumptions are easy to get wrong without anyone noticing.</li>
+      <li>Only a few concepts get explored, usually in one familiar process. The first design that works usually ships, often heavier, costlier or more conservative than it needs to be.</li>
+      <li>Resonance and fatigue problems often appear only in qualification testing, which is late and expensive.</li>
+    </ol>
+  </section>
+
+  <section aria-labelledby="s3">
+    <h2 id="s3"><span class="num">3</span>Motivation</h2>
+    <ul>
+      <li><strong>Scale.</strong> Every vehicle, aircraft, robot and machine contains many brackets, so small improvements multiply.</li>
+      <li><strong>Cost of failure.</strong> Resonance and vibration fatigue are classic field failures of brackets and mounts.</li>
+      <li><strong>Wasted expertise.</strong> Engineering time goes into low-level iteration instead of ideas.</li>
+      <li><strong>Missed options.</strong> Comparing processes and materials properly takes too long, so the choice is rarely revisited.</li>
+      <li><strong>The opportunity now.</strong> AI agents can now operate engineering software, and machine-learning models can predict simulation results very quickly. Neither can yet be trusted on its own: results that look plausible but are wrong are common, and there is little suitable data to learn from.</li>
+      <li><strong>A good proving ground.</strong> The bracket is ubiquitous, multi-physics, iteration-heavy, fast to simulate, rich enough in geometry, materials and processes for real invention, and cheap to make and test physically. An approach that works here should carry over to other kinds of part.</li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="s4">
+    <h2 id="s4"><span class="num">4</span>The task, precisely</h2>
+
+    <h3>4.1 Inputs</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th scope="col">Input</th><th scope="col">Content</th></tr></thead>
+        <tbody>
+          <tr><td>Request</td><td>Plain language, written by an engineer, possibly incomplete</td></tr>
+          <tr><td>Interfaces</td><td>Fixed numbers: bolt holes on the structure (positions and size); the payload's mass, centre of gravity, footprint, bolt pattern and dissipated power</td></tr>
+          <tr><td>Environment</td><td>A random-vibration profile (a power spectral density from a standard), a shock pulse, static g-loads, ambient temperature</td></tr>
+          <tr><td>Requirements</td><td>A minimum first natural frequency; fatigue life under the vibration profile; shock and static strength margins; bolted joints that don't slip or separate; a maximum module temperature; mass or cost limits</td></tr>
+          <tr><td>Space</td><td>An allowed envelope, keep-out zones, tool access to the fasteners</td></tr>
+          <tr><td>Manufacturing</td><td>The processes and materials that are allowed or preferred (sheet metal, machining, casting, extrusion, additive manufacturing, composites, and others), with their design rules, or left open for the system to choose. Production volume</td></tr>
+          <tr><td>Program context</td><td>The standards, material data and design rules that apply</td></tr>
+          <tr><td>Objective</td><td>Lightest, cheapest at the stated production volume, or a stated trade-off</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p><strong>No CAD of the surroundings is required.</strong> The bolt and payload locations are fixed numbers in the specification, following the convention of the GE Jet Engine Bracket Challenge. <strong>The process may be fixed or open:</strong> a program may fix it, and when it is left open, choosing the process is part of the design problem.</p>
+
+    <h3>4.2 Outputs</h3>
+    <ul>
+      <li><strong>Several distinct candidate designs</strong>, not one. They may use different processes and materials.</li>
+      <li><strong>For each candidate:</strong>
+        <ul>
+          <li>editable parametric CAD that an engineer can open and change;</li>
+          <li>manufacturing data suited to its process: drawings, plus, for example, flat patterns for sheet metal or draft and parting information for castings;</li>
+          <li>a verification record: for every requirement, the value, the limit, the margin, the model used, whether that model was valid, and the assumptions;</li>
+          <li>a physics explanation: what governs the design, why it works, and why the alternatives were rejected.</li>
+        </ul>
+      </li>
+      <li><strong>If candidates use different processes:</strong> a fair comparison of cost, mass and risk at the stated production volume.</li>
+      <li><strong>If the request is impossible:</strong> a clear "not possible", with the physical reason and the nearest feasible alternatives.</li>
+      <li><strong>If information is missing:</strong> questions, not silent assumptions.</li>
+    </ul>
+
+    <h3>4.3 Example requests</h3>
+    <ul class="requests">
+      <li><span class="kind">Complete, driven by stiffness</span><q>Mount a 1.2 kg, 15 W control module to the vertical body rail, 2 × M6 bolts 80 mm apart. ISO 16750-3 body vibration. First mode ≥ 200 Hz, module base ≤ 85 °C. Lightest aluminium.</q></li>
+      <li><span class="kind">Driven by isolation</span><q>IMU on the firewall: cut vibration above 100 Hz by at least 70 %; sway under 3 mm.</q></li>
+      <li><span class="kind">Cost and heat</span><q>3.5 kg inverter controller spanning two floor rails 200 mm apart, 40 W, base under 90 °C. Cheapest steel bracket.</q></li>
+      <li><span class="kind">Incomplete</span><q>Need a bracket for a small controller on the rail; should survive vibration.</q></li>
+      <li><span class="kind">Possibly impossible</span><q>1.2 kg, 15 W module; base ≤ 70 °C at 65 °C ambient; the bracket is the only heat path.</q></li>
+      <li><span class="kind">Process left open</span><q>0.8 kg sensor box on the engine block, first mode above 400 Hz, 50,000 units a year. Choose the process and material.</q></li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="s5">
+    <h2 id="s5"><span class="num">5</span>What we want to achieve</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th scope="col">Goal</th><th scope="col">What it means</th></tr></thead>
+        <tbody>
+          <tr><td class="id">G1</td><td><strong>Intent in, verified designs out.</strong> An engineer states the requirement once and receives several manufacturable, verified designs. The engineer keeps the judgement and the sign-off.</td></tr>
+          <tr><td class="id">G2</td><td><strong>Physics first.</strong> For each design, the system states the governing parameters, which requirement binds, and why. Simplified models are used only where they are known to be valid.</td></tr>
+          <tr><td class="id">G3</td><td><strong>A self-directing data engine.</strong> Verified design data keeps being generated with little human effort, and the system decides what is most valuable to generate next. Failures, design changes and the reasoning behind them are recorded, not only successes.</td></tr>
+          <tr><td class="id">G4</td><td><strong>Learning that compounds.</strong> The data trains fast physics predictors and better design agents. Each round is measurably faster, cheaper or more reliable, and the system knows when its fast predictions should not be trusted.</td></tr>
+          <tr><td class="id">G5</td><td><strong>Measurable creativity.</strong> Designs go beyond conventional patterns, including concepts, materials and processes an engineer would not have tried. "New and better" is measured rather than claimed.</td></tr>
+          <tr><td class="id">G6</td><td><strong>Trust and reproducibility.</strong> No silent errors. Assumptions are explicit, and every claim can be reproduced.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section aria-labelledby="s6">
+    <h2 id="s6"><span class="num">6</span>What makes it hard</h2>
+    <ol class="ids challenges">
+      <li><div><strong>Incomplete intent.</strong> Requests leave out loads, environments, interfaces or process limits, and filling the gaps silently is a common source of wrong results.</div></li>
+      <li><div><strong>Real geometry, not plausible shapes.</strong> Designs must be manufacturable by their process and editable by engineers, with design intent preserved. Each process has its own rules: bend radii, draft, tool access, minimum walls, overhangs. Geometry that merely looks right often violates the specification.</div></li>
+      <li><div><strong>Silent simulation failure.</strong> An analysis can run without errors and still be wrong because of units, missing constraints, unconverged meshes or a model used outside its valid range.</div></li>
+      <li><div><strong>Speed against accuracy, across several kinds of physics.</strong> Modal response, random vibration, fatigue, shock and heat transfer each have fast approximations whose validity varies from design to design, and nobody knows at scale where each can be trusted.</div></li>
+      <li><div><strong>Inherent physical uncertainty.</strong> Damping, bolted-joint stiffness and thermal contact conductance are uncertain by nature, and process-dependent material properties (castings, printed parts) add to it, so designs must be robust to them.</div></li>
+      <li><div><strong>Data scarcity.</strong> The public bracket datasets (SimJEB, 381 human designs; DeepJEB, 2,138 generated designs; DeepJEB++, 15,360, announced) cover titanium brackets for additive manufacturing under static loads. None has other manufacturing processes, vibration fatigue, thermal results, plain-language requirements, design programs or design reasoning. Industrial data is proprietary and rarely records failures or why changes were made.</div></li>
+      <li><div><strong>Reliability against innovation.</strong> Generating from known patterns is reliable but unoriginal. Generating freely is original but mostly invalid.</div></li>
+      <li><div><strong>Learning without drift.</strong> A system that learns from its own output can narrow its ideas or learn to exploit weaknesses in how designs are evaluated.</div></li>
+      <li><div><strong>Evaluating agents.</strong> Design agents are non-deterministic and work in many steps. Success has to be measured over repeated attempts: how often at least one succeeds, how often all succeed, and what each success costs. Failures have to be traced to the step that caused them.</div></li>
+      <li><div><strong>Synthetic against real.</strong> Generated requirements and designs must resemble real programs, and predictions must hold up against physical tests.</div></li>
+      <li><div><strong>Choosing the process.</strong> Process and material decide what geometry is possible and drive cost, mass and lead time, and the best choice depends on production volume. Comparing designs fairly across processes is hard.</div></li>
+    </ol>
+  </section>
+
+  <section aria-labelledby="s7">
+    <h2 id="s7"><span class="num">7</span>Constraints</h2>
+    <ul>
+      <li><strong>What "verified" means.</strong> A requirement counts as verified only when full-fidelity simulation (or a physical test) has checked it, with assumptions and model validity stated. Faster approximations may guide the search but may not sign off a design.</li>
+      <li><strong>Honest scope.</strong> Nothing that was not specified may be claimed: without a shock load, there is no shock qualification. Engineers approve the results.</li>
+      <li><strong>Outputs.</strong> Editable parametric CAD plus manufacturing files, manufacturable by the stated or chosen process.</li>
+      <li><strong>Open and reproducible.</strong> Code plus configuration reproduces every result. Open-source, scriptable tools are preferred. Published data must be our own, with no third-party proprietary designs.</li>
+      <li><strong>Resources.</strong> A small team (one engineer working with AI coding agents), one GPU workstation, a modest cloud budget, and first results within weeks.</li>
+      <li><strong>Reality checks.</strong> Simulation is not measurement. Physical tests on a few designs are feasible, such as tap tests that measure the first natural frequency.</li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="s8">
+    <h2 id="s8"><span class="num">8</span>What success looks like</h2>
+    <ul>
+      <li><strong>Representative requests are handled well,</strong> including request types never used during development: each gets several distinct, manufacturable, verified and explained designs, impossible requests are recognised, and missing information is asked for.</li>
+      <li><strong>Processes are compared fairly.</strong> Where the process is open, designs in different processes are compared at the stated production volume.</li>
+      <li><strong>The data engine earns its place.</strong> At equal compute it produces more useful data than a fixed sampling plan: wider coverage, more distinct concepts, better predictor accuracy on unseen request types, and more errors caught.</li>
+      <li><strong>Fast predictors are measured.</strong> Their error, and how often they wrongly pass a failing design, are known on unseen request types.</li>
+      <li><strong>Learning improves the agent measurably:</strong> success over repeated attempts, and the cost and time per verified design.</li>
+      <li><strong>Some designs are both novel and better</strong> than conventional ones, by explicit measures.</li>
+      <li><strong>Physical tests agree</strong> with predictions within the stated uncertainty.</li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="s9">
+    <h2 id="s9"><span class="num">9</span>Where we would most value ideas</h2>
+    <ol class="ids questions">
+      <li><div><strong>Representation.</strong> How should bracket designs be represented so that learning generalises across very different shapes and manufacturing processes, while the result stays editable and manufacturable?</div></li>
+      <li><div><strong>Generation.</strong> How can we produce many diverse, manufacturable, physically meaningful designs, including genuinely new concepts?</div></li>
+      <li><div><strong>Trustworthy evaluation.</strong> How can silent simulation errors be detected automatically? How can we know when a simplified model is valid for a particular design?</div></li>
+      <li><div><strong>Budget allocation.</strong> How should a limited simulation budget be split across fidelity levels and candidates?</div></li>
+      <li><div><strong>Physics AI for dynamics.</strong> How can mode shapes, random-vibration response and fatigue be predicted across changing geometry and topology, with uncertainty we can trust?</div></li>
+      <li><div><strong>Agents.</strong> How can an agent learn good engineering decisions rather than plausible ones? How should it be evaluated, and how do we stop it gaming the evaluation?</div></li>
+      <li><div><strong>Novelty.</strong> How can we measure novelty that an engineer would actually value?</div></li>
+      <li><div><strong>Realism.</strong> How can synthetic requirements and designs be made realistic, and validated cheaply?</div></li>
+      <li><div><strong>Uncertainty.</strong> How should uncertain damping, joint stiffness, contact conductance and process-dependent material properties be handled?</div></li>
+      <li><div><strong>Process and material selection.</strong> How should the system choose among processes and materials, and compare designs fairly across them at a given production volume?</div></li>
+      <li><div><strong>Anything else.</strong> What would you do differently? Is this the right problem?</div></li>
+    </ol>
+  </section>
+
+  <section aria-labelledby="s10">
+    <h2 id="s10"><span class="num">10</span>What we know so far</h2>
+    <p>Pointers, not a survey. Tell us what is missing.</p>
+    <ul>
+      <li><strong>Bracket datasets:</strong> <a href="https://arxiv.org/abs/2105.03534">SimJEB</a> (381 designs, 4 static load cases), <a href="https://arxiv.org/abs/2406.09047">DeepJEB</a> (2,138 designs, 4 static load cases plus the first two free-free modes) and <a href="https://arxiv.org/abs/2606.12994">DeepJEB++</a> (15,360, announced). All three follow the <a href="https://grabcad.com/challenges/ge-jet-engine-bracket-challenge">GE Jet Engine Bracket Challenge</a>.</li>
+      <li><strong>AI writing CAD code from text:</strong> on 12,632 industrial design-intent tasks, nine frontier models scored 0.57–0.81 executability and 0.28–0.54 solid IoU (<a href="https://arxiv.org/abs/2609.03773">RealCADBench</a>, 2026).</li>
+      <li><strong>Generative design:</strong> topology optimisation suits additive manufacturing and casting. <a href="https://help.altair.com/inspire/en_us/topics/inspire/tutorials/tut_opti_topography_c.htm">Topography optimisation</a> produces bead patterns on sheet metal that raise stiffness and natural frequency without adding mass.</li>
+      <li><strong>AI agents that drive CAD and simulation software exist.</strong> Studies report frequent results that run but are physically wrong, and the agents rarely check physics or manufacturability.</li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="s11">
+    <h2 id="s11"><span class="num">11</span>How to respond</h2>
+    <p>Any form is welcome. The template below is the most useful shape for an idea. Arguments that we are solving the wrong problem are welcome too, as are pointers to people, groups, papers, tools or datasets.</p>
+    <div class="template">
+      <pre id="response-template">Idea (one or two sentences):
+Which goal, challenge or question it addresses (G1–G6, C1–C11, Q1–Q11):
+Why it might work (evidence, references):
+What it needs (data, tools, compute, expertise):
+How to test it quickly:
+Risks, or where it could fail:</pre>
+      <button type="button" id="copy-template">Copy template</button>
+    </div>
+    <p><span class="label">Contact</span><br>To be added.</p>
+  </section>
+
+  <section aria-labelledby="glossary">
+    <h2 id="glossary"><span class="num">A</span>Glossary</h2>
+    <dl>
+      <dt>First mode, natural frequency</dt><dd>The lowest frequency at which the structure resonates. Requirements set a minimum, to stay clear of the frequencies where the input vibration is strongest.</dd>
+      <dt>Random vibration, PSD</dt><dd>Broadband vibration described by its power spectral density, as defined in test standards.</dd>
+      <dt>Fatigue damage</dt><dd>Damage accumulated under cyclic stress. A value of 1 means expected failure, and requirements keep it well below that.</dd>
+      <dt>Shock</dt><dd>A short, severe acceleration pulse, for example a half-sine.</dd>
+      <dt>Flat pattern</dt><dd>For sheet metal: the unfolded sheet that is cut before bending.</dd>
+      <dt>Draft</dt><dd>For cast or moulded parts: the taper that lets the part leave the mould.</dd>
+      <dt>NVH</dt><dd>Noise, vibration and harshness.</dd>
+      <dt>FE</dt><dd>Finite-element analysis.</dd>
+    </dl>
+  </section>
+
+  <footer>
+    <span class="label">Open problem brief · mounting brackets</span>
+    <span class="label">5 October 2026</span>
+  </footer>
+</main>
+
+<script>
+(function () {
+  var button = document.getElementById("copy-template");
+  var template = document.getElementById("response-template");
+  if (!button || !template) return;
+  button.addEventListener("click", function () {
+    var text = template.innerText;
+    var reset = function () { setTimeout(function () { button.textContent = "Copy template"; }, 2200); };
+    var selectFallback = function () {
+      var range = document.createRange();
+      range.selectNodeContents(template);
+      var selection = window.getSelection();
+      selection.removeAllRanges();
+      selection.addRange(range);
+      button.textContent = "Selected. Press Ctrl+C to copy";
+      reset();
+    };
+    try {
+      navigator.clipboard.writeText(text).then(function () {
+        button.textContent = "Copied";
+        reset();
+      }, selectFallback);
+    } catch (e) {
+      selectFallback();
+    }
+  });
+})();
+</script>
