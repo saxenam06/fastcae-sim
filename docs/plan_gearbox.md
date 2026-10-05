@@ -342,7 +342,7 @@ benchmark.
 
 | Document | Status |
 |---|---|
-| [plan.md](plan.md) | **This plan - current** |
+| [plan_gearbox.md](plan_gearbox.md) | **This plan - current** |
 | [design/2026-10-04-fastcae-audit-for-mekint.md](design/2026-10-04-fastcae-audit-for-mekint.md) | Verified audit of fastcae on 4 October - the claims to correct |
 | [design/2026-10-05-recipes-not-a-menu-design.md](design/2026-10-05-recipes-not-a-menu-design.md) | The earlier plan of writing ribs as recipes inside fastcae. Superseded by this plan; its ladder and its judging on demand carry over |
 | [design/2026-10-04-agentic-data-factory-brief.md](design/2026-10-04-agentic-data-factory-brief.md), [problem statement](design/2026-10-05-problem-statement.md), [walkthrough](design/2026-10-05-end-to-end-walkthrough.md), [UI flow](design/2026-10-05-ui-flow.md) | The bracket thread. What carries over: the product boundary, the UI flow, the boundary-condition rules and checks, the data scaling |
