@@ -2,7 +2,14 @@
 
 **Date.** 7 October 2026.
 
-**Status.** For the engineer's decision. It answers the engineer's request of 09:39: for every open decision, the options considered, the one recommended and why, the evidence from the research already done (no new search), what each option sets downstream (libraries, methods, technology), and what is gained and lost.
+**Status.** **Decided.** The engineer accepted the recommended option for every decision, D2-D13, on 7 October 2026 at 11:41 (D1 at 11:03). The record keeps, for each, the options considered, the reasons, the evidence from the research already done, what each option sets downstream (libraries, methods, technology), and what is gained and lost, so any decision can be revisited with its reasons. It answers the engineer's request of 09:39.
+
+**The engineer's Q&A record, decided the same day:**
+- **Adopted:** the hypothesis as the agent's unit of work (a reason in front of each formulation), with its bookkeeping by code; the kill criterion.
+- **Accepted:** the seven corrections.
+- **Not now:** the ontology (LLM reasoning first; textbook knowledge only if that reasoning stops producing good designs), sensitivity records, a learned hypothesis prior.
+
+The plan's sections 3, 8, 11, 15 and 16 say how.
 
 **Evidence used.**
 - The five reports of 6-7 October, cited by short name:
@@ -389,7 +396,7 @@ It is one more reason the member grammar is needed (section 5 of the plan is to 
 
 ## The decisions at a glance
 
-| # | Recommended | The deciding evidence |
+| # | Decided (7 October) | The deciding evidence |
 |---|---|---|
 | D2 | EV two-stage reducer; both housing parts designed, tied in V1's FE | Typical EV unit; Porsche's printed precedent; the most regimes |
 | D3 | LPBF AlSi10Mg; casting as a contrast in P4 | ISO/ASTM 52911-1, NASA 3716/3717; DED undocumented and dearest |

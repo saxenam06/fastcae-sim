@@ -2,7 +2,7 @@
 
 **Date.** 6-7 October 2026. Drafted from 23:30 on 6 October; completed on 7 October once the five research reports were in.
 
-**Status.** A proposal for the engineer's review. Nothing here is built.
+**Status.** The plan of record. All its decisions were taken by the engineer on 7 October 2026: D1 at 11:03, D2-D13 and the changes from the engineer's Q&A record at 11:41 (section 15, [decisions.md](decisions.md)). Nothing is built yet. The engineer will put a few more questions before P0 starts.
 
 **What it converges.**
 - The engineer's two plan documents of 6 October: [From Rib Placement to an Agentic Gearbox-Housing Design Platform](../../../../fastcae/docs/From%20Rib%20Placement%20to%20an%20Agentic%20Gearbox-Housing%20Design%20Platform.md) ("From Rib Placement" below) and [Agentic Mechanical Design Platform: Final Implementation Plan](../../../../fastcae/docs/Agentic_Mechanical_Design_Final_Implementation_Plan.md) ("the Final Implementation Plan").
@@ -24,7 +24,7 @@
 - **The level:** it starts at the functional interfaces. The MVP is L1 (fixed interfaces), the dataset spans L1 to L2 (bounded layout), and the platform releases L2. Gear-train and vehicle levels are upstream adapters, never the core (section 2).
 
 **Why an agent.** The structural hypothesis is not known in advance (section 3).
-- **What it does:** optimisers search within a formulation; the agent chooses, edits and abandons formulations, and says when the design space is exhausted.
+- **What it does:** optimisers search within a formulation. The agent puts a **hypothesis**, a physical reason, in front of each formulation. It edits and abandons hypotheses by evidence that code keeps (a budget and a status each), and says when the design space is exhausted.
 - **When to stop:** the test is a relaxed topology bound. If the best structure the whole domain allows misses the goal, no strategy inside the contract can meet it.
 - **What it never does:** derive physics or judge. Which candidates get an FE proof is chosen in code: LLMs ignore numeric feedback.
 
@@ -55,6 +55,7 @@
   - four arms at equal budget: a fixed workflow, an expert heuristic, an optimiser and the agent;
   - three repeats, and a pass mark registered beforehand;
   - shuffled-result and reflection controls;
+  - **the kill criterion:** if the agent does not beat the adaptive rule-based arm, it is not fundamental;
   - the demo: three counterfactual pairs, the same function with one requirement changed, each design different for a stated physical reason.
 
 **The phases (12).** Each ends on a measured gate. No new plan until P1's gate is measured.
@@ -64,10 +65,10 @@
 - P3: the dataset factory and the first models, about 6 weeks.
 - P4: the L2 platform, thermal, other processes, a prototype.
 
-**For the engineer (15):** decisions D1-D12. The four that weigh most:
+**Decided (15):** D1-D13, all taken by the engineer on 7 October. The four that weigh most:
 - D1, the repository: fastcae-sim.
 - D2-D3, the family and process: EV two-stage, LPBF.
-- D4, re-taking "field geometry never makes data" for printed regions.
+- D4, "field geometry never makes data" re-taken for printed regions.
 - D6b, the verdict's measures.
 
 ---
@@ -152,6 +153,22 @@ An optimiser searches *within* a formulation: variables, bounds, objective, cons
 | Declare the design space exhausted, and say what would open it? | |
 
 A library of fixed strategies would make the agent a selector among predefined optimisers; the reviewer warned against this. Here a strategy is instead a **formulation**: representation, domain edits, objective, constraints, optimiser and fidelity, each a typed, editable field. V1 ships a few named starting formulations (section 8.3) as seeds. The agent composes and edits them; how far its formulations move from the seeds is measured.
+
+**The hypothesis: a reason in front of each formulation, and its bookkeeping** (adopted by the engineer, 7 October, from the engineer's Q&A record). The agent's unit of work is a hypothesis.
+- **The reason:** a physical claim the agent writes about this problem. For example: "bearing A tilts because its path to the left mount is soft; a bridge there will cut the tilt more per kilogram than thicker walls."
+- **The formulation** that tests it, as above.
+- **The expected effect**, and **what result would prove it wrong**.
+- **A budget:** FE proofs, optimiser steps, wall-clock time.
+- **A status, computed by code from evidence, never by the agent:** untested, under-explored, promising, or explored and poor. The agent's own stated confidence is recorded beside it, but the status ignores it (LLMs do not use numbers reliably, AI report).
+
+**Telling a bad candidate from a bad hypothesis** (deterministic tests):
+1. Optimise deeper within the hypothesis.
+2. Read the hypothesis's own bound and its mass-against-stiffness trade-off on the screen.
+3. Compare it with other hypotheses at a fair budget.
+
+A hypothesis is set aside only when these say so, which gives the agent its role of allocating the FE budget across hypotheses.
+
+**Where the reasons come from.** The LLM's own reasoning writes them. A structured ontology of textbook regimes is **not built now**: it comes in only if the LLM's reasoning stops producing good designs (the engineer, 7 October). The same goes for sensitivity records and a learned hypothesis prior: later, if useful. The physical evidence the agent reads (which limit binds, where the strain energy sits, how close the modes are to gear orders) is already its structured observation (8.1).
 
 **A bound before a search: when the design space is exhausted.** The reviewer left open how to tell that the current design space is exhausted. Physics answers part of it:
 - Topology optimisation over the whole design domain, with the process rules relaxed, bounds what any structure in that domain can reach. That holds for stiffness-type goals under linear elasticity, within the method's own approximations.
@@ -240,7 +257,7 @@ The vehicle front door (L3/L4 phrasing) sits on top. A vehicle scenario becomes 
 | 8 | Which strategies can it select? | Any formulation built from the typed fields; the V1 seeds in 8.3 |
 | 9 | What makes a design valid? | Every hard limit met on the TET10 proof, every process rule passed, interfaces untouched; labelled on the ladder (section 7) |
 | 10 | What lets the agent declare success? | The contract's verdict, by the deterministic evaluator, never by the agent |
-| 11 | What means the design space is exhausted? | The relaxed bound misses the goal (section 3); or k proofs in a row gain less than the FE noise across every formulation the agent has authority to try |
+| 11 | What means the design space is exhausted? | The relaxed bound misses the goal (section 3); or every hypothesis within authority has been set aside by its tests (section 3, 8.5) |
 
 ## 5. Geometry: representations and the stack
 
@@ -292,6 +309,11 @@ So on this laptop:
 - **the 1,000-root dataset is a cloud job** (sections 9 and 12).
 
 The voxel grid for discovery: 3 mm voxels over a 420 × 280 × 260 mm envelope give 1.13 M voxels and 3.4 M DOF, matrix-free with multigrid.
+
+**Those voxels cannot resolve 4 mm members** (D7): a feature needs about three voxels across (geometry lesson 7). Resolving them would need about 1.5 mm voxels, some 9 M voxels and 27 M DOF, too heavy here. So the roles are fixed:
+- **the voxels discover the layout** at coarse scale;
+- **the explicit members carry the fine sizes** in their own numbers, sized by gradients through their projected density;
+- **the TET10 proof judges.**
 
 ### 5.4 Rules carried over
 
@@ -353,7 +375,10 @@ So the governing measures are per shaft and per stage:
 - 17.8 % with stiffness at the bore centres only;
 - 11.7 % with eight points per seat that carry no tension (TU Munich, 2022).
 
-So bearing loads go onto the seat as a distributed, compression-only coupling, never onto a rigid centre. Margins must cover the 10-25 % model-to-test differences measured.
+So bearing loads go onto the seat as a distributed load, never onto a rigid centre (D6a):
+- **in P1,** a linear cosine distribution over each seat's loaded half;
+- **in P0,** the sensitivity against a compression-only iteration on the same factor is measured once;
+- **later,** that iteration is added. Margins must cover the 10-25 % model-to-test differences measured.
 
 ### 6.2 The derivations, completed
 
@@ -509,13 +534,13 @@ The turned-core plus LMD route is the least documented. No open study deposits r
 - **Structured state,** kept by the platform, never inferred by the agent:
   - the contract;
   - the current best design with its KPI vector;
-  - the formulation in use, and every formulation tried, with outcomes;
+  - the hypothesis in use and every hypothesis tried: its claim, its formulation, the budget spent, and its status as code computed it;
   - violated constraints with margins;
   - the unresolved risks;
   - the budget left, in TET10 proofs and in wall-clock time;
   - the bound.
 
-  This is the Final Implementation Plan's `campaign_state`, extended with formulations.
+  This is the Final Implementation Plan's `campaign_state`, extended with hypotheses.
 - **Each observation is structured** (From Rib Placement, stage 10):
   - violations with margins;
   - hotspots linked to semantic regions (a bore, a mount path, a panel);
@@ -530,7 +555,7 @@ The turned-core plus LMD route is the least documented. No open study deposits r
 
 - **Reading:** `state`, `look`, `bound`, `regions`.
 - **Campaign-level:**
-  - `formulate` (create or edit a formulation);
+  - `hypothesise`: create or edit a hypothesis (its claim, formulation, expected effect, what would prove it wrong, budget);
   - `domain_edit` (open or close a region within authority);
   - `constrain` / `relax_soft`;
   - `escalate_fidelity`;
@@ -549,7 +574,9 @@ Every action goes through the same deterministic tools the fixed workflow uses. 
 - every tool returns typed failures with the rule and the place;
 - fastcae's per-solve reflection is kept, and is ablated once in P2 to see whether it pays.
 
-### 8.3 The V1 seed formulations
+### 8.3 The V1 starting points (seeds)
+
+Each seed is a formulation the agent may start a hypothesis from. The claim in front of it is the agent's own, written for the problem at hand.
 
 | Seed | Representation | Objective and constraints | When it suits |
 |---|---|---|---|
@@ -578,7 +605,7 @@ A seed is only a starting point. The agent edits any field of a formulation, and
 - The contract's verdict is met.
 - The bound says the space is exhausted.
 - The budget is spent.
-- k proofs in a row gain less than the FE noise, and every formulation within authority has been tried.
+- Every hypothesis within authority has been set aside by its tests (section 3): no gain beyond the noise after deeper optimisation, or a worse trade-off than another hypothesis at a fair budget.
 
 The agent may stop early only with a stated reason, which is itself a recorded decision.
 
@@ -589,7 +616,7 @@ The agent may stop early only with a stated reason, which is itself a recorded d
 ```text
 ROOT PROBLEM (contract + product context)        root_problem_id, family, cohort
   └─ CAMPAIGN (a run of the agent, or of a fixed workflow, with its budget and seed)
-      └─ EPISODE (one formulation explored: seed, edits, optimiser history)
+      └─ EPISODE (one hypothesis explored: claim, formulation, edits, budget, status, optimiser history)
           └─ CANDIDATE (one geometry: core + structure, its manufacturing state)
               └─ EVALUATION (one fidelity: screen, TET10 static per case, modal, thermal; DfAM)
 ```
@@ -664,7 +691,7 @@ The evidence for this section is [the AI-technology report](../../../../fastcae/
 | 3 | **A field surrogate** for displacement and strain-energy density | Proofs during screening. It tells the agent where the compliance sits | A Transolver-family model (GeoTransolver in PhysicsNeMo, Apache-2.0) on points sampled from the TET10 mesh, each tagged with its region (bore A, mount 2, structure); OODGuard; an uncertainty head | Hundreds to low thousands of proofs across root problems | The scalar model's errors show that the field carries information the scalars lack |
 | 4 | **Action ranking:** (a) model-based, scoring each move by component 1's or 3's prediction and uncertainty; (b) later, a value model learned from the campaign tree | Proofs and agent turns spent on moves that do not pay | (a) No new data. (b) Digi-Q style | (b) thousands of logged transitions | (a) once 1 is on; (b) at thousands of transitions |
 | 5 | A trained policy: SFT, then GRPO with the FE as verifier | The frontier model, if cost or privacy demands it | A small open model | About 10⁴ templated tasks and a multi-GPU node: COSMO-Agent needed 20,000 tasks and 16 H200s to go from 26 % to 74.5 % | It beats the frontier agent on held-out families at lower cost |
-| Not now | A learned topology initialiser (the evidence is 2D only: OAT fails on 39 % of random problems); B-rep or "shared embedding" encoders; learned checks of exact rules; mode-shape fields | - | - | - | Only when a measurement shows the deterministic route is the bottleneck |
+| Not now | A learned topology initialiser (the evidence is 2D only: OAT fails on 39 % of random problems); B-rep or "shared embedding" encoders; learned checks of exact rules; mode-shape fields; a learned hypothesis prior and sensitivity records (the engineer, 7 October: later) | - | - | - | Only when a measurement shows the deterministic route is the bottleneck |
 
 **Two corrections to the input plans.**
 - A learned feasibility classifier does not come first: where a process rule is exact, its check is cheap and right already. Learn only the failures that are expensive to discover (component 2).
@@ -714,6 +741,8 @@ The curator (section 9.4) uses the same uncertainty to pick the next root proble
 3. **An optimiser arm:** Bayesian optimisation over the seed formulations' continuous fields and their choice. The engineer asked for it on 1 October ("against the strongest optimisers at the same budget"), and it is still owed.
 4. The agent.
 5. Later: the agent with a learned surrogate (section 10).
+
+**The kill criterion** (adopted by the engineer, 7 October). If the agent does not beat the adaptive rule-based arm (arm 2) at equal budget in P2's benchmark, the agent is not fundamental. P3's data then runs on the rule-based arm, and the agent thesis is revisited.
 
 On fastcae's GRC housing, L0 (the rib workflow and its agent) stays as published evidence. It is not an arm on the new family.
 
@@ -807,7 +836,7 @@ Durations are estimates of working days with Claude writing most of the code and
 - **Realisation:** Route B in full. Route S as a spike, the same designs both ways (5.2).
 - **Proof:**
   - gmsh TET10, then cuDSS statics for every load case;
-  - bearing loads on a distributed, compression-only seat coupling (6.1);
+  - bearing loads as a cosine distribution over each seat's loaded half (6.1, D6a);
   - **modal**: shift-invert Lanczos on the cuDSS factor, the one new solver piece, with the Campbell check;
   - the interface measures (6.4), and the deterministic verdict.
 - **DfAM checks v0** on the built geometry (section 7): least thickness, overhang map, trapped volumes, build envelope, machining stock.
@@ -895,34 +924,41 @@ fastcae stays as it is: the GRC study, private, and the source of the L0 evidenc
 | The licence | GRC data is NLR's | The new family is synthetic and publishable; GRC is used only for the internal load check |
 | The CAD templates are fragile | nTop reports 70-80 % of automated parametric sweeps fail; OpenCascade's weak spots | Bounded templates; refusals named; P1's sweep counts what builds |
 
-## 15. Decisions for the engineer
+## 15. Decisions
 
-| # | Decision | Recommended | Alternatives |
+All taken by the engineer on 7 October 2026: D1 at 11:03, the rest at 11:41, each as recommended. The options, the evidence and what each sets downstream are in [decisions.md](decisions.md). A decision can be revisited with its reasons there.
+
+| # | Decision | Decided | Not taken |
 |---|---|---|---|
 | D1 | Where the product lives | **Decided (the engineer, 7 October 11:03):** the repository `fastcae-sim` (`C:\Work\fastcae-sim`), the package `zenryx`. It is independent of fastcae: nothing imported, code copied from fastcae's tag `fastcae-v1` with a parity test each. fastcae stays the rib application, frozen | (A long-lived branch in fastcae: weighed and not taken, because independence holds by construction only in a separate repository) |
 | D2 | The first family | **An EV single-speed two-stage parallel-axis reducer housing** | A coaxial planetary, the paper's round housing, as the second family |
+| D2b | The housing's two parts | **Both parts designed (main housing and cover, or two halves); tied at the flange in V1's FE, each with its own build orientation**; the bolted joint checked with the finalists (VDI 2230) | One bonded body only |
 | D3 | The first process | **LPBF, AlSi10Mg, with machined interfaces.** Its guidance and qualification are the most formalised (section 7) | Turned core plus DED (the paper's route: deposition on a surface, interface metallurgy, the dearest in its own costing); casting as a contrast profile in P4 |
 | D4 | **Re-take the 18 September rule for printed regions.** The rule today: "voxel, shell or field geometry never produces training data". Proposed: the watertight surface made from the members' SDF is a printed region's own geometry, since it is what the printer builds. Machined faces stay exact B-rep, meshed face by face | **Yes**, gated by P1's Route S check | Keep the rule: Route B only, with every structure an exact B-rep |
 | D5 | The CAD for the core | **CadQuery** (code-first, headless, on the OCP fastcae already pins) | FreeCAD (feature tree, TechDraw; named by the labs and by MEKINT); both later through the same templates |
 | D6 | The physics of the MVP | **Statics for every load case plus modal in P1; a uniform-temperature case (fit loss, bore growth) and park-lock holding in P2.** A 72 mm aluminium seat warmed by 80 K loses about 66 µm of interference, more than the whole mechanical budget (6.1) | Steady conduction with oil heat in P2 rather than P4 |
+| D6a | How bearing loads enter the model | **A linear cosine distribution over each seat's loaded half in P1**; the compression-only iteration measured in P0 and added later | A rigid centre (26.6 % error against test) |
 | D6b | The verdict's measures and limits | **Interface measures in µm and mrad (6.4), with the limits set by the engineer per archetype**: global strain energy and peak displacement recorded, not ranked | fastcae's three measures (displacement, strain energy, metal) |
-| D7 | The least member on this laptop | **4 mm**, set by the FE budget; lattices out of the MVP (homogenised only for screening) | 3 mm with longer solves; thin walls only on cloud GPUs |
+| D7 | The least member on this laptop | **4 mm**, set by the FE budget; lattices out of the MVP (homogenised only for screening). The voxels discover; the members carry the sizes (5.3) | 3 mm (does not fit the card); thin walls only on cloud GPUs |
 | D8 | The benchmark protocol | **Section 11:** four arms, a pass mark registered beforehand, proofs and wall-clock as the budget, three repeats | Fewer arms for the first round |
 | D9 | Where the dataset runs | **This laptop for P1-P2 and the first 100 roots; cloud GPUs for the 1,000** | The laptop only: about 100 designs a day, so weeks |
 | D10 | The agent's model | **Claude Code, headless, as today**, with the model kept replaceable | Another model behind the same harness |
 | D11 | The material rule for a two-process part | Ask only when the hybrid profile comes (P4) | - |
-| D12 | When to show the work outside (MEKINT) | **After P2:** the counterfactual demo and the mini-benchmark. A short note after P1 | After P1 |
+| D12 | When to show the work outside (MEKINT) | **After P1**, or earlier if the role has a deadline; from a clean repository | After P2 (the strongest demo, but later); now (fastcae's evidence only) |
+| D13 | The topology-optimisation engine | **fastcae's cube model extended**: voxel FE with adjoints and GPU multigrid; dl4to as a cross-check if needed | dl4to as the engine; FEniTop or TOuNN (GPL); a commercial optimiser |
+| Q&A | The engineer's Q&A record | **Adopted:** the hypothesis as the agent's unit of work, with its bookkeeping (section 3), and the kill criterion (11.1). **Accepted:** the seven corrections. **Not now:** the ontology (LLM reasoning first), sensitivity records, a learned hypothesis prior | - |
 
 ## 16. Not frozen yet
 
 These are the reviewer's list. Each one is decided by measurement in the phases, not now.
 - **The exact action space.** It starts from section 8.2, and grows or shrinks by what gains in P2.
 - **How much freedom L1 gives:** a free domain at L1, and authority over positions at L2.
-- **Seed formulations against open-ended discovery:** the seeds are starting points; the edits beyond them are measured.
+- **Seeds against open-ended discovery:** the seeds are starting points for hypotheses; the edits beyond them are measured.
+- **Whether the agent needs textbook knowledge** (an ontology of regimes): not now. It comes in if the LLM's own reasoning stops producing good designs (the engineer, 7 October).
 - **The structural representation:** explicit members, realised by Route B or Route S, decided at P1's gate. Free density-to-SDF is the fallback if the member grammar cannot reach the layouts the bound finds (section 5).
 - **Which learned models are needed:** decided after the first data (section 10).
 - **What counts as a novel design:** the novelty measure in 11.3, to be calibrated.
-- **When the design space is exhausted:** the bound plus the no-gain rule (section 3), to be checked against the engineer's judgement on the first ten roots.
+- **When the design space is exhausted:** the bound plus the hypothesis tests (section 3), to be checked against the engineer's judgement on the first ten roots.
 
 ## 17. Sources
 
