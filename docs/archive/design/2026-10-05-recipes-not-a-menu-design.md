@@ -10,7 +10,7 @@ engineer agrees, it moves into fastcae as a new feature page with its PBIs (key 
 **Built on:**
 - fastcae's own designs: [member-and-geometry.md](../../../../fastcae/docs/member-and-geometry.md) and
   [part-model.md](../../../../fastcae/docs/part-model.md).
-- The audit of 4 October: [2026-10-04-fastcae-audit-for-mekint.md](../../research/2026-10-04-fastcae-audit-for-mekint.md).
+- The audit of 4 October: [2026-10-04-fastcae-audit-for-mekint.md](2026-10-04-fastcae-audit-for-mekint.md).
 
 Paths to code are relative to `C:\Work\fastcae`; `S` = `src/fastcae`.
 
@@ -487,7 +487,7 @@ short update.
 
 - fastcae: `docs/member-and-geometry.md`, `docs/part-model.md`, `docs/data-engine-plan.md`, `CLAUDE.md`, and the
   code paths cited above, all read 4-5 October 2026.
-- The audit: [2026-10-04-fastcae-audit-for-mekint.md](../../research/2026-10-04-fastcae-audit-for-mekint.md).
+- The audit: [2026-10-04-fastcae-audit-for-mekint.md](2026-10-04-fastcae-audit-for-mekint.md).
 - SimJEB: Whalen, Beyene and Mueller, "SimJEB: Simulated Jet Engine Bracket Dataset",
   [arXiv:2105.03534](https://arxiv.org/abs/2105.03534) - 381 designs, CC-BY-4.0.
 - The challenge's load cases and material, read from a public reconstruction's README:

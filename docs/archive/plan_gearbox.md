@@ -347,4 +347,4 @@ benchmark.
 | [design/2026-10-05-recipes-not-a-menu-design.md](design/2026-10-05-recipes-not-a-menu-design.md) | The earlier plan of writing ribs as recipes inside fastcae. Superseded by this plan; its ladder and its judging on demand carry over |
 | [design/2026-10-04-agentic-data-factory-brief.md](design/2026-10-04-agentic-data-factory-brief.md), [problem statement](design/2026-10-05-problem-statement.md), [walkthrough](design/2026-10-05-end-to-end-walkthrough.md), [UI flow](design/2026-10-05-ui-flow.md) | The bracket thread. What carries over: the product boundary, the UI flow, the boundary-condition rules and checks, the data scaling |
 | [design/bracket_ai_design_system_dataset_physics_ai_llm_runtime.md](design/bracket_ai_design_system_dataset_physics_ai_llm_runtime.md) | Added by the engineer; not yet reviewed for this plan |
-| [research/](research/README.md) | The company, the AI-in-CAE landscape, Python tooling on Windows. Only items marked *verified* were checked first-hand |
+| [research/](../research/README.md) | The company, the AI-in-CAE landscape, Python tooling on Windows. Only items marked *verified* were checked first-hand |

@@ -12,7 +12,7 @@
 - the engineer's reference architecture,
   [design/bracket_ai_design_system_dataset_physics_ai_llm_runtime.md](design/bracket_ai_design_system_dataset_physics_ai_llm_runtime.md);
 - the [problem statement](design/2026-10-05-problem-statement.md);
-- the [research notes](research/README.md).
+- the [research notes](../research/README.md).
 
 All numbers in examples are illustrative unless marked as measured.
 
@@ -112,7 +112,7 @@ results are shown to no one. Once approved, they are the strongest credibility p
 
 ### 3.3 Existing bracket datasets, and the gap
 
-Details and sources are in [research/2026-10-05-cad-generation-and-bracket-datasets.md](research/2026-10-05-cad-generation-and-bracket-datasets.md).
+Details and sources are in [research/2026-10-05-cad-generation-and-bracket-datasets.md](../research/2026-10-05-cad-generation-and-bracket-datasets.md).
 
 | | SimJEB (2021) | DeepJEB (2024) | DeepJEB++ (June 2026) |
 |---|---|---|---|
@@ -549,5 +549,5 @@ Days are working days and are estimates.
 | [design/2026-10-05-end-to-end-walkthrough.md](design/2026-10-05-end-to-end-walkthrough.md) | Worked examples of the dataset, training and runtime (numbers illustrative) |
 | [design/2026-10-05-ui-flow.md](design/2026-10-05-ui-flow.md) | The runtime UI, screen by screen. It assumes attached CAD; for brackets the "reading CAD" screen becomes the specification form (§6.1) |
 | [design/2026-10-04-agentic-data-factory-brief.md](design/2026-10-04-agentic-data-factory-brief.md) | The earlier reasoning for the bracket thread |
-| [research/](research/README.md) | Company, landscape, tooling, CAD generation and bracket datasets |
+| [research/](../research/README.md) | Company, landscape, tooling, CAD generation and bracket datasets |
 | [design/2026-10-04-fastcae-audit-for-mekint.md](design/2026-10-04-fastcae-audit-for-mekint.md), [design/2026-10-05-recipes-not-a-menu-design.md](design/2026-10-05-recipes-not-a-menu-design.md) | The GRC thread |

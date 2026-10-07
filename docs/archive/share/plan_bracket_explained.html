@@ -1,0 +1,685 @@
+<title>fastcae-sim Bracket Plan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+<style>
+/* Layout: sticky contents rail beside one reading column, under an engineering-drawing title block (same identity as the problem brief) */
+:root {
+  --bg: #f4f5f8;
+  --surface: #ffffff;
+  --fg: #19202c;
+  --muted: #586274;
+  --rule: #d4d9e2;
+  --accent: #2d3ca8;        /* machinist's layout-fluid blue */
+  --accent-soft: #e7eafa;
+  --font-display: "Barlow Condensed", "Arial Narrow", "Roboto Condensed", sans-serif;
+  --font-body: "Source Sans 3", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #11151c; --surface: #171c26; --fg: #e3e7ee; --muted: #9ba5b6;
+    --rule: #2b323f; --accent: #9aa6ff; --accent-soft: #1d2340;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #11151c; --surface: #171c26; --fg: #e3e7ee; --muted: #9ba5b6;
+  --rule: #2b323f; --accent: #9aa6ff; --accent-soft: #1d2340;
+  color-scheme: dark;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  padding-inline: clamp(16px, 4vw, 40px);
+  padding-block: 2rem 4rem;
+}
+
+.layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2rem; max-width: 46rem; margin-inline: auto; }
+.layout > * { min-width: 0; }
+@media (min-width: 72rem) {
+  .layout { max-width: 64rem; grid-template-columns: 13rem minmax(0, 46rem); justify-content: center; gap: 3.5rem; }
+  nav.toc { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 1.5rem); align-self: start; max-height: calc(100vh - 3rem); overflow-y: auto; }
+}
+
+nav.toc { display: grid; gap: 0.6rem; }
+nav.toc ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.15rem; }
+nav.toc a { display: grid; grid-template-columns: 1.6rem minmax(0, 1fr); gap: 0.3rem; text-decoration: none; color: var(--fg); font-size: 0.92rem; line-height: 1.35; padding-block: 0.15rem; }
+nav.toc a:hover { color: var(--accent); }
+nav.toc .n { font-family: var(--font-mono); font-size: 0.78rem; color: var(--accent); padding-top: 0.1rem; }
+@media (max-width: 71.99rem) {
+  nav.toc ol { grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); column-gap: 1rem; }
+  nav.toc { border-top: 1.5px solid var(--fg); border-bottom: 1px solid var(--rule); padding-block: 0.8rem; }
+}
+
+.sheet { display: grid; gap: 2.5rem; }
+.sheet > * { min-width: 0; }
+
+h1, h2, h3 { font-family: var(--font-display); line-height: 1.1; text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(2rem, 5vw, 2.85rem); font-weight: 700; letter-spacing: 0.005em; }
+h2 { font-size: 1.75rem; font-weight: 600; display: flex; gap: 0.6rem; align-items: baseline; scroll-margin-top: 1.5rem; }
+h3 { font-size: 1.25rem; font-weight: 600; }
+h2 .num { font-family: var(--font-mono); font-size: 0.95rem; font-weight: 500; color: var(--accent); min-width: 1.6rem; }
+p { margin: 0; }
+a { color: var(--accent); text-underline-offset: 2px; }
+a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+strong { font-weight: 700; }
+code { font-family: var(--font-mono); font-size: 0.88em; }
+
+.label {
+  font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase;
+  letter-spacing: 0.08em; color: var(--muted);
+}
+
+.titleblock {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  border: 1.5px solid var(--fg); background: var(--surface);
+}
+.titleblock div { padding: 0.55rem 0.8rem; border-right: 1px solid var(--rule); border-bottom: 1px solid var(--rule); display: grid; gap: 0.15rem; }
+.titleblock .value { font-family: var(--font-mono); font-size: 0.86rem; }
+
+.hero { display: grid; gap: 1rem; }
+.lead { font-size: 1.18rem; }
+.minute { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.75rem; }
+.minute li { display: grid; grid-template-columns: 5.5rem minmax(0, 1fr); gap: 0.75rem; border-top: 1px solid var(--rule); padding-top: 0.75rem; }
+.minute .k { font-family: var(--font-mono); font-size: 0.8rem; color: var(--accent); padding-top: 0.2rem; text-transform: uppercase; letter-spacing: 0.06em; }
+@media (max-width: 30rem) { .minute li { grid-template-columns: minmax(0, 1fr); gap: 0.1rem; } }
+
+section { display: grid; gap: 1rem; }
+section > * { min-width: 0; }
+ul, ol { margin: 0; padding-left: 1.3rem; display: grid; gap: 0.45rem; }
+
+.aiterms { background: var(--accent-soft); padding: 0.9rem 1.1rem; display: grid; gap: 0.35rem; }
+.aiterms .label { color: var(--accent); }
+.aiterms p { font-size: 1rem; }
+.status { font-family: var(--font-mono); font-size: 0.78rem; color: var(--accent); border: 1px solid var(--accent); padding: 0.05rem 0.45rem; justify-self: start; }
+
+.table-wrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 0.97rem; font-variant-numeric: tabular-nums; }
+th, td { text-align: left; vertical-align: top; padding: 0.6rem 0.75rem 0.6rem 0; border-top: 1px solid var(--rule); }
+th { font-family: var(--font-mono); font-size: 0.74rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); border-top: 0; }
+td:first-child { font-weight: 600; padding-right: 1.1rem; }
+td.mono, td .mono { font-family: var(--font-mono); font-size: 0.86rem; font-weight: 500; }
+td.ai { color: var(--accent); }
+tr.milestone td { font-family: var(--font-mono); font-size: 0.82rem; font-weight: 500; color: var(--accent); background: var(--accent-soft); padding: 0.45rem 0.75rem; }
+.terms td:first-child { white-space: nowrap; }
+@media (max-width: 34rem) { .terms td:first-child { white-space: normal; } }
+
+pre.block {
+  margin: 0; padding: 0.9rem 1rem; background: var(--surface); border: 1px solid var(--rule);
+  font-family: var(--font-mono); font-size: 0.8rem; line-height: 1.65; overflow-x: auto; white-space: pre;
+}
+
+.trio { display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); gap: 1.25rem; }
+.trio > div { display: grid; gap: 0.35rem; align-content: start; border-top: 1.5px solid var(--fg); padding-top: 0.6rem; }
+.trio .n { font-family: var(--font-mono); font-size: 0.78rem; color: var(--accent); }
+
+figure { margin: 0; display: grid; gap: 0.5rem; }
+figcaption { font-size: 0.9rem; color: var(--muted); }
+.dg-wrap { overflow-x: auto; }
+figure svg { width: 100%; height: auto; color: var(--fg); }
+svg.setup { max-width: 30rem; }
+svg.loop { min-width: 40rem; }
+
+.structure { fill: var(--rule); stroke: currentColor; stroke-width: 1.2; }
+.payload { fill: var(--surface); stroke: currentColor; stroke-width: 1.5; }
+.envelope { fill: none; stroke: var(--accent); stroke-width: 1.4; stroke-dasharray: 6 5; }
+.hole { fill: var(--bg); stroke: currentColor; stroke-width: 1.2; }
+.cg-line { stroke: currentColor; stroke-width: 1.2; fill: none; }
+.svg-label { fill: var(--muted); font-family: var(--font-mono); font-size: 10px; }
+.svg-open { fill: var(--accent); font-family: var(--font-mono); font-size: 11px; }
+
+.dg-box { fill: var(--surface); stroke: currentColor; stroke-width: 1.3; }
+.dg-box.agent { stroke: var(--accent); stroke-width: 2; }
+.dg-box.trained { stroke-dasharray: 5 4; }
+.dg-title { fill: currentColor; font-family: var(--font-body); font-weight: 700; font-size: 13px; }
+.dg-sub { fill: var(--muted); font-family: var(--font-body); font-size: 11px; }
+.dg-line { stroke: currentColor; stroke-width: 1.3; fill: none; }
+.dg-loop { stroke: var(--accent); stroke-width: 1.5; fill: none; }
+.dg-head { fill: currentColor; }
+.dg-head-acc { fill: var(--accent); }
+.dg-label { fill: var(--muted); font-family: var(--font-mono); font-size: 10px; }
+.dg-label.acc { fill: var(--accent); }
+.dg-bracket { stroke: var(--muted); stroke-width: 1; fill: none; }
+.dg-group { fill: var(--muted); font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.06em; }
+.dg-group.agent { fill: var(--accent); }
+
+footer { border-top: 1.5px solid var(--fg); padding-top: 0.8rem; display: grid; gap: 0.4rem; }
+footer ul { font-size: 0.92rem; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
+</style>
+
+<div class="layout">
+
+<nav class="toc" aria-label="Contents">
+  <span class="label">Contents</span>
+  <ol>
+    <li><a href="#terms"><span class="n">0</span><span>CAE in AI terms</span></a></li>
+    <li><a href="#problem"><span class="n">1</span><span>The problem</span></a></li>
+    <li><a href="#solved"><span class="n">2</span><span>What "solved" means</span></a></li>
+    <li><a href="#system"><span class="n">3</span><span>The system at a glance</span></a></li>
+    <li><a href="#grader"><span class="n">4</span><span>The grader</span></a></li>
+    <li><a href="#programs"><span class="n">5</span><span>Designs are programs</span></a></li>
+    <li><a href="#agents"><span class="n">6</span><span>Agents decide, tools compute</span></a></li>
+    <li><a href="#pipeline"><span class="n">7</span><span>The agentic data pipeline</span></a></li>
+    <li><a href="#dataset"><span class="n">8</span><span>The dataset</span></a></li>
+    <li><a href="#learning"><span class="n">9</span><span>Learning</span></a></li>
+    <li><a href="#runtime"><span class="n">10</span><span>A request at runtime</span></a></li>
+    <li><a href="#scoring"><span class="n">11</span><span>Scoring and reference solutions</span></a></li>
+    <li><a href="#creativity"><span class="n">12</span><span>Showing creativity</span></a></li>
+    <li><a href="#principles"><span class="n">13</span><span>Principles</span></a></li>
+    <li><a href="#build"><span class="n">14</span><span>The build plan</span></a></li>
+    <li><a href="#risks"><span class="n">15</span><span>Risks</span></a></li>
+    <li><a href="#decisions"><span class="n">16</span><span>Decisions</span></a></li>
+  </ol>
+</nav>
+
+<main class="sheet">
+
+  <div class="titleblock" aria-label="Document details">
+    <div><span class="label">Document</span><span class="value">Plan explainer</span></div>
+    <div><span class="label">Project</span><span class="value">fastcae-sim</span></div>
+    <div><span class="label">Written for</span><span class="value">AI and agent engineers</span></div>
+    <div><span class="label">Plan status</span><span class="value">Draft, under review</span></div>
+    <div><span class="label">Source</span><span class="value">docs/plan_bracket.md</span></div>
+    <div><span class="label">Date</span><span class="value">2026-10-06</span></div>
+  </div>
+
+  <header class="hero">
+    <h1>An agent that designs brackets, proves them with physics, and learns from every attempt</h1>
+    <p class="lead">This page explains the fastcae-sim plan for readers who know LLMs and agents well but not CAD or CAE. Mechanical concepts are translated into AI terms as they come up, and section 0 collects the translations.</p>
+    <ul class="minute">
+      <li><span class="k">Task</span><span>An engineer writes a requirement in plain language. The system returns several bracket designs that can be manufactured, each proven against the requirement by physics simulation and explained.</span></li>
+      <li><span class="k">Engine</span><span>Agents run an autonomous data pipeline. They decide what to generate next, invent new design operations, and record every design with its verified physics, including failures and the reasoning behind each change.</span></li>
+      <li><span class="k">Payoff</span><span>That data trains fast physics models and a fine-tuned design agent. Each round gets faster and cheaper, while the physics simulator stays the final judge.</span></li>
+    </ul>
+  </header>
+
+  <section id="terms" aria-labelledby="h-terms">
+    <h2 id="h-terms"><span class="num">0</span>CAE in AI terms</h2>
+    <p>CAD is computer-aided design: building the 3D model. CAE is computer-aided engineering: simulating how that model behaves. The rest of this page uses the terms below.</p>
+    <div class="table-wrap">
+      <table class="terms">
+        <thead><tr><th scope="col">Term</th><th scope="col">What it is</th><th scope="col">In AI terms</th></tr></thead>
+        <tbody>
+          <tr><td>Bracket</td><td>The part that holds a module or sensor to a vehicle, aircraft or machine</td><td class="ai">One task instance</td></tr>
+          <tr><td>Parametric CAD</td><td>A 3D model defined by an ordered list of features and their parameters</td><td class="ai">A program with arguments; the feature tree is its syntax tree</td></tr>
+          <tr><td>Feature, operation</td><td>One modelling step: a bend, a bead, a hole, a flange</td><td class="ai">One typed instruction, or one tool call</td></tr>
+          <tr><td>FreeCAD</td><td>Open-source parametric CAD that can run headless</td><td class="ai">The interpreter that turns the program into geometry</td></tr>
+          <tr><td>FE analysis</td><td>Finite-element simulation of physics on the part, split into small elements (the mesh)</td><td class="ai">An expensive, trusted oracle: the full test suite</td></tr>
+          <tr><td>Boundary conditions, loads</td><td>How the part is held, and what forces, vibration and heat act on it</td><td class="ai">The test harness. A wrong fixture silently invalidates every result</td></tr>
+          <tr><td>Natural frequency, first mode</td><td>The lowest frequency at which the part resonates</td><td class="ai">A hard constraint: it must stay above a threshold</td></tr>
+          <tr><td>Random vibration, fatigue</td><td>Damage that builds up under long, noise-like shaking</td><td class="ai">Accumulated cost under a stochastic input</td></tr>
+          <tr><td>Shock</td><td>A brief, violent acceleration pulse</td><td class="ai">A worst-case input</td></tr>
+          <tr><td>Margin</td><td>How far a result sits from its limit</td><td class="ai">Slack on a constraint</td></tr>
+          <tr><td>Manufacturing rules</td><td>What a factory can actually make: bend radii, hole spacing, flat patterns</td><td class="ai">A type checker or linter on the program</td></tr>
+          <tr><td>Reduced-order model</td><td>A hand formula or small model: cheap, approximate, valid only in a known range</td><td class="ai">A fast heuristic evaluator. Trust it only in-distribution</td></tr>
+          <tr><td>Validity map</td><td>Where each cheap model agrees with full FE, measured on data</td><td class="ai">A calibration and out-of-distribution map for each evaluator</td></tr>
+          <tr><td>Grader</td><td>Rules, FE, physics checks, validity flags and a trust label</td><td class="ai">The verifier, and the reward function</td></tr>
+          <tr><td>Surrogate, physics AI</td><td>A neural network that predicts FE results in milliseconds</td><td class="ai">A learned critic, or value model</td></tr>
+          <tr><td>Flat pattern</td><td>For sheet metal: the unfolded sheet that is cut before bending</td><td class="ai">The compiled artefact a factory runs</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="problem" aria-labelledby="h-problem">
+    <h2 id="h-problem"><span class="num">1</span>The problem</h2>
+    <ul>
+      <li><strong>Brackets are everywhere.</strong> Every vehicle, aircraft and machine has many. Each must keep its payload clear of resonance and survive vibration, shock and heat, while staying light, cheap and manufacturable.</li>
+      <li><strong>Today they are designed by hand.</strong> Engineers iterate across CAD and simulation tools, explore few concepts, and often find resonance or fatigue problems only in testing. Set-up errors go unnoticed.</li>
+      <li><strong>Off-the-shelf AI doesn't solve it yet.</strong> LLMs write CAD that runs but misses the specification. On 12,632 industrial design tasks, nine frontier models writing FreeCAD code reached 57–81 % executability (<a href="https://arxiv.org/abs/2609.03773">RealCADBench</a>). Agents that drive simulators often produce results that run but are physically wrong.</li>
+      <li><strong>There's no data to learn from.</strong> The public bracket datasets (SimJEB, DeepJEB, DeepJEB++) hold titanium shapes for 3D printing under static loads only. None has vibration, plain-language requirements, design programs or design reasoning.</li>
+    </ul>
+    <figure>
+      <svg class="setup" viewBox="0 0 360 170" role="img" aria-label="The fixed setup: bolt positions on the structure and the payload's location are fixed; the bracket in between is the design space.">
+        <rect x="14" y="14" width="18" height="142" class="structure"/>
+        <circle cx="23" cy="62" r="5" class="hole"/>
+        <circle cx="23" cy="108" r="5" class="hole"/>
+        <rect x="40" y="26" width="306" height="118" class="envelope"/>
+        <rect x="236" y="58" width="96" height="54" class="payload"/>
+        <circle cx="284" cy="85" r="7" class="cg-line"/>
+        <line x1="277" y1="85" x2="291" y2="85" class="cg-line"/>
+        <line x1="284" y1="78" x2="284" y2="92" class="cg-line"/>
+        <text x="136" y="82" class="svg-open" text-anchor="middle">bracket: the design space</text>
+        <text x="136" y="97" class="svg-label" text-anchor="middle">shape and features are open</text>
+        <text x="284" y="128" class="svg-label" text-anchor="middle">payload, CG fixed</text>
+        <text x="40" y="18" class="svg-label">allowed envelope</text>
+        <text x="14" y="168" class="svg-label">structure, bolts fixed</text>
+      </svg>
+      <figcaption>The specification fixes the bolt positions and the payload's location as numbers, so no CAD has to be attached. The bracket in between is what the system designs. The open problem brief leaves the manufacturing process open; version 1 of the plan uses sheet metal, which is cheap to make, quick to simulate and easy to test.</figcaption>
+    </figure>
+  </section>
+
+  <section id="solved" aria-labelledby="h-solved">
+    <h2 id="h-solved"><span class="num">2</span>What "solved" means</h2>
+    <p>All six must hold.</p>
+    <ul>
+      <li><strong>Request → verified brackets.</strong> Example requests, plus request types never seen during development, get brackets that pass the manufacturing rules and FE checks for vibration, shock, static load and heat, with margins, assumptions and model validity stated.</li>
+      <li><strong>Physics first.</strong> Before designing, the agent states the governing numbers, which requirement binds, and the mechanism. Its hand models are checked against FE with the error measured.</li>
+      <li><strong>An agentic pipeline that earns its keep.</strong> At equal compute it beats a scripted pipeline, and the dataset regenerates from one config.</li>
+      <li><strong>Learning that pays off.</strong> The physics predictor has a measured false-pass rate on unseen request types, and the trained agent needs measurably fewer rounds or less cost.</li>
+      <li><strong>A real-world anchor.</strong> At least three agent designs are made and tap-tested, and the measured first mode is shown next to the prediction.</li>
+      <li><strong>Reproducible claims.</strong> Every claim rebuilds from a commit and a config.</li>
+    </ul>
+  </section>
+
+  <section id="system" aria-labelledby="h-system">
+    <h2 id="h-system"><span class="num">3</span>The system at a glance</h2>
+    <figure>
+      <div class="dg-wrap">
+        <svg class="loop" viewBox="0 0 804 230" role="img" aria-label="The closed loop. A plain-language request becomes a typed spec. Design agents make typed tool calls. Deterministic tools build each design in FreeCAD and judge it with rules, FE and checks. Only VALID records enter the dataset. Margins and diagnosis return to the design agent, and after training, learned models return proposals and fast screening.">
+          <defs>
+            <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="dg-head"/></marker>
+            <marker id="arr-acc" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" class="dg-head-acc"/></marker>
+          </defs>
+          <path d="M10 36 V30 H110 V36" class="dg-bracket"/>
+          <text x="60" y="23" class="dg-group" text-anchor="middle">ENGINEER</text>
+          <path d="M124 36 V30 H338 V36" class="dg-bracket"/>
+          <text x="231" y="23" class="dg-group agent" text-anchor="middle">LLM AGENTS DECIDE</text>
+          <path d="M352 36 V30 H680 V36" class="dg-bracket"/>
+          <text x="516" y="23" class="dg-group" text-anchor="middle">DETERMINISTIC TOOLS COMPUTE</text>
+          <path d="M694 36 V30 H794 V36" class="dg-bracket"/>
+          <text x="744" y="23" class="dg-group" text-anchor="middle">TRAINED</text>
+
+          <rect x="10" y="60" width="100" height="58" class="dg-box"/>
+          <text x="60" y="85" class="dg-title" text-anchor="middle">Request</text>
+          <text x="60" y="102" class="dg-sub" text-anchor="middle">plain language</text>
+
+          <rect x="124" y="60" width="100" height="58" class="dg-box agent"/>
+          <text x="174" y="85" class="dg-title" text-anchor="middle">Spec agent</text>
+          <text x="174" y="102" class="dg-sub" text-anchor="middle">typed spec</text>
+
+          <rect x="238" y="60" width="100" height="58" class="dg-box agent"/>
+          <text x="288" y="85" class="dg-title" text-anchor="middle">Design agent</text>
+          <text x="288" y="102" class="dg-sub" text-anchor="middle">concepts, edits</text>
+
+          <rect x="352" y="60" width="100" height="58" class="dg-box"/>
+          <text x="402" y="85" class="dg-title" text-anchor="middle">Build</text>
+          <text x="402" y="102" class="dg-sub" text-anchor="middle">FreeCAD</text>
+
+          <rect x="466" y="60" width="100" height="58" class="dg-box"/>
+          <text x="516" y="85" class="dg-title" text-anchor="middle">Judge</text>
+          <text x="516" y="102" class="dg-sub" text-anchor="middle">rules, FE, checks</text>
+
+          <rect x="580" y="60" width="100" height="58" class="dg-box"/>
+          <text x="630" y="85" class="dg-title" text-anchor="middle">Record</text>
+          <text x="630" y="102" class="dg-sub" text-anchor="middle">dataset</text>
+
+          <rect x="694" y="60" width="100" height="58" class="dg-box trained"/>
+          <text x="744" y="85" class="dg-title" text-anchor="middle">Learn</text>
+          <text x="744" y="102" class="dg-sub" text-anchor="middle">physics AI, LLM</text>
+
+          <line x1="110" y1="89" x2="123" y2="89" class="dg-line" marker-end="url(#arr)"/>
+          <line x1="224" y1="89" x2="237" y2="89" class="dg-line" marker-end="url(#arr)"/>
+          <line x1="338" y1="89" x2="351" y2="89" class="dg-line" marker-end="url(#arr)"/>
+          <line x1="452" y1="89" x2="465" y2="89" class="dg-line" marker-end="url(#arr)"/>
+          <line x1="566" y1="89" x2="579" y2="89" class="dg-line" marker-end="url(#arr)"/>
+          <line x1="680" y1="89" x2="693" y2="89" class="dg-line" marker-end="url(#arr)"/>
+          <text x="345" y="53" class="dg-label" text-anchor="middle">tool calls</text>
+          <text x="573" y="53" class="dg-label" text-anchor="middle">VALID only</text>
+
+          <path d="M516 118 V150 H296 V120" class="dg-loop" marker-end="url(#arr-acc)"/>
+          <text x="406" y="166" class="dg-label acc" text-anchor="middle">margins + diagnosis → next edit</text>
+          <path d="M744 118 V196 H280 V120" class="dg-loop" marker-end="url(#arr-acc)"/>
+          <text x="512" y="214" class="dg-label acc" text-anchor="middle">proposals + fast screening, after training</text>
+        </svg>
+      </div>
+      <figcaption>LLM agents make every decision: what the request means, which concept to try, which edit fixes a failure. Deterministic tools do all the computing: building the geometry, checking the rules, running FE. Only results labelled VALID become training data. The two blue loops are the system's two ways of improving: within one design (diagnose, then edit) and across all designs (train, then propose better starting points).</figcaption>
+    </figure>
+
+    <h3>Three deliverables, all in full</h3>
+    <div class="trio">
+      <div><span class="n">01 · runtime</span><strong>Design agent</strong><p>A request goes in. Verified brackets come out, each with editable CAD, manufacturing files, a verification record and a physics explanation.</p></div>
+      <div><span class="n">02 · offline</span><strong>Agentic data pipeline</strong><p>Agents decide what data to create and how. Tested tools build and judge every design. Failures and reasoning are kept.</p></div>
+      <div><span class="n">03 · offline</span><strong>Learning</strong><p>Physics AI (fast predictors, embeddings, a design proposer) and a fine-tuned LLM, fed back into 01 and 02.</p></div>
+    </div>
+  </section>
+
+  <section id="grader" aria-labelledby="h-grader">
+    <h2 id="h-grader"><span class="num">4</span>The grader: the only authority</h2>
+    <p>Every design passes through the same pipeline: build, check the manufacturing rules, mesh, apply supports and loads, solve, post-process, run physics checks, assign a trust label, then compare against the specification. Version 1 covers natural frequencies, random vibration, fatigue, shock, static g-loads and bolted joints. Heat is an open decision.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th scope="col">Level</th><th scope="col">Models</th><th scope="col">Cost</th><th scope="col">Used for</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">L0</td><td>Hand formulas: a single mass on a spring, beam and plate formulas, a thermal resistance network</td><td>milliseconds</td><td>Governing numbers, screening, which requirement binds</td></tr>
+          <tr><td class="mono">L1</td><td>FE: modes, random response, fatigue, steady heat conduction</td><td>seconds</td><td>Grading</td></tr>
+          <tr><td class="mono">L2</td><td>Refined FE, cross-checked with a second solver (CalculiX)</td><td>minutes</td><td>The gold set and the finalists</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <ul>
+      <li><strong>Physics checks on every run:</strong> model mass equals CAD mass; a free-floating model has exactly six rigid-body modes; reactions under 1 g equal the weight; effective masses add up to the total; units are consistent.</li>
+      <li><strong>Fault injection:</strong> we break inputs on purpose (a units slip, a dropped bolt) and confirm the checks catch every one.</li>
+      <li><strong>Trust labels:</strong> each result is VALID, QUESTIONABLE or INVALID. Only VALID results are used for training.</li>
+    </ul>
+    <aside class="aiterms"><span class="label">In AI terms</span><p>The grader is a verifier built on a physics simulator, and it serves as the reward. L0, L1 and L2 form a cascade of evaluators from cheap to expensive, each with a measured domain where it can be trusted. Physics checks are unit tests for the simulation itself, and fault injection tests those tests. Trust labels are data-quality filters.</p></aside>
+  </section>
+
+  <section id="programs" aria-labelledby="h-programs">
+    <h2 id="h-programs"><span class="num">5</span>Designs are programs</h2>
+    <p>The agent never draws free-form geometry. Each design is a <strong>feature program</strong>: a concept, its parameters, and an ordered list of sheet-metal operations. FreeCAD executes the program into an editable model, a STEP file and a laser-ready flat pattern. A mesh and a point cloud are derived from that model for the physics AI.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th scope="col">Kind</th><th scope="col">Operations</th></tr></thead>
+        <tbody>
+          <tr><td>Structural</td><td>add or remove a flange · side walls · gusset · bead · close the section · change the load path</td></tr>
+          <tr><td>Thickness</td><td>change gauge · local doubler</td></tr>
+          <tr><td>Geometry</td><td>move a hole · flange length · bend angle and radius · bend relief · lightening hole · hem</td></tr>
+          <tr><td>Joining</td><td>spot-weld, clinch or rivet seam</td></tr>
+          <tr><td>Isolation</td><td>isolator mounts at the bolts</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <ul>
+      <li><strong>Where designs come from:</strong>
+        <ul>
+          <li>even coverage of the parameter space;</li>
+          <li>single edits and combinations of edits;</li>
+          <li>deliberate near-misses and deliberate failures;</li>
+          <li>optimiser paths;</li>
+          <li>agent designs;</li>
+          <li>new operations the agent invents;</li>
+          <li>later, a learned proposer.</li>
+        </ul>
+      </li>
+      <li><strong>Beads go where physics says.</strong> Stiffening beads are placed where the strain energy of the failing vibration mode is concentrated. This borrows the idea behind topography optimisation, then snaps each bead to one that can actually be formed.</li>
+      <li><strong>Inventions pass a gate.</strong> A new operation runs in a sandbox. It is tested on a plain sheet, then on brackets, must pass the manufacturing rules, and needs the engineer's approval. After that it joins the vocabulary, and the pipeline can sweep it like any other operation.</li>
+      <li><strong>Diversity is enforced.</strong> A quality-diversity archive (MAP-Elites) keeps the best design of each kind, so the search doesn't collapse onto one shape.</li>
+    </ul>
+    <aside class="aiterms"><span class="label">In AI terms</span><p>This is program synthesis in a small domain-specific language, with FreeCAD as the interpreter. Agents edit the program's syntax tree through typed tool calls, which keeps every output valid and editable. Inventing an operation is tool creation, guarded by a sandbox, tests and human review. The archive is an open-ended search over behaviour space.</p></aside>
+  </section>
+
+  <section id="agents" aria-labelledby="h-agents">
+    <h2 id="h-agents"><span class="num">6</span>Agents decide, tools compute</h2>
+    <p>The same five roles work at runtime and in the data pipeline.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th scope="col">Role</th><th scope="col">At runtime</th><th scope="col">In the data pipeline</th></tr></thead>
+        <tbody>
+          <tr><td>Spec agent</td><td>Turns the request into a typed specification and asks only the questions that block progress</td><td>Writes requests: paraphrases, incomplete requests, edits, hard cases</td></tr>
+          <tr><td>Campaign agent</td><td>Plans the run: concepts, variables, evaluation order, when to stop</td><td>As curator, plans each batch from coverage, predictor uncertainty and failures</td></tr>
+          <tr><td>Design agent</td><td>Picks concepts and edits, and chooses the strategy: stiffen, move the mass, or isolate</td><td>Designs into the gaps. As inventor, writes new operations through the gate</td></tr>
+          <tr><td>Diagnosis agent</td><td>Explains each failure from a compact summary and picks the fix</td><td>As quality checker, investigates anomalies and quarantined runs</td></tr>
+          <tr><td>Evidence agent</td><td>Writes the report: requirement → value → margin → model → assumptions</td><td>Writes the dataset card, with evidence for every claim</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <aside class="aiterms"><span class="label">In AI terms</span><p>This is an orchestrator with specialised subagents, using typed tools served over MCP. Standards and manufacturing rules are fetched by retrieval rather than stored in weights, so a rule change needs no retraining. The LLM sees a compact engineering state (hot spots, the dominant mode, the weak joint), never raw FE fields, and it never does the arithmetic.</p></aside>
+  </section>
+
+  <section id="pipeline" aria-labelledby="h-pipeline">
+    <h2 id="h-pipeline"><span class="num">7</span>The agentic data pipeline</h2>
+    <p>A scripted pipeline samples a fixed plan up front and skips anything that crashes. In this pipeline, agents make the decisions a data engineer would make, in a loop that reads the dataset's own state:</p>
+    <ul>
+      <li><strong>Where to sample next.</strong> New FE runs go where they teach the most: where the predictor is uncertain, near a pass/fail boundary, where designs are novel, near a promising optimum, or where predictors disagree.</li>
+      <li><strong>How designs are made.</strong> Agents design some requests themselves. When no existing operation can reach a region, they invent one.</li>
+      <li><strong>How deep to analyse.</strong> Each design gets the cheapest level that is valid for the question. Suspicious results move up a level.</li>
+      <li><strong>What broke.</strong> Quarantined runs are diagnosed, and fixes are proposed. Any code change goes through tests and engineer review.</li>
+      <li><strong>The "why".</strong> Mechanism, principle and fix are recorded alongside every agent design.</li>
+    </ul>
+    <pre class="block">state after batch 2
+  coverage   heavy modules (3.5–5 kg) at ≥ 400 Hz: 6 passing designs; most requests unsolved
+  predictor  most uncertain on isolated mounts
+  failures   19 runs quarantined: 12 rigid-body modes instead of 6
+
+agent decisions for batch 3
+  request writer   +200 requests for heavy modules; 50 isolation requests
+  curator          70 % of FE time on those regions
+  inventor         best box falls 9 % short → writes a double-wall box → gate → FE → joins library
+  quality checker  traces the 12-mode runs to a step that moved the module holes → fix → re-run</pre>
+    <p><strong>The agents have to earn their place.</strong> At an equal compute budget, the agentic pipeline is compared with a scripted one on five measures: coverage, distinct concepts, predictor error on unseen request types, designs that are both novel and better, and bad labels caught.</p>
+    <aside class="aiterms"><span class="label">In AI terms</span><p>It's a data engine combining active learning, curriculum, open-ended search and automated data QA, with agents acting as the data engineers. The scripted baseline is the ablation that shows whether the agents add value.</p></aside>
+  </section>
+
+  <section id="dataset" aria-labelledby="h-dataset">
+    <h2 id="h-dataset"><span class="num">8</span>The dataset</h2>
+    <p>Each record holds:</p>
+    <ul>
+      <li>the request and its paraphrases;</li>
+      <li>the resolved specification;</li>
+      <li>the feature program and the CAD files;</li>
+      <li>the analysis set-up;</li>
+      <li>physics results at each fidelity level;</li>
+      <li>checks, trust label and verdict;</li>
+      <li>lineage (parent, operation, parameters);</li>
+      <li>the agent trace, for agent-made designs.</li>
+    </ul>
+    <p>Here is an example record:</p>
+    <pre class="block">id          B-000417
+intent      "Mount a 1.2 kg, 15 W ECU to the vertical body rail, 2×M6 at 80 mm. ISO 16750-3 body.
+             First mode ≥ 200 Hz, base ≤ 85 °C. Lightest aluminium."   (+4 paraphrases)
+design      closed box · base_flange → side_walls → bend → upright → closed_section(spot weld) → holes
+            5052-H32 aluminium, 1.2 mm, 49 g
+labels      f1: L0 241 Hz (hand model) · L1 218 Hz · L2 216 Hz
+            9.1 g RMS at payload · fatigue damage 0.29 · shock 131 MPa · base 83 °C
+checks      all pass · smallest margin +9 % (f1) · trust VALID
+trace       1 characterise: mode 1 = upright bending + twist (71 % of strain energy at the root)
+            2 concept: twist → close the section   3 add closed_section   4 grade: pass   5 optimise mass</pre>
+    <ul>
+      <li><strong>Varied requests:</strong>
+        <ul>
+          <li>complete and driven by stiffness;</li>
+          <li>long overhangs with welding banned;</li>
+          <li>cost-driven, where heat is the binding limit;</li>
+          <li>isolation, the opposite strategy;</li>
+          <li>severe engine-mounted profiles;</li>
+          <li>edits of earlier requests;</li>
+          <li>incomplete requests, where the right answer is questions.</li>
+        </ul>
+      </li>
+      <li><strong>Design pairs and deltas:</strong> parent → child, failed → repaired, trade-off pairs, the same geometry under a different load, the same concept under a different process.</li>
+      <li><strong>Hindsight relabelling:</strong> a design that misses 200 Hz but reaches 184 Hz is a valid answer to a 180 Hz request.</li>
+      <li><strong>Honest splits:</strong> whole request types are held out for testing and frozen before any generation.</li>
+      <li><strong>First-release targets:</strong> about 300 synthetic projects, about 10,000 designs verified at L1 and about 500 at L2, and 500–2,000 agent trajectories, set by the token budget.</li>
+    </ul>
+    <aside class="aiterms"><span class="label">In AI terms</span><p>Every record is a supervised example (geometry plus conditions → physics). When an agent made it, it is also a trajectory (state → action → result). Hindsight relabelling works like hindsight experience replay. Held-out request types make the tests measure out-of-distribution generalisation.</p></aside>
+  </section>
+
+  <section id="learning" aria-labelledby="h-learning">
+    <h2 id="h-learning"><span class="num">9</span>Learning</h2>
+    <h3>Physics AI</h3>
+    <p>It is trained in stages: static loads, then natural frequencies, then random vibration, then heat, then combined physics.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th scope="col">Model</th><th scope="col">Learns</th><th scope="col">Used for</th></tr></thead>
+        <tbody>
+          <tr><td>Fast predictor</td><td>Program, geometry and specification → mass, frequencies, vibration response, fatigue, stress, temperature, pass/fail</td><td>Screening thousands of candidates</td></tr>
+          <tr><td>Mesh model</td><td>Mesh graph and loads → displacement, stress, mode shapes, temperature fields. Modes are matched before computing the loss, because they swap order between similar designs</td><td>Hot spots and diagnosis</td></tr>
+          <tr><td>Embedding</td><td>All designs</td><td>Similar-design search, novelty, detecting unfamiliar designs</td></tr>
+          <tr><td>Design proposer</td><td>Relabelled specification → program pairs</td><td>Nearly-right starting designs</td></tr>
+          <tr><td>Validity maps</td><td>L0 against L1 against L2 on every design</td><td>Evidence-based rules for which model to trust</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Training adds physics-consistency losses (equilibrium, the eigenproblem, energy) to the data loss, and uses ensembles for uncertainty. A domain gate sends anything unfamiliar straight to FE.</p>
+    <h3>The LLM</h3>
+    <p>It learns five capabilities:</p>
+    <ul>
+      <li>extracting a specification and detecting what is missing;</li>
+      <li>planning a campaign;</li>
+      <li>choosing tools;</li>
+      <li>diagnosing failures;</li>
+      <li>knowing when not to trust the physics AI.</li>
+    </ul>
+    <p>Training runs in four stages:</p>
+    <ol>
+      <li>supervised fine-tuning on requests, states and actions, diagnoses and recoveries;</li>
+      <li>preference tuning: a good action against a merely plausible one;</li>
+      <li>training on whole trajectories;</li>
+      <li>optionally, reinforcement learning, with the reward computed from verified physics only.</li>
+    </ol>
+    <p>The model is a small open-weight model trained with LoRA on a paid cloud GPU, and it is evaluated against the Claude-driven agent on held-out tasks.</p>
+    <aside class="aiterms"><span class="label">In AI terms</span><p>This is reinforcement learning with verifiable rewards, where the verifier is physics. The reward never comes from the surrogate, which would invite reward hacking, and winning designs are re-checked at full fidelity. Distilling search results into the policy and repeating is expert iteration.</p></aside>
+  </section>
+
+  <section id="runtime" aria-labelledby="h-runtime">
+    <h2 id="h-runtime"><span class="num">10</span>A request at runtime</h2>
+    <p>Example: <em>"Mount a 1.2 kg, 15 W control module to a vertical body rail. ISO 16750-3. First mode ≥ 200 Hz, module base ≤ 85 °C. Lightest possible."</em></p>
+    <ol>
+      <li><strong>Request.</strong> Plain language, plus a short form that shows the numbers extracted from it.</li>
+      <li><strong>Specification check.</strong> Gaps are filled from the program context and flagged. Only the questions that block progress are asked. Nothing unspecified is claimed.</li>
+      <li><strong>Characterise.</strong> The required stiffness is k = m(2πf)² ≈ 1.9 kN/mm, and the thermal budget is 20 K for 15 W, about 1.3 K/W. These numbers show which requirement binds.</li>
+      <li><strong>Campaign.</strong> Concepts are proposed with their physics reasons. Isolation is ruled out here because it cannot meet a frequency floor.</li>
+      <li><strong>Generate.</strong> Candidates are produced with their lineage and pass through the manufacturing-rule checker.</li>
+      <li><strong>Screen.</strong> Physics AI scores candidates, with uncertainty and the domain gate.</li>
+      <li><strong>Select.</strong> A mix of the best predicted, uncertain, novel, near-boundary and diverse candidates.</li>
+      <li><strong>FE, diagnosis, edit.</strong> The LLM picks the strategy and the optimiser picks the numbers. Steps 5–8 repeat.</li>
+      <li><strong>Verify the finalists at L2</strong> and build the evidence package.</li>
+      <li><strong>Export.</strong> An editable FreeCAD file, STEP, a flat-pattern DXF, a drawing and the report.</li>
+    </ol>
+    <p>After training, the parser asks fewer questions, the proposer starts closer to a passing design, and the predictor screens faster. FE still proves every design. Runtime results join the training pool only after verification.</p>
+  </section>
+
+  <section id="scoring" aria-labelledby="h-scoring">
+    <h2 id="h-scoring"><span class="num">11</span>Scoring and reference solutions</h2>
+    <span class="status">Proposed in discussion · not yet in the written plan</span>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th scope="col">Level</th><th scope="col">What qualifies</th><th scope="col">Used for</th></tr></thead>
+        <tbody>
+          <tr><td>Valid</td><td>Passes every check at L1 with a VALID trust label</td><td>Dataset labels, training</td></tr>
+          <tr><td>Verified</td><td>Valid, plus a pass at L2, robust across the uncertainty ranges (damping, joint stiffness, tolerances), and agreement with a second solver</td><td>Anything shown or claimed</td></tr>
+          <tr><td>Reference</td><td>The best verified design found by a deliberately thorough search, with the search budget recorded. It is frozen and tied to the grader version</td><td>Scoring agents</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <ul>
+      <li><strong>"Best" means best known.</strong> When an agent beats a reference and its design is verified, it becomes the new reference.</li>
+      <li><strong>Hand work goes into five places:</strong>
+        <ul>
+          <li>a conventional baseline per task, sized the way an experienced engineer would;</li>
+          <li>exact textbook answers that verify the grader;</li>
+          <li>engineer review of sampled references;</li>
+          <li>proofs for impossible tasks;</li>
+          <li>physical tests.</li>
+        </ul>
+      </li>
+      <li><strong>Agents are scored on:</strong>
+        <ul>
+          <li>whether every requirement passes;</li>
+          <li>the gap to the reference on the objective;</li>
+          <li>the gain over the conventional baseline;</li>
+          <li>pass@1, pass@k and pass^k over at least five repeats.</li>
+        </ul>
+        Geometric similarity to the reference is never scored, because a design problem has many good answers.
+      </li>
+      <li><strong>References for held-out tasks are sealed,</strong> and all references are re-graded whenever the grader changes.</li>
+    </ul>
+  </section>
+
+  <section id="creativity" aria-labelledby="h-creativity">
+    <h2 id="h-creativity"><span class="num">12</span>Showing creativity</h2>
+    <ol>
+      <li><strong>Concept atlas.</strong> One request fills a live gallery of genuinely different passing brackets.</li>
+      <li><strong>The invention moment.</strong> The archive shows an empty region. The agent explains mechanism → principle → feature, writes the operation, passes the gate and FE, and the pipeline fills the region.</li>
+      <li><strong>Beads placed by physics.</strong> The strain energy of mode 1 is shown, beads go along it, and the frequency jumps. A rule-of-thumb bead is shown alongside for comparison.</li>
+      <li><strong>Strategy as well as shape.</strong> For a vibration-sensitive sensor, the agent isolates instead of stiffening, and explains why.</li>
+      <li><strong>Novel-and-better scoreboard.</strong> Feasibility, performance and novelty are measured, not asserted.</li>
+      <li><strong>Rules nobody wrote down.</strong> Design patterns mined from the dataset.</li>
+      <li><strong>Real parts.</strong> Tap-tested, with the measured first mode shown next to the prediction.</li>
+      <li><strong>From request to a laser-ready DXF in minutes.</strong></li>
+    </ol>
+  </section>
+
+  <section id="principles" aria-labelledby="h-principles">
+    <h2 id="h-principles"><span class="num">13</span>Principles</h2>
+    <ul>
+      <li><strong>Verified only inside a resolved project context.</strong> That means a request, the program's context and a specification. A concept mode may work from rough numbers, but its results are never labelled verified.</li>
+      <li><strong>FE is the authority.</strong> Physics AI screens, the LLM chooses strategy, and the optimiser chooses numbers.</li>
+      <li><strong>Nothing unverified becomes training truth.</strong></li>
+      <li><strong>Agents act only through typed tools.</strong> Their own code enters only through the gate.</li>
+      <li><strong>Rules live in retrieval, not in weights.</strong></li>
+      <li><strong>The LLM sees a compact engineering state.</strong></li>
+      <li><strong>Every claim is reproducible:</strong> one commit, one config, manifests with every setting.</li>
+      <li><strong>An independent build.</strong> Learnings from other repositories are cited. Their code is copied only when a step needs it, at the smallest unit (a function, a module, or a whole file only when needed), never in bulk, with its origin recorded and a test.</li>
+    </ul>
+  </section>
+
+  <section id="build" aria-labelledby="h-build">
+    <h2 id="h-build"><span class="num">14</span>The build plan</h2>
+    <p>Days are working days and are estimates. Each step ends in a measured result.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th scope="col">Step</th><th scope="col">What</th><th scope="col">Done when</th><th scope="col">Days</th></tr></thead>
+        <tbody>
+          <tr><td class="mono">0</td><td>Decisions and engineering data sources</td><td>Version-1 scope written; every engineering number has a source we're allowed to use</td><td class="mono">1–2</td></tr>
+          <tr><td class="mono">1</td><td>Repository, environment, FreeCAD spike; reuse rule in <code>CLAUDE.md</code></td><td>200 random programs build to CAD, STEP and DXF; time and failure rate measured</td><td class="mono">2–3</td></tr>
+          <tr><td class="mono">2</td><td>Specification schema and program context</td><td>Seven example requests resolve to valid specifications</td><td class="mono">1–2</td></tr>
+          <tr><td class="mono">3</td><td>Builder: the sheet-metal operations</td><td>At least 95 % of programs build; CAD mass equals FE mass</td><td class="mono">4–6</td></tr>
+          <tr><td class="mono">4</td><td>Grader and verification</td><td>Benchmarks pass; CalculiX agrees on 20 brackets; every injected fault caught</td><td class="mono">7–10</td></tr>
+          <tr><td class="mono">5</td><td>Characterisation and hand models</td><td>Each hand model's error against FE is measured</td><td class="mono">2–3</td></tr>
+          <tr><td class="mono">6</td><td>Agent-ready: tools, records, harness, request generation</td><td>A scripted client works through the tools alone; the dataset regenerates; one agent session runs within budget</td><td class="mono">5–7</td></tr>
+          <tr><td class="mono">7</td><td>Rehearsal: held-out sets, scripted baseline, pilot</td><td>Pilot of 5 requests; the engineer audits 50 records</td><td class="mono">3–4</td></tr>
+          <tr class="milestone"><td colspan="4">M1 · foundation · about weeks 4–6 · agents generate their first verified data</td></tr>
+          <tr><td class="mono">8</td><td>The design agent, with real parts</td><td>Seven requests answered with verified designs; three parts tap-tested</td><td class="mono">4–6</td></tr>
+          <tr><td class="mono">9</td><td>Agentic generation at scale, against the scripted pipeline</td><td>Equal-budget comparison reported; dataset v1 released</td><td class="mono">3–5</td></tr>
+          <tr class="milestone"><td colspan="4">M2 · public demo · about weeks 6–8</td></tr>
+          <tr><td class="mono">10</td><td>Physics AI and active learning</td><td>False-pass rate measured on held-out types; active learning beats random sampling</td><td class="mono">6–8</td></tr>
+          <tr><td class="mono">11</td><td>LLM fine-tuning</td><td>Evaluated against the Claude agent on held-out tasks</td><td class="mono">5–8</td></tr>
+          <tr class="milestone"><td colspan="4">M3 · learning · about weeks 7–11 · total about 43–64 working days</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p><strong>Risks to clear first:</strong> FreeCAD's sheet-metal workbench running headless (step 1); shell against solid elements for thin sheet (start of step 4); usable engineering data sources (step 0). <strong>Running alongside:</strong> a kit for physical tests, a data-permission request for the earlier gearbox work, and a decision on buying the vibration standard.</p>
+  </section>
+
+  <section id="risks" aria-labelledby="h-risks">
+    <h2 id="h-risks"><span class="num">15</span>Risks</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th scope="col">Risk</th><th scope="col">How it is handled</th></tr></thead>
+        <tbody>
+          <tr><td>FreeCAD is slow or fragile headless</td><td>Spike first. Typed failure records. A CadQuery fallback, only behind a parity test</td></tr>
+          <tr><td>Thin sheet is inaccurate or slow in FE</td><td>Benchmark shells against solids early, against exact answers and CalculiX</td></tr>
+          <tr><td>"Synthetic" weakens credibility</td><td>Second-solver parity, textbook benchmarks, tap-tested parts</td></tr>
+          <tr><td>The agents don't beat the scripted pipeline</td><td>The equal-budget comparison decides. Budgets are capped</td></tr>
+          <tr><td>The agent games the predictor</td><td>Reward only from verified physics. Winners are re-checked at L2</td></tr>
+          <tr><td>Self-training drift</td><td>Only VALID records train. Runtime data joins only after verification</td></tr>
+          <tr><td>LLM token cost</td><td>A budget per role. Trajectory count is set by the budget</td></tr>
+          <tr><td>The plan drifts</td><td>Each step ends on a measured result. The plan is updated at every milestone</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section id="decisions" aria-labelledby="h-decisions">
+    <h2 id="h-decisions"><span class="num">16</span>Decisions</h2>
+    <h3>Made, 5 October 2026</h3>
+    <ul>
+      <li>Sheet-metal brackets (structural mechanics and vibration) for the public demo.</li>
+      <li>All three deliverables in full, including LLM fine-tuning.</li>
+      <li>FreeCAD's sheet-metal workbench as the builder, with CadQuery only as a fallback.</li>
+      <li>The specification is given as numbers: no design volume, CAD optional.</li>
+      <li>Designs are called verified only inside a resolved project context.</li>
+      <li>An independent build that copies code only when needed, at the smallest unit.</li>
+    </ul>
+    <h3>Open, with a recommendation</h3>
+    <ul>
+      <li><strong>Generation approach and sources</strong> as described here. Recommended.</li>
+      <li><strong>The engineer's reference architecture as the basis.</strong> Recommended; the plan already follows it.</li>
+      <li><strong>Heat in version 1.</strong> Recommended at L0 and L1.</li>
+      <li><strong>Shell or solid elements.</strong> To be decided by benchmark.</li>
+      <li><strong>A cross-solver check against the DeepJEB dataset.</strong> Recommended, on static load cases.</li>
+      <li><strong>Vibration profiles.</strong> Buy ISO 16750-3, or use MIL-STD-810H, which is public.</li>
+      <li><strong>Licences.</strong> Apache-2.0 for code, CC BY 4.0 for data.</li>
+    </ul>
+  </section>
+
+  <footer>
+    <span class="label">Sources in the repository</span>
+    <ul>
+      <li><code>docs/plan_bracket.md</code>: the plan this page explains.</li>
+      <li><code>docs/problem_bracket.md</code>: the open problem brief, with no solution.</li>
+      <li><code>docs/design/bracket_ai_design_system_dataset_physics_ai_llm_runtime.md</code>: the reference architecture.</li>
+      <li><code>docs/research/</code>: datasets, the AI-in-CAE landscape, tooling.</li>
+    </ul>
+    <span class="label">fastcae-sim · plan explainer · 6 October 2026</span>
+  </footer>
+</main>
+</div>
