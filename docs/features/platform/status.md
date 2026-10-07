@@ -2,14 +2,13 @@
 
 The repository and what every other feature runs on: the Python project and its own virtual environment, the checks and CI, the runner and its guards, the API and the web UI.
 
-**PBI key:** PLT · **State:** repository set up (CLAUDE.md, the board, the docs); no code · **Updated:** 2026-10-07 11:15 by Claude
+**PBI key:** PLT · **State:** repository set up and merged into `main` (PLT-1); no code yet; PLT-2 is next · **Updated:** 2026-10-07 11:22 by Claude
 **Code:** none yet (to come: `pyproject.toml`, `src/zenryx/`, `checks/`, `web/`, `scripts/`)
 
 ## Now
 
 | PBI | Goal | Who · laptop · branch | Since | Where it stands |
 |---|---|---|---|---|
-| PLT-1 | The repository and its context, for the new product: CLAUDE.md, the board, the feature pages, the plan and decisions moved from fastcae, the superseded plans archived, the hooks, Claude's memory for this folder | Claude · LAPTOP-IR8VEG53 · `platform/PLT-1-repo-and-context` | 2026-10-07 11:05 | Written, uncommitted. Next: the engineer's word to commit and to merge into `main` |
 
 ## Next
 
@@ -48,6 +47,7 @@ The repository, its docs and its working rules. No code yet.
 
 | PBI | Delivered | Date | Commits |
 |---|---|---|---|
+| PLT-1 | The repository and its context for zenryx: CLAUDE.md, the board, the feature pages, the plan and decisions moved from fastcae (links rewritten), the plans of 4-5 October archived, the notes hook (with `*.sh` kept at LF), Claude's memory for this folder seeded from fastcae's; merged into `main` | 2026-10-07 | bcd86fe, and the commit that records it |
 
 ## Docs
 

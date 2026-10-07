@@ -1,6 +1,6 @@
 # Status: the board
 
-**Updated:** 2026-10-07 11:15 by Claude
+**Updated:** 2026-10-07 11:22 by Claude
 
 Every feature of zenryx: where it stands, who works on it, what comes next. Each feature's page holds the detail. How the board is kept is in [CLAUDE.md](../CLAUDE.md).
 
@@ -9,7 +9,7 @@ Every feature of zenryx: where it stands, who works on it, what comes next. Each
 | Feature | Key | State | Now | Next | Who |
 |---|---|---|---|---|---|
 | [Product](features/product/status.md) | PRD | The plan and its decisions, for the engineer's review | PRD-1 the engineer's review: decisions D2-D13 and the changes from the Q&A record | - | Manasvi |
-| [Platform](features/platform/status.md) | PLT | The repository is set up: CLAUDE.md, the board, the docs; no code yet | PLT-1 the repository and its context | PLT-2 the Python project, its own venv, `checks/` and CI | Claude |
+| [Platform](features/platform/status.md) | PLT | The repository is set up (PLT-1 done): CLAUDE.md, the board, the docs; no code yet | - | PLT-2 the Python project, its own venv, `checks/` and CI | Claude |
 | [Physics and the judge](features/physics/status.md) | PHY | Nothing built | - | PHY-1 the cuDSS static solve copied from fastcae, with its parity test | - |
 | [Contract](features/contract/status.md) | CON | Nothing built | - | CON-1 `HousingDesignSpec` v0 and its validator | - |
 
