@@ -6,6 +6,7 @@
 - **This morning** the data and learning side was designed in discussion; the Data feature now has its page.
 - **The web UI (PLT-4) works locally** (10:38-11:50). It follows the product from the contract through campaigns, hypotheses, designs and grades to the datapoints. The contracts are shown in full; everything downstream is laid out and blank until the agent, the geometry and the judge exist. 109 checks pass.
 - **Committed on `product/end-to-end`, not pushed** (18:30-18:37): five commits, feca5c1 (PLT-2) … ca44539 (PLT-4). Until the workflow runs end to end, all work goes on that one branch (the engineer, 18:20).
+- **The evening (18:47-20:12):** seven more sources read; Ivanov 2018 chosen as the first contract and written (CON-3, posed); the contract page remade as one clean product page (PLT-6). Uncommitted.
 
 See [the build record](features/product/2026-10-08-decisions-and-build-record.md).
 
@@ -20,12 +21,12 @@ Every feature of zenryx: where it stands, who works on it, what comes next. Each
 | [Physics and the judge](features/physics/status.md) | PHY | Nothing built | - | PHY-1 (the FE solve): the cuDSS static solve copied from fastcae, with its parity test | - |
 | [Contract](features/contract/status.md) | CON | CON-1 (contract schema v0) works locally: schema, validator, hash, three example contracts; its 83 checks pass (109 in all). Committed (f51aba1), not pushed; awaiting the engineer's review | CON-1, done locally | CON-2: check the examples' open points (bearing dimensions, the offset reading, A8) | Claude |
 | [Data](features/data/status.md) | DAT | Designed in discussion (8 October): one contract is one task; the four axes; the datapoint kinds; campaigns cut into decision records, snapshot tasks and preference pairs; 20 task types; LLM fine-tuning and physics AI. Nothing built | - | DAT-1 (the record schema), once the engineer agrees the proposals | - |
+| [Gearbox domain](features/gearbox/status.md) | GBX | The load tool planned (8 October): helical, profile-shifted mesh forces; spacing along the shafts; bearing reactions with axial moments; bearing sizes by L10 life. Each step takes its equations from its best source, and the low-confidence points were searched and confirmed. Nothing built | - | GBX-1 (mesh forces), checked against Shigley, Łódź and the textbook example | - |
 
 ## Planned features (a page each when their first PBI starts)
 
 | Feature | Key | What | Phase |
 |---|---|---|---|
-| Gearbox domain | GBX | The EV two-stage archetype: the front-end (ratio split, gear sizing, shaft statics → bearing reactions), its ranges and regimes | P1 |
 | Geometry | GEO | The CadQuery machined core, the design domain and keep-outs, the field-space shell and member grammar, realisation by B-rep or SDF | P1 |
 | Optimise | OPT | Voxel topology optimisation with its filters, the relaxed bound, member sizing, the acquisition of FE proofs | P1 |
 | Process | PRC | Process profiles (aluminium high-pressure die casting first, since 8 October), checks on the built part, the qualification rung | P1 |
