@@ -13,13 +13,19 @@ __pycache__/
 .ruff_cache/
 .mypy_cache/
 
+# The web UI's packages and build (rebuilt by npm ci and npm run build)
+web/node_modules/
+web/dist/
+*.tsbuildinfo
+
 # Credentials: read from the environment, never committed
 .env
 
-# Data: third-party part inputs (licensed) and run outputs (rebuilt by running)
-assets/
-results/
-data/
+# Data: third-party part inputs (licensed) and run outputs (rebuilt by running). Anchored to the
+# root: checks/data/ (the example contracts) and web/src/data/ (the UI's Data tab) are tracked.
+/assets/
+/results/
+/data/
 
 # OS noise
 Thumbs.db
