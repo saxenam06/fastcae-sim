@@ -1197,14 +1197,6 @@
       "group": "Gear train",
       "rows": [
        {
-        "label": "Ratio",
-        "value": "7.184 ± 0.1 %",
-        "path": "requirement.total_ratio",
-        "source": "Ivanov 2018",
-        "kind": "published",
-        "title": "Ivanov 2018, Gearbox Housing Design - Topology Optimization through Generative Design, MSc thesis, KTH, TRITA-ITM-EX 2018:724, for AVL Sweden (read from a Scribd copy), §3.2"
-       },
-       {
         "label": "Gear material",
         "value": "SS 2511",
         "path": "requirement.gear_material",
@@ -1226,6 +1218,18 @@
         "Stage 1",
         "Stage 2"
        ],
+       "sources": [
+        {
+         "source": "Ivanov 2018, Fig. 24",
+         "kind": "published",
+         "title": "Ivanov 2018, Gearbox Housing Design - Topology Optimization through Generative Design, MSc thesis, KTH, TRITA-ITM-EX 2018:724, for AVL Sweden (read from a Scribd copy), Fig. 24"
+        },
+        {
+         "source": "Ivanov 2018, Fig. 25",
+         "kind": "published",
+         "title": "Ivanov 2018, Gearbox Housing Design - Topology Optimization through Generative Design, MSc thesis, KTH, TRITA-ITM-EX 2018:724, for AVL Sweden (read from a Scribd copy), Fig. 25"
+        }
+       ],
        "rows": [
         {
          "label": "Teeth (pinion / gear)",
@@ -1234,13 +1238,15 @@
            "source": "Ivanov 2018",
            "kind": "published",
            "title": "Ivanov 2018, Gearbox Housing Design - Topology Optimization through Generative Design, MSc thesis, KTH, TRITA-ITM-EX 2018:724, for AVL Sweden (read from a Scribd copy), Fig. 24",
-           "value": "25 / 51"
+           "value": "25 / 51",
+           "own": false
           },
           {
            "source": "Ivanov 2018",
            "kind": "published",
            "title": "Ivanov 2018, Gearbox Housing Design - Topology Optimization through Generative Design, MSc thesis, KTH, TRITA-ITM-EX 2018:724, for AVL Sweden (read from a Scribd copy), Fig. 25",
-           "value": "23 / 81"
+           "value": "23 / 81",
+           "own": false
           }
          ]
         },
@@ -1251,30 +1257,34 @@
            "source": "Ivanov 2018",
            "kind": "published",
            "title": "Ivanov 2018, Gearbox Housing Design - Topology Optimization through Generative Design, MSc thesis, KTH, TRITA-ITM-EX 2018:724, for AVL Sweden (read from a Scribd copy), Fig. 24",
-           "value": "1.85 mm"
+           "value": "1.85 mm",
+           "own": false
           },
           {
            "source": "Ivanov 2018",
            "kind": "published",
            "title": "Ivanov 2018, Gearbox Housing Design - Topology Optimization through Generative Design, MSc thesis, KTH, TRITA-ITM-EX 2018:724, for AVL Sweden (read from a Scribd copy), Fig. 25",
-           "value": "2.05 mm"
+           "value": "2.05 mm",
+           "own": false
           }
          ]
         },
         {
-         "label": "Pressure angle",
+         "label": "Normal pressure angle",
          "cells": [
           {
            "source": "Ivanov 2018",
            "kind": "published",
            "title": "Ivanov 2018, Gearbox Housing Design - Topology Optimization through Generative Design, MSc thesis, KTH, TRITA-ITM-EX 2018:724, for AVL Sweden (read from a Scribd copy), Fig. 24",
-           "value": "18°"
+           "value": "18°",
+           "own": false
           },
           {
            "source": "Ivanov 2018",
            "kind": "published",
            "title": "Ivanov 2018, Gearbox Housing Design - Topology Optimization through Generative Design, MSc thesis, KTH, TRITA-ITM-EX 2018:724, for AVL Sweden (read from a Scribd copy), Fig. 25",
-           "value": "18°"
+           "value": "18°",
+           "own": false
           }
          ]
         },
@@ -1285,13 +1295,15 @@
            "source": "Ivanov 2018",
            "kind": "published",
            "title": "Ivanov 2018, Gearbox Housing Design - Topology Optimization through Generative Design, MSc thesis, KTH, TRITA-ITM-EX 2018:724, for AVL Sweden (read from a Scribd copy), Fig. 24 (read as '30' with its unit garbled; the published centre distance gives 30.1 deg)",
-           "value": "30° (pinion left)"
+           "value": "30° (pinion left)",
+           "own": false
           },
           {
            "source": "assumed",
            "kind": "assumption",
            "title": "A7: stage 2's helix angle, 30 deg. the copy read garbles it; the published teeth, module, pressure angle, profile shifts and centre distance give 29.97 deg",
-           "value": "30° (pinion left)"
+           "value": "30° (pinion left)",
+           "own": true
           }
          ]
         },
@@ -1302,13 +1314,15 @@
            "source": "Ivanov 2018",
            "kind": "published",
            "title": "Ivanov 2018, Gearbox Housing Design - Topology Optimization through Generative Design, MSc thesis, KTH, TRITA-ITM-EX 2018:724, for AVL Sweden (read from a Scribd copy), Fig. 24",
-           "value": "0.43672 / 0.572"
+           "value": "0.43672 / 0.572",
+           "own": false
           },
           {
            "source": "Ivanov 2018",
            "kind": "published",
            "title": "Ivanov 2018, Gearbox Housing Design - Topology Optimization through Generative Design, MSc thesis, KTH, TRITA-ITM-EX 2018:724, for AVL Sweden (read from a Scribd copy), Fig. 25",
-           "value": "0.43114 / 0.56858"
+           "value": "0.43114 / 0.56858",
+           "own": false
           }
          ]
         },
@@ -1319,30 +1333,15 @@
            "source": "Ivanov 2018",
            "kind": "published",
            "title": "Ivanov 2018, Gearbox Housing Design - Topology Optimization through Generative Design, MSc thesis, KTH, TRITA-ITM-EX 2018:724, for AVL Sweden (read from a Scribd copy), Fig. 24 (active face width)",
-           "value": "16.5 / 15.5 mm"
+           "value": "16.5 / 15.5 mm",
+           "own": false
           },
           {
            "source": "Ivanov 2018",
            "kind": "published",
            "title": "Ivanov 2018, Gearbox Housing Design - Topology Optimization through Generative Design, MSc thesis, KTH, TRITA-ITM-EX 2018:724, for AVL Sweden (read from a Scribd copy), Fig. 25 (active face width)",
-           "value": "25.625 / 22.25 mm"
-          }
-         ]
-        },
-        {
-         "label": "Centre distance",
-         "cells": [
-          {
-           "source": "Ivanov 2018",
-           "kind": "published",
-           "title": "Ivanov 2018, Gearbox Housing Design - Topology Optimization through Generative Design, MSc thesis, KTH, TRITA-ITM-EX 2018:724, for AVL Sweden (read from a Scribd copy), Fig. 24 (normal operating centre distance)",
-           "value": "83 mm"
-          },
-          {
-           "source": "Ivanov 2018",
-           "kind": "published",
-           "title": "Ivanov 2018, Gearbox Housing Design - Topology Optimization through Generative Design, MSc thesis, KTH, TRITA-ITM-EX 2018:724, for AVL Sweden (read from a Scribd copy), Fig. 25 (normal operating centre distance)",
-           "value": "125 mm"
+           "value": "25.625 / 22.25 mm",
+           "own": false
           }
          ]
         }
@@ -1359,14 +1358,6 @@
         "source": "assumed",
         "kind": "assumption",
         "title": "A9: the packaging: input-output offset, 165 mm (Hofstetter 2018's), 103.1 deg at the intermediate shaft. the packaging is the user's input; this is the first proposal (the engineer, 19:43)"
-       },
-       {
-        "label": "Shaft angle",
-        "value": "103.1°",
-        "source": "calculated",
-        "kind": "derived",
-        "title": "at the intermediate shaft, from the offset and the two centre distances (zenryx.contract.train.stage_angle)",
-        "path": ""
        },
        {
         "label": "Clearance round the gears",
@@ -1387,14 +1378,6 @@
         "source": "assumed",
         "kind": "assumption",
         "title": "A8: input: ball + cylindrical roller · intermediate: tapered pair · output: ball pair. Hofstetter 2018's arrangement, borrowed (the engineer, 19:37); Ivanov names none. The sizes come from the loads by L10 life",
-        "path": ""
-       },
-       {
-        "label": "Sizes",
-        "value": "from the loads, by L10 life",
-        "source": "calculated",
-        "kind": "derived",
-        "title": "the load tool (GBX-1), planned",
         "path": ""
        }
       ]
@@ -1421,15 +1404,8 @@
         "path": "manufacturing.material",
         "source": "Ivanov 2018",
         "kind": "published",
-        "title": "Ivanov 2018, Gearbox Housing Design - Topology Optimization through Generative Design, MSc thesis, KTH, TRITA-ITM-EX 2018:724, for AVL Sweden (read from a Scribd copy), Fig. 22"
-       },
-       {
-        "label": "Properties",
-        "value": "E 69 GPa · ν 0.33 · 2,600 kg/m³",
-        "path": "manufacturing.material",
-        "source": "Ivanov 2018",
-        "kind": "published",
-        "title": "Ivanov 2018, Gearbox Housing Design - Topology Optimization through Generative Design, MSc thesis, KTH, TRITA-ITM-EX 2018:724, for AVL Sweden (read from a Scribd copy), Fig. 22"
+        "title": "Ivanov 2018, Gearbox Housing Design - Topology Optimization through Generative Design, MSc thesis, KTH, TRITA-ITM-EX 2018:724, for AVL Sweden (read from a Scribd copy), Fig. 22",
+        "detail": "E 69 GPa · ν 0.33 · 2,600 kg/m³"
        },
        {
         "label": "Least wall",
@@ -1468,84 +1444,350 @@
     ],
     "calculations": [
      {
-      "quantity": "Gear mesh check",
+      "step": 1,
+      "quantity": "Gear geometry",
       "method": "Involute geometry",
       "by": "DIN 3960 · ISO 21771",
-      "function": "zenryx.contract.involute.working_centre_distance",
+      "function": "zenryx.contract.involute.mesh_geometry",
       "status": "computed",
-      "result": "stage 1: 82.917 mm (given 83) ✓ · stage 2: 125.04 mm (given 125) ✓"
+      "takes_in": [
+       {
+        "name": "teeth",
+        "step": null
+       },
+       {
+        "name": "normal module",
+        "step": null
+       },
+       {
+        "name": "normal pressure angle",
+        "step": null
+       },
+       {
+        "name": "helix angle",
+        "step": null
+       },
+       {
+        "name": "profile shifts",
+        "step": null
+       }
+      ],
+      "gives": "each stage's pressure angles and diameters, and the centre distance it runs at",
+      "table": {
+       "columns": [
+        "Stage 1",
+        "Stage 2"
+       ],
+       "rows": [
+        {
+         "label": "Transverse pressure angle",
+         "cells": [
+          "20.565°",
+          "20.565°"
+         ]
+        },
+        {
+         "label": "Working pressure angle",
+         "cells": [
+          "23.566°",
+          "22.824°"
+         ]
+        },
+        {
+         "label": "Reference Ø (pinion / gear)",
+         "cells": [
+          "53.40 / 108.95 mm",
+          "54.44 / 191.74 mm"
+         ]
+        },
+        {
+         "label": "Base Ø (pinion / gear)",
+         "cells": [
+          "50.00 / 102.00 mm",
+          "50.97 / 179.52 mm"
+         ]
+        },
+        {
+         "label": "Working pitch Ø (pinion / gear)",
+         "cells": [
+          "54.55 / 111.28 mm",
+          "55.30 / 194.77 mm"
+         ]
+        },
+        {
+         "label": "Working centre distance",
+         "cells": [
+          "82.917 mm",
+          "125.037 mm"
+         ]
+        }
+       ]
+      },
+      "plan": ""
      },
      {
-      "quantity": "Total ratio",
-      "method": "Product of the stages' tooth ratios",
-      "by": "",
-      "function": "zenryx.contract.train.ratio",
+      "step": 2,
+      "quantity": "Speeds and gear frequencies",
+      "method": "Through the tooth ratios",
+      "by": "Shigley",
+      "function": "zenryx.contract.train.ratio · shaft_speeds · mesh_frequency",
       "status": "computed",
-      "result": "7.1843 (given 7.184) ✓"
+      "takes_in": [
+       {
+        "name": "teeth",
+        "step": null
+       },
+       {
+        "name": "rated input speed",
+        "step": null
+       }
+      ],
+      "gives": "the total ratio, each shaft's speed, each mesh's frequency",
+      "table": {
+       "columns": [],
+       "rows": [
+        {
+         "label": "Total ratio",
+         "cells": [
+          "7.1843"
+         ]
+        },
+        {
+         "label": "Shaft speeds (rpm)",
+         "cells": [
+          "input 6,000 · intermediate 2,941 · output 835.1"
+         ]
+        },
+        {
+         "label": "Mesh frequencies",
+         "cells": [
+          "stage 1 2,500 Hz · stage 2 1,127 Hz"
+         ]
+        }
+       ]
+      },
+      "plan": ""
      },
      {
-      "quantity": "Shaft angle",
+      "step": 3,
+      "quantity": "Where the shafts sit",
       "method": "Triangle of the three axes",
       "by": "law of cosines",
       "function": "zenryx.contract.train.stage_angle",
       "status": "computed",
-      "result": "103.1° at the intermediate shaft"
+      "takes_in": [
+       {
+        "name": "working centre distances",
+        "step": 1
+       },
+       {
+        "name": "input-output offset",
+        "step": null
+       }
+      ],
+      "gives": "the angle between the two stages, and so the three shafts' places in the plane",
+      "table": {
+       "columns": [],
+       "rows": [
+        {
+         "label": "Shaft angle",
+         "cells": [
+          "103.1° at the intermediate shaft"
+         ]
+        }
+       ]
+      },
+      "plan": ""
      },
      {
-      "quantity": "Shaft speeds",
-      "method": "Through the tooth ratios",
-      "by": "",
-      "function": "zenryx.contract.train.shaft_speeds",
-      "status": "computed",
-      "result": "input 6,000 · intermediate 2,941 · output 835.1 rpm"
-     },
-     {
-      "quantity": "Mesh frequencies",
-      "method": "Teeth × shaft speed",
-      "by": "Shigley",
-      "function": "zenryx.contract.train.mesh_frequency",
-      "status": "computed",
-      "result": "stage 1 2,500 Hz · stage 2 1,127 Hz at 6,000 rpm"
-     },
-     {
+      "step": 4,
       "quantity": "Gear forces",
-      "method": "Helical gear forces",
+      "method": "Helical forces at the working pitch circle",
       "by": "Shigley · ISO 6336",
       "function": "the load tool (GBX-1)",
       "status": "planned",
-      "result": "planned · GBX-1"
+      "takes_in": [
+       {
+        "name": "peak drive, reverse and regeneration torques",
+        "step": null
+       },
+       {
+        "name": "helix angle",
+        "step": null
+       },
+       {
+        "name": "base Ø",
+        "step": 1
+       },
+       {
+        "name": "working pressure angle",
+        "step": 1
+       },
+       {
+        "name": "transverse pressure angle",
+        "step": 1
+       }
+      ],
+      "gives": "the tangential, radial and axial force at each mesh, in every load case",
+      "table": null,
+      "plan": "GBX-1"
      },
      {
-      "quantity": "Shaft spacing",
+      "step": 5,
+      "quantity": "Spacing along each shaft",
       "method": "Face widths, bearing widths and gaps",
       "by": "Maciejczyk & Zdziennicki · Shigley",
-      "function": "the load tool (GBX-1)",
+      "function": "the load tool (GBX-2)",
       "status": "planned",
-      "result": "planned · GBX-1"
+      "takes_in": [
+       {
+        "name": "face widths",
+        "step": null
+       },
+       {
+        "name": "gaps between gears and bearings (to be assumed)",
+        "step": null
+       },
+       {
+        "name": "bearing widths",
+        "step": 7
+       }
+      ],
+      "gives": "where each gear and bearing sits along its shaft",
+      "table": null,
+      "plan": "GBX-2"
      },
      {
+      "step": 6,
       "quantity": "Bearing loads",
       "method": "Two-support statics with the axial force's moment",
-      "by": "JTEKT",
-      "function": "the load tool (GBX-1)",
+      "by": "JTEKT · NSK",
+      "function": "the load tool (GBX-2)",
       "status": "planned",
-      "result": "planned · GBX-1"
+      "takes_in": [
+       {
+        "name": "working pitch Ø (the axial force's lever)",
+        "step": 1
+       },
+       {
+        "name": "shaft angle (the forces' directions)",
+        "step": 3
+       },
+       {
+        "name": "tangential, radial and axial forces",
+        "step": 4
+       },
+       {
+        "name": "gear and bearing positions on each shaft",
+        "step": 5
+       }
+      ],
+      "gives": "each seat's radial and axial force, in every load case",
+      "table": null,
+      "plan": "GBX-2"
      },
      {
+      "step": 7,
       "quantity": "Bearing sizes",
       "method": "Rating life L10",
       "by": "ISO 281 · Maciejczyk & Zdziennicki",
-      "function": "the load tool (GBX-1)",
+      "function": "the load tool (GBX-3)",
       "status": "planned",
-      "result": "planned · GBX-1"
+      "takes_in": [
+       {
+        "name": "service life",
+        "step": null
+       },
+       {
+        "name": "bearing arrangement",
+        "step": null
+       },
+       {
+        "name": "shaft speeds",
+        "step": 2
+       },
+       {
+        "name": "each seat's radial and axial force",
+        "step": 6
+       }
+      ],
+      "gives": "each seat's bearing, and so its outside diameter and width",
+      "table": null,
+      "plan": "GBX-3"
      },
      {
-      "quantity": "Alignment limit",
+      "step": 8,
+      "quantity": "Derive and freeze",
+      "method": "Every derived value stamped with its tool, version and inputs",
+      "by": "the contract's rules",
+      "function": "the load tool (GBX-4)",
+      "status": "planned",
+      "takes_in": [
+       {
+        "name": "shaft angle",
+        "step": 3
+       },
+       {
+        "name": "bearing positions on each shaft",
+        "step": 5
+       },
+       {
+        "name": "each seat's radial and axial force",
+        "step": 6
+       },
+       {
+        "name": "each seat's bearing, its outside Ø and width",
+        "step": 7
+       }
+      ],
+      "gives": "the seats and load cases, stamped; the task frozen with its hash",
+      "table": null,
+      "plan": "GBX-4"
+     },
+     {
+      "step": 9,
+      "quantity": "The pass lines in numbers",
       "method": "Gear tolerance × the housing's share",
-      "by": "JGMA 1102-01",
+      "by": "JGMA 1102-01 · Shigley · Marano 2021",
       "function": "the judge (PHY)",
       "status": "planned",
-      "result": "planned · the judge"
+      "takes_in": [
+       {
+        "name": "the housing's share",
+        "step": null
+       },
+       {
+        "name": "bearing tilt limits",
+        "step": null
+       },
+       {
+        "name": "order separation",
+        "step": null
+       },
+       {
+        "name": "gear quality",
+        "step": null
+       },
+       {
+        "name": "face widths",
+        "step": null
+       },
+       {
+        "name": "reference Ø",
+        "step": 1
+       },
+       {
+        "name": "mesh frequencies",
+        "step": 2
+       },
+       {
+        "name": "each seat's bearing type",
+        "step": 7
+       }
+      ],
+      "gives": "the alignment, tilt and frequency limits every design is judged by",
+      "table": null,
+      "plan": "PHY, the judge"
      }
     ],
     "criteria": [
@@ -1637,5 +1879,5 @@
   "snapshot_tasks": [],
   "preference_pairs": []
  },
- "hash": "sha256:00b7094e5df10a9b59ae9b449b175ade1fd9c32d78df3f05f8948987b67db595"
+ "hash": "sha256:c7064379ad271ae52ac3a552281cbdf5b401fff887fef85a86eba80aed7bd97a"
 }

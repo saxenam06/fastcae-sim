@@ -14,7 +14,7 @@ The chain has two halves:
 - **The first half** turns the inputs into a frozen task: the seats where the bearings sit, and the forces on them under every load case.
 - **The second half** runs for every design a campaign makes: it builds the housing around those seats, tests it under those forces, and grades it against the pass criteria.
 
-The first three steps are built today; the rest is planned, with its method chosen and its checks named.
+The first three steps are built today; the rest is planned, with its method chosen and its checks named. The Contract page shows the same nine steps, with the same numbers, each with what it takes in and gives out.
 
 ---
 
@@ -22,7 +22,7 @@ The first three steps are built today; the rest is planned, with its method chos
 
 | Input | Ivanov's value | Why it binds | From |
 |---|---|---|---|
-| **The gear train** | 25/51 and 23/81 teeth; modules 1.85 and 2.05 mm; 18° pressure angle; 30° helix; profile shifts; face widths; centre distances 83 and 125 mm | Fixes the gears' sizes, the ratio (7.184), the forces at each mesh, and how far apart the shafts sit | Ivanov 2018 |
+| **The gear train** | 25/51 and 23/81 teeth; modules 1.85 and 2.05 mm; 18° normal pressure angle; 30° helix; profile shifts; face widths | Fixes the gears' sizes, the ratio (7.1843, step 2), the forces at each mesh, and how far apart the shafts sit (82.917 and 125.037 mm, step 1). The ratio and the centre distances are therefore calculated, not inputs; Ivanov's 7.184 and 83 / 125 mm are only the check (the engineer, 22:57) | Ivanov 2018 |
 | **The packaging** | 165 mm from input to output | Fixes the angle between the stages, and so where every bearing seat sits in the plane | the user (proposed: Hofstetter's offset) |
 | **The torques** | 150 N·m peak, in drive, reverse and regeneration | The loads the housing carries | Ivanov 2018 (regeneration assumed) |
 | **The speeds** | 6,000 rpm cruise; 8,673 rpm maximum | The gear frequencies the housing must not ring at; bearing life | Ivanov 2018; the user's 160 km/h top speed |
@@ -36,9 +36,9 @@ The first three steps are built today; the rest is planned, with its method chos
 
 | # | Step | Method (source) | Takes in | Gives out | Feeds | State |
 |---|---|---|---|---|---|---|
-| 1 | **Gear geometry** | Involute geometry (DIN 3960, ISO 21771) | teeth, module, pressure angle, helix, profile shifts | working pressure angles (23.6° and 22.8°); base and working diameters; working centre distances 82.92 and 125.04 mm, against the given 83 and 125: ✓ | 4, 5, the validator | **built** |
-| 2 | **Speeds and gear frequencies** | Through the tooth ratios; teeth × speed / 60 (Shigley) | teeth, the input speeds | ratio 7.1843; shaft speeds 6,000 / 2,941 / 835 rpm at cruise; mesh frequencies 2,500 and 1,127 Hz at cruise | 7, 9, the contract's mesh orders | **built** |
-| 3 | **Where the shafts sit** | The triangle of the three axes (law of cosines) | the two centre distances, the 165 mm packaging | 103.1° at the intermediate shaft, so the three shafts' positions in the plane | 5, 8 | **built** |
+| 1 | **Gear geometry** | Involute geometry (DIN 3960, ISO 21771) | teeth, module, pressure angle, helix, profile shifts | working pressure angles (23.6° and 22.8°); base and working diameters; working centre distances 82.92 and 125.04 mm, checked against the published 83 and 125: ✓ | 3, 4, 6, the validator | **built** |
+| 2 | **Speeds and gear frequencies** | Through the tooth ratios; teeth × speed / 60 (Shigley) | teeth, the input speeds | ratio 7.1843 (checked against the published 7.184); shaft speeds 6,000 / 2,941 / 835 rpm at cruise; mesh frequencies 2,500 and 1,127 Hz at cruise | 7, 9, the contract's mesh orders | **built** |
+| 3 | **Where the shafts sit** | The triangle of the three axes (law of cosines) | the working centre distances from 1, the 165 mm packaging | 103.1° at the intermediate shaft, so the three shafts' positions in the plane | 6, 8 | **built** |
 | 4 | **Gear forces** | At the working pitch circle and pressure angle (Shigley's form, extended to profile shift; confirmed by drivetrainhub) | the torque in each case; the geometry from 1 | at 150 N·m, stage 1: 5,499 N tangential, 2,399 N radial, 3,243 N axial; stage 2: 11,066, 4,657 and 6,490 N (preview, worked with our geometry code). Directions per case | 6 | planned (GBX-1) |
 | 5 | **Spacing along each shaft** | Face widths, bearing widths and gaps (Shigley §18-4; Łódź Ch. 3) | the face widths; the bearing widths from 7 (a first guess at first); the gaps (assumed) | where each gear and bearing sits along its shaft | 6, 8 | planned (GBX-2) |
 | 6 | **Bearing loads** | Each shaft a beam on two bearings, with the axial force's moment (JTEKT eq. 5-29). For the tapered pair, each bearing's induced axial force is 0.5·Fr/Y (Machine Design 2005; NSK) | the forces from 4; the positions from 5; the working radii from 1 | the force on each of the six seats in each load case: radial in two planes, and axial | 7, 8, and the judge's loads | planned (GBX-2) |

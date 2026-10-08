@@ -100,20 +100,39 @@ export interface InputRow extends Sourced {
   path: string;
   /** For a choice (the process): what could be chosen instead. */
   options?: string[];
+  /** What comes with the value rather than apart from it: a material's properties. */
+  detail?: string;
 }
 
 export interface InputCell extends Sourced {
   value: string;
+  /** True where the cell's source differs from its column's: only then is it marked. */
+  own: boolean;
 }
 
 export interface InputGroup {
   group: string;
   rows: InputRow[];
-  /** The gear train's stages, a column each. */
-  table?: { columns: string[]; rows: { label: string; cells: InputCell[] }[] } | null;
+  /** The gear train's stages, a column each, each column with where it comes from. */
+  table?: { columns: string[]; sources: Sourced[]; rows: { label: string; cells: InputCell[] }[] } | null;
 }
 
+/** What a step takes in: an input from the Inputs section, or another step's output. */
+export interface StepInput {
+  name: string;
+  /** The step whose output it is; null for an input. */
+  step: number | null;
+}
+
+/** What a step gave: a row a quantity, a column a stage where it has one (else one cell). */
+export interface StepTable {
+  columns: string[];
+  rows: { label: string; cells: string[] }[];
+}
+
+/** A step of the calculation chain (docs/features/product/2026-10-08-the-calculation-chain.md). */
 export interface Calculation {
+  step: number;
   quantity: string;
   method: string;
   /** The standard or the authors the method follows. */
@@ -121,7 +140,13 @@ export interface Calculation {
   /** The function that computes it, or the tool that will. */
   function: string;
   status: "computed" | "planned";
-  result: string;
+  takes_in: StepInput[];
+  /** What it gives, in words. */
+  gives: string;
+  /** What it gave; null while planned. */
+  table: StepTable | null;
+  /** While planned: the PBI that builds it, or what it still needs. */
+  plan: string;
 }
 
 export interface Criterion extends Sourced {

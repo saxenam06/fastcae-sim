@@ -35,7 +35,7 @@ const STEPS: Step[] = [
   {
     label: "Derived",
     count: (s) => String(s.contracts.filter((c) => c.stage !== "posed").length),
-    by: "the load tool (GBX-1)",
+    by: "the load tool (GBX-1 to GBX-4)",
     built: () => false,
     view: "contracts",
   },
@@ -85,7 +85,11 @@ const STEPS: Step[] = [
 
 /** The tools still to build, in order, and what each unlocks. */
 const NEXT: { tool: string; what: string; unlocks: string }[] = [
-  { tool: "GBX-1", what: "the load tool: gear forces, the shaft spacing, bearing loads and sizes", unlocks: "the contract derived, then frozen" },
+  {
+    tool: "GBX-1…4",
+    what: "the load tool: gear forces (1); shaft spacing and bearing loads (2); bearing sizes (3); derive and freeze (4)",
+    unlocks: "the contract derived, then frozen",
+  },
   { tool: "PHY-1", what: "the judge's FE solve: statics, then modes", unlocks: "grades" },
   { tool: "GEO-1", what: "geometry: the CadQuery core and the grown structure", unlocks: "designs" },
   { tool: "AGT-1", what: "the agent: hypotheses, tools, steps", unlocks: "campaigns, and the data they make" },

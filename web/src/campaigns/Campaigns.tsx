@@ -15,7 +15,7 @@
 import { shortTitle } from "../app/product";
 import type { Tab, TabProps } from "../app/tab";
 import { Dot } from "../panel/bits";
-import { Badge, PageHead, Section, Value } from "../panel/page";
+import { Badge, PageHead, Section, Source, Value } from "../panel/page";
 import { ARM, ARM_ORDER, STOP, STOP_ORDER } from "../words/campaign";
 
 /** The parts of one step, in the order a row reads; the template row says what each will hold. */
@@ -36,7 +36,7 @@ function Stage({ snap, go }: TabProps) {
   const steps = snap.records.decisions.filter((d) => campaigns.some((c) => c.id === d.campaign));
   const frozen = contract.stage === "frozen";
   const blocked = !frozen
-    ? "Needs the contract frozen: the load tool (GBX-1) derives it first"
+    ? "Needs the contract frozen: the load tool (GBX-1 to GBX-4) derives and freezes it first"
     : "Needs the agent (AGT-1)";
   return (
     <div className="stage-scroll cp-scroll">
@@ -74,7 +74,9 @@ function Stage({ snap, go }: TabProps) {
                 <tr>
                   <th>Budget</th>
                   <td>
-                    <Value value={`${contract.budget_fe_proofs} FE runs · ${contract.budget_hours} h`} />
+                    <Value value={`${contract.budget_fe_proofs} FE runs · ${contract.budget_hours} h`} />{" "}
+                    {/* Not chosen here: the contract sets it, and it changes only with the engineer. */}
+                    <Source s={{ source: "from the contract", kind: "", title: "The contract's FE budget" }} />
                   </td>
                 </tr>
                 <tr>

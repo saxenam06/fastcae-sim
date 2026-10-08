@@ -59,6 +59,7 @@ zenryx designs housings from requirements. The engineer states a gearbox's funct
 - Claude commits, pushes and starts servers only when the person it works for says so.
 - Ask the engineer before changing a limit in a contract, a process profile's value, a load case or the FE budget.
 - **Derived physics is computed, never written.** Every derived quantity (forces, reactions, mesh orders, margins) comes from a deterministic, versioned tool. The agent never writes one. The deterministic evaluator decides PASS or FAIL.
+- **An input is only what can be chosen freely** (the engineer, 8 October). Anything the other inputs fix is a calculation step's output: the centre distance, fixed by the gear data; the ratio, fixed by the teeth. A published figure for it is kept only to check the calculation against.
 - **No part-specific code in the core.** Things are named by geometric kind (a cylindrical seat, a fastener circle). Domain roles live in data, under a domain module (`src/zenryx/domains/<family>/`).
 - **Nothing an agent reads in a benchmark run may hold a result, a lesson or advice from another run.** Agent runs happen in clean folders outside this repository (`../fastcae-agent/runs/<run>/`).
 - **Licences:**

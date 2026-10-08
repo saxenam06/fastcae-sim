@@ -240,6 +240,13 @@
   overflow-wrap: anywhere;
 }
 
+/* What comes with a value: a material's properties, under its name. */
+.cp-detail {
+  margin-top: 3px;
+  font-size: 11px;
+  color: var(--muted);
+}
+
 /* A choice already made, shown as a pre-selected drop-down. */
 .cp-choice {
   font-family: var(--sans);
@@ -256,9 +263,15 @@
   opacity: 0.7;
 }
 
-/* The gear train: a column a stage. */
+/* The gear train: a column a stage, each headed by where it comes from. */
 .cp-stages {
   margin-top: 10px;
+}
+
+.cp-stages thead .prov {
+  letter-spacing: normal;
+  text-transform: none;
+  vertical-align: 1px;
 }
 
 .cp-stages caption {
@@ -338,21 +351,144 @@
   color: var(--faint);
 }
 
-.cp-result {
-  font-family: var(--mono);
-  font-size: 12px;
-}
-
-.cp-calcs tr[data-status="planned"] .cp-result {
-  color: var(--faint);
-  font-style: italic;
-}
-
 .cp-calcs tr[data-status="planned"] .cp-method {
   border-style: dashed;
   border-color: var(--muted);
   color: var(--muted);
 }
+
+/* Five columns share the page: a step's name and its method wrap; what it gives takes the rest. */
+.cp-calcs > thead > tr > th:nth-child(1) {
+  width: 22px;
+}
+
+.cp-calcs > thead > tr > th:nth-child(2) {
+  width: 104px;
+}
+
+.cp-calcs > thead > tr > th:nth-child(3) {
+  width: 196px;
+}
+
+.cp-calcs > thead > tr > th:nth-child(4) {
+  width: 236px;
+}
+
+.cp-calcs > tbody > tr > th {
+  white-space: normal;
+}
+
+.cp-calcs .cp-method {
+  display: inline-block;
+  max-width: 100%;
+}
+
+/* A step's number: filled when computed, dashed while planned. */
+.cp-calcs td.cp-step-n {
+  width: 1%;
+  padding-right: 2px;
+}
+
+.cp-step-n b {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--sheet);
+  background: var(--measured);
+  border: 1px solid var(--measured);
+  border-radius: 50%;
+}
+
+.cp-calcs tr[data-status="planned"] .cp-step-n b {
+  color: var(--muted);
+  background: none;
+  border: 1px dashed var(--muted);
+}
+
+/* What a step takes in, by name, grouped by where it comes from: the inputs, or a step. */
+.cp-takes-group + .cp-takes-group {
+  margin-top: 6px;
+}
+
+.cp-takes-from {
+  margin-bottom: 3px;
+  font-size: 10.5px;
+  color: var(--faint);
+}
+
+.cp-in {
+  display: inline-block;
+  margin: 0 4px 4px 0;
+  padding: 1px 8px;
+  font-size: 11.5px;
+  color: var(--ink);
+  background: var(--ground);
+  border: 1px solid var(--hairline);
+  border-radius: 10px;
+}
+
+/* Another step's output: on white, edged in the step colour. */
+.cp-takes-group[data-from="step"] .cp-in {
+  background: var(--sheet);
+  border-color: var(--blue-wash);
+}
+
+/* What a computed step gave: its own small table, a column a stage. */
+.cp-calcs .cp-out {
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.cp-calcs .cp-out th,
+.cp-calcs .cp-out td {
+  padding: 2px 12px 2px 0;
+  text-align: left;
+  vertical-align: baseline;
+  border: none;
+}
+
+/* A stage's numbers keep their line, a clear gap from the next stage's; a single value may wrap. */
+.cp-calcs .cp-out[data-cols="true"] td {
+  padding-right: 22px;
+  white-space: nowrap;
+}
+
+.cp-calcs .cp-out thead th {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+.cp-calcs .cp-out tbody th {
+  font-weight: 400;
+  color: var(--muted);
+}
+
+.cp-calcs .cp-out td {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* A step still to build: what it will give, in words, and the PBI that builds it. */
+.cp-planned {
+  font-style: italic;
+  color: var(--faint);
+}
+
+.cp-plan {
+  margin-top: 2px;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-style: normal;
+  color: var(--muted);
+}
+
 
 /* --- criteria and the design to beat ------------------------------------------------------- */
 

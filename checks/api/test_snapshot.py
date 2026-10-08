@@ -8,7 +8,7 @@ from pathlib import Path
 
 import pytest
 
-from zenryx.api import snapshot
+from zenryx.api import contract_page, snapshot
 from zenryx.contract.canonical import spec_hash
 from zenryx.contract.validate import load_and_validate
 
@@ -73,17 +73,107 @@ def test_the_page_shows_ivanovs_gear_train_with_short_sources(payload):
     assert widths["cells"][0]["value"] == "16.5 / 15.5 mm"
     helix = next(r for r in train["table"]["rows"] if r["label"] == "Helix angle")
     assert [c["source"] for c in helix["cells"]] == ["Ivanov 2018", "assumed"]
+    # Each stage names where its column comes from; a cell is marked only where it differs.
+    sources = train["table"]["sources"]
+    assert [s["source"] for s in sources] == ["Ivanov 2018, Fig. 24", "Ivanov 2018, Fig. 25"]
+    assert {s["kind"] for s in sources} == {"published"}
+    assert [c["own"] for c in helix["cells"]] == [False, True]
+    assert not any(c["own"] for c in teeth["cells"])
+    labels = [r["label"] for r in train["table"]["rows"]]
+    assert "Normal pressure angle" in labels
 
 
-def test_the_page_computes_what_zenryx_can_and_names_the_rest(payload):
-    calcs = {c["quantity"]: c for c in payload["contracts"][0]["page"]["calculations"]}
-    assert calcs["Gear mesh check"]["status"] == "computed"
-    assert "✗" not in calcs["Gear mesh check"]["result"]
-    assert calcs["Shaft angle"]["result"].startswith("103.1°")
-    assert "1,127 Hz" in calcs["Mesh frequencies"]["result"]
-    for planned in ("Gear forces", "Bearing loads", "Bearing sizes"):
-        assert calcs[planned]["status"] == "planned"
-        assert calcs[planned]["method"] and calcs[planned]["by"]
+def test_no_input_is_one_the_other_inputs_fix(every_example):
+    """The teeth fix the ratio, and full gear data fix the centre distance: then those are a
+    step's outputs, set against the contract's figures, and not inputs."""
+    checked = 0
+    for contract in every_example["contracts"]:
+        spec, _ = load_and_validate(snapshot.ROOT / contract["file"])
+        stages = spec.requirement.stages
+        train = next((g for g in contract["page"]["inputs"] if g["group"] == "Gear train"), None)
+        if train is None or not stages:
+            continue
+        rows = [r["label"] for r in train["rows"]]
+        table = [r["label"] for r in (train.get("table") or {"rows": []})["rows"]]
+        if all(s.z_pinion is not None and s.z_gear is not None for s in stages):
+            assert "Ratio" not in rows, contract["id"]
+            checked += 1
+        if all(contract_page._gear_data_complete(s) for s in stages):
+            assert "Centre distance" not in table, contract["id"]
+    assert checked >= 2  # Ivanov's and Kim's gear trains
+
+
+def test_the_materials_properties_come_with_it(payload):
+    page = payload["contracts"][0]["page"]
+    process = next(g for g in page["inputs"] if g["group"] == "Process and material")
+    assert "Properties" not in [r["label"] for r in process["rows"]]
+    material = next(r for r in process["rows"] if r["label"] == "Material")
+    assert material["value"] == "EN AC-42100 T6"
+    assert material["detail"] == "E 69 GPa · ν 0.33 · 2,600 kg/m³"
+
+
+def test_the_inputs_hold_only_what_is_given_or_assumed(every_example):
+    for contract in every_example["contracts"]:
+        for group in contract["page"]["inputs"]:
+            table = group.get("table") or {"rows": []}
+            cells = [c for row in table["rows"] for c in row["cells"]]
+            for item in group["rows"] + cells:
+                assert item["kind"] != "derived", (contract["id"], group["group"], item)
+
+
+def test_the_calculations_are_the_chains_steps_each_with_what_it_takes_and_gives(payload):
+    steps = payload["contracts"][0]["page"]["calculations"]
+    assert [s["step"] for s in steps] == list(range(1, 10))
+    assert [s["status"] for s in steps] == ["computed"] * 3 + ["planned"] * 6
+    for s in steps:
+        assert s["quantity"] and s["method"] and s["by"] and s["takes_in"] and s["gives"]
+        for item in s["takes_in"]:
+            assert item["name"]
+            assert item["step"] is None or (1 <= item["step"] <= 9 and item["step"] != s["step"])
+        if s["status"] == "computed":
+            assert s["table"]["rows"] and s["plan"] == ""
+        else:
+            assert s["table"] is None and s["plan"]
+
+
+def test_step_one_gives_the_gear_geometry_from_the_given_gear_data(payload):
+    geometry = payload["contracts"][0]["page"]["calculations"][0]
+    assert geometry["quantity"] == "Gear geometry"
+    assert [i["name"] for i in geometry["takes_in"]] == [
+        "teeth",
+        "normal module",
+        "normal pressure angle",
+        "helix angle",
+        "profile shifts",
+    ]
+    assert all(item["step"] is None for item in geometry["takes_in"])
+    assert geometry["table"]["columns"] == ["Stage 1", "Stage 2"]
+    rows = {r["label"]: r["cells"] for r in geometry["table"]["rows"]}
+    assert rows["Working pressure angle"] == ["23.566°", "22.824°"]
+    assert rows["Working centre distance"] == ["82.917 mm", "125.037 mm"]
+
+
+def test_the_steps_give_what_they_work_out_and_nothing_a_paper_printed(payload):
+    """The page is the product's: the user brings the requirements, the tools work out the rest.
+    A paper's figures for a calculated value stay with the validator, off the page."""
+    for s in payload["contracts"][0]["page"]["calculations"]:
+        for row in (s["table"] or {"rows": []})["rows"]:
+            assert "published" not in row["label"].lower(), (s["quantity"], row)
+            assert not any("published" in c or "✓" in c for c in row["cells"]), (s["quantity"], row)
+
+
+def test_the_shafts_sit_where_the_gears_run_and_the_offset_puts_them(payload):
+    steps = payload["contracts"][0]["page"]["calculations"]
+    speeds, shafts = steps[1], steps[2]
+    ratio = speeds["table"]["rows"][0]
+    assert ratio["label"] == "Total ratio"
+    assert ratio["cells"] == ["7.1843"]
+    assert any("1,127 Hz" in c for r in speeds["table"]["rows"] for c in r["cells"])
+    assert shafts["takes_in"] == [
+        {"name": "working centre distances", "step": 1},
+        {"name": "input-output offset", "step": None},
+    ]
+    assert shafts["table"]["rows"][0]["cells"][0].startswith("103.1°")
 
 
 def test_the_page_points_out_a_published_mode_on_a_mesh_frequency(payload):

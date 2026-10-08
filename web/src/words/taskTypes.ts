@@ -42,7 +42,7 @@ export interface Grader {
 }
 
 export const GRADERS: Record<GraderKey, Grader> = {
-  load_tool: { label: "the load tool (GBX-1)", status: "not built" },
+  load_tool: { label: "the load tool (GBX-1, GBX-2)", status: "not built" },
   arithmetic: { label: "exact arithmetic", status: "formula" },
   validator_ratio_offset: { label: "the validator's ratio and offset rules", status: "exists" },
   thermal: { label: "thermal arithmetic", status: "formula" },
