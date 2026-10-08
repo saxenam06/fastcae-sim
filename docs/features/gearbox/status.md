@@ -8,7 +8,7 @@ The gearbox's physics before any housing exists. From a contract's gear train, t
 
 It turns a posed contract into a derived one that can be frozen. The judge applies these seat loads to every design.
 
-**PBI key:** GBX · **State:** planned. The load tool's plan is written (equations, sources, checks) and committed in bbcdbac on `product/end-to-end`, not pushed; nothing is built yet. The gear-train kinematics it builds on exist in `zenryx.contract.train` and `zenryx.contract.involute` · **Updated:** 2026-10-08 21:30 by Claude
+**PBI key:** GBX · **State:** planned. The load tool's plan is written (equations, sources, checks) and committed in bbcdbac on `product/end-to-end`, not pushed; nothing is built yet. The gear-train kinematics it builds on exist in `zenryx.contract.train` and `zenryx.contract.involute` · **Updated:** 2026-10-08 23:29 by Claude
 **Code:** to come, under `src/zenryx/domains/` (CLAUDE.md: domain roles live in a domain module)
 
 ## Now
@@ -29,7 +29,7 @@ It turns a posed contract into a derived one that can be frozen. The judge appli
 
 - Nothing of the load tool yet.
 - What it builds on:
-  - `zenryx.contract.involute`: the working centre distance with profile shift;
+  - `zenryx.contract.involute.mesh_geometry`: a shifted pair's pressure angles, its reference, base and working pitch diameters, and its working centre distance (since 22:46, PLT-7, uncommitted). GBX-1's forces start from its working pressure angle and base diameters;
   - `zenryx.contract.train`: the ratio, shaft speeds, mesh frequencies, and the shaft angle from the packaging offset.
 
 ## Rules in force
@@ -54,7 +54,13 @@ It turns a posed contract into a derived one that can be frozen. The judge appli
 
 - The convention for shifted gears: the base-circle form is proposed (the plan's §4).
 - The duty for bearing life: the drive case for all 944 h is proposed.
-- The spacing along the shafts, and which bearings locate axially: assumptions, after the A8 pattern.
+- **The spacing along the shafts** (researched 23:29: [2026-10-08-bearing-positions.md](../../research/2026-10-08-bearing-positions.md)).
+  - No source derives the positions from the gear data. Each lays them out as a stack: the space behind the bearing, the bearing, a gap, the gear(s), a gap, the bearing, the space behind.
+  - The rules: short spans; gears lined up with their mates; room for shoulders, retaining rings and a puller; one bearing per shaft located axially.
+  - So the free inputs are the gaps, and step 5 calculates the positions. Defaults from Shigley's Fig. 18-2 (¼ in behind a bearing, ½-¾ in between bearing and gear) would be labelled assumptions; or the user gives the positions, and then no gaps.
+  - The engineer's choice.
+- **Bearing widths come from the life:** step 7 picks the smallest catalogue bearing that carries the required C at 944 h and fits the shaft. It needs a bearing table (ISO 15 dimensions, a maker's C ratings, cited).
+- **Missing from the chain:** each seat's shaft diameter, from a strength sizing (Shigley Ch. 7; Łódź Ch. 3-4), which step 7's bore must fit.
 
 ## Done
 
