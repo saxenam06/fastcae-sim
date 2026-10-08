@@ -1,0 +1,297 @@
+/*
+ * Flow's campaign diagram: one campaign cut into data. Kept apart from flow.css, which imports it,
+ * because it is a drawing of its own - a grid of named areas, its boxes, and the connectors that run
+ * between them - and the rest of the tab's sheet reads more easily without it.
+ */
+
+/* --- the campaign cut into data -------------------------------------------------------------------- */
+
+/* The diagram is a grid with named areas: the campaign strip down the left, what it is cut into in
+   the middle, what joins from outside at the side. Connectors are grid items of their own, so they
+   run exactly from one box's edge to the next without measuring anything. */
+.flow-diagram-wrap {
+  container-type: inline-size;
+}
+
+.flow-diagram {
+  display: grid;
+  grid-template-columns: 200px minmax(96px, 1fr) minmax(230px, 1.5fr) minmax(48px, 0.4fr) minmax(200px, 1.2fr);
+  grid-template-rows: auto 38px repeat(4, auto);
+  grid-template-areas:
+    "a    ae   ae  ae  e"
+    "down .    .   .   ."
+    "camp cr1  r1  .   ."
+    "camp cr2  r2  .   ."
+    "camp cr3  r3  .   ."
+    "camp cr4  r4  db  d";
+  row-gap: 10px;
+}
+
+.flow-box,
+.flow-strip {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+  min-width: 0;
+  padding: 8px 10px 9px;
+  background: var(--sheet);
+  text-align: left;
+  font-size: 11.5px;
+  line-height: 1.35;
+}
+
+/* What joins from outside the campaign is dashed, as its connector is. */
+.flow-box[data-from="outside"] {
+  border-style: dashed;
+}
+
+.flow-box[data-focus="true"],
+.flow-strip[data-focus="true"] {
+  border-color: var(--blue);
+  box-shadow: inset 0 0 0 1px var(--blue);
+}
+
+.flow-box-head {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.flow-badge {
+  flex: none;
+  align-self: center;
+  display: inline-grid;
+  place-items: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 3px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  font-weight: 500;
+  color: var(--blue);
+  border: 1px solid var(--blue);
+  border-radius: 2px;
+}
+
+.flow-box-name {
+  flex: 1;
+  min-width: 0;
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.flow-box-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+  padding: 0 4px;
+  border: 1px solid var(--hairline);
+  border-radius: 2px;
+}
+
+.flow-box-head .num {
+  font-size: 15px;
+}
+
+.flow-box-what {
+  color: var(--muted);
+}
+
+.flow-box-kv {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 1px 8px;
+  margin-top: 2px;
+  font-size: 11px;
+}
+
+/* The campaign: a strip of steps, faint, with nothing in them - no campaign has run. */
+.flow-strip {
+  grid-area: camp;
+}
+
+/* The steps run the strip's full height, so the strip reads as one long sequence beside the four
+   things it is cut into, not as four steps each feeding one of them. */
+.flow-steps {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin: 8px 0 4px 2px;
+}
+
+.flow-steps > span {
+  position: relative;
+  padding: 5px 0 5px 20px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--faint);
+}
+
+.flow-steps > span::before {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--hairline);
+}
+
+.flow-steps > span:first-child::before {
+  top: 50%;
+}
+
+.flow-steps > span:last-child::before {
+  bottom: 50%;
+}
+
+.flow-steps > span::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 9px;
+  height: 9px;
+  margin-top: -4.5px;
+  border-radius: 50%;
+  border: 1.5px dashed var(--faint);
+  background: var(--sheet);
+}
+
+.flow-steps > .flow-steps-more {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.flow-steps > .flow-steps-more::before {
+  background: none;
+  border-left: 1px dashed var(--faint);
+}
+
+.flow-steps > .flow-steps-more::after {
+  display: none;
+}
+
+.flow-box-by {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-top: auto;
+  padding-top: 8px;
+  border-top: 1px solid var(--hairline);
+  font-size: 11px;
+  color: var(--muted);
+}
+
+/* A connector: a rule from one box's edge to the next, its arrowhead a border triangle, its words
+   above the line. Solid for what is cut from the campaign, dashed for what joins from outside. */
+.flow-conn {
+  position: relative;
+  align-self: center;
+  height: 0;
+  border-top: 1px solid var(--muted);
+}
+
+.flow-conn[data-from="outside"] {
+  border-top-style: dashed;
+}
+
+.flow-conn::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: -4.5px;
+  border-left: 7px solid var(--muted);
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+}
+
+.flow-conn[data-dir="left"]::after {
+  right: auto;
+  left: 0;
+  border-left: 0;
+  border-right: 7px solid var(--muted);
+}
+
+.flow-conn > span {
+  position: absolute;
+  left: 6px;
+  right: 12px;
+  bottom: 4px;
+  text-align: center;
+  font-size: 10.5px;
+  line-height: 1.25;
+  color: var(--muted);
+}
+
+/* The task feeds the campaign from above: the one connector that runs down. It reaches across the
+   grid's row gaps to touch both boxes. */
+.flow-vconn {
+  position: relative;
+  justify-self: center;
+  width: 0;
+  margin: -10px 0;
+  border-left: 1px dashed var(--muted);
+}
+
+.flow-vconn::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: -4.5px;
+  border-top: 7px solid var(--muted);
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+}
+
+.flow-vconn > span {
+  position: absolute;
+  left: 9px;
+  top: 50%;
+  transform: translateY(-50%);
+  white-space: nowrap;
+  font-size: 10.5px;
+  color: var(--muted);
+}
+
+.flow-key {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 18px;
+  margin-top: 12px;
+  font-size: 11px;
+  color: var(--faint);
+}
+
+.flow-key > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.flow-key-line {
+  display: inline-block;
+  width: 26px;
+  height: 0;
+  border-top: 1px solid var(--muted);
+}
+
+.flow-key-line[data-from="outside"] {
+  border-top-style: dashed;
+}
+
+/* Too narrow for the side-by-side drawing: the boxes stack in reading order and the connectors go. */
+@container (max-width: 760px) {
+  .flow-diagram {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: none;
+    grid-template-areas: "a" "e" "camp" "r1" "r2" "r3" "r4" "d";
+  }
+
+  .flow-conn,
+  .flow-vconn {
+    display: none;
+  }
+}

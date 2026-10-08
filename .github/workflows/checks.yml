@@ -1,4 +1,5 @@
-# The checks every change must pass (PLT-2): lint, format, and checks/ on a clean venv.
+# The checks every change must pass: lint, format, and checks/ on a clean venv (PLT-2); the web
+# UI's types and bundle (PLT-4). The snapshot the UI bundles is checked for staleness in checks/.
 name: checks
 
 on:
@@ -21,3 +22,20 @@ jobs:
         run: uv run ruff format --check src checks
       - name: Checks
         run: uv run pytest checks -q
+
+  web:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - name: Install from the lock
+        run: npm ci
+      - name: Types and bundle
+        run: npm run build

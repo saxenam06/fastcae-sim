@@ -1,0 +1,1020 @@
+/*
+ * The Contracts tab, on fastcae's sheet: hairlines, white sheets on the grey ground, one blue, numbers
+ * in mono. Every class here starts `ct-`, so nothing leaks into the other tabs.
+ *
+ * This file is bundled before the shared sheets (main.tsx imports the app before its styles), so a
+ * rule here that changes a shared one is written one class more specific than it rather than
+ * relying on coming later.
+ */
+
+/* --- the rail -------------------------------------------------------------------------------- */
+
+.ct-rail .pipeline-head .count {
+  margin-left: auto;
+  font-family: var(--mono);
+  font-weight: 400;
+  letter-spacing: 0;
+  color: var(--faint);
+}
+
+.ct-rail-stage-name {
+  display: inline-block;
+}
+
+.ct-rail-stage-name::first-letter {
+  text-transform: uppercase;
+}
+
+.ct-rail .rail-group > .campaign-row:first-of-type {
+  border-top: 1px solid var(--hairline);
+}
+
+.ct-rail .ct-rail-row.campaign-row {
+  gap: 2px;
+}
+
+.ct-rail-top {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+}
+
+.ct-rail-top .campaign-name {
+  flex: 1;
+  min-width: 0;
+  font-size: 12.5px;
+  line-height: 1.3;
+}
+
+.ct-rail-top .chip {
+  flex: none;
+}
+
+.ct-rail-family {
+  max-width: 100%;
+  font-size: 11px;
+  color: var(--faint);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ct-rail-stage {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 2px;
+  font-size: 11px;
+}
+
+.ct-rail .ct-rail-none {
+  padding: 2px 12px 8px;
+}
+
+.ct-rail .ct-rail-foot {
+  margin: 14px 0 0;
+  padding-top: 10px;
+  line-height: 1.45;
+  border-top: 1px solid var(--hairline);
+}
+
+/* --- a page ---------------------------------------------------------------------------------- */
+
+/* The page is the container its boxes ask about: two columns when it is wide, one when not. */
+.ct-page {
+  container: ct-page / inline-size;
+}
+
+.ct-count-line {
+  margin: 0 0 10px;
+  font-size: 11.5px;
+  color: var(--muted);
+}
+
+.ct-count-line .num {
+  color: var(--ink);
+}
+
+.ct-page .ct-none {
+  padding: 8px 12px;
+  font-size: 12px;
+  color: var(--faint);
+  background: var(--sheet);
+  border: 1px dashed var(--hairline);
+}
+
+/* --- Binding: the head ----------------------------------------------------------------------- */
+
+.ct-head {
+  margin-bottom: 16px;
+}
+
+.ct-head .ct-title {
+  margin: 0 0 4px;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.ct-subline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 16px;
+  margin-bottom: 10px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.ct-subline .mono {
+  color: var(--ink);
+}
+
+/* The title block of a drawing: cells on a hairline, a small label over each value. */
+.ct-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1px;
+  background: var(--hairline);
+  border: 1px solid var(--hairline);
+}
+
+.ct-fact {
+  flex: 1 1 130px;
+  min-width: 0;
+  padding: 6px 12px 8px;
+  background: var(--sheet);
+}
+
+.ct-fact[data-wide="true"] {
+  flex: 2 1 250px;
+}
+
+.ct-fact-label {
+  margin-bottom: 3px;
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+.ct-fact-value {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 3px 6px;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+/* --- Binding: the boxes ---------------------------------------------------------------------- */
+
+.ct-boxes {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.ct-col {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+}
+
+/* Narrow: the columns dissolve and the boxes, now the boxes' own flex items, take their order 1-6. */
+@container ct-page (max-width: 800px) {
+  .ct-boxes {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .ct-col {
+    display: contents;
+  }
+}
+
+.ct-box {
+  min-width: 0;
+  background: var(--sheet);
+  border: 1px solid var(--hairline);
+}
+
+.ct-box > header {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 8px 12px 7px;
+  border-bottom: 1px solid var(--hairline);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.ct-box-n {
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0;
+  color: var(--faint);
+}
+
+.ct-box-sub {
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.ct-box > header .count {
+  margin-left: auto;
+  font-family: var(--mono);
+  font-weight: 400;
+  letter-spacing: 0;
+  color: var(--faint);
+}
+
+.ct-box-body {
+  padding: 2px 0 8px;
+}
+
+.ct-box-pad {
+  padding: 7px 12px 3px;
+}
+
+/* --- rows: an entry a row, the columns shared by every row of a list ---------------------------- */
+
+.ct-rows {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) max-content max-content;
+  column-gap: 10px;
+}
+
+.ct-rows > * {
+  grid-column: 1 / -1;
+}
+
+.ct-group {
+  padding: 9px 12px 2px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+.ct-group .count {
+  font-family: var(--mono);
+  font-weight: 400;
+}
+
+.ct-group-gap {
+  margin-top: 4px;
+}
+
+.ct-item {
+  padding: 5px 12px 1px;
+  font-size: 11.5px;
+  font-weight: 500;
+}
+
+/* The row is the list's subgrid, so labels, values and pills line up down the whole box. */
+.ct-rows > .ct-row {
+  display: grid;
+  grid-template-columns: subgrid;
+  align-items: baseline;
+  padding: 2px 12px;
+  border: none;
+  border-radius: 0;
+  background: none;
+  text-align: left;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.ct-rows > .ct-row:hover {
+  background: var(--ground);
+}
+
+.ct-rows > .ct-row[data-focus="true"] {
+  background: var(--blue-wash);
+  box-shadow: inset 2px 0 0 var(--blue);
+}
+
+/* An entry the assumption in focus sets, or the assumption behind the entry in focus: its ochre. */
+.ct-rows > .ct-row[data-related="true"],
+.ct-assumptions > .ct-assumption[data-related="true"],
+.tbl.ct-sheet tbody tr[data-related="true"] {
+  background: var(--running-wash);
+  box-shadow: inset 2px 0 0 var(--running);
+}
+
+.ct-row[data-nested="true"] .ct-row-label {
+  padding-left: 12px;
+}
+
+.ct-row-label {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.ct-row-extra {
+  display: block;
+  font-size: 11px;
+  color: var(--faint);
+}
+
+.ct-row-value {
+  justify-self: end;
+  font-size: 11.5px;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.ct-row-prov {
+  justify-self: start;
+}
+
+/* A line that is not an entry: a fact of the contract, or a place still blank. */
+.ct-line {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 3px 12px;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.ct-line .sdot {
+  align-self: center;
+}
+
+.ct-line-label {
+  flex: none;
+  min-width: 82px;
+  color: var(--muted);
+}
+
+.ct-line[data-blank="true"] {
+  color: var(--faint);
+}
+
+.ct-line[data-blank="true"] .ct-line-label {
+  min-width: 0;
+  color: var(--muted);
+}
+
+/* The bearings as a small table: designation, type, where it sits, and its designation's source. */
+.ct-mini {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.ct-mini td {
+  padding: 2px 6px;
+  vertical-align: baseline;
+}
+
+.ct-mini td:first-child {
+  padding-left: 12px;
+}
+
+.ct-mini td:last-child {
+  padding-right: 12px;
+}
+
+.ct-mini tr[data-click="true"] {
+  cursor: pointer;
+}
+
+.ct-mini tr[data-click="true"]:hover {
+  background: var(--ground);
+}
+
+.ct-mini tr[data-focus="true"] {
+  background: var(--blue-wash);
+  box-shadow: inset 2px 0 0 var(--blue);
+}
+
+.ct-mini .ct-mini-key {
+  font-size: 11.5px;
+  white-space: nowrap;
+}
+
+.ct-mini .ct-mini-prov {
+  width: 1%;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.ct-box .ct-judged {
+  display: block;
+  width: calc(100% - 24px);
+  margin: 8px 12px 2px;
+  padding: 5px 9px;
+  border: 1px dashed var(--hairline);
+  border-radius: 2px;
+  background: var(--ground);
+  color: var(--blue);
+  font-size: 11.5px;
+  text-align: left;
+}
+
+.ct-box .ct-judged:hover {
+  border-color: var(--blue);
+}
+
+.ct-process {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 7px 12px 2px;
+  font-size: 12px;
+}
+
+.ct-process b {
+  font-weight: 600;
+}
+
+.ct-process .dim {
+  font-size: 11px;
+}
+
+/* The assumptions: id, what, its tags on the first line; the value taken under it. */
+.ct-assumptions {
+  display: flex;
+  flex-direction: column;
+  padding-top: 3px;
+}
+
+.ct-assumptions > .ct-assumption {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr) auto;
+  grid-template-areas:
+    "id what tags"
+    ". value value";
+  column-gap: 8px;
+  row-gap: 1px;
+  width: 100%;
+  padding: 4px 12px 5px;
+  border: none;
+  border-radius: 0;
+  background: none;
+  text-align: left;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.ct-assumptions > .ct-assumption:hover {
+  background: var(--ground);
+}
+
+.ct-assumptions > .ct-assumption[data-focus="true"] {
+  background: var(--blue-wash);
+  box-shadow: inset 2px 0 0 var(--blue);
+}
+
+.ct-assumption-id {
+  grid-area: id;
+  font-weight: 500;
+  color: var(--running);
+}
+
+.ct-assumption-what {
+  grid-area: what;
+}
+
+.ct-assumption-tags {
+  display: inline-flex;
+  grid-area: tags;
+  align-items: baseline;
+  gap: 6px;
+  font-size: 10.5px;
+}
+
+.ct-assumption-value {
+  grid-area: value;
+  font-size: 11.5px;
+  color: var(--muted);
+}
+
+/* An assumption the dataset may vary: the assumption's own ochre and dashes. */
+.pill.ct-varied {
+  padding: 0 6px;
+  font-size: 10px;
+  color: var(--running);
+  background: var(--running-wash);
+  border: 1px dashed var(--running);
+}
+
+/* --- Sheet ----------------------------------------------------------------------------------- */
+
+.ct-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+  margin-bottom: 8px;
+}
+
+/* A legend chip: on, it reads as the sheet; off, struck through and faded. */
+button.pill.ct-chip {
+  padding: 2px 9px;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+button.pill.ct-chip[data-active="true"] {
+  border-color: var(--muted);
+  background: var(--sheet);
+  color: var(--ink);
+}
+
+button.pill.ct-chip[data-active="false"] {
+  background: var(--ground);
+  color: var(--faint);
+  text-decoration: line-through;
+}
+
+button.pill.ct-chip[data-active="false"] .prov-dot {
+  opacity: 0.4;
+}
+
+button.pill.ct-chip:disabled {
+  border-color: var(--hairline);
+  color: var(--faint);
+  cursor: default;
+}
+
+button.pill.ct-chip .num {
+  color: var(--muted);
+}
+
+.ct-filters .ct-show-all {
+  margin-left: 6px;
+  font-size: 11px;
+}
+
+.tbl.ct-sheet .ct-layer-row th {
+  padding: 9px 8px 5px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink);
+  background: var(--ground);
+  border-bottom: 1px solid var(--hairline);
+}
+
+.tbl.ct-sheet tbody + tbody .ct-layer-row th {
+  border-top: 1px solid var(--hairline);
+}
+
+.ct-layer-row .count {
+  font-family: var(--mono);
+  font-weight: 400;
+  color: var(--faint);
+}
+
+.ct-layer-words {
+  margin-left: 10px;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--faint);
+}
+
+.tbl.ct-sheet .ct-group-row td {
+  padding: 7px 8px 2px;
+  font-size: 10px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--faint);
+  border-bottom: none;
+}
+
+.ct-group-row .count {
+  font-family: var(--mono);
+}
+
+.tbl.ct-sheet td {
+  padding-top: 4px;
+  padding-bottom: 4px;
+  font-size: 12px;
+}
+
+/* A quantity never breaks between its number and its unit; a narrow sheet scrolls sideways instead. */
+.tbl.ct-sheet td.mono {
+  font-size: 11.5px;
+  white-space: nowrap;
+}
+
+.tbl.ct-sheet .ct-sheet-what {
+  min-width: 200px;
+}
+
+/* --- Check ----------------------------------------------------------------------------------- */
+
+.ct-ladder {
+  display: flex;
+  margin: 0 0 10px;
+  padding: 0;
+  list-style: none;
+}
+
+.ct-ladder li {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 8px 12px 9px;
+  background: var(--sheet);
+  border: 1px solid var(--hairline);
+}
+
+.ct-ladder li + li {
+  margin-left: 24px;
+}
+
+.ct-ladder li + li::before {
+  content: "→";
+  position: absolute;
+  top: 8px;
+  left: -19px;
+  font-size: 12px;
+  color: var(--faint);
+}
+
+.ct-ladder li[data-current="true"] {
+  border-color: var(--blue);
+  box-shadow: inset 0 2px 0 var(--blue);
+}
+
+.ct-ladder li[data-reached="false"] {
+  color: var(--muted);
+}
+
+.ct-ladder-head {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12.5px;
+}
+
+.ct-ladder-mark {
+  flex: none;
+  width: 9px;
+  height: 9px;
+  border: 1.5px solid var(--faint);
+  border-radius: 50%;
+  background: var(--sheet);
+}
+
+.ct-ladder li[data-reached="true"] .ct-ladder-mark {
+  border-color: var(--blue);
+  background: var(--blue);
+}
+
+.ct-ladder li[data-reached="true"][data-stage="frozen"] .ct-ladder-mark {
+  border-color: var(--ink);
+  background: var(--ink);
+}
+
+.ct-ladder p {
+  margin: 4px 0 0;
+  font-size: 11.5px;
+  line-height: 1.4;
+  color: var(--muted);
+}
+
+.ct-now {
+  margin-left: auto;
+  padding: 0 6px;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--blue);
+  background: var(--blue-wash);
+  border-radius: 2px;
+}
+
+/* The dot stays beside its words; the words wrap, not the dot. */
+.ct-page .ct-next {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0 0 8px;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.ct-page .ct-next .sdot {
+  flex: none;
+}
+
+.tbl.ct-rules .ct-dot-cell {
+  width: 24px;
+  padding-right: 0;
+}
+
+.tbl.ct-rules .ct-rule-id {
+  white-space: nowrap;
+}
+
+.tbl.ct-rules tr[data-refused="true"] td {
+  background: var(--conflict-wash);
+}
+
+.ct-refusal + .ct-refusal {
+  margin-top: 2px;
+}
+
+/* --- Sources --------------------------------------------------------------------------------- */
+
+.ct-kind > h2 .prov {
+  margin-right: 4px;
+  letter-spacing: 0;
+  text-transform: none;
+  vertical-align: 1px;
+}
+
+.ct-kind > h2 .count {
+  margin-left: 4px;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.ct-sources {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  align-items: start;
+  gap: 8px;
+}
+
+.proof.ct-source {
+  gap: 0;
+  padding: 0 0 4px;
+  background: var(--sheet);
+  border: 1px solid var(--hairline);
+}
+
+.ct-source-head {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 6px 10px 4px;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.ct-source-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.ct-source-head .count {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--faint);
+}
+
+.ct-source-head .ct-source-id {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.ct-source-meta {
+  padding: 0 10px 4px;
+  font-size: 11.5px;
+  line-height: 1.4;
+}
+
+.ct-rows.ct-source-rows {
+  padding-top: 3px;
+  border-top: 1px solid var(--hairline);
+}
+
+.ct-rows.ct-source-rows > .ct-row {
+  padding: 2px 10px;
+}
+
+.tbl.ct-refs td {
+  font-size: 12px;
+}
+
+.tbl.ct-refs td.mono {
+  font-size: 11.5px;
+}
+
+.tbl.ct-refs .ct-refs-dim {
+  font-size: 11.5px;
+  color: var(--muted);
+}
+
+/* Where a value came from, as fastcae's evidence: the left rule in the line of its provenance pill. */
+.proof.ct-proof[data-source="published"] {
+  border-left: 3px solid var(--blue);
+}
+
+.proof.ct-proof[data-source="standard"] {
+  border-left: 3px solid var(--ink);
+}
+
+.proof.ct-proof[data-source="measured"] {
+  border-left: 3px solid var(--measured);
+}
+
+.proof.ct-proof[data-source="derived"] {
+  border-left: 3px dotted var(--muted);
+}
+
+.proof.ct-proof[data-source="assumption"] {
+  border-left: 3px dashed var(--running);
+}
+
+.proof.ct-proof[data-source="engineer"] {
+  border-left: 3px double var(--engineer);
+}
+
+.proof.ct-proof[data-source="refusal"] {
+  border-left: 3px solid var(--conflict);
+  background: var(--conflict-wash);
+}
+
+/* --- JSON ------------------------------------------------------------------------------------ */
+
+/* The head stays put; the file scrolls inside its own sheet. */
+.stage-scroll.ct-json {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow: hidden;
+}
+
+.ct-json-head {
+  display: flex;
+  flex: none;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px 20px;
+}
+
+.kv.ct-json-kv {
+  grid-template-columns: 92px 1fr;
+}
+
+.kv .ct-json-file {
+  font-size: 11.5px;
+}
+
+.ct-json-copy {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11.5px;
+}
+
+.ct-json-pre {
+  flex: 1;
+  min-height: 0;
+  margin: 0;
+  padding: 12px 14px;
+  overflow: auto;
+  font-size: 11px;
+  line-height: 1.5;
+  white-space: pre;
+  tab-size: 2;
+  background: var(--sheet);
+  border: 1px solid var(--hairline);
+}
+
+/* --- the card -------------------------------------------------------------------------------- */
+
+.ct-proof-note {
+  font-size: 11px;
+  font-style: italic;
+  color: var(--muted);
+}
+
+.ct-proof-fields {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 1px 8px;
+  margin: 2px 0 0;
+}
+
+.ct-proof-fields dt {
+  color: var(--faint);
+}
+
+.ct-proof-fields dd {
+  margin: 0;
+}
+
+.proof.ct-proof .pill.ct-varied {
+  align-self: flex-start;
+  margin-top: 2px;
+}
+
+.ct-card-line {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0;
+  padding: 2px 14px 10px;
+  font-size: 12px;
+}
+
+.fields-list.ct-card-fields {
+  padding-top: 10px;
+}
+
+.ct-rows.ct-card-rows {
+  padding: 0 2px 8px;
+}
+
+.ct-card-missing {
+  margin: 0;
+  padding: 7px 14px;
+  font-size: 11.5px;
+  color: var(--running);
+  background: var(--running-wash);
+  border-bottom: 1px solid var(--hairline);
+}
+
+/* Paths and file names have no spaces to break at; they break anywhere rather than run off the card. */
+.ct-wrap {
+  overflow-wrap: anywhere;
+}
+
+.ct-card-stage {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.ct-card-list {
+  padding: 0 14px 10px;
+  font-size: 11.5px;
+}
+
+/* The provenance mix: a thin bar, a segment a kind, each in its pill's colour and line. */
+.ct-mix {
+  display: flex;
+  gap: 1px;
+  height: 8px;
+  margin-bottom: 7px;
+  background: var(--hairline);
+  border: 1px solid var(--hairline);
+}
+
+.ct-mix i {
+  flex: 1 1 0;
+  min-width: 2px;
+}
+
+.ct-mix i[data-prov="published"] {
+  background: var(--blue);
+}
+
+.ct-mix i[data-prov="standard"] {
+  background: var(--ink);
+}
+
+.ct-mix i[data-prov="measured"] {
+  background: var(--measured);
+}
+
+.ct-mix i[data-prov="derived"] {
+  background: repeating-linear-gradient(90deg, var(--muted) 0 2px, var(--sheet) 2px 4px);
+}
+
+.ct-mix i[data-prov="assumption"] {
+  background: repeating-linear-gradient(90deg, var(--running) 0 5px, var(--running-wash) 5px 8px);
+}
+
+.ct-mix i[data-prov="engineer"] {
+  background: var(--engineer);
+}
+
+.ct-mix-key {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px 12px;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.ct-mix-key > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ct-mix-key > span[data-zero="true"] {
+  color: var(--faint);
+}

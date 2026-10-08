@@ -1,0 +1,389 @@
+/*
+ * zenryx's own marks, on fastcae's sheet: provenance, the stage dots, status dots, blanks, hashes,
+ * tables. Every mark carries its meaning by line or fill as well as colour.
+ */
+
+/* --- provenance ------------------------------------------------------------------------------- */
+
+/* published: blue, solid; standard: ink, solid; measured: green, solid; derived: hollow, dotted;
+   assumption: ochre, dashed - a reading to confirm; engineer: violet, double. */
+.prov {
+  display: inline-block;
+  padding: 0 6px;
+  font-family: var(--mono);
+  font-size: 10px;
+  line-height: 16px;
+  white-space: nowrap;
+  border-radius: 2px;
+  border-bottom: 2px solid;
+  color: var(--muted);
+  background: var(--ground);
+}
+
+.prov[data-prov="published"] {
+  color: var(--blue);
+  background: var(--blue-wash);
+}
+
+.prov[data-prov="standard"] {
+  color: var(--ink);
+  background: var(--ground);
+}
+
+.prov[data-prov="measured"] {
+  color: var(--measured);
+  background: var(--measured-wash);
+}
+
+.prov[data-prov="derived"] {
+  color: var(--muted);
+  background: var(--sheet);
+  border: 1px dotted var(--muted);
+  border-bottom: 2px dotted var(--muted);
+}
+
+.prov[data-prov="assumption"] {
+  color: var(--running);
+  background: var(--running-wash);
+  border-bottom-style: dashed;
+}
+
+.prov[data-prov="engineer"] {
+  color: var(--engineer);
+  background: var(--engineer-wash);
+  border-bottom-style: double;
+  border-bottom-width: 3px;
+}
+
+.prov-dot {
+  display: inline-block;
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 1.5px solid var(--muted);
+  background: var(--muted);
+  vertical-align: -1px;
+}
+
+.prov-dot[data-prov="published"] {
+  border-color: var(--blue);
+  background: var(--blue);
+}
+
+.prov-dot[data-prov="standard"] {
+  border-color: var(--ink);
+  background: var(--ink);
+}
+
+.prov-dot[data-prov="measured"] {
+  border-color: var(--measured);
+  background: var(--measured);
+}
+
+.prov-dot[data-prov="derived"] {
+  border-style: dotted;
+  background: var(--sheet);
+}
+
+.prov-dot[data-prov="assumption"] {
+  border-color: var(--running);
+  border-style: dashed;
+  background: var(--sheet);
+}
+
+.prov-dot[data-prov="engineer"] {
+  border-color: var(--engineer);
+  background: var(--engineer);
+}
+
+/* --- stages and status ------------------------------------------------------------------------ */
+
+.stage-dots {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+/* A line between the dots, so the three read as one ladder. */
+.stage-dots i {
+  position: relative;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 1.5px solid var(--faint);
+  background: var(--sheet);
+}
+
+.stage-dots i + i {
+  margin-left: 6px;
+}
+
+.stage-dots i + i::before {
+  content: "";
+  position: absolute;
+  left: -9px;
+  top: 2px;
+  width: 7px;
+  height: 1px;
+  background: var(--hairline);
+}
+
+.stage-dots i[data-reached="true"] {
+  border-color: var(--blue);
+  background: var(--blue);
+}
+
+.stage-dots i[data-reached="true"][data-stage="frozen"] {
+  border-color: var(--ink);
+  background: var(--ink);
+}
+
+.sdot {
+  display: inline-block;
+  flex: none;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: 1.5px solid var(--faint);
+  background: var(--sheet);
+  vertical-align: -1px;
+}
+
+.sdot[data-status="done"] {
+  border-color: var(--measured);
+  background: var(--measured);
+}
+
+.sdot[data-status="running"] {
+  border-color: var(--running);
+  background: var(--running);
+  animation: step-pulse 1s ease-in-out infinite alternate;
+}
+
+.sdot[data-status="failed"] {
+  border-color: var(--conflict);
+  background: var(--conflict);
+}
+
+.sdot[data-status="skipped"] {
+  border-style: dashed;
+}
+
+/* Not built yet: dashed and faint - the place is drawn, nothing can be in it. */
+.sdot[data-status="blank"] {
+  border-style: dashed;
+  border-color: var(--faint);
+  background: transparent;
+}
+
+.num[data-zero="true"] {
+  color: var(--faint);
+}
+
+.hash {
+  font-size: 11px;
+  color: var(--muted);
+  user-select: all;
+}
+
+/* --- blocks and blanks -------------------------------------------------------------------------- */
+
+.block-aside {
+  float: right;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--faint);
+}
+
+/* The page's frame before anything fills it: the same sheet, a dashed rule, a few words. */
+.blank {
+  padding: 14px 16px;
+  background: var(--sheet);
+  border: 1px dashed var(--hairline);
+}
+
+.blank h3 {
+  margin: 0 0 6px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.blank-body {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.blank-waits {
+  margin: 8px 0 0;
+  font-size: 11.5px;
+  color: var(--faint);
+}
+
+/* --- tables ----------------------------------------------------------------------------------- */
+
+/* A sheet's table: the campaign grid's hairlines, without its pointer. */
+.tbl {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  background: var(--sheet);
+}
+
+.tbl th {
+  padding: 5px 8px;
+  border-bottom: 1px solid var(--hairline);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--faint);
+  text-align: left;
+  white-space: nowrap;
+  background: var(--sheet);
+}
+
+.tbl td {
+  padding: 5px 8px;
+  border-bottom: 1px solid var(--hairline);
+  vertical-align: top;
+}
+
+.tbl tbody tr[data-click="true"] {
+  cursor: pointer;
+}
+
+.tbl tbody tr[data-click="true"]:hover {
+  background: var(--ground);
+}
+
+.tbl tbody tr[data-focus="true"] {
+  background: var(--blue-wash);
+  box-shadow: inset 2px 0 0 var(--blue);
+}
+
+.tbl .num {
+  text-align: right;
+  white-space: nowrap;
+}
+
+/* A numeric column's head is a word, not a number: right-aligned, in the sans of the other heads. */
+.tbl th.num {
+  font-family: var(--sans);
+}
+
+.tbl td.mono {
+  font-size: 11.5px;
+}
+
+/* A row of the empty template: the shape a record will take, drawn faint and dashed. */
+.tbl tr.template td {
+  color: var(--faint);
+  font-style: italic;
+  border-bottom-style: dashed;
+}
+
+.tbl-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--hairline);
+}
+
+/* --- the shell's additions ---------------------------------------------------------------------- */
+
+.stage-body > .stage-scroll {
+  position: absolute;
+  inset: 0;
+}
+
+.page-head {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.page-head h1 {
+  font-size: 16px;
+}
+
+.page-head .dim {
+  font-size: 12px;
+}
+
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 1px 8px;
+  font-size: 11px;
+  border: 1px solid var(--hairline);
+  border-radius: 10px;
+  background: var(--sheet);
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+button.pill[data-active="true"] {
+  border-color: var(--blue);
+  background: var(--blue-wash);
+  color: var(--blue);
+}
+
+.rail-note {
+  padding: 10px 12px;
+  font-size: 11.5px;
+  color: var(--faint);
+}
+
+.rail-group > header {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 12px 12px 6px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--ink);
+}
+
+.rail-group > header .count {
+  margin-left: auto;
+  font-family: var(--mono);
+  font-weight: 400;
+  color: var(--faint);
+}
+
+/* One line at any width: the fields keep their size, the last one gives way. */
+.titleblock {
+  overflow: hidden;
+  white-space: nowrap;
+  gap: 14px;
+}
+
+.titleblock > span {
+  flex: none;
+}
+
+.titleblock > span:last-child {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.titleblock .ok {
+  color: var(--measured);
+}
+
+.titleblock .wait {
+  color: var(--running);
+}
