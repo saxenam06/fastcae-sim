@@ -635,6 +635,34 @@ def ev_reducer_posed():
                 "gear_to_gear": asm(qty(12.7, "mm"), "A15"),
                 "min_axial_clearance": asm(qty(3, "mm"), "A18"),
                 "min_radial_clearance": asm(qty(8.25, "mm"), "A19"),
+                "first_stage_side": asm("-z", "A22"),
+                # The arrangement (A8), bearing by bearing: who takes the axial force.
+                "bearings": [
+                    {
+                        "shaft": shaft,
+                        "side": asm(side, "A8"),
+                        "type": kind,
+                        "axial": asm(role, "A8"),
+                    }
+                    for shaft, side, kind, role in (
+                        ("input", "-z", "deep_groove_ball", "locating"),
+                        ("input", "+z", "cylindrical_roller", "floating"),
+                        ("intermediate", "-z", "tapered_roller", "own_side"),
+                        ("intermediate", "+z", "tapered_roller", "own_side"),
+                        ("output", "-z", "deep_groove_ball", "own_side"),
+                        ("output", "+z", "deep_groove_ball", "own_side"),
+                    )
+                ],
+                # The output gear rides on the differential's case (A23).
+                "carriers": [
+                    {
+                        "name": "differential",
+                        "shaft": "output",
+                        "bearing_spacing": asm(qty(96, "mm"), "A23"),
+                        "diameter": asm(qty(105, "mm"), "A23"),
+                        "gear_beside": asm("+z", "A23"),
+                    }
+                ],
             },
             "installation_space": {
                 "kind": "layout_envelope",
@@ -740,7 +768,9 @@ def ev_reducer_posed():
             assumption(
                 "A8",
                 "the bearings",
-                "input: ball + cylindrical roller · intermediate: tapered pair · output: ball pair",
+                "input: ball (-z, locating) + cylindrical roller (+z, floating) · intermediate: "
+                "tapered pair · output: ball pair (each bearing of a pair takes the thrust towards "
+                "its own end)",
                 "a passenger-EV reducer's arrangement · Hofstetter et al. 2018; the sizes from "
                 "the loads by L10 life",
                 varied=False,
@@ -810,6 +840,20 @@ def ev_reducer_posed():
                 "the input's rotation in forward drive",
                 "+z: anticlockwise seen from the cover side (+z)",
                 "not given; it sets the forces' directions, not their sizes",
+            ),
+            assumption(
+                "A22",
+                "the side the first stage meshes on",
+                "-z, the motor side; the second stage towards the cover",
+                "not given; the input shaft stays short beside the motor",
+            ),
+            assumption(
+                "A23",
+                "the differential",
+                "a bevel unit: bearings 96 mm apart centre to centre, case Ø105 mm, the output "
+                "gear beside its +z bearing",
+                "a 2,100 N·m class unit for about 1,080 N·m here · Schaeffler Symposium 2010, "
+                "Figs. 13-14 (the case Ø read off a figure)",
             ),
         ],
     }

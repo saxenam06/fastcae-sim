@@ -547,7 +547,189 @@
         },
         "authority": "engineer_locked",
         "kind": "hard"
-      }
+      },
+      "first_stage_side": {
+        "value": "-z",
+        "provenance": {
+          "kind": "assumption",
+          "assumption_id": "A22"
+        },
+        "authority": "engineer_locked",
+        "kind": "hard"
+      },
+      "bearings": [
+        {
+          "shaft": "input",
+          "side": {
+            "value": "-z",
+            "provenance": {
+              "kind": "assumption",
+              "assumption_id": "A8"
+            },
+            "authority": "engineer_locked",
+            "kind": "hard"
+          },
+          "type": "deep_groove_ball",
+          "axial": {
+            "value": "locating",
+            "provenance": {
+              "kind": "assumption",
+              "assumption_id": "A8"
+            },
+            "authority": "engineer_locked",
+            "kind": "hard"
+          }
+        },
+        {
+          "shaft": "input",
+          "side": {
+            "value": "+z",
+            "provenance": {
+              "kind": "assumption",
+              "assumption_id": "A8"
+            },
+            "authority": "engineer_locked",
+            "kind": "hard"
+          },
+          "type": "cylindrical_roller",
+          "axial": {
+            "value": "floating",
+            "provenance": {
+              "kind": "assumption",
+              "assumption_id": "A8"
+            },
+            "authority": "engineer_locked",
+            "kind": "hard"
+          }
+        },
+        {
+          "shaft": "intermediate",
+          "side": {
+            "value": "-z",
+            "provenance": {
+              "kind": "assumption",
+              "assumption_id": "A8"
+            },
+            "authority": "engineer_locked",
+            "kind": "hard"
+          },
+          "type": "tapered_roller",
+          "axial": {
+            "value": "own_side",
+            "provenance": {
+              "kind": "assumption",
+              "assumption_id": "A8"
+            },
+            "authority": "engineer_locked",
+            "kind": "hard"
+          }
+        },
+        {
+          "shaft": "intermediate",
+          "side": {
+            "value": "+z",
+            "provenance": {
+              "kind": "assumption",
+              "assumption_id": "A8"
+            },
+            "authority": "engineer_locked",
+            "kind": "hard"
+          },
+          "type": "tapered_roller",
+          "axial": {
+            "value": "own_side",
+            "provenance": {
+              "kind": "assumption",
+              "assumption_id": "A8"
+            },
+            "authority": "engineer_locked",
+            "kind": "hard"
+          }
+        },
+        {
+          "shaft": "output",
+          "side": {
+            "value": "-z",
+            "provenance": {
+              "kind": "assumption",
+              "assumption_id": "A8"
+            },
+            "authority": "engineer_locked",
+            "kind": "hard"
+          },
+          "type": "deep_groove_ball",
+          "axial": {
+            "value": "own_side",
+            "provenance": {
+              "kind": "assumption",
+              "assumption_id": "A8"
+            },
+            "authority": "engineer_locked",
+            "kind": "hard"
+          }
+        },
+        {
+          "shaft": "output",
+          "side": {
+            "value": "+z",
+            "provenance": {
+              "kind": "assumption",
+              "assumption_id": "A8"
+            },
+            "authority": "engineer_locked",
+            "kind": "hard"
+          },
+          "type": "deep_groove_ball",
+          "axial": {
+            "value": "own_side",
+            "provenance": {
+              "kind": "assumption",
+              "assumption_id": "A8"
+            },
+            "authority": "engineer_locked",
+            "kind": "hard"
+          }
+        }
+      ],
+      "carriers": [
+        {
+          "name": "differential",
+          "shaft": "output",
+          "bearing_spacing": {
+            "value": {
+              "value": 96,
+              "unit": "mm"
+            },
+            "provenance": {
+              "kind": "assumption",
+              "assumption_id": "A23"
+            },
+            "authority": "engineer_locked",
+            "kind": "hard"
+          },
+          "diameter": {
+            "value": {
+              "value": 105,
+              "unit": "mm"
+            },
+            "provenance": {
+              "kind": "assumption",
+              "assumption_id": "A23"
+            },
+            "authority": "engineer_locked",
+            "kind": "hard"
+          },
+          "gear_beside": {
+            "value": "+z",
+            "provenance": {
+              "kind": "assumption",
+              "assumption_id": "A23"
+            },
+            "authority": "engineer_locked",
+            "kind": "hard"
+          }
+        }
+      ]
     },
     "installation_space": {
       "kind": "layout_envelope",
@@ -904,7 +1086,7 @@
     {
       "id": "A8",
       "what": "the bearings",
-      "value": "input: ball + cylindrical roller · intermediate: tapered pair · output: ball pair",
+      "value": "input: ball (-z, locating) + cylindrical roller (+z, floating) · intermediate: tapered pair · output: ball pair (each bearing of a pair takes the thrust towards its own end)",
       "why": "a passenger-EV reducer's arrangement · Hofstetter et al. 2018; the sizes from the loads by L10 life",
       "varied": false
     },
@@ -976,6 +1158,20 @@
       "what": "the input's rotation in forward drive",
       "value": "+z: anticlockwise seen from the cover side (+z)",
       "why": "not given; it sets the forces' directions, not their sizes",
+      "varied": true
+    },
+    {
+      "id": "A22",
+      "what": "the side the first stage meshes on",
+      "value": "-z, the motor side; the second stage towards the cover",
+      "why": "not given; the input shaft stays short beside the motor",
+      "varied": true
+    },
+    {
+      "id": "A23",
+      "what": "the differential",
+      "value": "a bevel unit: bearings 96 mm apart centre to centre, case Ø105 mm, the output gear beside its +z bearing",
+      "why": "a 2,100 N·m class unit for about 1,080 N·m here · Schaeffler Symposium 2010, Figs. 13-14 (the case Ø read off a figure)",
       "varied": true
     }
   ]

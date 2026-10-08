@@ -94,6 +94,8 @@ def test_the_ev_reducer_carries_the_engineers_requirements():
         "A18",
         "A19",
         "A21",
+        "A22",
+        "A23",
     ]
     # The input's sense of rotation sets the forces' directions (GBX-1); not given, so assumed.
     assert req.forward_rotation.provenance.assumption_id == "A21"

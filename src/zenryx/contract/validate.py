@@ -100,6 +100,7 @@ _DIMENSIONS: dict[str, str] = {
     "gear_to_gear": "mm",
     "min_axial_clearance": "mm",
     "min_radial_clearance": "mm",
+    "bearing_spacing": "mm",
     "outer_diameter": "mm",
     "width": "mm",
     "box_min": "mm",
@@ -506,6 +507,51 @@ def _check_references(spec: HousingDesignSpec) -> list[Refusal]:
                         reason=f"a shaft's end is its '-z' or '+z' side, not {end.side.value!r}",
                     )
                 )
+        out += _check_arrangement(layout, shafts)
+    return out
+
+
+AXIAL_ROLES = ("locating", "floating", "own_side")
+
+
+def _check_arrangement(layout, shafts: set[str]) -> list[Refusal]:
+    """The bearing arrangement and the carriers name the gear train's shafts and their ends; each
+    bearing takes the axial force in a known way; a shaft has at most one bearing at each end."""
+    out = []
+    where = "requirement.shaft_layout"
+
+    def refuse(entry: str, reason: str) -> None:
+        out.append(Refusal(rule="consistency.shaft_reference", entry=entry, reason=reason))
+
+    side = layout.first_stage_side
+    if side is not None and side.value not in ("-z", "+z"):
+        refuse(f"{where}.first_stage_side", f"a side is '-z' or '+z', not {side.value!r}")
+    seen: set[tuple[str, str]] = set()
+    for i, b in enumerate(layout.bearings):
+        if b.shaft not in shafts:
+            refuse(f"{where}.bearings[{i}].shaft", f"no stage's shaft is named {b.shaft!r}")
+        if b.side.value not in ("-z", "+z"):
+            refuse(
+                f"{where}.bearings[{i}].side",
+                f"a bearing sits at '-z' or '+z', not {b.side.value!r}",
+            )
+        if b.axial.value not in AXIAL_ROLES:
+            refuse(
+                f"{where}.bearings[{i}].axial",
+                f"a bearing takes the thrust as one of {', '.join(AXIAL_ROLES)}, "
+                f"not {b.axial.value!r}",
+            )
+        if (b.shaft, b.side.value) in seen:
+            refuse(f"{where}.bearings[{i}]", f"{b.shaft} already has a bearing at {b.side.value}")
+        seen.add((b.shaft, b.side.value))
+    for i, c in enumerate(layout.carriers):
+        if c.shaft not in shafts:
+            refuse(f"{where}.carriers[{i}].shaft", f"no stage's shaft is named {c.shaft!r}")
+        if c.gear_beside.value not in ("-z", "+z"):
+            refuse(
+                f"{where}.carriers[{i}].gear_beside",
+                f"the gear sits beside the '-z' or '+z' bearing, not {c.gear_beside.value!r}",
+            )
     return out
 
 

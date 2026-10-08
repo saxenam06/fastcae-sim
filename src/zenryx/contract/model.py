@@ -103,6 +103,30 @@ class ShaftEnd(_Model):
     side: Entry
 
 
+class BearingPlace(_Model):
+    """One bearing of the arrangement: its shaft, its end ("-z" or "+z"), its type, and how it
+    takes the shaft's axial force: "locating" (all of it, either way), "floating" (none), or
+    "own_side" (the thrust towards its own end, as each bearing of an adjusted tapered pair or of
+    a cross-located pair does)."""
+
+    shaft: Name
+    side: Entry
+    type: BearingType
+    axial: Entry
+
+
+class ShaftCarrier(_Model):
+    """A carrier a shaft's gear rides on between the shaft's two bearings, such as a differential
+    case. It fixes the bearings' spacing (centre to centre) and keeps the room of its body, a
+    cylinder of its diameter between the bearings; the gear sits beside the bearing at one end."""
+
+    name: Name
+    shaft: Name
+    bearing_spacing: Entry
+    diameter: Entry
+    gear_beside: Entry
+
+
 class ShaftLayout(_Model):
     """How the gears and bearings are spaced along each shaft: by gaps (the engineer, 9 Oct
     00:06). The load tool (GBX-2) stacks each shaft from a datum: the space behind a bearing, the
@@ -122,6 +146,10 @@ class ShaftLayout(_Model):
     gear_to_gear: Entry | None = None
     min_axial_clearance: Entry | None = None
     min_radial_clearance: Entry | None = None
+    # On the shaft two stages share: the side ("-z" or "+z") its first-stage gear sits on.
+    first_stage_side: Entry | None = None
+    bearings: list[BearingPlace] = []
+    carriers: list[ShaftCarrier] = []
 
 
 class InstallationSpace(_Model):

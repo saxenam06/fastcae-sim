@@ -171,14 +171,14 @@ def mesh_forces(
     )
 
 
-def _value(entry, unit: str) -> float:
+def value_in(entry, unit: str) -> float:
     value, canonical = entry.value.to_canonical()
     if canonical != unit:
         raise ValueError(f"expected {unit}, got {canonical}")
     return value
 
 
-def _stage_data(stage: GearStage) -> dict:
+def stage_data(stage: GearStage) -> dict:
     needed = (
         "z_pinion",
         "z_gear",
@@ -194,12 +194,12 @@ def _stage_data(stage: GearStage) -> dict:
         raise ValueError(f"stage {stage.name!r} needs {', '.join(missing)} for its forces")
     return {
         "z": (int(stage.z_pinion.value), int(stage.z_gear.value)),
-        "normal_module": _value(stage.normal_module, "mm"),
-        "pressure_angle": _value(stage.pressure_angle, "rad"),
-        "helix_angle": _value(stage.helix_angle, "rad"),
+        "normal_module": value_in(stage.normal_module, "mm"),
+        "pressure_angle": value_in(stage.pressure_angle, "rad"),
+        "helix_angle": value_in(stage.helix_angle, "rad"),
         "shifts": (
-            _value(stage.profile_shift_pinion, "1"),
-            _value(stage.profile_shift_gear, "1"),
+            value_in(stage.profile_shift_pinion, "1"),
+            value_in(stage.profile_shift_gear, "1"),
         ),
         "pinion_hand": str(stage.helix_hand_pinion.value),
     }
@@ -209,7 +209,7 @@ def shaft_axes(spec: HousingDesignSpec) -> dict[str, Point]:
     """Each shaft's axis in the end view (mm): one stage on the x axis; two stages placed by the
     packaging offset (`train.axis_positions`, the intermediate shaft at the origin)."""
     stages = spec.requirement.stages
-    data = [_stage_data(s) for s in stages]
+    data = [stage_data(s) for s in stages]
     distances = [
         mesh_geometry(
             d["z"][0],
@@ -229,7 +229,7 @@ def shaft_axes(spec: HousingDesignSpec) -> dict[str, Point]:
         offset = spec.requirement.input_output_offset
         if offset is None:
             raise ValueError("two stages need the input-output offset to place their axes")
-        first, middle, last = axis_positions(distances[0], distances[1], _value(offset, "mm"))
+        first, middle, last = axis_positions(distances[0], distances[1], value_in(offset, "mm"))
         return {
             stages[0].pinion_shaft: first,
             stages[0].gear_shaft: middle,
@@ -248,14 +248,14 @@ def case_forces(spec: HousingDesignSpec) -> list[CaseForces]:
     rotation = req.forward_rotation.value if req.forward_rotation is not None else "+z"
     forward = {"+z": 1.0, "-z": -1.0}[rotation]
     axes = shaft_axes(spec)
-    data = [_stage_data(s) for s in stages]
+    data = [stage_data(s) for s in stages]
     cases = []
     for t in req.torques:
         if t.shaft != stages[0].pinion_shaft:
             raise ValueError(f"a torque on {t.shaft!r}: the forces start from the input's torque")
         if t.direction not in SENSE:
             raise ValueError(f"no sense of rotation is known for a {t.direction!r} torque")
-        torque_in = forward * SENSE[t.direction] * abs(_value(t.torque, "N*mm"))
+        torque_in = forward * SENSE[t.direction] * abs(value_in(t.torque, "N*mm"))
         driving = torque_in
         meshes = []
         passed = [(stages[0].pinion_shaft, torque_in)]
