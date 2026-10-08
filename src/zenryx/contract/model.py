@@ -1,0 +1,330 @@
+"""The layers of the contract (spec §4): task, requirement, interfaces, physics cases, limits,
+manufacturing profile, the published reference band and the assumptions list.
+
+Interfaces are named by geometric kind (cylindrical seat, split face, mount pad, motor flange,
+port); what a seat is for (an input shaft's bearing) lives in the contract's data, never in code.
+Every model forbids extra fields, so nothing beyond the schema - an answer, a result - can be
+carried in a contract.
+"""
+
+from __future__ import annotations
+
+from typing import Annotated, Literal
+
+from pydantic import BaseModel, ConfigDict, Field, model_validator
+
+from zenryx.contract.entry import Entry
+
+Stage = Literal["posed", "derived", "frozen"]
+RequirementStyle = Literal["package", "gear_train"]
+BearingType = Literal[
+    "deep_groove_ball",
+    "cylindrical_roller",
+    "tapered_roller",
+    "angular_contact_ball",
+    "spherical_roller",
+]
+Name = Annotated[str, Field(min_length=1, pattern=r"^[a-z0-9][a-z0-9_.:/-]*$")]
+
+
+class _Model(BaseModel):
+    model_config = ConfigDict(extra="forbid", frozen=True)
+
+
+class TaskInfo(_Model):
+    """What the task is, and what an attempt may spend."""
+
+    id: Name
+    title: str = Field(min_length=1)
+    family: str = Field(min_length=1)
+    level: Literal["L1"]
+    priorities: list[str] = []
+    budget_fe_proofs: int = Field(gt=0)
+    budget_hours: float = Field(gt=0)
+
+
+class TorqueSpec(_Model):
+    """A torque, with the shaft it acts on, its kind and its direction."""
+
+    shaft: Name
+    kind: Literal["peak", "nominal", "continuous", "maximum"]
+    direction: Literal["drive", "regeneration", "reverse"]
+    torque: Entry
+
+
+class SpeedSpec(_Model):
+    shaft: Name
+    kind: Literal["maximum", "base", "rated"]
+    speed: Entry
+
+
+class PowerSpec(_Model):
+    """A power, with its shaft, its kind and the speed it is stated at."""
+
+    shaft: Name
+    kind: Literal["peak", "nominal", "continuous", "rated"]
+    power: Entry
+    at_speed: Entry | None = None
+
+
+class GearStage(_Model):
+    """One gear stage. Empty in a package-style contract until the front-end derives it."""
+
+    name: Name
+    pinion_shaft: Name
+    gear_shaft: Name
+    z_pinion: Entry | None = None
+    z_gear: Entry | None = None
+    normal_module: Entry | None = None
+    pressure_angle: Entry | None = None
+    helix_angle: Entry | None = None
+    helix_hand_pinion: Entry | None = None
+    face_width_pinion: Entry | None = None
+    face_width_gear: Entry | None = None
+    profile_shift_pinion: Entry | None = None
+    profile_shift_gear: Entry | None = None
+    centre_distance: Entry | None = None
+
+
+class BearingSpec(_Model):
+    """A bearing by its designation, and the seat that hosts it."""
+
+    seat: Name
+    designation: Entry
+    type: BearingType
+    outer_diameter: Entry | None = None
+    width: Entry | None = None
+
+
+class InstallationSpace(_Model):
+    """The space the housing must stay inside: a box, or the layout's envelope plus a clearance."""
+
+    kind: Literal["box", "layout_envelope"]
+    box_min: Entry | None = None
+    box_max: Entry | None = None
+    clearance: Entry | None = None
+
+    @model_validator(mode="after")
+    def _complete(self) -> InstallationSpace:
+        if self.kind == "box" and (self.box_min is None or self.box_max is None):
+            raise ValueError("a box installation space needs box_min and box_max")
+        if self.kind == "layout_envelope" and self.clearance is None:
+            raise ValueError("a layout_envelope installation space needs its clearance")
+        return self
+
+
+_STAGE_NEEDS = ("z_pinion", "z_gear", "normal_module", "pressure_angle", "helix_angle")
+
+
+class Requirement(_Model):
+    """The engineer's input: the duty, the ratio, the gear train or the package, the bearings."""
+
+    style: RequirementStyle
+    torques: list[TorqueSpec] = Field(min_length=1)
+    speeds: list[SpeedSpec] = []
+    powers: list[PowerSpec] = []
+    total_ratio: Entry
+    ratio_tolerance: Entry | None = None
+    input_output_offset: Entry | None = None
+    service_life: Entry | None = None
+    gear_material: Entry | None = None
+    gear_quality: Entry | None = None
+    stages: list[GearStage] = []
+    bearings: list[BearingSpec] = []
+    installation_space: InstallationSpace
+
+    @model_validator(mode="after")
+    def _style(self) -> Requirement:
+        if self.style == "package" and self.input_output_offset is None:
+            raise ValueError("a package-style requirement needs the input_output_offset")
+        if self.style == "gear_train":
+            if not self.stages:
+                raise ValueError("a gear_train-style requirement needs its stages")
+            for stage in self.stages:
+                missing = [n for n in _STAGE_NEEDS if getattr(stage, n) is None]
+                if missing:
+                    raise ValueError(f"gear_train stage {stage.name!r} needs {', '.join(missing)}")
+        return self
+
+
+class CylindricalSeat(_Model):
+    """A machined bore that hosts a bearing."""
+
+    name: Name
+    shaft: Name
+    centre: Entry
+    axis: Entry
+    diameter: Entry
+    width: Entry
+    shoulder: Literal["+axis", "-axis"]
+    stock: Entry
+
+
+class SplitFace(_Model):
+    """A machined plane where two housing parts meet, with its bolt pattern."""
+
+    name: Name
+    origin: Entry
+    normal: Entry
+    bolt_count: Entry
+    bolt_hole_diameter: Entry
+    bolt_pitch_circle: Entry | None = None
+
+
+class MountPad(_Model):
+    """A machined face that holds the housing in the vehicle."""
+
+    name: Name
+    centre: Entry
+    normal: Entry
+    support: Literal["fixed", "elastic"]
+    stiffness: Entry | None = None
+
+    @model_validator(mode="after")
+    def _stiffness(self) -> MountPad:
+        if self.support == "elastic" and self.stiffness is None:
+            raise ValueError("an elastic mount pad needs its stiffness")
+        return self
+
+
+class MotorFlange(_Model):
+    name: Name
+    centre: Entry
+    axis: Entry
+    spigot_diameter: Entry
+    bolt_count: Entry
+    bolt_circle: Entry
+
+
+class Port(_Model):
+    name: Name
+    centre: Entry
+    axis: Entry
+    diameter: Entry
+    role: Literal["fill", "drain", "breather"]
+
+
+class Interfaces(_Model):
+    """The machined core: fixed at L1."""
+
+    seats: list[CylindricalSeat] = Field(min_length=1)
+    split_faces: list[SplitFace] = []
+    mount_pads: list[MountPad] = []
+    motor_flanges: list[MotorFlange] = []
+    ports: list[Port] = []
+
+
+class SeatLoad(_Model):
+    seat: Name
+    force: Entry
+
+
+class LoadCase(_Model):
+    name: Name
+    seat_loads: list[SeatLoad] = Field(min_length=1)
+
+
+class MeshOrder(_Model):
+    """A gear-mesh order: excitations per revolution of the named shaft."""
+
+    stage: Name
+    shaft: Name
+    order: Entry
+
+
+class PhysicsCases(_Model):
+    """Derived by the front-end, every value stamped with its tool."""
+
+    load_cases: list[LoadCase] = Field(min_length=1)
+    mesh_orders: list[MeshOrder] = []
+
+
+class TiltLimit(_Model):
+    bearing_type: BearingType
+    limit: Entry
+
+
+class Limits(_Model):
+    """What must hold, and the rule an attempt is graded by (fixed before any attempt)."""
+
+    verdict_rule_version: str = Field(min_length=1)
+    mesh_misalignment_share: Entry
+    centre_distance_share: Entry
+    ovalisation_share: Entry
+    bearing_tilt: list[TiltLimit] = Field(min_length=1)
+    order_separation: Entry
+    order_check_speeds: list[Entry] = Field(min_length=1)
+    model_margin: Entry
+    objective: Literal["least_mass"]
+    stress: Literal["recorded"]
+
+
+class PullDirection(_Model):
+    part: Name
+    direction: Entry
+
+
+class MaterialCard(_Model):
+    name: str = Field(min_length=1)
+    youngs_modulus: Entry
+    poisson_ratio: Entry
+    density: Entry
+    expansion: Entry | None = None
+
+
+_CASTING = ("high_pressure_die_casting", "sand_casting")
+
+
+class ManufacturingProfile(_Model):
+    process: Literal["high_pressure_die_casting", "sand_casting", "laser_powder_bed_fusion"]
+    pull_directions: list[PullDirection] = []
+    draft_inside: Entry | None = None
+    draft_outside: Entry | None = None
+    draft_min_depth: Entry | None = None
+    min_wall: Entry
+    max_wall: Entry | None = None
+    machining_stock: Entry
+    material: MaterialCard
+
+    @model_validator(mode="after")
+    def _casting_rules(self) -> ManufacturingProfile:
+        if self.process in _CASTING:
+            if not self.pull_directions:
+                raise ValueError(f"{self.process} needs its pull directions")
+            if self.draft_inside is None or self.draft_outside is None:
+                raise ValueError(f"{self.process} needs draft_inside and draft_outside")
+        return self
+
+
+class ReferenceValue(_Model):
+    """A published value the designs are set against: band, not limit."""
+
+    source: str = Field(min_length=1)
+    quantity: str = Field(min_length=1)
+    value: str = Field(min_length=1)
+    conditions: str = Field(min_length=1)
+    confidence: str = Field(min_length=1)
+
+
+class Assumption(_Model):
+    id: str = Field(pattern=r"^A\d+$")
+    what: str = Field(min_length=1)
+    value: str = Field(min_length=1)
+    why: str = Field(min_length=1)
+    varied: bool
+
+
+class HousingDesignSpec(_Model):
+    """The contract: one housing design problem at L1, every value with its provenance."""
+
+    schema_version: Literal["0.1"]
+    stage: Stage
+    task: TaskInfo
+    requirement: Requirement
+    interfaces: Interfaces | None = None
+    physics: PhysicsCases | None = None
+    limits: Limits
+    manufacturing: ManufacturingProfile
+    references: list[ReferenceValue] = []
+    assumptions: list[Assumption] = []
+    frozen_hash: str | None = None

@@ -1,0 +1,726 @@
+{
+  "schema_version": "0.1",
+  "stage": "posed",
+  "task": {
+    "id": "kim2024-agricultural-utv-l1-hpdc",
+    "title": "The agricultural electric UTV gearbox of Kim et al. 2024: an L1 housing, high-pressure die cast",
+    "family": "two-stage parallel-axis helical reducer",
+    "level": "L1",
+    "priorities": [],
+    "budget_fe_proofs": 16,
+    "budget_hours": 4.0
+  },
+  "requirement": {
+    "style": "gear_train",
+    "torques": [
+      {
+        "shaft": "input",
+        "kind": "nominal",
+        "direction": "drive",
+        "torque": {
+          "value": {
+            "value": 25.225,
+            "unit": "N·m"
+          },
+          "provenance": {
+            "kind": "assumption",
+            "assumption_id": "A1"
+          },
+          "authority": "engineer_locked",
+          "kind": "hard"
+        }
+      }
+    ],
+    "speeds": [
+      {
+        "shaft": "input",
+        "kind": "rated",
+        "speed": {
+          "value": {
+            "value": 2650,
+            "unit": "rpm"
+          },
+          "provenance": {
+            "kind": "published",
+            "citation": "Kim et al. 2024, Sci Rep 14:4145, doi 10.1038/s41598-024-54606-8, p. 2"
+          },
+          "authority": "engineer_locked",
+          "kind": "hard"
+        }
+      }
+    ],
+    "powers": [
+      {
+        "shaft": "input",
+        "kind": "rated",
+        "power": {
+          "value": {
+            "value": 7,
+            "unit": "kW"
+          },
+          "provenance": {
+            "kind": "published",
+            "citation": "Kim et al. 2024, Sci Rep 14:4145, doi 10.1038/s41598-024-54606-8, p. 2"
+          },
+          "authority": "engineer_locked",
+          "kind": "hard"
+        },
+        "at_speed": {
+          "value": {
+            "value": 2650,
+            "unit": "rpm"
+          },
+          "provenance": {
+            "kind": "published",
+            "citation": "Kim et al. 2024, Sci Rep 14:4145, doi 10.1038/s41598-024-54606-8, p. 2"
+          },
+          "authority": "engineer_locked",
+          "kind": "hard"
+        }
+      }
+    ],
+    "total_ratio": {
+      "value": {
+        "value": 12.37,
+        "unit": "1"
+      },
+      "provenance": {
+        "kind": "published",
+        "citation": "Son et al. 2020, Appl Sci 10:8414, doi 10.3390/app10238414, p. 3"
+      },
+      "authority": "engineer_locked",
+      "kind": "hard"
+    },
+    "ratio_tolerance": {
+      "value": {
+        "value": 0.1,
+        "unit": "%"
+      },
+      "provenance": {
+        "kind": "assumption",
+        "assumption_id": "A2"
+      },
+      "authority": "engineer_locked",
+      "kind": "hard"
+    },
+    "stages": [
+      {
+        "name": "s1",
+        "pinion_shaft": "input",
+        "gear_shaft": "intermediate",
+        "z_pinion": {
+          "value": 14,
+          "provenance": {
+            "kind": "published",
+            "citation": "Kim et al. 2024, Sci Rep 14:4145, doi 10.1038/s41598-024-54606-8, Table 1"
+          },
+          "authority": "engineer_locked",
+          "kind": "hard"
+        },
+        "z_gear": {
+          "value": 46,
+          "provenance": {
+            "kind": "published",
+            "citation": "Kim et al. 2024, Sci Rep 14:4145, doi 10.1038/s41598-024-54606-8, Table 1"
+          },
+          "authority": "engineer_locked",
+          "kind": "hard"
+        },
+        "normal_module": {
+          "value": {
+            "value": 1.75,
+            "unit": "mm"
+          },
+          "provenance": {
+            "kind": "published",
+            "citation": "Kim et al. 2024, Sci Rep 14:4145, doi 10.1038/s41598-024-54606-8, Table 1"
+          },
+          "authority": "engineer_locked",
+          "kind": "hard"
+        },
+        "pressure_angle": {
+          "value": {
+            "value": 20,
+            "unit": "deg"
+          },
+          "provenance": {
+            "kind": "published",
+            "citation": "Kim et al. 2024, Sci Rep 14:4145, doi 10.1038/s41598-024-54606-8, Table 1"
+          },
+          "authority": "engineer_locked",
+          "kind": "hard"
+        },
+        "helix_angle": {
+          "value": {
+            "value": 25,
+            "unit": "deg"
+          },
+          "provenance": {
+            "kind": "published",
+            "citation": "Kim et al. 2024, Sci Rep 14:4145, doi 10.1038/s41598-024-54606-8, Table 1"
+          },
+          "authority": "engineer_locked",
+          "kind": "hard"
+        },
+        "face_width_pinion": {
+          "value": {
+            "value": 16,
+            "unit": "mm"
+          },
+          "provenance": {
+            "kind": "published",
+            "citation": "Kim et al. 2024, Sci Rep 14:4145, doi 10.1038/s41598-024-54606-8, Table 1"
+          },
+          "authority": "engineer_locked",
+          "kind": "hard"
+        },
+        "face_width_gear": {
+          "value": {
+            "value": 16,
+            "unit": "mm"
+          },
+          "provenance": {
+            "kind": "published",
+            "citation": "Kim et al. 2024, Sci Rep 14:4145, doi 10.1038/s41598-024-54606-8, Table 1"
+          },
+          "authority": "engineer_locked",
+          "kind": "hard"
+        },
+        "profile_shift_pinion": {
+          "value": {
+            "value": 0.2,
+            "unit": "1"
+          },
+          "provenance": {
+            "kind": "published",
+            "citation": "Kim et al. 2024, Sci Rep 14:4145, doi 10.1038/s41598-024-54606-8, Table 1"
+          },
+          "authority": "engineer_locked",
+          "kind": "hard"
+        },
+        "profile_shift_gear": {
+          "value": {
+            "value": -0.7299,
+            "unit": "1"
+          },
+          "provenance": {
+            "kind": "published",
+            "citation": "Kim et al. 2024, Sci Rep 14:4145, doi 10.1038/s41598-024-54606-8, Table 1"
+          },
+          "authority": "engineer_locked",
+          "kind": "hard"
+        },
+        "centre_distance": {
+          "value": {
+            "value": 57,
+            "unit": "mm"
+          },
+          "provenance": {
+            "kind": "published",
+            "citation": "Kim et al. 2024, Sci Rep 14:4145, doi 10.1038/s41598-024-54606-8, Table 1"
+          },
+          "authority": "engineer_locked",
+          "kind": "hard"
+        }
+      },
+      {
+        "name": "s2",
+        "pinion_shaft": "intermediate",
+        "gear_shaft": "output",
+        "z_pinion": {
+          "value": 21,
+          "provenance": {
+            "kind": "published",
+            "citation": "Kim et al. 2024, Sci Rep 14:4145, doi 10.1038/s41598-024-54606-8, Table 1"
+          },
+          "authority": "engineer_locked",
+          "kind": "hard"
+        },
+        "z_gear": {
+          "value": 79,
+          "provenance": {
+            "kind": "published",
+            "citation": "Kim et al. 2024, Sci Rep 14:4145, doi 10.1038/s41598-024-54606-8, Table 1"
+          },
+          "authority": "engineer_locked",
+          "kind": "hard"
+        },
+        "normal_module": {
+          "value": {
+            "value": 1.75,
+            "unit": "mm"
+          },
+          "provenance": {
+            "kind": "published",
+            "citation": "Kim et al. 2024, Sci Rep 14:4145, doi 10.1038/s41598-024-54606-8, Table 1"
+          },
+          "authority": "engineer_locked",
+          "kind": "hard"
+        },
+        "pressure_angle": {
+          "value": {
+            "value": 20,
+            "unit": "deg"
+          },
+          "provenance": {
+            "kind": "published",
+            "citation": "Kim et al. 2024, Sci Rep 14:4145, doi 10.1038/s41598-024-54606-8, Table 1"
+          },
+          "authority": "engineer_locked",
+          "kind": "hard"
+        },
+        "helix_angle": {
+          "value": {
+            "value": 25,
+            "unit": "deg"
+          },
+          "provenance": {
+            "kind": "published",
+            "citation": "Kim et al. 2024, Sci Rep 14:4145, doi 10.1038/s41598-024-54606-8, Table 1"
+          },
+          "authority": "engineer_locked",
+          "kind": "hard"
+        },
+        "face_width_pinion": {
+          "value": {
+            "value": 18,
+            "unit": "mm"
+          },
+          "provenance": {
+            "kind": "published",
+            "citation": "Kim et al. 2024, Sci Rep 14:4145, doi 10.1038/s41598-024-54606-8, Table 1"
+          },
+          "authority": "engineer_locked",
+          "kind": "hard"
+        },
+        "face_width_gear": {
+          "value": {
+            "value": 16,
+            "unit": "mm"
+          },
+          "provenance": {
+            "kind": "published",
+            "citation": "Kim et al. 2024, Sci Rep 14:4145, doi 10.1038/s41598-024-54606-8, Table 1"
+          },
+          "authority": "engineer_locked",
+          "kind": "hard"
+        },
+        "profile_shift_pinion": {
+          "value": {
+            "value": 0.2,
+            "unit": "1"
+          },
+          "provenance": {
+            "kind": "published",
+            "citation": "Kim et al. 2024, Sci Rep 14:4145, doi 10.1038/s41598-024-54606-8, Table 1"
+          },
+          "authority": "engineer_locked",
+          "kind": "hard"
+        },
+        "profile_shift_gear": {
+          "value": {
+            "value": 0.0597,
+            "unit": "1"
+          },
+          "provenance": {
+            "kind": "published",
+            "citation": "Kim et al. 2024, Sci Rep 14:4145, doi 10.1038/s41598-024-54606-8, Table 1"
+          },
+          "authority": "engineer_locked",
+          "kind": "hard"
+        },
+        "centre_distance": {
+          "value": {
+            "value": 97,
+            "unit": "mm"
+          },
+          "provenance": {
+            "kind": "published",
+            "citation": "Kim et al. 2024, Sci Rep 14:4145, doi 10.1038/s41598-024-54606-8, Table 1"
+          },
+          "authority": "engineer_locked",
+          "kind": "hard"
+        }
+      }
+    ],
+    "bearings": [],
+    "installation_space": {
+      "kind": "layout_envelope",
+      "clearance": {
+        "value": {
+          "value": 20,
+          "unit": "mm"
+        },
+        "provenance": {
+          "kind": "assumption",
+          "assumption_id": "A3"
+        },
+        "authority": "engineer_locked",
+        "kind": "hard"
+      }
+    }
+  },
+  "limits": {
+    "verdict_rule_version": "v0.1",
+    "mesh_misalignment_share": {
+      "value": {
+        "value": 50,
+        "unit": "%"
+      },
+      "provenance": {
+        "kind": "assumption",
+        "assumption_id": "A6"
+      },
+      "authority": "engineer_locked",
+      "kind": "hard"
+    },
+    "centre_distance_share": {
+      "value": {
+        "value": 50,
+        "unit": "%"
+      },
+      "provenance": {
+        "kind": "assumption",
+        "assumption_id": "A6"
+      },
+      "authority": "engineer_locked",
+      "kind": "hard"
+    },
+    "ovalisation_share": {
+      "value": {
+        "value": 50,
+        "unit": "%"
+      },
+      "provenance": {
+        "kind": "assumption",
+        "assumption_id": "A6"
+      },
+      "authority": "engineer_locked",
+      "kind": "hard"
+    },
+    "bearing_tilt": [
+      {
+        "bearing_type": "tapered_roller",
+        "limit": {
+          "value": {
+            "value": 0.5,
+            "unit": "mrad"
+          },
+          "provenance": {
+            "kind": "standard",
+            "citation": "Shigley, Mechanical Engineering Design, Table 7-2 (rough guideline)",
+            "note": "lower end of 0.5-1.2 mrad"
+          },
+          "authority": "engineer_locked",
+          "kind": "hard"
+        }
+      },
+      {
+        "bearing_type": "cylindrical_roller",
+        "limit": {
+          "value": {
+            "value": 0.8,
+            "unit": "mrad"
+          },
+          "provenance": {
+            "kind": "standard",
+            "citation": "Shigley, Mechanical Engineering Design, Table 7-2 (rough guideline)",
+            "note": "lower end of 0.8-1.2 mrad"
+          },
+          "authority": "engineer_locked",
+          "kind": "hard"
+        }
+      },
+      {
+        "bearing_type": "deep_groove_ball",
+        "limit": {
+          "value": {
+            "value": 1.0,
+            "unit": "mrad"
+          },
+          "provenance": {
+            "kind": "standard",
+            "citation": "Shigley, Mechanical Engineering Design, Table 7-2 (rough guideline)",
+            "note": "lower end of 1-3 mrad"
+          },
+          "authority": "engineer_locked",
+          "kind": "hard"
+        }
+      }
+    ],
+    "order_separation": {
+      "value": {
+        "value": 3,
+        "unit": "%"
+      },
+      "provenance": {
+        "kind": "published",
+        "citation": "Marano et al. 2021, Gear Technology Jan-Feb 2021 (orders at least 3 % apart)"
+      },
+      "authority": "engineer_locked",
+      "kind": "hard"
+    },
+    "order_check_speeds": [
+      {
+        "value": {
+          "value": 2650,
+          "unit": "rpm"
+        },
+        "provenance": {
+          "kind": "assumption",
+          "assumption_id": "A5"
+        },
+        "authority": "engineer_locked",
+        "kind": "hard"
+      }
+    ],
+    "model_margin": {
+      "value": {
+        "value": 25,
+        "unit": "%"
+      },
+      "provenance": {
+        "kind": "published",
+        "citation": "Gutierrez Santiago et al. 2023 and FZG 2022 (model to test 10-25 %), via fastcae research 2026-10-06-gearbox-housing-engineering.md §4",
+        "note": "the top of the measured range"
+      },
+      "authority": "engineer_locked",
+      "kind": "hard"
+    },
+    "objective": "least_mass",
+    "stress": "recorded"
+  },
+  "manufacturing": {
+    "process": "high_pressure_die_casting",
+    "pull_directions": [
+      {
+        "part": "lh",
+        "direction": {
+          "value": {
+            "values": [
+              0,
+              0,
+              1
+            ],
+            "unit": "1"
+          },
+          "provenance": {
+            "kind": "assumption",
+            "assumption_id": "A7"
+          },
+          "authority": "engineer_locked",
+          "kind": "hard"
+        }
+      },
+      {
+        "part": "rh",
+        "direction": {
+          "value": {
+            "values": [
+              0,
+              0,
+              -1
+            ],
+            "unit": "1"
+          },
+          "provenance": {
+            "kind": "assumption",
+            "assumption_id": "A7"
+          },
+          "authority": "engineer_locked",
+          "kind": "hard"
+        }
+      }
+    ],
+    "draft_inside": {
+      "value": {
+        "value": 2,
+        "unit": "deg"
+      },
+      "provenance": {
+        "kind": "standard",
+        "citation": "NADCA Product Specification Standards for Die Castings 2015, Section 4A",
+        "note": "inside surfaces, features at least 1 in deep"
+      },
+      "authority": "engineer_locked",
+      "kind": "hard"
+    },
+    "draft_outside": {
+      "value": {
+        "value": 1,
+        "unit": "deg"
+      },
+      "provenance": {
+        "kind": "standard",
+        "citation": "NADCA Product Specification Standards for Die Castings 2015, Section 4A",
+        "note": "outside surfaces, features at least 1 in deep"
+      },
+      "authority": "engineer_locked",
+      "kind": "hard"
+    },
+    "draft_min_depth": {
+      "value": {
+        "value": 25.4,
+        "unit": "mm"
+      },
+      "provenance": {
+        "kind": "standard",
+        "citation": "NADCA Product Specification Standards for Die Castings 2015, Section 4A"
+      },
+      "authority": "engineer_locked",
+      "kind": "hard"
+    },
+    "min_wall": {
+      "value": {
+        "value": 4,
+        "unit": "mm"
+      },
+      "provenance": {
+        "kind": "engineer",
+        "who": "the engineer",
+        "when": "2026-10-07 11:41",
+        "note": "plan D7 (least member): 4 mm, set by the FE budget on the 8 GB card"
+      },
+      "authority": "engineer_locked",
+      "kind": "hard"
+    },
+    "machining_stock": {
+      "value": {
+        "value": 0.25,
+        "unit": "mm"
+      },
+      "provenance": {
+        "kind": "standard",
+        "citation": "NADCA Product Specification Standards for Die Castings 2015, Section 4A",
+        "note": "normal minimum machining allowance"
+      },
+      "authority": "engineer_locked",
+      "kind": "hard"
+    },
+    "material": {
+      "name": "aluminium housing card (Kim et al. 2024, Table 3, housing LH)",
+      "youngs_modulus": {
+        "value": {
+          "value": 70.93,
+          "unit": "GPa"
+        },
+        "provenance": {
+          "kind": "published",
+          "citation": "Kim et al. 2024, Sci Rep 14:4145, doi 10.1038/s41598-024-54606-8, Table 3, housing LH"
+        },
+        "authority": "engineer_locked",
+        "kind": "hard"
+      },
+      "poisson_ratio": {
+        "value": {
+          "value": 0.3135,
+          "unit": "1"
+        },
+        "provenance": {
+          "kind": "published",
+          "citation": "Kim et al. 2024, Sci Rep 14:4145, doi 10.1038/s41598-024-54606-8, Table 3, housing LH"
+        },
+        "authority": "engineer_locked",
+        "kind": "hard"
+      },
+      "density": {
+        "value": {
+          "value": 2660,
+          "unit": "kg/m3"
+        },
+        "provenance": {
+          "kind": "published",
+          "citation": "Kim et al. 2024, Sci Rep 14:4145, doi 10.1038/s41598-024-54606-8, Table 3, housing LH"
+        },
+        "authority": "engineer_locked",
+        "kind": "hard"
+      },
+      "expansion": {
+        "value": {
+          "value": 23.1,
+          "unit": "µm/(m·K)"
+        },
+        "provenance": {
+          "kind": "published",
+          "citation": "Kim et al. 2024, Sci Rep 14:4145, doi 10.1038/s41598-024-54606-8, Table 3, housing LH"
+        },
+        "authority": "engineer_locked",
+        "kind": "hard"
+      }
+    }
+  },
+  "references": [
+    {
+      "source": "Kim et al. 2024, Sci Rep 14:4145, doi 10.1038/s41598-024-54606-8; Son et al. 2019, Appl Sci 9:4571",
+      "quantity": "housing mass; housing modes",
+      "value": "4.836 kg; 1352.7-2939.0 Hz",
+      "conditions": "7 kW, ratio 12.4, two-stage, aluminium in two halves; modal test, free-free",
+      "confidence": "read in the papers (mass, Table 4 modes)"
+    },
+    {
+      "source": "Jäger and Linde 2025, World Electr Veh J 16:552, Table 2",
+      "quantity": "mass; rotational deformation; first mode",
+      "value": "8.41 kg; 9.34 µm; 1294-1408 Hz across materials",
+      "conditions": "planetary housing, 150 kW, 2400 N·m output; fixed on one side, torque at the other; simulated",
+      "confidence": "read in the paper"
+    },
+    {
+      "source": "Marano et al. 2021, Gear Technology, Table 8",
+      "quantity": "first ten modes",
+      "value": "238-719 Hz",
+      "conditions": "two-stage e-axle on its mountings",
+      "confidence": "via fastcae research (gearbox-housing engineering, High)"
+    },
+    {
+      "source": "Jixie chuandong 2021 (two-speed EV transmission housing)",
+      "quantity": "bearing-hole displacement",
+      "value": "0.085 mm before, 0.07 mm after optimisation",
+      "conditions": "not read in full",
+      "confidence": "abstract only"
+    }
+  ],
+  "assumptions": [
+    {
+      "id": "A1",
+      "what": "input torque",
+      "value": "25.225 N·m = 7 kW / (2650 rpm)",
+      "why": "the paper's '22 Nm' output load conflicts with its 7 kW; the torque is taken from the published power and speed",
+      "varied": true
+    },
+    {
+      "id": "A2",
+      "what": "ratio tolerance",
+      "value": "0.1 %",
+      "why": "the published total ratio (12.37) is rounded; the teeth give 12.36",
+      "varied": true
+    },
+    {
+      "id": "A3",
+      "what": "installation space",
+      "value": "the layout's envelope grown by 20 mm",
+      "why": "no package is published",
+      "varied": true
+    },
+    {
+      "id": "A5",
+      "what": "order-check speed",
+      "value": "2650 rpm, the rated input speed",
+      "why": "no duty spectrum is published",
+      "varied": true
+    },
+    {
+      "id": "A6",
+      "what": "the housing's share of each tolerance",
+      "value": "half",
+      "why": "no public source gives the share",
+      "varied": true
+    },
+    {
+      "id": "A7",
+      "what": "pull directions",
+      "value": "+z for the LH half, -z for the RH half",
+      "why": "the housing is two bolted halves (Kim et al. 2024); drawn from the split",
+      "varied": true
+    }
+  ]
+}
