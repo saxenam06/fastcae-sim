@@ -96,6 +96,34 @@ class BearingSpec(_Model):
     width: Entry | None = None
 
 
+class ShaftEnd(_Model):
+    """One end of a shaft, by the shaft's name and its side along the shafts ("-z" or "+z")."""
+
+    shaft: Name
+    side: Entry
+
+
+class ShaftLayout(_Model):
+    """How the gears and bearings are spaced along each shaft: by gaps (the engineer, 9 Oct
+    00:06). The load tool (GBX-2) stacks each shaft from a datum: the space behind a bearing, the
+    bearing, the gap, the gear (with the gap to a second gear on the same shaft), the gap, the
+    bearing, the space behind. The positions follow; the bearings' widths come from their
+    selection, so the stack goes round with it.
+
+    The space behind a bearing depends on its end (the engineer, 9 Oct 01:06): a closed bore needs
+    only the wall behind it; where the shaft leaves the housing it needs a seal and its seat. The
+    least clearances are what the check holds parts to: along the shafts, for parts on different
+    shafts that overlap seen along the shafts; and radially, from a gear's tips to the wall."""
+
+    bearing_to_gear: Entry
+    behind_bearing: Entry
+    behind_bearing_sealed: Entry | None = None
+    sealed_ends: list[ShaftEnd] = []
+    gear_to_gear: Entry | None = None
+    min_axial_clearance: Entry | None = None
+    min_radial_clearance: Entry | None = None
+
+
 class InstallationSpace(_Model):
     """The space the housing must stay inside: a box, or the layout's envelope plus a clearance."""
 
@@ -117,13 +145,17 @@ _STAGE_NEEDS = ("z_pinion", "z_gear", "normal_module", "pressure_angle", "helix_
 
 
 class Requirement(_Model):
-    """The engineer's input: the duty, the ratio, the gear train or the package, the bearings."""
+    """The engineer's input: the duty, the ratio, the gear train or the package, the bearings.
+
+    Only what can be chosen freely (the engineer, 8 October). The ratio is a requirement only
+    where no teeth are given; the teeth fix it otherwise. A stage's centre distance is an input
+    only where its gear data do not fix it (the validator's consistency.redundant)."""
 
     style: RequirementStyle
     torques: list[TorqueSpec] = Field(min_length=1)
     speeds: list[SpeedSpec] = []
     powers: list[PowerSpec] = []
-    total_ratio: Entry
+    total_ratio: Entry | None = None
     ratio_tolerance: Entry | None = None
     input_output_offset: Entry | None = None
     service_life: Entry | None = None
@@ -131,6 +163,7 @@ class Requirement(_Model):
     gear_quality: Entry | None = None
     stages: list[GearStage] = []
     bearings: list[BearingSpec] = []
+    shaft_layout: ShaftLayout | None = None
     installation_space: InstallationSpace
 
     @model_validator(mode="after")
@@ -253,7 +286,9 @@ class Limits(_Model):
     ovalisation_share: Entry
     bearing_tilt: list[TiltLimit] = Field(min_length=1)
     order_separation: Entry
-    order_check_speeds: list[Entry] = Field(min_length=1)
+    # The duty speed the gear orders are checked at, by its kind ("rated", "maximum", "base"): the
+    # criterion points at the duty's speed instead of copying it (the engineer, 9 Oct 01:06).
+    order_check_at: Entry
     model_margin: Entry
     objective: Literal["least_mass"]
     stress: Literal["recorded"]

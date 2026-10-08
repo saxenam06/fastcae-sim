@@ -5,9 +5,14 @@ Rules, in four groups:
     provenance.*   every assumption an entry points to is listed
     stage.*        posed carries no physics; derived and frozen carry interfaces and physics,
                    every physics value derived by its tool; a frozen contract carries its own hash
-    consistency.*  dimensions; ratio; centre distances; the offset; seats inside the space;
-                   power against torque; unique names; references to seats; unit axes;
-                   bearings against their seats
+    consistency.*  dimensions; no input the other inputs fix (a centre distance the gear data
+                   fix, a ratio the teeth fix); the ratio where no teeth are given; the offset;
+                   seats inside the space; power against torque; unique names; references to
+                   seats, to the duty's speeds and to the shafts; unit axes; bearings against
+                   their seats
+
+A paper's figure for a calculated value is not part of a contract: papers verify the tools once,
+in checks/ (the engineer, 8 October).
 
 The bound (can any design meet this?) needs topology optimisation and is not checked here.
 """
@@ -27,7 +32,6 @@ from zenryx.contract.involute import working_centre_distance
 from zenryx.contract.model import GearStage, HousingDesignSpec
 from zenryx.contract.units import Quantity, Vector
 
-CENTRE_DISTANCE_TOLERANCE_MM = 0.1  # published centre distances are rounded to 0.1-1 mm
 POWER_TOLERANCE = 0.02
 UNIT_VECTOR_TOLERANCE = 1e-6
 
@@ -90,6 +94,12 @@ _DIMENSIONS: dict[str, str] = {
     "profile_shift_pinion": "1",
     "profile_shift_gear": "1",
     "centre_distance": "mm",
+    "bearing_to_gear": "mm",
+    "behind_bearing": "mm",
+    "behind_bearing_sealed": "mm",
+    "gear_to_gear": "mm",
+    "min_axial_clearance": "mm",
+    "min_radial_clearance": "mm",
     "outer_diameter": "mm",
     "width": "mm",
     "box_min": "mm",
@@ -112,7 +122,6 @@ _DIMENSIONS: dict[str, str] = {
     "ovalisation_share": "1",
     "limit": "rad",
     "order_separation": "1",
-    "order_check_speeds": "rad/s",
     "model_margin": "1",
     "draft_inside": "rad",
     "draft_outside": "rad",
@@ -251,53 +260,74 @@ def _check_stage(spec: HousingDesignSpec) -> list[Refusal]:
 
 
 def _stage_geometry(stage: GearStage) -> tuple[int, int, float, float, float, float, float] | None:
-    z1, z2 = _scalar(stage.z_pinion), _scalar(stage.z_gear)
-    mn = _scalar(stage.normal_module)
-    alpha, beta = _scalar(stage.pressure_angle), _scalar(stage.helix_angle)
-    if None in (z1, z2, mn, alpha, beta):
+    """The gear data that fix a stage's centre distance: teeth, normal module, normal pressure
+    angle, helix angle and both profile shifts. None while any is missing; a missing shift leaves
+    the centre distance free (an input), not a zero shift."""
+    values = [
+        _scalar(stage.z_pinion),
+        _scalar(stage.z_gear),
+        _scalar(stage.normal_module),
+        _scalar(stage.pressure_angle),
+        _scalar(stage.helix_angle),
+        _scalar(stage.profile_shift_pinion),
+        _scalar(stage.profile_shift_gear),
+    ]
+    if None in values:
         return None
-    x1 = _scalar(stage.profile_shift_pinion) or 0.0
-    x2 = _scalar(stage.profile_shift_gear) or 0.0
+    z1, z2, mn, alpha, beta, x1, x2 = values
     return int(z1), int(z2), mn, alpha, beta, x1, x2
 
 
 def _check_gear_train(spec: HousingDesignSpec) -> list[Refusal]:
+    """The gear train's inputs, exactly enough: an input the other inputs fix is refused, the
+    ratio must be given where no teeth fix it, and the offset must be one the stages can reach."""
     req = spec.requirement
     out = []
-    ratios = []
     centre_distances = []
     for i, stage in enumerate(req.stages):
         geometry = _stage_geometry(stage)
-        z1, z2 = _scalar(stage.z_pinion), _scalar(stage.z_gear)
-        if z1 and z2:
-            ratios.append(z2 / z1)
         a_given = _scalar(stage.centre_distance)
-        if a_given is not None:
-            centre_distances.append(a_given)
-        if geometry is not None and a_given is not None:
-            a = working_centre_distance(*geometry)
-            if abs(a - a_given) > CENTRE_DISTANCE_TOLERANCE_MM:
-                out.append(
-                    Refusal(
-                        rule="consistency.centre_distance",
-                        entry=f"requirement.stages[{i}].centre_distance",
-                        reason=f"the gears give {a:.3f} mm; the contract states {a_given:.3f} mm "
-                        f"(tolerance {CENTRE_DISTANCE_TOLERANCE_MM} mm)",
-                    )
-                )
-    if ratios and len(ratios) == len(req.stages):
-        product = math.prod(ratios)
-        ratio = _scalar(req.total_ratio)
-        tolerance = _scalar(req.ratio_tolerance) or 1e-9
-        if ratio is not None and abs(product - ratio) > tolerance * ratio:
+        if geometry is None:
+            if a_given is not None:
+                centre_distances.append(a_given)
+            continue
+        a = working_centre_distance(*geometry)
+        centre_distances.append(a)
+        if stage.centre_distance is not None:
             out.append(
                 Refusal(
-                    rule="consistency.ratio",
-                    entry="requirement.total_ratio",
-                    reason=f"the stages give {product:.4f}; the contract states {ratio:.4f} "
-                    f"± {tolerance:.2%}",
+                    rule="consistency.redundant",
+                    entry=f"requirement.stages[{i}].centre_distance",
+                    reason=f"the gear data fix the centre distance at {a:.3f} mm; leave it out",
                 )
             )
+    teeth = [(_scalar(s.z_pinion), _scalar(s.z_gear)) for s in req.stages]
+    if teeth and all(z1 and z2 for z1, z2 in teeth):
+        if req.total_ratio is not None:
+            product = math.prod(z2 / z1 for z1, z2 in teeth)
+            out.append(
+                Refusal(
+                    rule="consistency.redundant",
+                    entry="requirement.total_ratio",
+                    reason=f"the teeth fix the ratio at {product:.4f}; leave it out",
+                )
+            )
+    elif req.total_ratio is None:
+        out.append(
+            Refusal(
+                rule="consistency.ratio",
+                entry="requirement.total_ratio",
+                reason="give the ratio, or every stage's teeth",
+            )
+        )
+    if req.ratio_tolerance is not None and req.total_ratio is None:
+        out.append(
+            Refusal(
+                rule="consistency.redundant",
+                entry="requirement.ratio_tolerance",
+                reason="a tolerance with no ratio to hold it to; leave it out",
+            )
+        )
     offset = _scalar(req.input_output_offset)
     if offset is not None and len(centre_distances) == 2:
         a1, a2 = centre_distances
@@ -433,6 +463,43 @@ def _check_interfaces(spec: HousingDesignSpec) -> list[Refusal]:
     return out
 
 
+def _check_references(spec: HousingDesignSpec) -> list[Refusal]:
+    """What points elsewhere in the contract must find it: the order check names a duty speed by
+    its kind, and each sealed shaft end names a shaft of the gear train and a side."""
+    out = []
+    kind = spec.limits.order_check_at.value
+    if kind not in {s.kind for s in spec.requirement.speeds}:
+        out.append(
+            Refusal(
+                rule="consistency.speed_reference",
+                entry="limits.order_check_at",
+                reason=f"the duty gives no {kind!r} speed to check the gear orders at",
+            )
+        )
+    layout = spec.requirement.shaft_layout
+    if layout is not None:
+        shafts = {s.pinion_shaft for s in spec.requirement.stages}
+        shafts |= {s.gear_shaft for s in spec.requirement.stages}
+        for i, end in enumerate(layout.sealed_ends):
+            if end.shaft not in shafts:
+                out.append(
+                    Refusal(
+                        rule="consistency.shaft_reference",
+                        entry=f"requirement.shaft_layout.sealed_ends[{i}].shaft",
+                        reason=f"no stage's shaft is named {end.shaft!r}",
+                    )
+                )
+            if end.side.value not in ("-z", "+z"):
+                out.append(
+                    Refusal(
+                        rule="consistency.shaft_reference",
+                        entry=f"requirement.shaft_layout.sealed_ends[{i}].side",
+                        reason=f"a shaft's end is its '-z' or '+z' side, not {end.side.value!r}",
+                    )
+                )
+    return out
+
+
 def _check_tilt_limits(spec: HousingDesignSpec) -> list[Refusal]:
     """The judge needs a tilt limit for every seat, so for every bearing type in the contract."""
     limited = {t.bearing_type for t in spec.limits.bearing_tilt}
@@ -456,6 +523,7 @@ def validate(spec: HousingDesignSpec) -> list[Refusal]:
     refusals += _check_gear_train(spec)
     refusals += _check_power(spec)
     refusals += _check_interfaces(spec)
+    refusals += _check_references(spec)
     refusals += _check_tilt_limits(spec)
     return refusals
 

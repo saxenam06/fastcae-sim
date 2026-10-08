@@ -21,12 +21,19 @@ from typing import Any
 from zenryx.contract.entry import Entry, Provenance
 from zenryx.contract.involute import MeshGeometry, mesh_geometry
 from zenryx.contract.model import GearStage, HousingDesignSpec
-from zenryx.contract.train import mesh_frequency, ratio, shaft_speeds, stage_angle
+from zenryx.contract.train import (
+    axis_positions,
+    end_view_overlap,
+    mesh_frequency,
+    ratio,
+    shaft_speeds,
+    stage_angle,
+)
 from zenryx.contract.units import Quantity, Vector
 
 # Short names for the sources the contracts cite, by how their citation starts.
 SHORT: tuple[tuple[str, str], ...] = (
-    ("Ivanov 2018", "Ivanov 2018"),
+    ("the example's reference", "reference housing"),
     ("Hofstetter", "Hofstetter 2018"),
     ("Kim et al. 2024", "Kim 2024"),
     ("Son et al. 2020", "Son 2020"),
@@ -330,6 +337,36 @@ def inputs(spec: HousingDesignSpec) -> list[dict[str, Any]]:
                     "path": "",
                 }
             )
+    # The layout's inputs are its gaps; step 5 places the gears and bearings from them.
+    layout = req.shaft_layout
+    if layout is not None:
+        where = "requirement.shaft_layout"
+        gaps = (
+            ("Gap, bearing to gear", "bearing_to_gear"),
+            ("Space behind a bearing, closed bore", "behind_bearing"),
+            ("Space behind a bearing where its shaft leaves", "behind_bearing_sealed"),
+        )
+        for label, field in gaps:
+            entry = getattr(layout, field)
+            if entry is not None:
+                bearings.append(_row(label, entry, spec, f"{where}.{field}"))
+        if layout.sealed_ends:
+            sides: dict[str, list[str]] = {}
+            for end in layout.sealed_ends:
+                sides.setdefault(end.shaft, []).append(str(end.side.value))
+            first = layout.sealed_ends[0].side
+            text = " · ".join(f"{shaft} {', '.join(s)}" for shaft, s in sides.items())
+            row = _row("Shaft ends that leave the housing", first, spec, f"{where}.sealed_ends")
+            bearings.append({**row, "value": text})
+        rest = (
+            ("Gap between two gears on a shaft", "gear_to_gear"),
+            ("Least clearance along the shafts", "min_axial_clearance"),
+            ("Least clearance, gear tips to the wall", "min_radial_clearance"),
+        )
+        for label, field in rest:
+            entry = getattr(layout, field)
+            if entry is not None:
+                bearings.append(_row(label, entry, spec, f"{where}.{field}"))
 
     card = mfg.material
     proposed = _assumption(spec, "the process")
@@ -379,7 +416,7 @@ def inputs(spec: HousingDesignSpec) -> list[dict[str, Any]]:
         {"group": "Duty", "rows": duty},
         {"group": "Gear train", "rows": train, "table": _gear_table(spec)},
         {"group": "Packaging", "rows": packaging},
-        {"group": "Bearings", "rows": bearings},
+        {"group": "Bearings and layout", "rows": bearings},
         {"group": "Process and material", "rows": process},
     ]
     return [g for g in groups if g["rows"] or g.get("table")]
@@ -442,6 +479,7 @@ def _geometry_table(geometry: list[MeshGeometry]) -> dict[str, Any]:
         ("Base Ø (pinion / gear)", lambda g: _mm_pair(g.base_diameters)),
         ("Working pitch Ø (pinion / gear)", lambda g: _mm_pair(g.working_pitch_diameters)),
         ("Working centre distance", lambda g: f"{g.working_centre_distance:.3f} mm"),
+        ("Tip Ø (pinion / gear)", lambda g: _mm_pair(g.tip_diameters)),
     ]
     return {
         "columns": [f"Stage {i + 1}" for i in range(len(geometry))],
@@ -474,22 +512,60 @@ def _speeds_table(spec: HousingDesignSpec) -> dict[str, Any] | None:
     return {"columns": [], "rows": rows}
 
 
-def _shafts_table(spec: HousingDesignSpec, distances: list[float | None]) -> dict[str, Any] | None:
+def _shafts_table(
+    spec: HousingDesignSpec,
+    distances: list[float | None],
+    geometry: list[MeshGeometry] | None = None,
+) -> dict[str, Any] | None:
     """Step 3's output: the angle at the intermediate shaft that the offset and the two centre
-    distances fix."""
+    distances fix, and, with the gears' tips from step 1, which gears on different shafts overlap
+    seen along the shafts: those must clear each other along the shafts (step 5)."""
     offset = _scalar(spec.requirement.input_output_offset)
     if offset is None or len(distances) != 2 or None in distances:
         return None
     try:
         angle = stage_angle(distances[0], distances[1], offset)
+        centres = axis_positions(distances[0], distances[1], offset)
     except ValueError:  # an offset the two stages cannot reach; the validator refuses it
         return None
     cell = f"{_num(angle, 4)}° at the intermediate shaft"
-    return {"columns": [], "rows": [{"label": "Shaft angle", "cells": [cell]}]}
+    rows = [{"label": "Shaft angle", "cells": [cell]}]
+    if geometry is not None and len(geometry) == 2:
+        rows.append(
+            {
+                "label": "Gears that overlap seen along the shafts",
+                "cells": [_overlaps(spec, geometry, centres)],
+            }
+        )
+    return {"columns": [], "rows": rows}
+
+
+def _overlaps(
+    spec: HousingDesignSpec, geometry: list[MeshGeometry], centres: tuple[Any, Any, Any]
+) -> str:
+    """The non-meshing gears on different shafts whose tip circles overlap seen along the shafts."""
+    s1, s2 = spec.requirement.stages
+    where = {s1.pinion_shaft: centres[0], s1.gear_shaft: centres[1], s2.gear_shaft: centres[2]}
+    gears = [
+        ("stage-1 pinion", s1.pinion_shaft, geometry[0].tip_diameters[0] / 2),
+        ("stage-1 gear", s1.gear_shaft, geometry[0].tip_diameters[1] / 2),
+        ("stage-2 pinion", s2.pinion_shaft, geometry[1].tip_diameters[0] / 2),
+        ("stage-2 gear", s2.gear_shaft, geometry[1].tip_diameters[1] / 2),
+    ]
+    meshing = {("stage-1 pinion", "stage-1 gear"), ("stage-2 pinion", "stage-2 gear")}
+    found = []
+    for i, (na, sa, ra) in enumerate(gears):
+        for nb, sb, rb in gears[i + 1 :]:
+            if sa == sb or (na, nb) in meshing or sa not in where or sb not in where:
+                continue
+            overlap = end_view_overlap(ra, where[sa], rb, where[sb])
+            if overlap > 0:
+                found.append(f"{na} ({sa}) and {nb} ({sb}), by {_num(overlap, 3)} mm")
+    return "; ".join(found) if found else "none"
 
 
 def calculations(spec: HousingDesignSpec) -> list[dict[str, Any]]:
-    """The calculation chain's steps 1-9, from the inputs to the pass lines. Each has its method
+    """The calculation chain's steps 1-10, from the inputs to the pass lines. Each has its method
     pre-selected, what it takes in (an input, or another step's output) and what it gives out.
     Steps 1-3 are computed here by zenryx's functions; the others name the PBI that builds them."""
     out: list[dict[str, Any]] = []
@@ -543,7 +619,11 @@ def calculations(spec: HousingDesignSpec) -> list[dict[str, Any]]:
     # do not fix them is a centre distance an input.
     if geometry:
         distances = [g.working_centre_distance for g in geometry]
-        shafts_in = [_from("working centre distances", 1), _given("input-output offset")]
+        shafts_in = [
+            _given("input-output offset"),
+            _from("working centre distances", 1),
+            _from("tip Ø", 1),
+        ]
     else:
         distances = [_scalar(s.centre_distance) for s in spec.requirement.stages]
         shafts_in = [_given("centre distances"), _given("input-output offset")]
@@ -552,10 +632,11 @@ def calculations(spec: HousingDesignSpec) -> list[dict[str, Any]]:
         "Where the shafts sit",
         "Triangle of the three axes",
         "law of cosines",
-        "zenryx.contract.train.stage_angle",
+        "zenryx.contract.train.stage_angle · axis_positions · end_view_overlap",
         shafts_in,
-        "the angle between the two stages, and so the three shafts' places in the plane",
-        _shafts_table(spec, distances),
+        "the angle between the two stages, the three shafts' places in the plane, and the gears "
+        "that overlap seen along the shafts",
+        _shafts_table(spec, distances, geometry),
         plan="needs the offset",
     )
     step(
@@ -574,18 +655,28 @@ def calculations(spec: HousingDesignSpec) -> list[dict[str, Any]]:
         "the tangential, radial and axial force at each mesh, in every load case",
         plan="GBX-1",
     )
+    # Steps 5 to 8 go round: the layout needs the bearings' widths, the loads need the layout, the
+    # shaft sections need the loads, and the bearings need the loads and the shaft's diameter. From
+    # a first guess they settle in two or three passes (Shigley Ch. 18).
     step(
         5,
-        "Spacing along each shaft",
-        "Face widths, bearing widths and gaps",
-        "Maciejczyk & Zdziennicki · Shigley",
+        "Layout along each shaft",
+        "A stack of widths and gaps from a datum",
+        "Shigley §18-4 · Maciejczyk & Zdziennicki Ch. 3",
         "the load tool (GBX-2)",
         [
             _given("face widths"),
-            _given("gaps between gears and bearings (to be assumed)"),
-            _from("bearing widths", 7),
+            _given("bearing arrangement"),
+            _given("gap, bearing to gear"),
+            _given("space behind a bearing, closed bore or sealed"),
+            _given("shaft ends that leave the housing"),
+            _given("gap between two gears on a shaft"),
+            _given("least clearance along the shafts"),
+            _from("gears that overlap seen along the shafts", 3),
+            _from("bearing widths (a first guess, then step 8's)", 8),
         ],
-        "where each gear and bearing sits along its shaft",
+        "each gear's and bearing's centre along its shaft, from the datum; and every pair that "
+        "overlaps seen along the shafts checked against the least clearance",
         plan="GBX-2",
     )
     step(
@@ -598,43 +689,61 @@ def calculations(spec: HousingDesignSpec) -> list[dict[str, Any]]:
             _from("working pitch Ø (the axial force's lever)", 1),
             _from("shaft angle (the forces' directions)", 3),
             _from("tangential, radial and axial forces", 4),
-            _from("gear and bearing positions on each shaft", 5),
+            _from("gear and bearing centres on each shaft", 5),
         ],
         "each seat's radial and axial force, in every load case",
         plan="GBX-2",
     )
     step(
         7,
-        "Bearing sizes",
-        "Rating life L10",
-        "ISO 281 · Maciejczyk & Zdziennicki",
+        "Shaft sections",
+        "Strength in bending and torsion; stiffness: deflection and slope",
+        "Shigley Ch. 7 · Maciejczyk & Zdziennicki Ch. 3",
+        "the load tool (GBX-3)",
+        [
+            _given("peak drive, reverse and regeneration torques"),
+            _given("shaft material (to be assumed)"),
+            _from("tangential, radial and axial forces", 4),
+            _from("gear and bearing centres on each shaft", 5),
+            _from("each seat's radial and axial force", 6),
+        ],
+        "each shaft's diameter at its seats and gears, and its deflection and slope there",
+        plan="GBX-3",
+    )
+    step(
+        8,
+        "Bearing selection",
+        "Rating life L10, with the bore, the load capacity and the arrangement",
+        "ISO 281 · Shigley Ch. 11 · Maciejczyk & Zdziennicki",
         "the load tool (GBX-3)",
         [
             _given("service life"),
             _given("bearing arrangement"),
             _from("shaft speeds", 2),
             _from("each seat's radial and axial force", 6),
+            _from("shaft diameter at each seat", 7),
         ],
-        "each seat's bearing, and so its outside diameter and width",
+        "each seat's catalogue bearing: its bore, width and outside Ø, and a tapered one's load "
+        "centre",
         plan="GBX-3",
     )
     step(
-        8,
+        9,
         "Derive and freeze",
         "Every derived value stamped with its tool, version and inputs",
         "the contract's rules",
         "the load tool (GBX-4)",
         [
             _from("shaft angle", 3),
-            _from("bearing positions on each shaft", 5),
+            _from("bearing centres on each shaft", 5),
             _from("each seat's radial and axial force", 6),
-            _from("each seat's bearing, its outside Ø and width", 7),
+            _from("each seat's bearing, its outside Ø and width", 8),
         ],
         "the seats and load cases, stamped; the task frozen with its hash",
         plan="GBX-4",
     )
     step(
-        9,
+        10,
         "The pass lines in numbers",
         "Gear tolerance × the housing's share",
         "JGMA 1102-01 · Shigley · Marano 2021",
@@ -647,12 +756,18 @@ def calculations(spec: HousingDesignSpec) -> list[dict[str, Any]]:
             _given("face widths"),
             _from("reference Ø", 1),
             _from("mesh frequencies", 2),
-            _from("each seat's bearing type", 7),
+            _from("each seat's bearing type", 8),
         ],
         "the alignment, tilt and frequency limits every design is judged by",
         plan="PHY, the judge",
     )
     return out
+
+
+def _check_speed(spec: HousingDesignSpec):
+    """The duty speed the gear orders are checked at: the criterion names it by its kind."""
+    kind = spec.limits.order_check_at.value
+    return next((s for s in spec.requirement.speeds if s.kind == kind), None)
 
 
 def criteria(spec: HousingDesignSpec) -> list[dict[str, str]]:
@@ -662,7 +777,9 @@ def criteria(spec: HousingDesignSpec) -> list[dict[str, str]]:
         f"{TILT_WORD.get(t.bearing_type, t.bearing_type)} {_text(t.limit.value)}"
         for t in lim.bearing_tilt
     )
-    speeds = " and ".join(_text(s.value) for s in lim.order_check_speeds)
+    check = _check_speed(spec)
+    kind = lim.order_check_at.value
+    speeds = f"the {kind} speed ({_text(check.speed.value)})" if check else f"the {kind} speed"
     share = source(lim.mesh_misalignment_share.provenance, spec)
     return [
         {
@@ -708,13 +825,11 @@ def to_beat(spec: HousingDesignSpec) -> list[dict[str, str]]:
     ]
     separation = _scalar(spec.limits.order_separation) or 0.03
     meshes = []
-    if teeth and len(teeth) == len(req.stages):
-        for check in spec.limits.order_check_speeds:
-            rpm = _scalar(check) * 60 / (2 * 3.141592653589793)
-            speeds = shaft_speeds(rpm, teeth)
-            meshes += [
-                (i + 1, rpm, mesh_frequency(z_p, speeds[i])) for i, (z_p, _) in enumerate(teeth)
-            ]
+    check = _check_speed(spec)
+    if check is not None and teeth and len(teeth) == len(req.stages):
+        rpm = _scalar(check.speed) * 60 / (2 * math.pi)
+        speeds = shaft_speeds(rpm, teeth)
+        meshes = [(i + 1, rpm, mesh_frequency(z_p, speeds[i])) for i, (z_p, _) in enumerate(teeth)]
     out = []
     for ref in spec.references:
         note = ""

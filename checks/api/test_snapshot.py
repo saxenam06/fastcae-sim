@@ -29,7 +29,7 @@ def every_example() -> dict:
     files = [
         EXAMPLES / name
         for name in (
-            "ivanov2018_posed.json",
+            "ev_reducer_posed.json",
             "hofstetter2018_posed.json",
             "agri_ev_gearbox_posed.json",
             "textbook_two_bearing_derived.json",
@@ -39,7 +39,7 @@ def every_example() -> dict:
 
 
 def test_the_product_shows_one_contract_the_first(payload):
-    assert [c["id"] for c in payload["contracts"]] == ["ivanov2018-l1"]
+    assert [c["id"] for c in payload["contracts"]] == ["ev-reducer-l1"]
 
 
 def test_a_contract_carries_its_hash_stage_and_verdict(every_example):
@@ -53,34 +53,48 @@ def test_a_contract_carries_its_hash_stage_and_verdict(every_example):
 def test_only_the_derived_contract_is_ready_to_freeze(every_example):
     ready = {c["id"]: c["freeze"]["ready"] for c in every_example["contracts"]}
     assert ready == {
-        "ivanov2018-l1": False,
+        "ev-reducer-l1": False,
         "hofstetter2018-l1-hpdc": False,
         "kim2024-agricultural-utv-l1-hpdc": False,
         "textbook-two-bearing": True,
     }
-    posed = next(c for c in every_example["contracts"] if c["id"] == "ivanov2018-l1")
+    posed = next(c for c in every_example["contracts"] if c["id"] == "ev-reducer-l1")
     assert {r["rule"] for r in posed["freeze"]["refusals"]} == {"stage.derived_needs_physics"}
 
 
-def test_the_page_shows_ivanovs_gear_train_with_short_sources(payload):
+def test_the_page_shows_the_gear_train_as_the_users_requirement(payload):
+    """The user brings the gear train: every value of it reads "you", with no paper named."""
     page = payload["contracts"][0]["page"]
     train = next(g for g in page["inputs"] if g["group"] == "Gear train")
     assert train["table"]["columns"] == ["Stage 1", "Stage 2"]
     teeth = next(r for r in train["table"]["rows"] if r["label"].startswith("Teeth"))
     assert [c["value"] for c in teeth["cells"]] == ["25 / 51", "23 / 81"]
-    assert {c["source"] for c in teeth["cells"]} == {"Ivanov 2018"}
+    assert {c["source"] for c in teeth["cells"]} == {"you"}
     widths = next(r for r in train["table"]["rows"] if r["label"].startswith("Face width"))
     assert widths["cells"][0]["value"] == "16.5 / 15.5 mm"
+    # 30 degrees on both stages, the engineer's (8 Oct 23:23): no longer an assumption.
     helix = next(r for r in train["table"]["rows"] if r["label"] == "Helix angle")
-    assert [c["source"] for c in helix["cells"]] == ["Ivanov 2018", "assumed"]
+    assert [c["source"] for c in helix["cells"]] == ["you", "you"]
     # Each stage names where its column comes from; a cell is marked only where it differs.
     sources = train["table"]["sources"]
-    assert [s["source"] for s in sources] == ["Ivanov 2018, Fig. 24", "Ivanov 2018, Fig. 25"]
-    assert {s["kind"] for s in sources} == {"published"}
-    assert [c["own"] for c in helix["cells"]] == [False, True]
-    assert not any(c["own"] for c in teeth["cells"])
+    assert [s["source"] for s in sources] == ["you", "you"]
+    assert {s["kind"] for s in sources} == {"engineer"}
+    assert not any(c["own"] for row in train["table"]["rows"] for c in row["cells"])
     labels = [r["label"] for r in train["table"]["rows"]]
     assert "Normal pressure angle" in labels
+
+
+def test_the_product_contract_names_no_paper(payload):
+    """The example's origin is in the docs; the contract and its page name no paper as its source.
+    An assumption may cite a reference, never say anything about a person."""
+    contract = payload["contracts"][0]
+    page = json.dumps(contract["page"], ensure_ascii=False)
+    for word in ("Ivanov", "KTH", "AVL", "Scribd", "thesis"):
+        assert word not in contract["json"], word
+        assert word not in page, word
+    for a in contract["assumptions"]:
+        text = f"{a['what']} {a['value']} {a['why']}"
+        assert not re.search(r"\b(he|him|his|she|her|hers)\b", text, re.IGNORECASE), a["id"]
 
 
 def test_no_input_is_one_the_other_inputs_fix(every_example):
@@ -100,7 +114,7 @@ def test_no_input_is_one_the_other_inputs_fix(every_example):
             checked += 1
         if all(contract_page._gear_data_complete(s) for s in stages):
             assert "Centre distance" not in table, contract["id"]
-    assert checked >= 2  # Ivanov's and Kim's gear trains
+    assert checked >= 2  # the EV reducer's and Kim's gear trains
 
 
 def test_the_materials_properties_come_with_it(payload):
@@ -123,17 +137,59 @@ def test_the_inputs_hold_only_what_is_given_or_assumed(every_example):
 
 def test_the_calculations_are_the_chains_steps_each_with_what_it_takes_and_gives(payload):
     steps = payload["contracts"][0]["page"]["calculations"]
-    assert [s["step"] for s in steps] == list(range(1, 10))
-    assert [s["status"] for s in steps] == ["computed"] * 3 + ["planned"] * 6
+    assert [s["step"] for s in steps] == list(range(1, 11))
+    assert [s["status"] for s in steps] == ["computed"] * 3 + ["planned"] * 7
     for s in steps:
         assert s["quantity"] and s["method"] and s["by"] and s["takes_in"] and s["gives"]
         for item in s["takes_in"]:
             assert item["name"]
-            assert item["step"] is None or (1 <= item["step"] <= 9 and item["step"] != s["step"])
+            assert item["step"] is None or (
+                1 <= item["step"] <= len(steps) and item["step"] != s["step"]
+            )
         if s["status"] == "computed":
             assert s["table"]["rows"] and s["plan"] == ""
         else:
             assert s["table"] is None and s["plan"]
+
+
+def test_the_bearings_card_holds_the_layouts_gaps(payload):
+    """The gaps are the layout's inputs (the engineer, 9 Oct 00:06): they sit with the bearing
+    arrangement, and step 5 takes them in to place the gears and bearings. Behind a bearing, a
+    closed bore and a shaft that leaves the housing need different room (01:06)."""
+    page = payload["contracts"][0]["page"]
+    bearings = next(g for g in page["inputs"] if g["group"] == "Bearings and layout")
+    rows = {r["label"]: r for r in bearings["rows"]}
+    assert list(rows) == [
+        "Arrangement",
+        "Gap, bearing to gear",
+        "Space behind a bearing, closed bore",
+        "Space behind a bearing where its shaft leaves",
+        "Shaft ends that leave the housing",
+        "Gap between two gears on a shaft",
+        "Least clearance along the shafts",
+        "Least clearance, gear tips to the wall",
+    ]
+    assert rows["Gap, bearing to gear"]["value"] == "12.7 mm"
+    assert rows["Space behind a bearing where its shaft leaves"]["value"] == "11 mm"
+    assert rows["Shaft ends that leave the housing"]["value"] == "input -z · output -z, +z"
+    assert {rows[k]["source"] for k in rows} == {"assumed"}
+    layout = next(s for s in page["calculations"] if s["quantity"] == "Layout along each shaft")
+    names = {i["name"] for i in layout["takes_in"] if i["step"] is None}
+    assert {"gap, bearing to gear", "least clearance along the shafts"} <= names
+    assert {"name": "gears that overlap seen along the shafts", "step": 3} in layout["takes_in"]
+
+
+def test_the_shaft_sections_come_before_the_bearings_that_must_fit_them(payload):
+    """A bearing's bore must fit its shaft, so the shaft sections (strength and stiffness) come
+    before the bearing selection, inside the loop with the layout and the loads."""
+    steps = {s["quantity"]: s for s in payload["contracts"][0]["page"]["calculations"]}
+    sections, selection = steps["Shaft sections"], steps["Bearing selection"]
+    assert "stiffness" in sections["method"]
+    assert {"name": "shaft diameter at each seat", "step": sections["step"]} in selection[
+        "takes_in"
+    ]
+    layout = steps["Layout along each shaft"]
+    assert any(i["step"] == selection["step"] for i in layout["takes_in"])
 
 
 def test_step_one_gives_the_gear_geometry_from_the_given_gear_data(payload):
@@ -170,10 +226,23 @@ def test_the_shafts_sit_where_the_gears_run_and_the_offset_puts_them(payload):
     assert ratio["cells"] == ["7.1843"]
     assert any("1,127 Hz" in c for r in speeds["table"]["rows"] for c in r["cells"])
     assert shafts["takes_in"] == [
-        {"name": "working centre distances", "step": 1},
         {"name": "input-output offset", "step": None},
+        {"name": "working centre distances", "step": 1},
+        {"name": "tip Ø", "step": 1},
     ]
-    assert shafts["table"]["rows"][0]["cells"][0].startswith("103.1°")
+    rows = {r["label"]: r["cells"][0] for r in shafts["table"]["rows"]}
+    assert rows["Shaft angle"].startswith("103.1°")
+    # The output wheel reaches over the stage-1 wheel seen along the shafts: they must clear
+    # each other along the shafts instead (step 5).
+    assert rows["Gears that overlap seen along the shafts"] == (
+        "stage-1 gear (intermediate) and stage-2 gear (output), by 31.4 mm"
+    )
+
+
+def test_the_gear_orders_are_checked_at_the_duty_speed_it_names(payload):
+    page = payload["contracts"][0]["page"]
+    orders = next(c for c in page["criteria"] if c["label"] == "Order separation")
+    assert orders["value"] == "at least 3 % at the rated speed (6,000 rpm)"
 
 
 def test_the_page_points_out_a_published_mode_on_a_mesh_frequency(payload):

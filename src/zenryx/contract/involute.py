@@ -11,6 +11,8 @@ ISO 21771):
     db            = d cos(alpha_t)                                base diameter
     dw            = db / cos(alpha_w)                             working pitch diameter
     a             = (dw1 + dw2) / 2                               working centre distance
+    da            = d + 2 mn (1 + x)                              tip diameter (full addendum; any
+                                                                  tip shortening left out)
 
 The validator checks a contract's given centre distance against a; the contract page shows the
 rest; the load tool (GBX-1) takes the forces at the working pitch circle.
@@ -52,6 +54,7 @@ class MeshGeometry:
     base_diameters: tuple[float, float]
     working_pitch_diameters: tuple[float, float]
     working_centre_distance: float
+    tip_diameters: tuple[float, float]
 
 
 def mesh_geometry(
@@ -77,6 +80,10 @@ def mesh_geometry(
         base_diameters=(db1, db2),
         working_pitch_diameters=(dw1, dw2),
         working_centre_distance=(dw1 + dw2) / 2.0,
+        tip_diameters=(
+            d1 + 2.0 * normal_module * (1.0 + x1),
+            d2 + 2.0 * normal_module * (1.0 + x2),
+        ),
     )
 
 

@@ -508,32 +508,15 @@
       "authority": "engineer_locked",
       "kind": "hard"
     },
-    "order_check_speeds": [
-      {
-        "value": {
-          "value": 7500,
-          "unit": "rpm"
-        },
-        "provenance": {
-          "kind": "assumption",
-          "assumption_id": "A5"
-        },
-        "authority": "engineer_locked",
-        "kind": "hard"
+    "order_check_at": {
+      "value": "maximum",
+      "provenance": {
+        "kind": "assumption",
+        "assumption_id": "A5"
       },
-      {
-        "value": {
-          "value": 15000,
-          "unit": "rpm"
-        },
-        "provenance": {
-          "kind": "assumption",
-          "assumption_id": "A5"
-        },
-        "authority": "engineer_locked",
-        "kind": "hard"
-      }
-    ],
+      "authority": "engineer_locked",
+      "kind": "hard"
+    },
     "model_margin": {
       "value": {
         "value": 25,
@@ -770,9 +753,9 @@
     },
     {
       "id": "A5",
-      "what": "order-check speeds",
-      "value": "7500 and 15000 rpm at the input",
-      "why": "no duty spectrum is published; half and full of the maximum speed",
+      "what": "order-check speed",
+      "value": "the maximum input speed (15000 rpm)",
+      "why": "no duty spectrum is published; one check speed (the engineer, 9 Oct)",
       "varied": true
     },
     {

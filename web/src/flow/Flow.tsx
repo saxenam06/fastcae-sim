@@ -87,7 +87,7 @@ const STEPS: Step[] = [
 const NEXT: { tool: string; what: string; unlocks: string }[] = [
   {
     tool: "GBX-1…4",
-    what: "the load tool: gear forces (1); shaft spacing and bearing loads (2); bearing sizes (3); derive and freeze (4)",
+    what: "the load tool: gear forces (1); layout and bearing loads (2); shaft sections and bearing selection (3); derive and freeze (4)",
     unlocks: "the contract derived, then frozen",
   },
   { tool: "PHY-1", what: "the judge's FE solve: statics, then modes", unlocks: "grades" },

@@ -73,7 +73,7 @@ def limits():
             )
         ],
         "order_separation": standard(qty(3, "%"), "Marano et al. 2021"),
-        "order_check_speeds": [assumed(qty(15000, "rpm"), "A5")],
+        "order_check_at": assumed("maximum", "A5"),
         "model_margin": standard(qty(25, "%"), "Gutierrez Santiago et al. 2023"),
         "objective": "least_mass",
         "stress": "recorded",
@@ -138,6 +138,9 @@ def minimal_posed():
                     "torque": published(qty(366, "N·m")),
                 }
             ],
+            "speeds": [
+                {"shaft": "input", "kind": "maximum", "speed": assumed(qty(15000, "rpm"), "A5")}
+            ],
             "total_ratio": published(qty(9.32, "1")),
             "ratio_tolerance": published(qty(1, "%")),
             "input_output_offset": published(qty(165, "mm")),
@@ -152,7 +155,8 @@ def minimal_posed():
     }
 
 
-def stage(name, pinion_shaft, gear_shaft, z1, z2, mn, x1, x2, a, beta=25.0, alpha=20.0):
+def stage(name, pinion_shaft, gear_shaft, z1, z2, mn, x1, x2, beta=25.0, alpha=20.0):
+    """A stage with its full gear data, which fix its centre distance: so it carries none."""
     test = "test data"
     return {
         "name": name,
@@ -165,7 +169,6 @@ def stage(name, pinion_shaft, gear_shaft, z1, z2, mn, x1, x2, a, beta=25.0, alph
         "helix_angle": published(qty(beta, "deg"), test),
         "profile_shift_pinion": published(qty(x1, "1"), test),
         "profile_shift_gear": published(qty(x2, "1"), test),
-        "centre_distance": published(qty(a, "mm"), test),
     }
 
 
@@ -176,11 +179,11 @@ def gear_train_posed():
     req = data["requirement"]
     req["style"] = "gear_train"
     req["stages"] = [
-        stage("s1", "input", "intermediate", 14, 46, 1.75, 0.2, -0.7299, 57.0),
-        stage("s2", "intermediate", "output", 21, 79, 1.75, 0.2, 0.0597, 97.0),
+        stage("s1", "input", "intermediate", 14, 46, 1.75, 0.2, -0.7299),
+        stage("s2", "intermediate", "output", 21, 79, 1.75, 0.2, 0.0597),
     ]
-    req["total_ratio"] = published(qty(12.36, "1"), "test data")
-    req["ratio_tolerance"] = published(qty(0.5, "%"), "test data")
+    # The teeth fix the ratio: it is no input here.
+    del req["total_ratio"], req["ratio_tolerance"]
     req["input_output_offset"] = published(qty(120, "mm"), "test data")
     req["torques"] = [
         {
@@ -193,6 +196,7 @@ def gear_train_posed():
     req["speeds"] = [
         {"shaft": "input", "kind": "rated", "speed": published(qty(2650, "rpm"), "test data")}
     ]
+    data["limits"]["order_check_at"] = published("rated", "test data")
     req["powers"] = [
         {
             "shaft": "input",
@@ -225,9 +229,8 @@ def two_bearing_derived():
     req = data["requirement"]
     req["style"] = "gear_train"
     mn = 60.0 * 0.9063077870366499 / 20  # so that the pinion's pitch diameter is 60 mm
-    req["stages"] = [stage("s1", "pinion", "wheel", 20, 40, mn, 0.0, 0.0, 90.0)]
-    req["total_ratio"] = published(qty(2.0, "1"), "test data")
-    req["ratio_tolerance"] = published(qty(0.1, "%"), "test data")
+    req["stages"] = [stage("s1", "pinion", "wheel", 20, 40, mn, 0.0, 0.0)]
+    del req["total_ratio"], req["ratio_tolerance"]
     req["torques"] = [
         {
             "shaft": "pinion",

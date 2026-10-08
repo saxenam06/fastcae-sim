@@ -87,7 +87,7 @@ export interface Reference {
 
 /** Where a value came from, in two words, with the full text for the hover. */
 export interface Sourced {
-  /** A short label: "Ivanov 2018", "Shigley", "assumed", "you", "calculated". */
+  /** A short label: "Shigley", "assumed", "you", "calculated". */
   source: string;
   /** The provenance kind, for the label's style; empty where none applies. */
   kind: ProvenanceKind | "";

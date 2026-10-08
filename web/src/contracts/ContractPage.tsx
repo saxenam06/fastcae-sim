@@ -73,7 +73,8 @@ export function ContractPage({ contract, snap }: { contract: ContractView; snap:
             </tbody>
             <caption>
               Each step names what it takes: inputs from above, and other steps' outputs under the step they
-              come from. Steps 5, 6 and 7 go round, from a first guess, until the bearing sizes stop changing.
+              come from. Steps 5 to 8 go round, from a first guess, until the layout and the selected bearings
+              agree.
             </caption>
           </table>
         </Section>

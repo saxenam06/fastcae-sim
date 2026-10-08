@@ -3,8 +3,8 @@
     uv run python checks/data/contracts/make_examples.py
 
 Four contracts:
-    ivanov2018_posed.json             the first contract: gear-train style, from Ivanov 2018 (KTH,
-                                      for AVL), its gaps filled from the best sources and listed
+    ev_reducer_posed.json             the product's contract: an EV two-stage reducer, gear-train
+                                      style, the engineer's requirements, its gaps assumed, listed
     hofstetter2018_posed.json         package style, from Hofstetter et al. 2018 (Tables 2 and 3)
     agri_ev_gearbox_posed.json        gear-train style, from Kim et al. 2024 (Tables 1 and 3)
     textbook_two_bearing_derived.json derived stage: one gear between two bearings (GHE §6.2)
@@ -12,6 +12,11 @@ Four contracts:
 Every value is published (with its table), standard (with its clause), the engineer's (who and
 when), or an assumption listed in the contract. Nothing comes from GRC. The tables were re-read
 from the papers' PDFs on 8 October 2026 (pypdf), not from summaries.
+
+The product's contract names no paper: its requirements are the engineer's. The example they
+follow is Ivanov 2018 (MSc thesis, KTH, TRITA-ITM-EX 2018:724, for AVL Sweden), as the docs
+record; its reference housing is the design to beat. The other three are the validator's
+fixtures and keep their papers' citations.
 """
 
 from __future__ import annotations
@@ -25,7 +30,6 @@ HERE = Path(__file__).parent
 
 HOF = "Hofstetter et al. 2018, Forsch Ingenieurwes 82:361-370"
 KIM = "Kim et al. 2024, Sci Rep 14:4145, doi 10.1038/s41598-024-54606-8"
-SON20 = "Son et al. 2020, Appl Sci 10:8414, doi 10.3390/app10238414"
 NADCA = "NADCA Product Specification Standards for Die Castings 2015, Section 4A"
 SHIGLEY = "Shigley, Mechanical Engineering Design, Table 7-2 (rough guideline)"
 MARANO = "Marano et al. 2021, Gear Technology Jan-Feb 2021 (orders at least 3 % apart)"
@@ -39,10 +43,9 @@ GHE = (
     "eq. 5-29 (the report's own arithmetic, tagged Inferred)"
 )
 D7 = "plan D7 (least member): 4 mm, set by the FE budget on the 8 GB card"
-IVA = (
-    "Ivanov 2018, Gearbox Housing Design - Topology Optimization through Generative Design, "
-    "MSc thesis, KTH, TRITA-ITM-EX 2018:724, for AVL Sweden (read from a Scribd copy)"
-)
+# The design to beat in the product's contract: the example's own housing (its origin is in the
+# docs, not on the page).
+REFERENCE = "the example's reference housing"
 
 
 def qty(value, unit):
@@ -101,7 +104,10 @@ def assumption(aid, what, value, why, varied=True):
     return {"id": aid, "what": what, "value": value, "why": why, "varied": varied}
 
 
-def limits(check_speeds):
+def limits(check_at, margin=None):
+    """The pass criteria. The gear orders are checked at one duty speed, named by its kind
+    ("rated", "maximum"), so the criterion points at the duty instead of copying its number.
+    The model margin is the measured range's top unless the engineer set it."""
     return {
         "verdict_rule_version": "v0.1",
         "mesh_misalignment_share": asm(qty(50, "%"), "A6"),
@@ -122,8 +128,8 @@ def limits(check_speeds):
             },
         ],
         "order_separation": pub(qty(3, "%"), MARANO),
-        "order_check_speeds": check_speeds,
-        "model_margin": pub(qty(25, "%"), MARGIN, "the top of the measured range"),
+        "order_check_at": check_at,
+        "model_margin": margin or pub(qty(25, "%"), MARGIN, "the top of the measured range"),
         "objective": "least_mass",
         "stress": "recorded",
     }
@@ -252,9 +258,7 @@ def hofstetter2018_posed():
                 "clearance": asm(qty(20, "mm"), "A3"),
             },
         },
-        "limits": limits(
-            [asm(qty(7500, "rpm"), "A5"), asm(qty(15000, "rpm"), "A5")],
-        ),
+        "limits": limits(asm("maximum", "A5")),
         "manufacturing": manufacturing(
             [
                 {"part": "main", "direction": asm(vec(0, 0, 1, "1"), "A7")},
@@ -284,9 +288,9 @@ def hofstetter2018_posed():
             ),
             assumption(
                 "A5",
-                "order-check speeds",
-                "7500 and 15000 rpm at the input",
-                "no duty spectrum is published; half and full of the maximum speed",
+                "order-check speed",
+                "the maximum input speed (15000 rpm)",
+                "no duty spectrum is published; one check speed (the engineer, 9 Oct)",
             ),
             assumption(
                 "A6",
@@ -313,7 +317,10 @@ def hofstetter2018_posed():
 def agri_ev_gearbox_posed():
     t1 = f"{KIM}, Table 1"
 
-    def gear_stage(name, pinion_shaft, gear_shaft, z1, z2, b1, b2, x1, x2, a):
+    # The gear data fix each centre distance (57 and 97 mm in Table 1) and the teeth fix the ratio
+    # (12.37 in Son et al. 2020): neither is an input. The paper's figures verify the involute code
+    # in checks/contract/test_involute.py instead.
+    def gear_stage(name, pinion_shaft, gear_shaft, z1, z2, b1, b2, x1, x2):
         return {
             "name": name,
             "pinion_shaft": pinion_shaft,
@@ -327,7 +334,6 @@ def agri_ev_gearbox_posed():
             "face_width_gear": pub(qty(b2, "mm"), t1),
             "profile_shift_pinion": pub(qty(x1, "1"), t1),
             "profile_shift_gear": pub(qty(x2, "1"), t1),
-            "centre_distance": pub(qty(a, "mm"), t1),
         }
 
     omega = 2650 * 2 * math.pi / 60
@@ -359,11 +365,9 @@ def agri_ev_gearbox_posed():
                     "at_speed": pub(qty(2650, "rpm"), f"{KIM}, p. 2"),
                 }
             ],
-            "total_ratio": pub(qty(12.37, "1"), f"{SON20}, p. 3"),
-            "ratio_tolerance": asm(qty(0.1, "%"), "A2"),
             "stages": [
-                gear_stage("s1", "input", "intermediate", 14, 46, 16, 16, 0.2, -0.7299, 57),
-                gear_stage("s2", "intermediate", "output", 21, 79, 18, 16, 0.2, 0.0597, 97),
+                gear_stage("s1", "input", "intermediate", 14, 46, 16, 16, 0.2, -0.7299),
+                gear_stage("s2", "intermediate", "output", 21, 79, 18, 16, 0.2, 0.0597),
             ],
             "bearings": [],
             "installation_space": {
@@ -371,7 +375,7 @@ def agri_ev_gearbox_posed():
                 "clearance": asm(qty(20, "mm"), "A3"),
             },
         },
-        "limits": limits([asm(qty(2650, "rpm"), "A5")]),
+        "limits": limits(asm("rated", "A5")),
         "manufacturing": manufacturing(
             [
                 {"part": "lh", "direction": asm(vec(0, 0, 1, "1"), "A7")},
@@ -388,12 +392,6 @@ def agri_ev_gearbox_posed():
                 "from the published power and speed",
             ),
             assumption(
-                "A2",
-                "ratio tolerance",
-                "0.1 %",
-                "the published total ratio (12.37) is rounded; the teeth give 12.36",
-            ),
-            assumption(
                 "A3",
                 "installation space",
                 "the layout's envelope grown by 20 mm",
@@ -402,7 +400,7 @@ def agri_ev_gearbox_posed():
             assumption(
                 "A5",
                 "order-check speed",
-                "2650 rpm, the rated input speed",
+                "the rated input speed (2650 rpm)",
                 "no duty spectrum is published",
             ),
             assumption(
@@ -460,8 +458,9 @@ def textbook_two_bearing_derived():
         "requirement": {
             "style": "gear_train",
             "torques": [torque("pinion", "peak", "drive", pub(qty(300, "N·m"), GHE))],
-            "total_ratio": asm(qty(2, "1"), "A1"),
-            "ratio_tolerance": asm(qty(0.1, "%"), "A1"),
+            "speeds": [{"shaft": "pinion", "kind": "rated", "speed": asm(qty(3000, "rpm"), "A4")}],
+            # The teeth fix the ratio (2); the shifts are not given, so the centre distance is an
+            # input here.
             "stages": [
                 {
                     "name": "s1",
@@ -505,7 +504,7 @@ def textbook_two_bearing_derived():
                 }
             ]
         },
-        "limits": limits([asm(qty(3000, "rpm"), "A4")]),
+        "limits": limits(asm("rated", "A4")),
         "manufacturing": manufacturing(
             [{"part": "main", "direction": asm(vec(0, 0, 1, "1"), "A4")}]
         ),
@@ -528,45 +527,44 @@ def textbook_two_bearing_derived():
     }
 
 
-def ivanov2018_posed():
-    """The first contract (the engineer, 8 Oct 19:37): Ivanov 2018's EV reducer, its gear train and
-    duty as published, the gaps filled from the best sources and listed (plan: docs/features/
-    contract/2026-10-08-plan-ivanov2018-contract.md)."""
-    fig24, fig25 = f"{IVA}, Fig. 24", f"{IVA}, Fig. 25"
-    top_speed = (
-        "from a 160 km/h top speed on Ivanov's 245/45 R19 tyre (2,208.85 mm round) and the "
-        "ratio 7.184"
-    )
+def ev_reducer_posed():
+    """The product's first contract (the engineer, 8 Oct 19:37): an EV two-stage reducer, posed.
 
-    def stage(name, pinion, gear, z, mn, beta, x, b, a, fig):
+    Its requirements are the engineer's; what they leave open is assumed, each assumption listed
+    with its reason and a bare reference. The contract names no paper: a user brings the
+    requirements, and the tools work out the rest. Where the example came from is said in the
+    docs (docs/features/contract/status.md, "The example's origin")."""
+
+    def given(value, note="the requirement", when="2026-10-08 19:37"):
+        return engineer(value, "the engineer", when, note)
+
+    # The gear data fix the centre distances and the teeth fix the ratio, so neither is an input
+    # (the engineer, 8 Oct 22:57 and 23:37); a paper's figures verify the involute code instead
+    # (checks/contract/test_involute.py). The helix angles are 30 degrees on both stages (23:23).
+    def stage(name, pinion, gear, z, mn, x, b):
         return {
             "name": name,
             "pinion_shaft": pinion,
             "gear_shaft": gear,
-            "z_pinion": pub(z[0], fig),
-            "z_gear": pub(z[1], fig),
-            "normal_module": pub(qty(mn, "mm"), fig),
-            "pressure_angle": pub(qty(18, "deg"), fig),
-            "helix_angle": beta,
-            "helix_hand_pinion": pub("left", fig, "the gear is right-handed"),
-            "face_width_pinion": pub(qty(b[0], "mm"), fig, "active face width"),
-            "face_width_gear": pub(qty(b[1], "mm"), fig, "active face width"),
-            "profile_shift_pinion": pub(qty(x[0], "1"), fig),
-            "profile_shift_gear": pub(qty(x[1], "1"), fig),
-            "centre_distance": pub(qty(a, "mm"), fig, "normal operating centre distance"),
+            "z_pinion": given(z[0]),
+            "z_gear": given(z[1]),
+            "normal_module": given(qty(mn, "mm")),
+            "pressure_angle": given(qty(18, "deg")),
+            "helix_angle": given(qty(30, "deg"), "30 deg on both stages", "2026-10-08 23:23"),
+            "helix_hand_pinion": given("left", "the gear is right-handed"),
+            "face_width_pinion": given(qty(b[0], "mm"), "active face width"),
+            "face_width_gear": given(qty(b[1], "mm"), "active face width"),
+            "profile_shift_pinion": given(qty(x[0], "1")),
+            "profile_shift_gear": given(qty(x[1], "1")),
         }
 
-    beta1 = pub(
-        qty(30, "deg"),
-        fig24,
-        "read as '30' with its unit garbled; the published centre distance gives 30.1 deg",
-    )
+    tyre = "on a 245/45 R19 tyre, 2,208.85 mm round"
     return {
         "schema_version": "0.1",
         "stage": "posed",
         "task": {
-            "id": "ivanov2018-l1",
-            "title": "Ivanov 2018's EV reducer (KTH, for AVL): an L1 housing, sand cast",
+            "id": "ev-reducer-l1",
+            "title": "EV two-stage reducer: an L1 housing, sand cast",
             "family": "single-speed two-stage helical reducer with integrated differential",
             "level": "L1",
             "priorities": [],
@@ -576,21 +574,12 @@ def ivanov2018_posed():
         "requirement": {
             "style": "gear_train",
             "torques": [
-                torque(
-                    "input",
-                    "peak",
-                    "drive",
-                    pub(
-                        qty(150, "N·m"),
-                        f"{IVA}, §3.3.2",
-                        "AVL's maximum transfer; the motor curve reaches 165 N·m",
-                    ),
-                ),
+                torque("input", "peak", "drive", given(qty(150, "N·m"), "the peak transfer")),
                 torque(
                     "input",
                     "peak",
                     "reverse",
-                    pub(qty(150, "N·m"), f"{IVA}, §3.4", "the backward case, at 2,000 rpm"),
+                    given(qty(150, "N·m"), "the backward case, at 2,000 rpm"),
                 ),
                 torque("input", "peak", "regeneration", asm(qty(150, "N·m"), "A2")),
             ],
@@ -598,27 +587,17 @@ def ivanov2018_posed():
                 {
                     "shaft": "input",
                     "kind": "rated",
-                    "speed": pub(
-                        qty(6000, "rpm"),
-                        f"{IVA}, §3.3.1",
-                        "highway cruise: 110 km/h on a 245/45 R19 tyre",
-                    ),
+                    "speed": given(qty(6000, "rpm"), f"highway cruise, 110 km/h {tyre}"),
                 },
                 {
                     "shaft": "input",
                     "kind": "maximum",
-                    "speed": engineer(
-                        qty(8673, "rpm"), "the engineer", "2026-10-08 19:37", top_speed
-                    ),
+                    "speed": given(qty(8673, "rpm"), f"a 160 km/h top speed {tyre}"),
                 },
             ],
-            "total_ratio": pub(qty(7.184, "1"), f"{IVA}, §3.2"),
-            "ratio_tolerance": asm(qty(0.1, "%"), "A1"),
-            "input_output_offset": asm(qty(165, "mm"), "A9"),
+            "input_output_offset": given(qty(165, "mm"), "the first packaging", "2026-10-09 02:12"),
             "service_life": asm(qty(944, "h"), "A4"),
-            "gear_material": pub(
-                "SS 2511", f"{IVA}, Figs. 24-25", "stage 2's wheel reads 'Casted Iron'"
-            ),
+            "gear_material": given("SS 2511"),
             "gear_quality": asm("N6", "A5"),
             "stages": [
                 stage(
@@ -627,11 +606,8 @@ def ivanov2018_posed():
                     "intermediate",
                     (25, 51),
                     1.85,
-                    beta1,
                     (0.43672, 0.57199922),
                     (16.5, 15.5),
-                    83,
-                    fig24,
                 ),
                 stage(
                     "s2",
@@ -639,168 +615,201 @@ def ivanov2018_posed():
                     "output",
                     (23, 81),
                     2.05,
-                    asm(qty(30, "deg"), "A7"),
                     (0.431143, 0.56857692),
                     (25.625, 22.25),
-                    125,
-                    fig25,
                 ),
             ],
             "bearings": [],
+            # The gaps are the layout's inputs; the positions follow (the engineer, 9 Oct 00:06).
+            # Behind a bearing: a wall at a closed bore, a seal where the shaft leaves (01:06).
+            "shaft_layout": {
+                "bearing_to_gear": asm(qty(12.7, "mm"), "A13"),
+                "behind_bearing": asm(qty(6.35, "mm"), "A14"),
+                "behind_bearing_sealed": asm(qty(11, "mm"), "A16"),
+                "sealed_ends": [
+                    {"shaft": "input", "side": asm("-z", "A17")},
+                    {"shaft": "output", "side": asm("-z", "A17")},
+                    {"shaft": "output", "side": asm("+z", "A17")},
+                ],
+                "gear_to_gear": asm(qty(12.7, "mm"), "A15"),
+                "min_axial_clearance": asm(qty(3, "mm"), "A18"),
+                "min_radial_clearance": asm(qty(8.25, "mm"), "A19"),
+            },
             "installation_space": {
                 "kind": "layout_envelope",
                 "clearance": asm(qty(20, "mm"), "A3"),
             },
         },
+        # One check speed, the cruise: the duty's rated 6,000 rpm (the engineer, 9 Oct 01:06).
         "limits": limits(
-            [
-                pub(qty(6000, "rpm"), f"{IVA}, §3.3.1", "the cruise"),
-                engineer(qty(8673, "rpm"), "the engineer", "2026-10-08 19:37", top_speed),
-            ]
+            engineer("rated", "the engineer", "2026-10-09 01:06", "one check speed: the cruise"),
+            margin=engineer(
+                qty(25, "%"),
+                "the engineer",
+                "2026-10-09 01:06",
+                "kept for now; tied to the model's level later",
+            ),
         ),
         "manufacturing": {
             "process": "sand_casting",
+            # Two halves split across the shafts, each pulled along them (the engineer, 02:12).
             "pull_directions": [
                 {
                     "part": part,
-                    "direction": pub(
+                    "direction": given(
                         vec(0, 0, sign, "1"),
-                        f"{IVA}, Appendix (the optimiser's cast control)",
-                        "along the shafts (x in his model, z here)",
+                        "along the shafts: the halves split across them",
+                        "2026-10-09 02:12",
                     ),
                 }
-                for part, sign in (("flange", -1), ("motor-side", -1), ("back-side", 1))
+                for part, sign in (("motor-side", -1), ("cover", 1))
             ],
             "draft_inside": asm(qty(0, "deg"), "A11"),
             "draft_outside": asm(qty(0, "deg"), "A11"),
             "min_wall": engineer(qty(4, "mm"), "the engineer", "2026-10-07 11:41", D7),
             "machining_stock": asm(qty(1.5, "mm"), "A12"),
             "material": {
-                "name": "EN AC-42100 T6 (AlSi7Mg0.3), sand cast (Ivanov 2018, Fig. 22)",
-                "youngs_modulus": pub(qty(69, "GPa"), f"{IVA}, Fig. 22"),
-                "poisson_ratio": pub(qty(0.33, "1"), f"{IVA}, Fig. 22"),
-                "density": pub(qty(2600, "kg/m3"), f"{IVA}, §3.1", "the CAD's 2.6 g/cm³"),
+                "name": "EN AC-42100 T6 (AlSi7Mg0.3), sand cast",
+                "youngs_modulus": given(qty(69, "GPa"), "with the material"),
+                "poisson_ratio": given(qty(0.33, "1"), "with the material"),
+                "density": given(qty(2600, "kg/m3"), "with the material"),
             },
         },
         "references": [
             {
-                "source": f"{IVA}, §3.1",
+                "source": REFERENCE,
                 "quantity": "housing mass",
                 "value": "7.732 kg",
                 "conditions": "three sand-cast parts in EN AC-42100 T6; from the CAD at 2.6 g/cm³",
-                "confidence": "read in the thesis (a Scribd copy)",
+                "confidence": "published",
             },
             {
-                "source": f"{IVA}, §4.1.1, Figs. 44-46",
+                "source": REFERENCE,
                 "quantity": "free modes of the initial design",
                 "value": "first elastic mode 1127 Hz; mode 13 at 2851 Hz; mode 16 at 3159 Hz",
-                "conditions": "Abaqus, free-free, the three parts tied, so it reads high (the "
-                "author). He notes the first mode coincides with a force component",
-                "confidence": "read in the thesis (a Scribd copy)",
+                "conditions": "free-free, with the three parts tied, so it reads high",
+                "confidence": "published",
             },
             {
-                "source": f"{IVA}, §4.1.2, Fig. 51",
+                "source": REFERENCE,
                 "quantity": "bearing-bed displacement, slots 1-6",
                 "value": "forward 0.0384, 0.0079, 0.0349, 0.0085, 0.0111, 0.0522 mm; reverse "
                 "0.1076, 0.1236, 0.0672, 0.110, 0.0219, 0.1380 mm",
-                "conditions": "peak bearing forces combined (AVL EXCITE forward at 6,000 rpm, "
-                "KISSsoft reverse at 2,000 rpm); mounts fixed; the flange carries 150 N·m",
-                "confidence": "read in the thesis (a Scribd copy)",
+                "conditions": "peak bearing forces combined (forward at 6,000 rpm, reverse at "
+                "2,000 rpm); mounts fixed; the flange carries 150 N·m",
+                "confidence": "published",
             },
             {
-                "source": f"{IVA}, §4.1.2",
+                "source": REFERENCE,
                 "quantity": "stress",
                 "value": "below 230 MPa, the alloy's yield, but for one singular element",
                 "conditions": "the forward and reverse peak cases",
-                "confidence": "read in the thesis (a Scribd copy)",
+                "confidence": "published",
             },
         ],
+        # Each assumption: what, the value, and why, with a bare reference where one exists.
+        # Ids are stable labels: A7, A9 and A10 became the engineer's (8 Oct 23:23, 9 Oct 02:12).
         "assumptions": [
-            assumption(
-                "A1",
-                "ratio tolerance",
-                "0.1 %",
-                "none is published; the stages give 7.1843",
-                varied=False,
-            ),
             assumption(
                 "A2",
                 "regeneration torque",
                 "150 N·m at the input, as drive",
-                "the thesis gives the drive and reverse cases only",
+                "no regeneration case given; taken equal to the drive",
             ),
             assumption(
                 "A3",
                 "installation space",
                 "the gears' envelope plus 20 mm",
-                "no package is published",
+                "no package given",
             ),
             assumption(
                 "A4",
                 "service life",
                 "944 h",
-                "borrowed from Hofstetter 2018, a similar "
-                "passenger-EV reducer; Ivanov gives none (the engineer, 19:37)",
+                "a passenger-EV reducer's life · Hofstetter et al. 2018",
                 varied=False,
             ),
-            assumption("A5", "gear quality", "N6 (JGMA)", "no grade is published", varied=False),
+            assumption("A5", "gear quality", "N6 (JGMA)", "no grade given", varied=False),
             assumption(
                 "A6",
                 "the housing's share",
                 "half of each tolerance",
-                "no public source gives a share (GHE §1.2)",
-            ),
-            assumption(
-                "A7",
-                "stage 2's helix angle",
-                "30 deg",
-                "the copy read garbles it; the published "
-                "teeth, module, pressure angle, profile shifts and centre distance give 29.97 deg",
-                varied=False,
+                "no public source gives a share",
             ),
             assumption(
                 "A8",
                 "the bearings",
                 "input: ball + cylindrical roller · intermediate: tapered pair · output: ball pair",
-                "Hofstetter 2018's arrangement, borrowed (the engineer, 19:37); Ivanov names none. "
-                "The sizes come from the loads by L10 life",
+                "a passenger-EV reducer's arrangement · Hofstetter et al. 2018; the sizes from "
+                "the loads by L10 life",
                 varied=False,
-            ),
-            assumption(
-                "A9",
-                "the packaging: input-output offset",
-                "165 mm (Hofstetter 2018's), 103.1 deg at the intermediate shaft",
-                "the packaging is the user's input; this "
-                "is the first proposal (the engineer, 19:43)",
-            ),
-            assumption(
-                "A10",
-                "the process",
-                "sand casting in printed sand moulds",
-                "proposed for an "
-                "attractive result and a fair comparison with the sand-cast original",
             ),
             assumption(
                 "A11",
                 "draft",
                 "0 deg inside and outside",
-                "printed sand moulds need no pattern "
-                "draft; to confirm against a public rule source",
+                "printed sand moulds need no pattern draft; to confirm against a public rule",
                 varied=False,
             ),
             assumption(
                 "A12",
                 "machining stock",
                 "1.5 mm",
-                "a typical sand-casting allowance; ISO 8062 is not public; to source",
+                "a usual sand-casting allowance; ISO 8062 grades it",
                 varied=False,
+            ),
+            assumption(
+                "A13",
+                "the gap between a bearing and the gear beside it",
+                "12.7 mm (½ in)",
+                "room for a shoulder, a retaining ring and a bearing puller · Shigley Ch. 18, "
+                "Fig. 18-2",
+            ),
+            assumption(
+                "A14",
+                "the space behind each bearing",
+                "6.35 mm (¼ in)",
+                "the wall behind a bearing in a closed bore · Shigley Ch. 18, Fig. 18-2",
+            ),
+            assumption(
+                "A15",
+                "the gap between two gears on one shaft (the intermediate's)",
+                "12.7 mm, as the bearing-to-gear gap",
+                "no source yet",
+            ),
+            assumption(
+                "A16",
+                "the space behind a bearing where its shaft leaves the housing",
+                "11 mm: an 8 mm radial shaft seal and 3 mm for its seat",
+                "seals of about 7-10 mm width for 30-50 mm shafts · makers' seal catalogues",
+            ),
+            assumption(
+                "A17",
+                "the shaft ends that leave the housing",
+                "the input's motor side (-z); the output's two sides",
+                "the motor drives the input from the motor side; the differential sends a "
+                "half-shaft out of each side",
+            ),
+            assumption(
+                "A18",
+                "the least clearance along the shafts between parts on different shafts that "
+                "overlap seen along the shafts",
+                "3 mm",
+                "no source yet",
+            ),
+            assumption(
+                "A19",
+                "the least clearance from a gear's tips to the housing wall",
+                "8.25 mm",
+                "(1.1-1.2) × the wall thickness δ, at δ = 7.5 mm · Maciejczyk & Zdziennicki "
+                "Ch. 9, Fig. 9.1",
             ),
         ],
     }
 
 
 EXAMPLES = {
-    "ivanov2018_posed.json": ivanov2018_posed,
+    "ev_reducer_posed.json": ev_reducer_posed,
     "hofstetter2018_posed.json": hofstetter2018_posed,
     "agri_ev_gearbox_posed.json": agri_ev_gearbox_posed,
     "textbook_two_bearing_derived.json": textbook_two_bearing_derived,

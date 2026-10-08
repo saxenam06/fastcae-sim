@@ -31,30 +31,24 @@
         }
       }
     ],
-    "total_ratio": {
-      "value": {
-        "value": 2,
-        "unit": "1"
-      },
-      "provenance": {
-        "kind": "assumption",
-        "assumption_id": "A1"
-      },
-      "authority": "engineer_locked",
-      "kind": "hard"
-    },
-    "ratio_tolerance": {
-      "value": {
-        "value": 0.1,
-        "unit": "%"
-      },
-      "provenance": {
-        "kind": "assumption",
-        "assumption_id": "A1"
-      },
-      "authority": "engineer_locked",
-      "kind": "hard"
-    },
+    "speeds": [
+      {
+        "shaft": "pinion",
+        "kind": "rated",
+        "speed": {
+          "value": {
+            "value": 3000,
+            "unit": "rpm"
+          },
+          "provenance": {
+            "kind": "assumption",
+            "assumption_id": "A4"
+          },
+          "authority": "engineer_locked",
+          "kind": "hard"
+        }
+      }
+    ],
     "stages": [
       {
         "name": "s1",
@@ -561,20 +555,15 @@
       "authority": "engineer_locked",
       "kind": "hard"
     },
-    "order_check_speeds": [
-      {
-        "value": {
-          "value": 3000,
-          "unit": "rpm"
-        },
-        "provenance": {
-          "kind": "assumption",
-          "assumption_id": "A4"
-        },
-        "authority": "engineer_locked",
-        "kind": "hard"
-      }
-    ],
+    "order_check_at": {
+      "value": "rated",
+      "provenance": {
+        "kind": "assumption",
+        "assumption_id": "A4"
+      },
+      "authority": "engineer_locked",
+      "kind": "hard"
+    },
     "model_margin": {
       "value": {
         "value": 25,

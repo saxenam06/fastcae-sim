@@ -79,30 +79,6 @@
         }
       }
     ],
-    "total_ratio": {
-      "value": {
-        "value": 12.37,
-        "unit": "1"
-      },
-      "provenance": {
-        "kind": "published",
-        "citation": "Son et al. 2020, Appl Sci 10:8414, doi 10.3390/app10238414, p. 3"
-      },
-      "authority": "engineer_locked",
-      "kind": "hard"
-    },
-    "ratio_tolerance": {
-      "value": {
-        "value": 0.1,
-        "unit": "%"
-      },
-      "provenance": {
-        "kind": "assumption",
-        "assumption_id": "A2"
-      },
-      "authority": "engineer_locked",
-      "kind": "hard"
-    },
     "stages": [
       {
         "name": "s1",
@@ -202,18 +178,6 @@
           "value": {
             "value": -0.7299,
             "unit": "1"
-          },
-          "provenance": {
-            "kind": "published",
-            "citation": "Kim et al. 2024, Sci Rep 14:4145, doi 10.1038/s41598-024-54606-8, Table 1"
-          },
-          "authority": "engineer_locked",
-          "kind": "hard"
-        },
-        "centre_distance": {
-          "value": {
-            "value": 57,
-            "unit": "mm"
           },
           "provenance": {
             "kind": "published",
@@ -321,18 +285,6 @@
           "value": {
             "value": 0.0597,
             "unit": "1"
-          },
-          "provenance": {
-            "kind": "published",
-            "citation": "Kim et al. 2024, Sci Rep 14:4145, doi 10.1038/s41598-024-54606-8, Table 1"
-          },
-          "authority": "engineer_locked",
-          "kind": "hard"
-        },
-        "centre_distance": {
-          "value": {
-            "value": 97,
-            "unit": "mm"
           },
           "provenance": {
             "kind": "published",
@@ -460,20 +412,15 @@
       "authority": "engineer_locked",
       "kind": "hard"
     },
-    "order_check_speeds": [
-      {
-        "value": {
-          "value": 2650,
-          "unit": "rpm"
-        },
-        "provenance": {
-          "kind": "assumption",
-          "assumption_id": "A5"
-        },
-        "authority": "engineer_locked",
-        "kind": "hard"
-      }
-    ],
+    "order_check_at": {
+      "value": "rated",
+      "provenance": {
+        "kind": "assumption",
+        "assumption_id": "A5"
+      },
+      "authority": "engineer_locked",
+      "kind": "hard"
+    },
     "model_margin": {
       "value": {
         "value": 25,
@@ -688,13 +635,6 @@
       "varied": true
     },
     {
-      "id": "A2",
-      "what": "ratio tolerance",
-      "value": "0.1 %",
-      "why": "the published total ratio (12.37) is rounded; the teeth give 12.36",
-      "varied": true
-    },
-    {
       "id": "A3",
       "what": "installation space",
       "value": "the layout's envelope grown by 20 mm",
@@ -704,7 +644,7 @@
     {
       "id": "A5",
       "what": "order-check speed",
-      "value": "2650 rpm, the rated input speed",
+      "value": "the rated input speed (2650 rpm)",
       "why": "no duty spectrum is published",
       "varied": true
     },

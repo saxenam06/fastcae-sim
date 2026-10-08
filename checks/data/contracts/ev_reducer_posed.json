@@ -2,8 +2,8 @@
   "schema_version": "0.1",
   "stage": "posed",
   "task": {
-    "id": "ivanov2018-l1",
-    "title": "Ivanov 2018's EV reducer (KTH, for AVL): an L1 housing, sand cast",
+    "id": "ev-reducer-l1",
+    "title": "EV two-stage reducer: an L1 housing, sand cast",
     "family": "single-speed two-stage helical reducer with integrated differential",
     "level": "L1",
     "priorities": [],
@@ -23,9 +23,10 @@
             "unit": "N·m"
           },
           "provenance": {
-            "kind": "published",
-            "citation": "Ivanov 2018, Gearbox Housing Design - Topology Optimization through Generative Design, MSc thesis, KTH, TRITA-ITM-EX 2018:724, for AVL Sweden (read from a Scribd copy), §3.3.2",
-            "note": "AVL's maximum transfer; the motor curve reaches 165 N·m"
+            "kind": "engineer",
+            "who": "the engineer",
+            "when": "2026-10-08 19:37",
+            "note": "the peak transfer"
           },
           "authority": "engineer_locked",
           "kind": "hard"
@@ -41,8 +42,9 @@
             "unit": "N·m"
           },
           "provenance": {
-            "kind": "published",
-            "citation": "Ivanov 2018, Gearbox Housing Design - Topology Optimization through Generative Design, MSc thesis, KTH, TRITA-ITM-EX 2018:724, for AVL Sweden (read from a Scribd copy), §3.4",
+            "kind": "engineer",
+            "who": "the engineer",
+            "when": "2026-10-08 19:37",
             "note": "the backward case, at 2,000 rpm"
           },
           "authority": "engineer_locked",
@@ -77,9 +79,10 @@
             "unit": "rpm"
           },
           "provenance": {
-            "kind": "published",
-            "citation": "Ivanov 2018, Gearbox Housing Design - Topology Optimization through Generative Design, MSc thesis, KTH, TRITA-ITM-EX 2018:724, for AVL Sweden (read from a Scribd copy), §3.3.1",
-            "note": "highway cruise: 110 km/h on a 245/45 R19 tyre"
+            "kind": "engineer",
+            "who": "the engineer",
+            "when": "2026-10-08 19:37",
+            "note": "highway cruise, 110 km/h on a 245/45 R19 tyre, 2,208.85 mm round"
           },
           "authority": "engineer_locked",
           "kind": "hard"
@@ -97,45 +100,23 @@
             "kind": "engineer",
             "who": "the engineer",
             "when": "2026-10-08 19:37",
-            "note": "from a 160 km/h top speed on Ivanov's 245/45 R19 tyre (2,208.85 mm round) and the ratio 7.184"
+            "note": "a 160 km/h top speed on a 245/45 R19 tyre, 2,208.85 mm round"
           },
           "authority": "engineer_locked",
           "kind": "hard"
         }
       }
     ],
-    "total_ratio": {
-      "value": {
-        "value": 7.184,
-        "unit": "1"
-      },
-      "provenance": {
-        "kind": "published",
-        "citation": "Ivanov 2018, Gearbox Housing Design - Topology Optimization through Generative Design, MSc thesis, KTH, TRITA-ITM-EX 2018:724, for AVL Sweden (read from a Scribd copy), §3.2"
-      },
-      "authority": "engineer_locked",
-      "kind": "hard"
-    },
-    "ratio_tolerance": {
-      "value": {
-        "value": 0.1,
-        "unit": "%"
-      },
-      "provenance": {
-        "kind": "assumption",
-        "assumption_id": "A1"
-      },
-      "authority": "engineer_locked",
-      "kind": "hard"
-    },
     "input_output_offset": {
       "value": {
         "value": 165,
         "unit": "mm"
       },
       "provenance": {
-        "kind": "assumption",
-        "assumption_id": "A9"
+        "kind": "engineer",
+        "who": "the engineer",
+        "when": "2026-10-09 02:12",
+        "note": "the first packaging"
       },
       "authority": "engineer_locked",
       "kind": "hard"
@@ -155,9 +136,10 @@
     "gear_material": {
       "value": "SS 2511",
       "provenance": {
-        "kind": "published",
-        "citation": "Ivanov 2018, Gearbox Housing Design - Topology Optimization through Generative Design, MSc thesis, KTH, TRITA-ITM-EX 2018:724, for AVL Sweden (read from a Scribd copy), Figs. 24-25",
-        "note": "stage 2's wheel reads 'Casted Iron'"
+        "kind": "engineer",
+        "who": "the engineer",
+        "when": "2026-10-08 19:37",
+        "note": "the requirement"
       },
       "authority": "engineer_locked",
       "kind": "hard"
@@ -179,8 +161,10 @@
         "z_pinion": {
           "value": 25,
           "provenance": {
-            "kind": "published",
-            "citation": "Ivanov 2018, Gearbox Housing Design - Topology Optimization through Generative Design, MSc thesis, KTH, TRITA-ITM-EX 2018:724, for AVL Sweden (read from a Scribd copy), Fig. 24"
+            "kind": "engineer",
+            "who": "the engineer",
+            "when": "2026-10-08 19:37",
+            "note": "the requirement"
           },
           "authority": "engineer_locked",
           "kind": "hard"
@@ -188,8 +172,10 @@
         "z_gear": {
           "value": 51,
           "provenance": {
-            "kind": "published",
-            "citation": "Ivanov 2018, Gearbox Housing Design - Topology Optimization through Generative Design, MSc thesis, KTH, TRITA-ITM-EX 2018:724, for AVL Sweden (read from a Scribd copy), Fig. 24"
+            "kind": "engineer",
+            "who": "the engineer",
+            "when": "2026-10-08 19:37",
+            "note": "the requirement"
           },
           "authority": "engineer_locked",
           "kind": "hard"
@@ -200,8 +186,10 @@
             "unit": "mm"
           },
           "provenance": {
-            "kind": "published",
-            "citation": "Ivanov 2018, Gearbox Housing Design - Topology Optimization through Generative Design, MSc thesis, KTH, TRITA-ITM-EX 2018:724, for AVL Sweden (read from a Scribd copy), Fig. 24"
+            "kind": "engineer",
+            "who": "the engineer",
+            "when": "2026-10-08 19:37",
+            "note": "the requirement"
           },
           "authority": "engineer_locked",
           "kind": "hard"
@@ -212,8 +200,10 @@
             "unit": "deg"
           },
           "provenance": {
-            "kind": "published",
-            "citation": "Ivanov 2018, Gearbox Housing Design - Topology Optimization through Generative Design, MSc thesis, KTH, TRITA-ITM-EX 2018:724, for AVL Sweden (read from a Scribd copy), Fig. 24"
+            "kind": "engineer",
+            "who": "the engineer",
+            "when": "2026-10-08 19:37",
+            "note": "the requirement"
           },
           "authority": "engineer_locked",
           "kind": "hard"
@@ -224,9 +214,10 @@
             "unit": "deg"
           },
           "provenance": {
-            "kind": "published",
-            "citation": "Ivanov 2018, Gearbox Housing Design - Topology Optimization through Generative Design, MSc thesis, KTH, TRITA-ITM-EX 2018:724, for AVL Sweden (read from a Scribd copy), Fig. 24",
-            "note": "read as '30' with its unit garbled; the published centre distance gives 30.1 deg"
+            "kind": "engineer",
+            "who": "the engineer",
+            "when": "2026-10-08 23:23",
+            "note": "30 deg on both stages"
           },
           "authority": "engineer_locked",
           "kind": "hard"
@@ -234,8 +225,9 @@
         "helix_hand_pinion": {
           "value": "left",
           "provenance": {
-            "kind": "published",
-            "citation": "Ivanov 2018, Gearbox Housing Design - Topology Optimization through Generative Design, MSc thesis, KTH, TRITA-ITM-EX 2018:724, for AVL Sweden (read from a Scribd copy), Fig. 24",
+            "kind": "engineer",
+            "who": "the engineer",
+            "when": "2026-10-08 19:37",
             "note": "the gear is right-handed"
           },
           "authority": "engineer_locked",
@@ -247,8 +239,9 @@
             "unit": "mm"
           },
           "provenance": {
-            "kind": "published",
-            "citation": "Ivanov 2018, Gearbox Housing Design - Topology Optimization through Generative Design, MSc thesis, KTH, TRITA-ITM-EX 2018:724, for AVL Sweden (read from a Scribd copy), Fig. 24",
+            "kind": "engineer",
+            "who": "the engineer",
+            "when": "2026-10-08 19:37",
             "note": "active face width"
           },
           "authority": "engineer_locked",
@@ -260,8 +253,9 @@
             "unit": "mm"
           },
           "provenance": {
-            "kind": "published",
-            "citation": "Ivanov 2018, Gearbox Housing Design - Topology Optimization through Generative Design, MSc thesis, KTH, TRITA-ITM-EX 2018:724, for AVL Sweden (read from a Scribd copy), Fig. 24",
+            "kind": "engineer",
+            "who": "the engineer",
+            "when": "2026-10-08 19:37",
             "note": "active face width"
           },
           "authority": "engineer_locked",
@@ -273,8 +267,10 @@
             "unit": "1"
           },
           "provenance": {
-            "kind": "published",
-            "citation": "Ivanov 2018, Gearbox Housing Design - Topology Optimization through Generative Design, MSc thesis, KTH, TRITA-ITM-EX 2018:724, for AVL Sweden (read from a Scribd copy), Fig. 24"
+            "kind": "engineer",
+            "who": "the engineer",
+            "when": "2026-10-08 19:37",
+            "note": "the requirement"
           },
           "authority": "engineer_locked",
           "kind": "hard"
@@ -285,21 +281,10 @@
             "unit": "1"
           },
           "provenance": {
-            "kind": "published",
-            "citation": "Ivanov 2018, Gearbox Housing Design - Topology Optimization through Generative Design, MSc thesis, KTH, TRITA-ITM-EX 2018:724, for AVL Sweden (read from a Scribd copy), Fig. 24"
-          },
-          "authority": "engineer_locked",
-          "kind": "hard"
-        },
-        "centre_distance": {
-          "value": {
-            "value": 83,
-            "unit": "mm"
-          },
-          "provenance": {
-            "kind": "published",
-            "citation": "Ivanov 2018, Gearbox Housing Design - Topology Optimization through Generative Design, MSc thesis, KTH, TRITA-ITM-EX 2018:724, for AVL Sweden (read from a Scribd copy), Fig. 24",
-            "note": "normal operating centre distance"
+            "kind": "engineer",
+            "who": "the engineer",
+            "when": "2026-10-08 19:37",
+            "note": "the requirement"
           },
           "authority": "engineer_locked",
           "kind": "hard"
@@ -312,8 +297,10 @@
         "z_pinion": {
           "value": 23,
           "provenance": {
-            "kind": "published",
-            "citation": "Ivanov 2018, Gearbox Housing Design - Topology Optimization through Generative Design, MSc thesis, KTH, TRITA-ITM-EX 2018:724, for AVL Sweden (read from a Scribd copy), Fig. 25"
+            "kind": "engineer",
+            "who": "the engineer",
+            "when": "2026-10-08 19:37",
+            "note": "the requirement"
           },
           "authority": "engineer_locked",
           "kind": "hard"
@@ -321,8 +308,10 @@
         "z_gear": {
           "value": 81,
           "provenance": {
-            "kind": "published",
-            "citation": "Ivanov 2018, Gearbox Housing Design - Topology Optimization through Generative Design, MSc thesis, KTH, TRITA-ITM-EX 2018:724, for AVL Sweden (read from a Scribd copy), Fig. 25"
+            "kind": "engineer",
+            "who": "the engineer",
+            "when": "2026-10-08 19:37",
+            "note": "the requirement"
           },
           "authority": "engineer_locked",
           "kind": "hard"
@@ -333,8 +322,10 @@
             "unit": "mm"
           },
           "provenance": {
-            "kind": "published",
-            "citation": "Ivanov 2018, Gearbox Housing Design - Topology Optimization through Generative Design, MSc thesis, KTH, TRITA-ITM-EX 2018:724, for AVL Sweden (read from a Scribd copy), Fig. 25"
+            "kind": "engineer",
+            "who": "the engineer",
+            "when": "2026-10-08 19:37",
+            "note": "the requirement"
           },
           "authority": "engineer_locked",
           "kind": "hard"
@@ -345,8 +336,10 @@
             "unit": "deg"
           },
           "provenance": {
-            "kind": "published",
-            "citation": "Ivanov 2018, Gearbox Housing Design - Topology Optimization through Generative Design, MSc thesis, KTH, TRITA-ITM-EX 2018:724, for AVL Sweden (read from a Scribd copy), Fig. 25"
+            "kind": "engineer",
+            "who": "the engineer",
+            "when": "2026-10-08 19:37",
+            "note": "the requirement"
           },
           "authority": "engineer_locked",
           "kind": "hard"
@@ -357,8 +350,10 @@
             "unit": "deg"
           },
           "provenance": {
-            "kind": "assumption",
-            "assumption_id": "A7"
+            "kind": "engineer",
+            "who": "the engineer",
+            "when": "2026-10-08 23:23",
+            "note": "30 deg on both stages"
           },
           "authority": "engineer_locked",
           "kind": "hard"
@@ -366,8 +361,9 @@
         "helix_hand_pinion": {
           "value": "left",
           "provenance": {
-            "kind": "published",
-            "citation": "Ivanov 2018, Gearbox Housing Design - Topology Optimization through Generative Design, MSc thesis, KTH, TRITA-ITM-EX 2018:724, for AVL Sweden (read from a Scribd copy), Fig. 25",
+            "kind": "engineer",
+            "who": "the engineer",
+            "when": "2026-10-08 19:37",
             "note": "the gear is right-handed"
           },
           "authority": "engineer_locked",
@@ -379,8 +375,9 @@
             "unit": "mm"
           },
           "provenance": {
-            "kind": "published",
-            "citation": "Ivanov 2018, Gearbox Housing Design - Topology Optimization through Generative Design, MSc thesis, KTH, TRITA-ITM-EX 2018:724, for AVL Sweden (read from a Scribd copy), Fig. 25",
+            "kind": "engineer",
+            "who": "the engineer",
+            "when": "2026-10-08 19:37",
             "note": "active face width"
           },
           "authority": "engineer_locked",
@@ -392,8 +389,9 @@
             "unit": "mm"
           },
           "provenance": {
-            "kind": "published",
-            "citation": "Ivanov 2018, Gearbox Housing Design - Topology Optimization through Generative Design, MSc thesis, KTH, TRITA-ITM-EX 2018:724, for AVL Sweden (read from a Scribd copy), Fig. 25",
+            "kind": "engineer",
+            "who": "the engineer",
+            "when": "2026-10-08 19:37",
             "note": "active face width"
           },
           "authority": "engineer_locked",
@@ -405,8 +403,10 @@
             "unit": "1"
           },
           "provenance": {
-            "kind": "published",
-            "citation": "Ivanov 2018, Gearbox Housing Design - Topology Optimization through Generative Design, MSc thesis, KTH, TRITA-ITM-EX 2018:724, for AVL Sweden (read from a Scribd copy), Fig. 25"
+            "kind": "engineer",
+            "who": "the engineer",
+            "when": "2026-10-08 19:37",
+            "note": "the requirement"
           },
           "authority": "engineer_locked",
           "kind": "hard"
@@ -417,21 +417,10 @@
             "unit": "1"
           },
           "provenance": {
-            "kind": "published",
-            "citation": "Ivanov 2018, Gearbox Housing Design - Topology Optimization through Generative Design, MSc thesis, KTH, TRITA-ITM-EX 2018:724, for AVL Sweden (read from a Scribd copy), Fig. 25"
-          },
-          "authority": "engineer_locked",
-          "kind": "hard"
-        },
-        "centre_distance": {
-          "value": {
-            "value": 125,
-            "unit": "mm"
-          },
-          "provenance": {
-            "kind": "published",
-            "citation": "Ivanov 2018, Gearbox Housing Design - Topology Optimization through Generative Design, MSc thesis, KTH, TRITA-ITM-EX 2018:724, for AVL Sweden (read from a Scribd copy), Fig. 25",
-            "note": "normal operating centre distance"
+            "kind": "engineer",
+            "who": "the engineer",
+            "when": "2026-10-08 19:37",
+            "note": "the requirement"
           },
           "authority": "engineer_locked",
           "kind": "hard"
@@ -439,6 +428,118 @@
       }
     ],
     "bearings": [],
+    "shaft_layout": {
+      "bearing_to_gear": {
+        "value": {
+          "value": 12.7,
+          "unit": "mm"
+        },
+        "provenance": {
+          "kind": "assumption",
+          "assumption_id": "A13"
+        },
+        "authority": "engineer_locked",
+        "kind": "hard"
+      },
+      "behind_bearing": {
+        "value": {
+          "value": 6.35,
+          "unit": "mm"
+        },
+        "provenance": {
+          "kind": "assumption",
+          "assumption_id": "A14"
+        },
+        "authority": "engineer_locked",
+        "kind": "hard"
+      },
+      "behind_bearing_sealed": {
+        "value": {
+          "value": 11,
+          "unit": "mm"
+        },
+        "provenance": {
+          "kind": "assumption",
+          "assumption_id": "A16"
+        },
+        "authority": "engineer_locked",
+        "kind": "hard"
+      },
+      "sealed_ends": [
+        {
+          "shaft": "input",
+          "side": {
+            "value": "-z",
+            "provenance": {
+              "kind": "assumption",
+              "assumption_id": "A17"
+            },
+            "authority": "engineer_locked",
+            "kind": "hard"
+          }
+        },
+        {
+          "shaft": "output",
+          "side": {
+            "value": "-z",
+            "provenance": {
+              "kind": "assumption",
+              "assumption_id": "A17"
+            },
+            "authority": "engineer_locked",
+            "kind": "hard"
+          }
+        },
+        {
+          "shaft": "output",
+          "side": {
+            "value": "+z",
+            "provenance": {
+              "kind": "assumption",
+              "assumption_id": "A17"
+            },
+            "authority": "engineer_locked",
+            "kind": "hard"
+          }
+        }
+      ],
+      "gear_to_gear": {
+        "value": {
+          "value": 12.7,
+          "unit": "mm"
+        },
+        "provenance": {
+          "kind": "assumption",
+          "assumption_id": "A15"
+        },
+        "authority": "engineer_locked",
+        "kind": "hard"
+      },
+      "min_axial_clearance": {
+        "value": {
+          "value": 3,
+          "unit": "mm"
+        },
+        "provenance": {
+          "kind": "assumption",
+          "assumption_id": "A18"
+        },
+        "authority": "engineer_locked",
+        "kind": "hard"
+      },
+      "min_radial_clearance": {
+        "value": {
+          "value": 8.25,
+          "unit": "mm"
+        },
+        "provenance": {
+          "kind": "assumption",
+          "assumption_id": "A19"
+        },
+        "authority": "engineer_locked",
+        "kind": "hard"
+      }
+    },
     "installation_space": {
       "kind": "layout_envelope",
       "clearance": {
@@ -555,44 +656,27 @@
       "authority": "engineer_locked",
       "kind": "hard"
     },
-    "order_check_speeds": [
-      {
-        "value": {
-          "value": 6000,
-          "unit": "rpm"
-        },
-        "provenance": {
-          "kind": "published",
-          "citation": "Ivanov 2018, Gearbox Housing Design - Topology Optimization through Generative Design, MSc thesis, KTH, TRITA-ITM-EX 2018:724, for AVL Sweden (read from a Scribd copy), §3.3.1",
-          "note": "the cruise"
-        },
-        "authority": "engineer_locked",
-        "kind": "hard"
+    "order_check_at": {
+      "value": "rated",
+      "provenance": {
+        "kind": "engineer",
+        "who": "the engineer",
+        "when": "2026-10-09 01:06",
+        "note": "one check speed: the cruise"
       },
-      {
-        "value": {
-          "value": 8673,
-          "unit": "rpm"
-        },
-        "provenance": {
-          "kind": "engineer",
-          "who": "the engineer",
-          "when": "2026-10-08 19:37",
-          "note": "from a 160 km/h top speed on Ivanov's 245/45 R19 tyre (2,208.85 mm round) and the ratio 7.184"
-        },
-        "authority": "engineer_locked",
-        "kind": "hard"
-      }
-    ],
+      "authority": "engineer_locked",
+      "kind": "hard"
+    },
     "model_margin": {
       "value": {
         "value": 25,
         "unit": "%"
       },
       "provenance": {
-        "kind": "published",
-        "citation": "Gutierrez Santiago et al. 2023 and FZG 2022 (model to test 10-25 %), via fastcae research 2026-10-06-gearbox-housing-engineering.md §4",
-        "note": "the top of the measured range"
+        "kind": "engineer",
+        "who": "the engineer",
+        "when": "2026-10-09 01:06",
+        "note": "kept for now; tied to the model's level later"
       },
       "authority": "engineer_locked",
       "kind": "hard"
@@ -603,26 +687,6 @@
   "manufacturing": {
     "process": "sand_casting",
     "pull_directions": [
-      {
-        "part": "flange",
-        "direction": {
-          "value": {
-            "values": [
-              0,
-              0,
-              -1
-            ],
-            "unit": "1"
-          },
-          "provenance": {
-            "kind": "published",
-            "citation": "Ivanov 2018, Gearbox Housing Design - Topology Optimization through Generative Design, MSc thesis, KTH, TRITA-ITM-EX 2018:724, for AVL Sweden (read from a Scribd copy), Appendix (the optimiser's cast control)",
-            "note": "along the shafts (x in his model, z here)"
-          },
-          "authority": "engineer_locked",
-          "kind": "hard"
-        }
-      },
       {
         "part": "motor-side",
         "direction": {
@@ -635,16 +699,17 @@
             "unit": "1"
           },
           "provenance": {
-            "kind": "published",
-            "citation": "Ivanov 2018, Gearbox Housing Design - Topology Optimization through Generative Design, MSc thesis, KTH, TRITA-ITM-EX 2018:724, for AVL Sweden (read from a Scribd copy), Appendix (the optimiser's cast control)",
-            "note": "along the shafts (x in his model, z here)"
+            "kind": "engineer",
+            "who": "the engineer",
+            "when": "2026-10-09 02:12",
+            "note": "along the shafts: the halves split across them"
           },
           "authority": "engineer_locked",
           "kind": "hard"
         }
       },
       {
-        "part": "back-side",
+        "part": "cover",
         "direction": {
           "value": {
             "values": [
@@ -655,9 +720,10 @@
             "unit": "1"
           },
           "provenance": {
-            "kind": "published",
-            "citation": "Ivanov 2018, Gearbox Housing Design - Topology Optimization through Generative Design, MSc thesis, KTH, TRITA-ITM-EX 2018:724, for AVL Sweden (read from a Scribd copy), Appendix (the optimiser's cast control)",
-            "note": "along the shafts (x in his model, z here)"
+            "kind": "engineer",
+            "who": "the engineer",
+            "when": "2026-10-09 02:12",
+            "note": "along the shafts: the halves split across them"
           },
           "authority": "engineer_locked",
           "kind": "hard"
@@ -715,15 +781,17 @@
       "kind": "hard"
     },
     "material": {
-      "name": "EN AC-42100 T6 (AlSi7Mg0.3), sand cast (Ivanov 2018, Fig. 22)",
+      "name": "EN AC-42100 T6 (AlSi7Mg0.3), sand cast",
       "youngs_modulus": {
         "value": {
           "value": 69,
           "unit": "GPa"
         },
         "provenance": {
-          "kind": "published",
-          "citation": "Ivanov 2018, Gearbox Housing Design - Topology Optimization through Generative Design, MSc thesis, KTH, TRITA-ITM-EX 2018:724, for AVL Sweden (read from a Scribd copy), Fig. 22"
+          "kind": "engineer",
+          "who": "the engineer",
+          "when": "2026-10-08 19:37",
+          "note": "with the material"
         },
         "authority": "engineer_locked",
         "kind": "hard"
@@ -734,8 +802,10 @@
           "unit": "1"
         },
         "provenance": {
-          "kind": "published",
-          "citation": "Ivanov 2018, Gearbox Housing Design - Topology Optimization through Generative Design, MSc thesis, KTH, TRITA-ITM-EX 2018:724, for AVL Sweden (read from a Scribd copy), Fig. 22"
+          "kind": "engineer",
+          "who": "the engineer",
+          "when": "2026-10-08 19:37",
+          "note": "with the material"
         },
         "authority": "engineer_locked",
         "kind": "hard"
@@ -746,9 +816,10 @@
           "unit": "kg/m3"
         },
         "provenance": {
-          "kind": "published",
-          "citation": "Ivanov 2018, Gearbox Housing Design - Topology Optimization through Generative Design, MSc thesis, KTH, TRITA-ITM-EX 2018:724, for AVL Sweden (read from a Scribd copy), §3.1",
-          "note": "the CAD's 2.6 g/cm³"
+          "kind": "engineer",
+          "who": "the engineer",
+          "when": "2026-10-08 19:37",
+          "note": "with the material"
         },
         "authority": "engineer_locked",
         "kind": "hard"
@@ -757,118 +828,139 @@
   },
   "references": [
     {
-      "source": "Ivanov 2018, Gearbox Housing Design - Topology Optimization through Generative Design, MSc thesis, KTH, TRITA-ITM-EX 2018:724, for AVL Sweden (read from a Scribd copy), §3.1",
+      "source": "the example's reference housing",
       "quantity": "housing mass",
       "value": "7.732 kg",
       "conditions": "three sand-cast parts in EN AC-42100 T6; from the CAD at 2.6 g/cm³",
-      "confidence": "read in the thesis (a Scribd copy)"
+      "confidence": "published"
     },
     {
-      "source": "Ivanov 2018, Gearbox Housing Design - Topology Optimization through Generative Design, MSc thesis, KTH, TRITA-ITM-EX 2018:724, for AVL Sweden (read from a Scribd copy), §4.1.1, Figs. 44-46",
+      "source": "the example's reference housing",
       "quantity": "free modes of the initial design",
       "value": "first elastic mode 1127 Hz; mode 13 at 2851 Hz; mode 16 at 3159 Hz",
-      "conditions": "Abaqus, free-free, the three parts tied, so it reads high (the author). He notes the first mode coincides with a force component",
-      "confidence": "read in the thesis (a Scribd copy)"
+      "conditions": "free-free, with the three parts tied, so it reads high",
+      "confidence": "published"
     },
     {
-      "source": "Ivanov 2018, Gearbox Housing Design - Topology Optimization through Generative Design, MSc thesis, KTH, TRITA-ITM-EX 2018:724, for AVL Sweden (read from a Scribd copy), §4.1.2, Fig. 51",
+      "source": "the example's reference housing",
       "quantity": "bearing-bed displacement, slots 1-6",
       "value": "forward 0.0384, 0.0079, 0.0349, 0.0085, 0.0111, 0.0522 mm; reverse 0.1076, 0.1236, 0.0672, 0.110, 0.0219, 0.1380 mm",
-      "conditions": "peak bearing forces combined (AVL EXCITE forward at 6,000 rpm, KISSsoft reverse at 2,000 rpm); mounts fixed; the flange carries 150 N·m",
-      "confidence": "read in the thesis (a Scribd copy)"
+      "conditions": "peak bearing forces combined (forward at 6,000 rpm, reverse at 2,000 rpm); mounts fixed; the flange carries 150 N·m",
+      "confidence": "published"
     },
     {
-      "source": "Ivanov 2018, Gearbox Housing Design - Topology Optimization through Generative Design, MSc thesis, KTH, TRITA-ITM-EX 2018:724, for AVL Sweden (read from a Scribd copy), §4.1.2",
+      "source": "the example's reference housing",
       "quantity": "stress",
       "value": "below 230 MPa, the alloy's yield, but for one singular element",
       "conditions": "the forward and reverse peak cases",
-      "confidence": "read in the thesis (a Scribd copy)"
+      "confidence": "published"
     }
   ],
   "assumptions": [
     {
-      "id": "A1",
-      "what": "ratio tolerance",
-      "value": "0.1 %",
-      "why": "none is published; the stages give 7.1843",
-      "varied": false
-    },
-    {
       "id": "A2",
       "what": "regeneration torque",
       "value": "150 N·m at the input, as drive",
-      "why": "the thesis gives the drive and reverse cases only",
+      "why": "no regeneration case given; taken equal to the drive",
       "varied": true
     },
     {
       "id": "A3",
       "what": "installation space",
       "value": "the gears' envelope plus 20 mm",
-      "why": "no package is published",
+      "why": "no package given",
       "varied": true
     },
     {
       "id": "A4",
       "what": "service life",
       "value": "944 h",
-      "why": "borrowed from Hofstetter 2018, a similar passenger-EV reducer; Ivanov gives none (the engineer, 19:37)",
+      "why": "a passenger-EV reducer's life · Hofstetter et al. 2018",
       "varied": false
     },
     {
       "id": "A5",
       "what": "gear quality",
       "value": "N6 (JGMA)",
-      "why": "no grade is published",
+      "why": "no grade given",
       "varied": false
     },
     {
       "id": "A6",
       "what": "the housing's share",
       "value": "half of each tolerance",
-      "why": "no public source gives a share (GHE §1.2)",
+      "why": "no public source gives a share",
       "varied": true
-    },
-    {
-      "id": "A7",
-      "what": "stage 2's helix angle",
-      "value": "30 deg",
-      "why": "the copy read garbles it; the published teeth, module, pressure angle, profile shifts and centre distance give 29.97 deg",
-      "varied": false
     },
     {
       "id": "A8",
       "what": "the bearings",
       "value": "input: ball + cylindrical roller · intermediate: tapered pair · output: ball pair",
-      "why": "Hofstetter 2018's arrangement, borrowed (the engineer, 19:37); Ivanov names none. The sizes come from the loads by L10 life",
+      "why": "a passenger-EV reducer's arrangement · Hofstetter et al. 2018; the sizes from the loads by L10 life",
       "varied": false
-    },
-    {
-      "id": "A9",
-      "what": "the packaging: input-output offset",
-      "value": "165 mm (Hofstetter 2018's), 103.1 deg at the intermediate shaft",
-      "why": "the packaging is the user's input; this is the first proposal (the engineer, 19:43)",
-      "varied": true
-    },
-    {
-      "id": "A10",
-      "what": "the process",
-      "value": "sand casting in printed sand moulds",
-      "why": "proposed for an attractive result and a fair comparison with the sand-cast original",
-      "varied": true
     },
     {
       "id": "A11",
       "what": "draft",
       "value": "0 deg inside and outside",
-      "why": "printed sand moulds need no pattern draft; to confirm against a public rule source",
+      "why": "printed sand moulds need no pattern draft; to confirm against a public rule",
       "varied": false
     },
     {
       "id": "A12",
       "what": "machining stock",
       "value": "1.5 mm",
-      "why": "a typical sand-casting allowance; ISO 8062 is not public; to source",
+      "why": "a usual sand-casting allowance; ISO 8062 grades it",
       "varied": false
+    },
+    {
+      "id": "A13",
+      "what": "the gap between a bearing and the gear beside it",
+      "value": "12.7 mm (½ in)",
+      "why": "room for a shoulder, a retaining ring and a bearing puller · Shigley Ch. 18, Fig. 18-2",
+      "varied": true
+    },
+    {
+      "id": "A14",
+      "what": "the space behind each bearing",
+      "value": "6.35 mm (¼ in)",
+      "why": "the wall behind a bearing in a closed bore · Shigley Ch. 18, Fig. 18-2",
+      "varied": true
+    },
+    {
+      "id": "A15",
+      "what": "the gap between two gears on one shaft (the intermediate's)",
+      "value": "12.7 mm, as the bearing-to-gear gap",
+      "why": "no source yet",
+      "varied": true
+    },
+    {
+      "id": "A16",
+      "what": "the space behind a bearing where its shaft leaves the housing",
+      "value": "11 mm: an 8 mm radial shaft seal and 3 mm for its seat",
+      "why": "seals of about 7-10 mm width for 30-50 mm shafts · makers' seal catalogues",
+      "varied": true
+    },
+    {
+      "id": "A17",
+      "what": "the shaft ends that leave the housing",
+      "value": "the input's motor side (-z); the output's two sides",
+      "why": "the motor drives the input from the motor side; the differential sends a half-shaft out of each side",
+      "varied": true
+    },
+    {
+      "id": "A18",
+      "what": "the least clearance along the shafts between parts on different shafts that overlap seen along the shafts",
+      "value": "3 mm",
+      "why": "no source yet",
+      "varied": true
+    },
+    {
+      "id": "A19",
+      "what": "the least clearance from a gear's tips to the housing wall",
+      "value": "8.25 mm",
+      "why": "(1.1-1.2) × the wall thickness δ, at δ = 7.5 mm · Maciejczyk & Zdziennicki Ch. 9, Fig. 9.1",
+      "varied": true
     }
   ]
 }

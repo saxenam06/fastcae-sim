@@ -27,6 +27,7 @@ def test_minimal_posed_contract_is_accepted():
 
 
 def test_a_gear_train_contract_is_accepted():
+    # Its full gear data fix the ratio and the centre distances, so it states neither.
     assert rules(gear_train_posed()) == set()
 
 
@@ -80,16 +81,70 @@ def test_a_frozen_contract_carries_its_own_hash():
     assert "stage.frozen_hash" in {r.rule for r in validate(unfrozen)}
 
 
-def test_the_stages_must_give_the_total_ratio():
+def test_a_ratio_the_teeth_fix_is_refused_as_redundant():
     data = gear_train_posed()
-    data["requirement"]["stages"][1]["z_gear"]["value"] = 90
-    assert "consistency.ratio" in rules(data)
+    data["requirement"]["total_ratio"] = published(qty(12.36, "1"))
+    assert rules(data) == {"consistency.redundant"}
 
 
-def test_each_centre_distance_must_follow_from_its_gears():
+def test_a_centre_distance_the_gear_data_fix_is_refused_as_redundant():
+    # Even the right figure: the gear data fix it at 56.94 mm, so stating 57 is a second input.
     data = gear_train_posed()
-    data["requirement"]["stages"][0]["centre_distance"] = published(qty(60, "mm"))
-    assert "consistency.centre_distance" in rules(data)
+    data["requirement"]["stages"][0]["centre_distance"] = published(qty(57, "mm"))
+    assert rules(data) == {"consistency.redundant"}
+
+
+def test_without_its_shifts_a_stage_takes_its_centre_distance_as_an_input():
+    data = gear_train_posed()
+    stage = data["requirement"]["stages"][0]
+    del stage["profile_shift_pinion"], stage["profile_shift_gear"]
+    stage["centre_distance"] = published(qty(57, "mm"))
+    assert rules(data) == set()
+
+
+def test_without_the_teeth_the_ratio_must_be_given():
+    data = minimal_posed()
+    del data["requirement"]["total_ratio"], data["requirement"]["ratio_tolerance"]
+    assert rules(data) == {"consistency.ratio"}
+
+
+def test_the_order_check_names_a_speed_the_duty_gives():
+    data = gear_train_posed()
+    data["limits"]["order_check_at"] = published("maximum")
+    assert rules(data) == {"consistency.speed_reference"}
+
+
+def test_a_sealed_end_names_a_shaft_and_a_side():
+    data = gear_train_posed()
+    data["requirement"]["shaft_layout"] = {
+        "bearing_to_gear": published(qty(12.7, "mm")),
+        "behind_bearing": published(qty(6.35, "mm")),
+        "sealed_ends": [
+            {"shaft": "motor", "side": published("-z")},
+            {"shaft": "input", "side": published("left")},
+            {"shaft": "output", "side": published("+z")},
+        ],
+    }
+    spec, refusals = load_and_validate(data)
+    assert {(r.rule, r.entry) for r in refusals} == {
+        ("consistency.shaft_reference", "requirement.shaft_layout.sealed_ends[0].shaft"),
+        ("consistency.shaft_reference", "requirement.shaft_layout.sealed_ends[1].side"),
+    }
+
+
+def test_a_layout_gap_is_a_length():
+    data = gear_train_posed()
+    data["requirement"]["shaft_layout"] = {
+        "bearing_to_gear": published(qty(12.7, "mm")),
+        "behind_bearing": published(qty(6, "deg")),
+    }
+    assert rules(data) == {"consistency.dimension"}
+
+
+def test_a_ratio_tolerance_needs_a_ratio():
+    data = gear_train_posed()
+    data["requirement"]["ratio_tolerance"] = published(qty(0.5, "%"))
+    assert rules(data) == {"consistency.redundant"}
 
 
 def test_the_two_stages_must_reach_the_offset():
@@ -162,9 +217,9 @@ def test_refusals_name_the_entry():
     data = gear_train_posed()
     data["requirement"]["stages"][0]["centre_distance"] = published(qty(60, "mm"))
     spec, refusals = load_and_validate(data)
-    found = [r for r in refusals if r.rule == "consistency.centre_distance"]
+    found = [r for r in refusals if r.rule == "consistency.redundant"]
     assert found and found[0].entry == "requirement.stages[0].centre_distance"
-    assert "mm" in found[0].reason
+    assert "56.9" in found[0].reason and "mm" in found[0].reason
 
 
 def test_clone_keeps_builders_independent():

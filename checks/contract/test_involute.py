@@ -45,9 +45,18 @@ def test_a_shifted_pair_matches_the_hand_calculation():
 
 
 def test_ivanovs_stages_run_at_their_published_centre_distances():
-    # Ivanov 2018 gives 83 and 125 mm; the validator allows 0.1 mm.
+    # The papers verify the tool once, here, and not in every contract (the engineer, 8 Oct).
+    # Ivanov 2018 gives 83 and 125 mm, rounded; its copy prints the helix as 30 deg.
     assert _ivanov(0).working_centre_distance == pytest.approx(83.0, abs=0.1)
     assert _ivanov(1).working_centre_distance == pytest.approx(125.0, abs=0.1)
+
+
+def test_kims_stages_run_at_their_published_centre_distances():
+    # Kim et al. 2024, Table 1: mn 1.75, alpha_n 20 deg, beta 25 deg; 57 and 97 mm.
+    stage1 = working_centre_distance(14, 46, 1.75, math.radians(20), math.radians(25), 0.2, -0.7299)
+    stage2 = working_centre_distance(21, 79, 1.75, math.radians(20), math.radians(25), 0.2, 0.0597)
+    assert stage1 == pytest.approx(57.0, abs=0.1)
+    assert stage2 == pytest.approx(97.0, abs=0.1)
 
 
 def test_the_working_pressure_angle_solves_the_involute_relation():
@@ -81,6 +90,14 @@ def test_the_diameters_hold_together():
         # The working circles touch at the pitch point and keep the tooth ratio.
         assert dw1 + dw2 == pytest.approx(2 * g.working_centre_distance, rel=1e-12)
         assert dw2 / dw1 == pytest.approx(z2 / z1, rel=1e-12)
+
+
+def test_the_tip_diameter_adds_the_addendum_and_its_shift():
+    g = _ivanov(0)
+    (d1, d2), (da1, da2) = g.reference_diameters, g.tip_diameters
+    assert da1 - d1 == pytest.approx(2 * 1.85 * (1 + 0.43672))
+    assert da2 - d2 == pytest.approx(2 * 1.85 * (1 + 0.57199922))
+    assert (round(da1, 2), round(da2, 2)) == (58.72, 114.76)
 
 
 def test_the_centre_distance_function_is_the_geometrys():

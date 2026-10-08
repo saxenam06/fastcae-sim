@@ -37,7 +37,7 @@ SCHEMA = "zenryx.snapshot/0.1"
 ROOT = Path(__file__).resolve().parents[3]
 # The product's contracts: one for now, the first contract (the engineer, 8 Oct 19:37). The other
 # examples in checks/data/contracts are the validator's fixtures, not shown in the product.
-CONTRACTS = (ROOT / "checks" / "data" / "contracts" / "ivanov2018_posed.json",)
+CONTRACTS = (ROOT / "checks" / "data" / "contracts" / "ev_reducer_posed.json",)
 OUT = ROOT / "web" / "src" / "records" / "snapshot.json"
 
 LAYERS = ("requirement", "interfaces", "physics", "limits", "manufacturing")
@@ -63,15 +63,18 @@ RULES: tuple[tuple[str, str], ...] = (
     ),
     ("stage.frozen_hash", "only a frozen contract carries a hash, and it matches the content"),
     (
-        "consistency.centre_distance",
-        "each stage's gears give its centre distance (profile shift in)",
+        "consistency.redundant",
+        "no input is one the other inputs fix: a centre distance the gear data fix, a ratio the "
+        "teeth fix",
     ),
-    ("consistency.ratio", "the stages' ratios give the total ratio within its tolerance"),
+    ("consistency.ratio", "the ratio is given wherever the teeth are not"),
     ("consistency.offset", "two stages' centre distances can reach the input-output offset"),
     ("consistency.power", "power equals torque times speed on the same shaft, within 2 %"),
     ("consistency.unique_names", "every interface has a name of its own"),
     ("consistency.unit_vector", "every axis and normal has length 1"),
     ("consistency.seat_reference", "every bearing and seat load names a seat that exists"),
+    ("consistency.speed_reference", "the gear orders are checked at a speed the duty gives"),
+    ("consistency.shaft_reference", "every sealed shaft end names a shaft and a side"),
     ("consistency.bearing_seat", "each bearing's outer diameter fits its seat"),
     ("consistency.seat_inside_space", "every seat's centre lies inside the installation space"),
     ("consistency.tilt_limit", "every bearing type in the contract has a tilt limit"),
@@ -87,6 +90,9 @@ WORDS: dict[str, str] = {
     "profile_shift_pinion": "pinion profile shift",
     "profile_shift_gear": "gear profile shift",
     "input_output_offset": "input-output offset",
+    "bearing_to_gear": "gap, bearing to gear",
+    "behind_bearing": "space behind each bearing",
+    "gear_to_gear": "gap between two gears on a shaft",
     "box_min": "box, lower corner",
     "box_max": "box, upper corner",
     "stock": "machining stock",
@@ -96,7 +102,10 @@ WORDS: dict[str, str] = {
     "centre_distance_share": "housing's share of the centre-distance tolerance",
     "ovalisation_share": "housing's share of the ovalisation tolerance",
     "limit": "tilt limit",
-    "order_check_speeds": "order-check speed",
+    "order_check_at": "gear orders checked at",
+    "behind_bearing_sealed": "space behind a bearing where its shaft leaves",
+    "min_axial_clearance": "least clearance along the shafts",
+    "min_radial_clearance": "least clearance from a gear's tips to the wall",
     "direction": "pull direction",
     "draft_inside": "draft, inside surfaces",
     "draft_outside": "draft, outside surfaces",
@@ -121,6 +130,7 @@ GROUPS: dict[str, str] = {
     "requirement.gear_quality": "gears",
     "requirement.stages": "gear stages",
     "requirement.bearings": "bearings",
+    "requirement.shaft_layout": "bearings",
     "requirement.installation_space": "installation space",
     "interfaces.seats": "bearing seats",
     "interfaces.split_faces": "split faces",
@@ -134,7 +144,7 @@ GROUPS: dict[str, str] = {
     "limits.ovalisation_share": "the housing's shares",
     "limits.bearing_tilt": "bearing tilt",
     "limits.order_separation": "gear orders",
-    "limits.order_check_speeds": "gear orders",
+    "limits.order_check_at": "gear orders",
     "limits.model_margin": "margin",
     "manufacturing.pull_directions": "pull directions",
     "manufacturing.draft_inside": "draft",
@@ -316,14 +326,16 @@ def _scenarios(spec: HousingDesignSpec) -> list[dict[str, str]]:
         }
         for i, t in enumerate(spec.requirement.torques)
     ]
-    out += [
+    kind = spec.limits.order_check_at.value
+    speed = next((s for s in spec.requirement.speeds if s.kind == kind), None)
+    at = f", {_value_text(speed.speed.value)}" if speed is not None else ""
+    out.append(
         {
             "kind": "orders",
-            "name": f"gear orders at {_value_text(speed.value)}",
-            "from": f"limits.order_check_speeds[{i}]",
+            "name": f"gear orders at the {kind} speed{at}",
+            "from": "limits.order_check_at",
         }
-        for i, speed in enumerate(spec.limits.order_check_speeds)
-    ]
+    )
     mounts = spec.interfaces.mount_pads if spec.interfaces is not None else []
     out.append({"kind": "modal", "name": "free-free modes", "from": "limits.order_separation"})
     out.append(

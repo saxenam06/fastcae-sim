@@ -12,7 +12,7 @@ from zenryx.contract.validate import load_and_validate, validate
 
 DATA = Path(__file__).parent.parent / "data" / "contracts"
 NAMES = [
-    "ivanov2018_posed.json",
+    "ev_reducer_posed.json",
     "hofstetter2018_posed.json",
     "agri_ev_gearbox_posed.json",
     "textbook_two_bearing_derived.json",
@@ -49,7 +49,7 @@ def test_a_derived_example_freezes_to_a_valid_task():
 
 @pytest.mark.parametrize(
     "name",
-    ["ivanov2018_posed.json", "hofstetter2018_posed.json", "agri_ev_gearbox_posed.json"],
+    ["ev_reducer_posed.json", "hofstetter2018_posed.json", "agri_ev_gearbox_posed.json"],
 )
 def test_a_posed_example_cannot_be_frozen_before_it_is_derived(name):
     spec, _ = load_and_validate(DATA / name)
@@ -57,10 +57,9 @@ def test_a_posed_example_cannot_be_frozen_before_it_is_derived(name):
     assert rules == {"stage.derived_needs_physics"}
 
 
-def test_ivanov_carries_its_gear_train_as_published():
-    spec, _ = load_and_validate(DATA / "ivanov2018_posed.json")
+def test_the_ev_reducer_carries_the_engineers_requirements():
+    spec, _ = load_and_validate(DATA / "ev_reducer_posed.json")
     req = spec.requirement
-    assert req.total_ratio.value.value == 7.184
     s1, s2 = req.stages
     assert (s1.z_pinion.value, s1.z_gear.value, s2.z_pinion.value, s2.z_gear.value) == (
         25,
@@ -68,12 +67,54 @@ def test_ivanov_carries_its_gear_train_as_published():
         23,
         81,
     )
-    assert (s1.centre_distance.value.value, s2.centre_distance.value.value) == (83, 125)
-    assert s1.helix_angle.provenance.kind == "published"
-    # Stage 2's helix angle is garbled in the copy read: recovered, so listed as an assumption.
-    assert s2.helix_angle.provenance.assumption_id == "A7"
-    # The packaging is the user's input, proposed and listed until the engineer sets it.
-    assert req.input_output_offset.provenance.assumption_id == "A9"
+    # The gear data fix the ratio and the centre distances, so the contract states neither; a
+    # paper's 7.184 and 83 / 125 mm verify the involute code (test_involute.py).
+    assert req.total_ratio is None and req.ratio_tolerance is None
+    assert s1.centre_distance is None and s2.centre_distance is None
+    # The requirements are the engineer's; the helix angles are 30 deg on both stages (23:23).
+    assert {s.helix_angle.provenance.kind for s in (s1, s2)} == {"engineer"}
+    assert s2.helix_angle.value.to_canonical()[0] == pytest.approx(0.5235987756)
+    # The packaging and the process were decided for the first loop (the engineer, 9 Oct 02:12).
+    assert req.input_output_offset.provenance.kind == "engineer"
+    assert req.input_output_offset.value.to_canonical() == (165.0, "mm")
+    assert [a.id for a in spec.assumptions] == [
+        "A2",
+        "A3",
+        "A4",
+        "A5",
+        "A6",
+        "A8",
+        "A11",
+        "A12",
+        "A13",
+        "A14",
+        "A15",
+        "A16",
+        "A17",
+        "A18",
+        "A19",
+    ]
+    # The layout's inputs are its gaps (the engineer, 9 Oct 00:06), assumed from Shigley's sketch.
+    gaps = req.shaft_layout
+    assert gaps.bearing_to_gear.value.to_canonical() == (12.7, "mm")
+    assert gaps.behind_bearing.value.to_canonical() == (6.35, "mm")
+    assert [e.provenance.assumption_id for e in (gaps.bearing_to_gear, gaps.behind_bearing)] == [
+        "A13",
+        "A14",
+    ]
+    assert gaps.gear_to_gear.provenance.assumption_id == "A15"
+    # Behind a bearing where its shaft leaves: a seal and its seat; which ends leave (01:06).
+    assert gaps.behind_bearing_sealed.value.to_canonical() == (11.0, "mm")
+    assert [(e.shaft, e.side.value) for e in gaps.sealed_ends] == [
+        ("input", "-z"),
+        ("output", "-z"),
+        ("output", "+z"),
+    ]
+    assert gaps.min_axial_clearance.provenance.assumption_id == "A18"
+    assert gaps.min_radial_clearance.value.to_canonical() == (8.25, "mm")
+    # One order-check speed, the duty's rated 6,000 rpm, named rather than copied.
+    assert spec.limits.order_check_at.value == "rated"
+    assert spec.limits.order_check_at.provenance.kind == "engineer"
     assert spec.manufacturing.process == "sand_casting"
 
 
@@ -111,7 +152,15 @@ def test_examples_hold_nothing_from_grc():
 
 
 def test_breaking_an_example_is_refused():
+    # Restating the paper's centre distance and ratio beside the full gear data: both redundant.
     data = json.loads((DATA / "agri_ev_gearbox_posed.json").read_text(encoding="utf-8"))
-    data["requirement"]["stages"][0]["z_gear"]["value"] = 50
+    req = data["requirement"]
+    module = req["stages"][0]["normal_module"]  # a published entry of Table 1, as a template
+    req["stages"][0]["centre_distance"] = {**module, "value": {"value": 57, "unit": "mm"}}
+    req["total_ratio"] = {**module, "value": {"value": 12.37, "unit": "1"}}
     spec, refusals = load_and_validate(data)
-    assert {"consistency.ratio", "consistency.centre_distance"} <= {r.rule for r in refusals}
+    found = {(r.rule, r.entry) for r in refusals}
+    assert found == {
+        ("consistency.redundant", "requirement.stages[0].centre_distance"),
+        ("consistency.redundant", "requirement.total_ratio"),
+    }
