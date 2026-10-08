@@ -44,6 +44,8 @@ zenryx designs housings from requirements. The engineer states a gearbox's funct
 
   CI runs the same (`.github/workflows/checks.yml`).
 - **Example contracts** are written by `checks/data/contracts/make_examples.py`. Run it after any change; the checks fail when a file is stale.
+  - `ivanov2018_posed.json` is the product's one contract, the first (the engineer, 8 October). It is the only one the UI shows (`zenryx.api.snapshot.CONTRACTS`).
+  - The other three are the validator's fixtures.
 - **The web UI** (`web/`, PLT-4): React 19 + Vite 7 + TypeScript, no other dependency; its design is `docs/features/platform/2026-10-08-ui-design.md`.
   - It shows the product's flow (contract → campaign → hypothesis → design → grade → datapoints), never a prototype's output. What is not built yet is drawn blank, never filled with example numbers.
   - It reads `web/src/records/snapshot.json`, written by `uv run python -m zenryx.api.snapshot`. Run that after any contract change; a check fails when the snapshot is stale.

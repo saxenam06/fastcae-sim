@@ -5,7 +5,7 @@
 **Status.** The plan of record. Its decisions were taken by the engineer on 7 October 2026: D1 at 11:03, D2-D13 and the changes from the engineer's Q&A record at 11:41 (section 15, [decisions.md](decisions.md)).
 
 **Changed on 7-8 October (PRD-3, the engineer's questions before P0).** Each change was taken by the engineer and is recorded in [the session record](2026-10-08-decisions-and-build-record.md) and on the product page:
-- **Inputs:** the factory starts from **published requirements**, with no CAD. The first contract is Hofstetter et al. 2018's demonstration gearbox.
+- **Inputs:** the factory starts from **published requirements**, with no CAD. The first contract is Ivanov 2018's EV two-stage helical reducer (a KTH thesis for AVL), with its gaps filled from the best sources, each labelled; Hofstetter et al. 2018's demonstration gearbox is the second (the engineer, 8 Oct 19:37).
 - **Proof:** the verdict is built from standards and guidelines. Published values form a **plausibility band**; no paper is a head-to-head target.
 - **Tasks:** every problem is a **replayable graded task**, and any geometry may be handed in.
 - **D3 (first process) re-taken:** **aluminium high-pressure die casting** (NADCA's rules).
@@ -833,7 +833,7 @@ Durations are estimates of working days with Claude writing most of the code and
 
 **Progress on 8 October:**
 - **P0 has begun.** PLT-2 (Python project, venv, checks, CI) and CON-1 (contract schema v0) work locally, uncommitted.
-- **The first contract** is Hofstetter et al. 2018's, posed (`checks/data/contracts/`).
+- **The first contract** is Ivanov 2018's, to be written posed (CON-3, the Ivanov contract); Hofstetter et al. 2018's, posed, is the second (`checks/data/contracts/`).
 - **A first variant** is being built as a prototype (`prototypes/first_variant/`): a CadQuery machined core with a field-space shell and structure, to see how the route works and looks before P1.
 - **Still to come in P0:** the judge (PHY-1 to PHY-4) and the verification set.
 - **P1's core template** builds only the machined core in CadQuery; the shell and structure are in field space (8 October).

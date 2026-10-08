@@ -25,6 +25,7 @@ from typing import Any
 from pydantic import BaseModel
 
 from zenryx import __version__
+from zenryx.api import contract_page
 from zenryx.contract.canonical import freeze, spec_hash
 from zenryx.contract.entry import Entry
 from zenryx.contract.model import HousingDesignSpec
@@ -34,7 +35,9 @@ from zenryx.contract.validate import Refusal, load_and_validate, validate
 SCHEMA = "zenryx.snapshot/0.1"
 
 ROOT = Path(__file__).resolve().parents[3]
-CONTRACT_DIRS = (ROOT / "checks" / "data" / "contracts",)
+# The product's contracts: one for now, the first contract (the engineer, 8 Oct 19:37). The other
+# examples in checks/data/contracts are the validator's fixtures, not shown in the product.
+CONTRACTS = (ROOT / "checks" / "data" / "contracts" / "ivanov2018_posed.json",)
 OUT = ROOT / "web" / "src" / "records" / "snapshot.json"
 
 LAYERS = ("requirement", "interfaces", "physics", "limits", "manufacturing")
@@ -377,20 +380,21 @@ def _contract(file: Path, root: Path) -> dict[str, Any]:
         "scenarios": _scenarios(spec),
         "assumptions": [a.model_dump() for a in spec.assumptions],
         "references": [r.model_dump() for r in spec.references],
+        # The contract page: inputs, calculations and their methods, criteria, the design to beat.
+        "page": contract_page.build(spec),
         "json": json.dumps(raw, indent=2, ensure_ascii=False),
     }
 
 
-def build(contract_dirs: Sequence[Path] = CONTRACT_DIRS, root: Path = ROOT) -> dict[str, Any]:
-    """The payload, from every contract under contract_dirs."""
-    files = sorted(f for d in contract_dirs for f in Path(d).glob("*.json"))
-    contracts = sorted((_contract(f, root.resolve()) for f in files), key=lambda c: c["id"])
+def build(contracts: Sequence[Path] = CONTRACTS, root: Path = ROOT) -> dict[str, Any]:
+    """The payload, from the product's contract files in the order given; the first is the main."""
+    views = [_contract(Path(f), root.resolve()) for f in contracts]
     payload: dict[str, Any] = {
         "schema": SCHEMA,
         "zenryx": __version__,
         "contract_schema": HousingDesignSpec.model_fields["schema_version"].annotation.__args__[0],
         "rules": [{"id": rule, "words": words} for rule, words in RULES],
-        "contracts": contracts,
+        "contracts": views,
         # What the agent, the judge and the engineer will make. Empty until they exist.
         "records": {
             "campaigns": [],

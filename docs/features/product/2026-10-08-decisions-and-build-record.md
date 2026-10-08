@@ -58,6 +58,7 @@ All were taken by the engineer; times are IST. **Bold** marks those that change 
 | 13 | 8 Oct 02:11 | Document everything; Claude works on its own | this file |
 | 14 | 8 Oct 10:38 | **The UI is built as the end-to-end product,** starting from the contract: how each contract leads into campaigns, hypotheses, designs and grades, the agent's reasoning and next step, and the datapoints all of it becomes. fastcae's UI is copied for its design. A prototype's trials are not part of it. What does not exist yet stays blank, to be filled once the agent works | platform page, Decisions; [the UI design](../platform/2026-10-08-ui-design.md) |
 | 15 | 8 Oct 18:20 | One branch for now: every PBI's work goes on `product/end-to-end` until the workflow runs end to end. Branches per PBI come back after that | CLAUDE.md (Branches); platform page, Decisions |
+| 16 | 8 Oct 19:37 | **The first contract re-taken: Ivanov 2018** (KTH thesis for AVL; an EV two-stage helical reducer with full gear data), in place of Hofstetter, which becomes the second. The maximum input speed comes from a 160 km/h top speed. Hofstetter's bearing arrangement and 944 h life are borrowed, labelled. The process (die casting, D3) stands, its impact asked again | contract page, Decisions; product page; plan §0 and §12; [the Ivanov plan](../contract/2026-10-08-plan-ivanov2018-contract.md) |
 
 **Still open** (none blocks tonight):
 - Record the engineer's accept and reject choices? Proposed yes, for the data feature (DAT).
