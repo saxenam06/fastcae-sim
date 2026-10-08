@@ -34,7 +34,9 @@ def main(stem: str = "shell") -> None:
             off = int(data[f"{half}_offset"])
             u = data["u"][off : off + 3 * len(nodes), j].reshape(-1, 3)
             cells = np.hstack([np.full((len(tets), 1), 4), tets]).ravel()
-            grid = pv.UnstructuredGrid(cells, np.full(len(tets), pv.CellType.TETRA), nodes + SCALE * u)
+            grid = pv.UnstructuredGrid(
+                cells, np.full(len(tets), pv.CellType.TETRA), nodes + SCALE * u
+            )
             grid.point_data["um"] = 1000 * np.linalg.norm(u, axis=1)
             row.append(grid.extract_surface())
             top = max(top, float(grid.point_data["um"].max()))
@@ -42,7 +44,9 @@ def main(stem: str = "shell") -> None:
     for j, name in enumerate(cases):
         plotter.subplot(0, j)
         for surface in meshes[j]:
-            plotter.add_mesh(surface, scalars="um", clim=(0, top), cmap="turbo", show_scalar_bar=(j == 0))
+            plotter.add_mesh(
+                surface, scalars="um", clim=(0, top), cmap="turbo", show_scalar_bar=(j == 0)
+            )
         seats = info["cases"][name]["seats"]
         worst = max(seats.items(), key=lambda kv: kv[1]["displacement_mm"])
         tilt = max(seats.items(), key=lambda kv: kv[1]["tilt_mrad"])
@@ -57,7 +61,9 @@ def main(stem: str = "shell") -> None:
     for name in cases:
         print(name)
         for seat, v in info["cases"][name]["seats"].items():
-            print(f"   {seat:16s} {1000 * v['displacement_mm']:6.0f} µm (radial {1000 * v['radial_mm']:5.0f})  tilt {v['tilt_mrad']:.2f} mrad")
+            print(
+                f"   {seat:16s} {1000 * v['displacement_mm']:6.0f} µm (radial {1000 * v['radial_mm']:5.0f})  tilt {v['tilt_mrad']:.2f} mrad"
+            )
         for shaft, v in info["cases"][name]["shafts"].items():
             print(f"   shaft {shaft:12s} tilt {v['tilt_mrad']:.2f} mrad over {v['span_mm']:.0f} mm")
 

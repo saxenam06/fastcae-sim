@@ -2,7 +2,7 @@
 
 One housing taken all the way, once: from the completed contract to a plain shell and wall, topology optimisation, ribs, the CAD joined, meshed, coupled, loaded, solved and graded against the contract. It is a prototype (`prototypes/first_loop/`), built to learn what the product's tools must be and where the agent's judgement belongs, before any agent is built (the engineer, 9 October 01:54).
 
-**PBI key:** LOP · **State:** LOP-1 (the plain shell and wall) and LOP-2 (its FE judgement) work: the plain housing weighs 7.23 kg and is about five times too soft (its flat end walls bend); one mode sits on stage 2's mesh frequency. LOP-3 (topology optimisation) is next. Committed in 7ca5e28 (prototype), not pushed · **Updated:** 2026-10-09 03:40 by Claude
+**PBI key:** LOP · **State:** LOP-1 and LOP-2 done; LOP-3 (topology optimisation) and LOP-4 (ribs) in their second iteration: 11 designs judged. The best under the reference housing's 7.73 kg is the lobed shell with 10 mm end walls (7.49 kg, the worst tilt 2.4 times its line); nothing passes yet. Next: the optimisation aimed at the seats' tilt · **Updated:** 2026-10-09 04:08 by Claude
 **Code:** `prototypes/first_loop/` (a prototype: nothing in `src/` imports it; its outputs go to `data/first_loop/`, which git ignores)
 
 ## Now
@@ -49,6 +49,29 @@ One housing taken all the way, once: from the completed contract to a plain shel
   - The flat end walls bend like plates: the cover's +z wall bulges round the intermediate's and the output's seats (`data/first_loop/fe_shell.png`).
   - Modes 838, 934, 993, 1,114, 1,300 … Hz: **1,114 Hz sits within 3 % of stage 2's 1,127 Hz**, as the reference housing's own first mode did.
   - Equilibrium: the mounts react (0, 0, 1,077.7) N·m against the loads' (0, 0, −1,077.7): the output's torque, as it must be, and no stray moment.
+- **Iteration 1: the 1 kg optimisation, read two ways** (9 October 03:44-03:51, 8 mm meshes):
+  - The optimisation (`topo.py 1.0 6 40`: 6 mm voxels, 207 s, compliance −28 %) put its metal in a frame round the output's +z boss on the cover and a crescent beside the intermediate's −z boss on the motor side (`topo_1kg_6mm.png`).
+  - Reading A, a fan (`read.py`: straight paths between bosses and mounts and radial every 15°, scored by the material under them): 23 ribs, 7.68 kg: drive 192 µm, reverse 253 µm, the worst tilt 4.1 times its line, the order clash gone.
+  - Reading B, the skeleton (the material's skeleton, each rib as wide as the band under it): 17 ribs, 7.63 kg: drive 223 µm, reverse 189 µm, the worst tilt 5.2 times its line; still a clash at 1,136 Hz.
+  - So 0.4 kg of end-wall ribs halves the worst tilt, and the reading matters as much as the optimisation: the two readings of one field differ by 25 % in tilt and 34 % in reverse. Neither nears the line.
+- **Iteration 2: more metal, and the shell's form** (03:51-04:08, 8 mm meshes; `grade.py`'s table, `data/first_loop/grades.json`; "tilt" is the worst seat's tilt over its line, 0.75 × the contract's limit):
+
+  | Design | kg | Drive µm | Reverse µm | Tilt | Orders |
+  |---|---|---|---|---|---|
+  | Convex shell, plain | 7.23 | 246 | 366 | 8.80 | clash |
+  | Convex + fan ribs (1 kg optimisation) | 7.68 | 192 | 253 | 4.10 | clear |
+  | Convex + skeleton ribs (1 kg) | 7.63 | 223 | 189 | 5.16 | clash |
+  | Convex, end walls 10 mm | 8.06 | 132 | 176 | 3.54 | clear |
+  | Convex + fan ribs twice as tall | 8.14 | 170 | 197 | 3.33 | clear |
+  | Convex + fan ribs (2 kg optimisation) | 8.16 | 138 | 201 | 3.12 | clear |
+  | Convex + skeleton ribs (2 kg) | 8.05 | 163 | 182 | 5.49 | clash |
+  | Convex, end walls 10 mm + fan ribs | 8.52 | 118 | 152 | 2.62 | clear |
+  | **Lobed shell, plain** (`lobed.py`) | **6.66** | 218 | 323 | **4.45** | clear |
+  | Lobed, end walls 10 mm | 7.49 | 106 | 156 | 2.42 | clash |
+  | Lobed, end walls 10 mm, bosses 12 mm | 8.04 | 95 | 130 | 2.01 | clash |
+
+  - **The shell's form is a stronger lever than any reading:** the lobed form (a pod per shaft, each end wall stepped to its own shaft's end, a round flange plate for the motor) halves the convex form's tilt with no rib and 0.57 kg less.
+  - **The binding seats are the intermediate's tapered pair** (the tightest line, 0.375 mrad) and the input's +z roller. The compliance objective puts its metal round the heavily loaded output instead: the optimisation solves the wrong problem until its objective is each seat's tilt over its line.
 - **The mesh noise:** 8 mm against 6 mm: the worst displacements 242.4 against 246.1 µm (1.5 %) and 362.9 against 366.0 µm (0.9 %); the tilt 3.69 against 3.72 mrad; the first mode 842 against 838 Hz. The 8 mm mesh (531,552 unknowns, 25 s) ranks designs.
 
 ## Decisions

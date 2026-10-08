@@ -44,6 +44,7 @@ OUT = ROOT / "data" / "first_loop"
 
 # The shell-and-wall tool's settings: the housing's own choices, each with where it comes from.
 SETTINGS = {
+    "end_wall": 6.0,  # mm: the end walls' own thickness (a lever: they bend like plates)
     "wall": 6.0,  # mm: sand casting, above the contract's least wall of 4 mm; Łódź's δ for a
     #               larger case is 7.5 mm
     "boss": 8.0,  # mm of wall round a bearing's seat (about 0.08·D + 1 for these bores, Łódź Ch. 9)
@@ -70,8 +71,9 @@ def say(text: str) -> None:
     print(f"[{time.strftime('%H:%M:%S')}] {text}", flush=True)
 
 
-def build() -> dict:
-    s = SETTINGS
+def build(stem: str = "shell", ribs: list | None = None, overrides: dict | None = None) -> dict:
+    """The housing; `ribs` stand on its end walls (LOP-4), `overrides` change its settings."""
+    s = {**SETTINGS, **(overrides or {})}
     spec, refusals = load_and_validate(CONTRACT)
     assert refusals == [], refusals
     chain = complete_chain(spec)
@@ -118,9 +120,10 @@ def build() -> dict:
     z_lo = min(st.ends[0] for st in chain.layout.shafts)
     z_hi = max(st.ends[1] for st in chain.layout.shafts)
     wall = s["wall"]
+    end = s.get("end_wall", wall)
     say(f"outline: {len(outer)} points; housing from z {z_lo:.1f} to {z_hi:.1f} mm")
 
-    body = prism(outer, z_lo, z_hi).cut(prism(inner, z_lo + wall, z_hi - wall))
+    body = prism(outer, z_lo, z_hi).cut(prism(inner, z_lo + end, z_hi - end))
     # Each bearing's boss runs from its end wall to the seat's inboard face.
     for b in bearings:
         z0, z1 = b["z"]
@@ -156,16 +159,29 @@ def build() -> dict:
         z0, z1 = z_lo + 8.0, z_lo + 8.0 + s["mount_length"]
         body = body.fuse(cylinder(centre, z0, z1, s["mount_diameter"]))
         mounts.append({"centre": centre, "z": (z0, z1), "normal": (ux, uy, 0.0)})
+    # Ribs (LOP-4): plates on the end walls' outer faces along straight paths, clipped to the
+    # housing's outline and kept out of the room the motor and the half-shafts need.
+    output_axis_xy = next(st.axis for st in chain.layout.shafts if st.shaft == "output")
+    rib_boxes = []
+    for rib in ribs or []:
+        solid, box = _rib(rib, outer, z_lo, z_hi)
+        if rib["face"] == "-z":
+            solid = solid.cut(cylinder(input_axis, z_lo - 400, z_lo + 0.5, ring_out + 30))
+        solid = solid.cut(cylinder(output_axis_xy, z_lo - 400, z_hi + 400, 90.0))
+        body = body.fuse(solid)
+        rib_boxes.append(box)
     body = body.clean()
 
     # Seats, shoulders and seal bores, cut after the bosses.
     for b in bearings:
         z0, z1 = b["z"]
         body = body.cut(cylinder(b["axis"], z0, z1, b["D"]))
-        if b["side"] == "-z":
-            body = body.cut(cylinder(b["axis"], z_lo + wall, z0 + 1e-3, b["D"] - 2 * s["shoulder"]))
-        else:
-            body = body.cut(cylinder(b["axis"], z1 - 1e-3, z_hi - wall, b["D"] - 2 * s["shoulder"]))
+        # The pocket behind a seat, where the seat stands clear of its end wall; a seat whose back
+        # lies in the wall is bored into it, and the wall is its shoulder.
+        if b["side"] == "-z" and z0 > z_lo + end + 0.5:
+            body = body.cut(cylinder(b["axis"], z_lo + end, z0 + 1e-3, b["D"] - 2 * s["shoulder"]))
+        elif b["side"] == "+z" and z1 < z_hi - end - 0.5:
+            body = body.cut(cylinder(b["axis"], z1 - 1e-3, z_hi - end, b["D"] - 2 * s["shoulder"]))
         if b["sealed"]:
             seal = b["d"] + 2 * s["seal_radial"]
             if b["side"] == "-z":
@@ -181,7 +197,7 @@ def build() -> dict:
             input_axis[0] + s["motor_bolt_circle"] / 2 * math.cos(a),
             input_axis[1] + s["motor_bolt_circle"] / 2 * math.sin(a),
         )
-        body = body.cut(cylinder(c, z_lo - t_ring - 1.0, z_lo + wall - 1.0, s["bolt_hole"]))
+        body = body.cut(cylinder(c, z_lo - t_ring - 1.0, z_lo + end - 1.0, s["bolt_hole"]))
         motor_holes.append(c)
     body = body.clean()
 
@@ -240,18 +256,22 @@ def build() -> dict:
     say(f"halves built: {len(bolts)} bolts on the flange")
 
     names = {
-        "motor_side": _name_faces(lower, bearings, bolts, mounts, motor_holes, z_split, s),
-        "cover": _name_faces(upper, bearings, bolts, mounts, motor_holes, z_split, s),
+        "motor_side": _name_faces(
+            lower, bearings, bolts, mounts, motor_holes, z_split, s, rib_boxes
+        ),
+        "cover": _name_faces(upper, bearings, bolts, mounts, motor_holes, z_split, s, rib_boxes),
     }
     OUT.mkdir(parents=True, exist_ok=True)
     for half, shape in (("motor_side", lower), ("cover", upper)):
-        cq.exporters.export(cq.Workplane().add(shape), str(OUT / f"shell_{half}.step"))
-        shape.exportBrep(str(OUT / f"shell_{half}.brep"))
+        cq.exporters.export(cq.Workplane().add(shape), str(OUT / f"{stem}_{half}.step"))
+        shape.exportBrep(str(OUT / f"{stem}_{half}.brep"))
     mass = {
         half: shape.Volume() * s["density"]
         for half, shape in (("motor_side", lower), ("cover", upper))
     }
     result = {
+        "stem": stem,
+        "ribs": ribs or [],
         "settings": s,
         "z": {"lo": z_lo, "hi": z_hi, "split": z_split},
         "bearings": bearings,
@@ -264,7 +284,7 @@ def build() -> dict:
         "faces": {half: {str(k): v for k, v in n.items()} for half, n in names.items()},
         "refused": [f"{k}: {v}" for k, v in sorted(chain.refused.items())],
     }
-    (OUT / "shell.json").write_text(json.dumps(result, indent=1, default=list), encoding="utf-8")
+    (OUT / f"{stem}.json").write_text(json.dumps(result, indent=1, default=list), encoding="utf-8")
     roles = {half: _count(n) for half, n in names.items()}
     say(
         f"mass {result['mass_kg']['total']:.2f} kg (motor side {mass['motor_side']:.2f}, cover {mass['cover']:.2f}); faces {roles}"
@@ -291,13 +311,51 @@ def _along(polygon, pitch):
     return out
 
 
-def _name_faces(shape, bearings, bolts, mounts, motor_holes, z_split, s) -> dict[int, str]:
+def _rib(rib: dict, outer, z_lo: float, z_hi: float):
+    """A rib: a plate of its thickness along the path a-b, standing its height off the end wall
+    it names (1 mm sunk into the wall so the fuse is clean), clipped to the housing's outline."""
+    (ax, ay), (bx, by) = rib["a"], rib["b"]
+    length = math.hypot(bx - ax, by - ay)
+    nx, ny = -(by - ay) / length, (bx - ax) / length
+    t = rib["thickness"] / 2
+    poly = [
+        (ax + nx * t, ay + ny * t),
+        (bx + nx * t, by + ny * t),
+        (bx - nx * t, by - ny * t),
+        (ax - nx * t, ay - ny * t),
+    ]
+    if rib["face"] == "+z":
+        z0, z1 = z_hi - 1.0, z_hi + rib["height"]
+    else:
+        z0, z1 = z_lo - rib["height"], z_lo + 1.0
+    solid = prism(poly, z0, z1).intersect(prism(outer, z_lo - 500, z_hi + 500))
+    return solid, {"poly": poly, "z": (z0, z1)}
+
+
+def _in_poly(poly, x, y) -> bool:
+    inside = False
+    for (x1, y1), (x2, y2) in zip(poly, poly[1:] + poly[:1], strict=True):
+        if (y1 > y) != (y2 > y) and x < (x2 - x1) * (y - y1) / (y2 - y1) + x1:
+            inside = not inside
+    return inside
+
+
+def _name_faces(
+    shape, bearings, bolts, mounts, motor_holes, z_split, s, rib_boxes=()
+) -> dict[int, str]:
     """Each face's role, from the exact geometry: a cylinder's radius and axis, a plane's place."""
     out = {}
     tol = 0.05
     for k, face in enumerate(shape.Faces()):
         kind = face.geomType()
         role = "wall"
+        centre = face.Center()
+        for box in rib_boxes:
+            grown = box["poly"]
+            if box["z"][0] - tol <= centre.z <= box["z"][1] + tol and _in_poly(
+                grown, centre.x, centre.y
+            ):
+                role = "rib"
         if kind == "CYLINDER":
             surf = BRepAdaptor_Surface(face.wrapped).Cylinder()
             r = surf.Radius()
@@ -334,4 +392,4 @@ def _count(names: dict[int, str]) -> dict[str, int]:
 
 
 if __name__ == "__main__":
-    build()
+    build(*sys.argv[1:2])
