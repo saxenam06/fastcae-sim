@@ -2,7 +2,7 @@
  * The contract page: one contract, as a product shows it.
  *
  * Top to bottom, in the order an engineer reads a task:
- * - the head: what it is, where it stands (posed, derived, frozen), the checks;
+ * - the head: what it is, where it stands (posed, completed, frozen), the checks;
  * - inputs: only what is given or assumed, grouped, each value in its box with its source in two
  *   words;
  * - calculated: the calculation chain's steps, each with its method pre-selected and the function
@@ -19,6 +19,7 @@ import { shortTitle, STAGES } from "../app/product";
 import { Dot } from "../panel/bits";
 import type { Calculation, ContractView, InputGroup, Snapshot, StepInput, StepTable } from "../records/types";
 import { Method, Section, Source, Value } from "../panel/page";
+import { Volumes } from "./Volumes";
 
 export function ContractPage({ contract, snap }: { contract: ContractView; snap: Snapshot }) {
   const page = contract.page;
@@ -77,6 +78,10 @@ export function ContractPage({ contract, snap }: { contract: ContractView; snap:
               agree.
             </caption>
           </table>
+        </Section>
+
+        <Section title="The result" aside="the volumes the contract fixes, and the design space they leave for the housing">
+          <Volumes />
         </Section>
 
         <div className="cp-pair">

@@ -6,6 +6,7 @@ import "./styles/rail.css";
 import "./styles/campaign.css";
 import "./styles/zenryx.css";
 import "./styles/page.css";
+import "./styles/volumes.css";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { App } from "./app/App";

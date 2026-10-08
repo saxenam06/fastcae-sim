@@ -786,7 +786,7 @@
       "kind": "layout_envelope",
       "clearance": {
         "value": {
-          "value": 20,
+          "value": 40,
           "unit": "mm"
         },
         "provenance": {
@@ -1109,8 +1109,8 @@
     {
       "id": "A3",
       "what": "installation space",
-      "value": "the gears' envelope plus 20 mm",
-      "why": "no package given",
+      "value": "the layout's envelope plus 40 mm",
+      "why": "no package given; room beyond the tip clearance for the wall, a split flange (24 mm for M8 · Maciejczyk & Zdziennicki Table 9.1) and ribs",
       "varied": true
     },
     {

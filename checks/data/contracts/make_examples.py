@@ -674,7 +674,7 @@ def ev_reducer_posed():
             },
             "installation_space": {
                 "kind": "layout_envelope",
-                "clearance": asm(qty(20, "mm"), "A3"),
+                "clearance": asm(qty(40, "mm"), "A3"),
             },
         },
         # One check speed, the cruise: the duty's rated 6,000 rpm (the engineer, 9 Oct 01:06).
@@ -756,8 +756,9 @@ def ev_reducer_posed():
             assumption(
                 "A3",
                 "installation space",
-                "the gears' envelope plus 20 mm",
-                "no package given",
+                "the layout's envelope plus 40 mm",
+                "no package given; room beyond the tip clearance for the wall, a split flange "
+                "(24 mm for M8 · Maciejczyk & Zdziennicki Table 9.1) and ribs",
             ),
             assumption(
                 "A4",
