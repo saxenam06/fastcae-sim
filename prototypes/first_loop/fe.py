@@ -44,8 +44,8 @@ from zenryx.domains.gearbox.chain import complete_chain  # noqa: E402
 OUT = ROOT / "data" / "first_loop"
 CONTRACT = ROOT / "checks" / "data" / "contracts" / "ev_reducer_posed.json"
 YOUNG, POISSON, DENSITY = 69_000.0, 0.33, 2.6e-9  # MPa, -, t/mm³: the contract's EN AC-42100 T6
-PENALTY_T = 1.0e9  # N/mm on a coupling's mean translation
-PENALTY_R = 1.0e11  # N·mm/rad on its best-fit rotation
+PENALTY_T = 1.0e8  # N/mm on a coupling's mean translation
+PENALTY_R = 1.0e10  # N·mm/rad on its best-fit rotation
 TOL = 0.25  # mm: how near a node must lie to a coupled surface
 
 
@@ -353,7 +353,14 @@ def judge(stem: str = "shell", size: float = 6.0) -> dict:
     # cuDSS keeps the shape it was planned with.
     columns = []
     for j in range(f.shape[1]):
-        x, solve_info = _factor_and_solve(k, f[:, j], gpu=True)
+        try:
+            x, solve_info = _factor_and_solve(k, f[:, j], gpu=True)
+        except RuntimeError as why:
+            # The couplings' penalties slow the single factor's refinement; fastcae's own last
+            # resort is the double factor.
+            say(f"single factor did not refine ({why}); factoring in double")
+            release()
+            x, solve_info = _factor_and_solve(k, f[:, j], gpu=True, single=False)
         columns.append(x)
         release()
     u_all = np.stack(columns, axis=1)
