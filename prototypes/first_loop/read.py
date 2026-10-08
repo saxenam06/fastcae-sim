@@ -43,16 +43,50 @@ def density_grid(stem: str):
     return grid, d["lo"], float(d["h"])
 
 
-def height_map(grid, lo, h, z_face: float, outward: int, reach: float = 45.0):
-    """How tall the optimisation's material stands on a face: the density summed outwards (mm)."""
-    k0 = int(round((z_face - lo[2]) / h))
+def face_z(shell: dict, face: str, x: np.ndarray, y: np.ndarray) -> np.ndarray:
+    """The end face's z under each point: a lobed housing's face steps from pod to pod (the
+    highest +z face, or the lowest -z face, of the pods over the point)."""
+    z_lo, z_hi = shell["z"]["lo"], shell["z"]["hi"]
+    pods = shell.get("pods")
+    if not pods:
+        return np.full(x.shape, z_hi if face == "+z" else z_lo)
+    out = np.full(x.shape, np.nan)
+    for p in pods:
+        mask = _inside(p["outer"], x, y)
+        z = p["z"][1] if face == "+z" else p["z"][0]
+        better = np.isnan(out) | ((z > out) if face == "+z" else (z < out))
+        out = np.where(mask & better, z, out)
+    return np.where(np.isnan(out), z_hi if face == "+z" else z_lo, out)
+
+
+def _inside(polygon, x, y):
+    poly = np.asarray(polygon)
+    xs, ys = poly[:, 0], poly[:, 1]
+    xs2, ys2 = np.roll(xs, -1), np.roll(ys, -1)
+    result = np.zeros(x.shape, dtype=bool)
+    for x1, y1, x2, y2 in zip(xs, ys, xs2, ys2, strict=True):
+        cond = (y1 > y) != (y2 > y)
+        with np.errstate(divide="ignore", invalid="ignore"):
+            xin = (x2 - x1) * (y - y1) / (y2 - y1) + x1
+        result ^= cond & (x < xin)
+    return result
+
+
+def height_map(grid, lo, h, z_face, outward: int, reach: float = 45.0):
+    """How tall the optimisation's material stands on a face: the density summed outwards (mm)
+    from the face's z, which may differ column by column (a 2D array) on a lobed housing."""
+    z_face = np.broadcast_to(np.asarray(z_face, dtype=float), grid.shape[:2])
+    k0 = np.rint((z_face - lo[2]) / h).astype(int)
     steps = int(reach / h)
-    layers = []
+    total = np.zeros(grid.shape[:2])
+    ii, jj = np.indices(grid.shape[:2])
     for s in range(1, steps + 1):
         k = k0 + outward * s
-        if 0 <= k < grid.shape[2]:
-            layers.append(np.nan_to_num(grid[:, :, k], nan=0.0))
-    return h * np.sum(layers, axis=0) if layers else np.zeros(grid.shape[:2])
+        ok = (k >= 0) & (k < grid.shape[2])
+        layer = np.zeros(grid.shape[:2])
+        layer[ok] = np.nan_to_num(grid[ii[ok], jj[ok], k[ok]], nan=0.0)
+        total += layer
+    return h * total
 
 
 def sample(height, lo, h, a, b, count=40):
@@ -150,7 +184,7 @@ def read(stem: str, budget_kg: float = 1.0) -> dict:
     return result
 
 
-def skeleton_ribs(stem: str, threshold: float = 6.0, tolerance: float = 6.0) -> dict:
+def skeleton_ribs(stem: str, threshold: float = 6.0, tolerance: float = 6.0, shell_stem: str = "shell") -> dict:
     """The second reading: on each face, the optimisation's material taller than `threshold`
     (mm) thinned to its skeleton (scikit-image), the skeleton's branches between junctions and
     ends simplified into straight segments (Douglas-Peucker to `tolerance` mm), and a rib along
@@ -158,9 +192,11 @@ def skeleton_ribs(stem: str, threshold: float = 6.0, tolerance: float = 6.0) -> 
     from skimage.morphology import skeletonize
 
     grid, lo, h = density_grid(stem)
-    shell = json.loads((OUT / "shell.json").read_text(encoding="utf-8"))
-    z_lo, z_hi = shell["z"]["lo"], shell["z"]["hi"]
-    faces = {"+z": (z_hi, +1), "-z": (z_lo, -1)}
+    shell = json.loads((OUT / f"{shell_stem}.json").read_text(encoding="utf-8"))
+    xs = lo[0] + h * (np.arange(grid.shape[0]) + 0.5)
+    ys = lo[1] + h * (np.arange(grid.shape[1]) + 0.5)
+    gx, gy = np.meshgrid(xs, ys, indexing="ij")
+    faces = {"+z": (face_z(shell, "+z", gx, gy), +1), "-z": (face_z(shell, "-z", gx, gy), -1)}
     ribs, used = [], 0.0
     maps = {}
     for face, (z, out) in faces.items():
@@ -217,6 +253,13 @@ def skeleton_ribs(stem: str, threshold: float = 6.0, tolerance: float = 6.0) -> 
                     "height": float(np.clip(np.median(values), 10.0, 40.0)),
                     "thickness": float(np.clip(np.median(widths), THICKNESS, 16.0)),
                 }
+                mid = (0.5 * (rib["a"][0] + rib["b"][0]), 0.5 * (rib["a"][1] + rib["b"][1]))
+                rib["z_base"] = float(face_z(shell, face, np.array([mid[0]]), np.array([mid[1]]))[0])
+                for p in shell.get("pods") or []:
+                    if _inside(p["outer"], np.array([mid[0]]), np.array([mid[1]]))[0]:
+                        zp = p["z"][1] if face == "+z" else p["z"][0]
+                        if abs(zp - rib["z_base"]) < 1e-6:
+                            rib["pod"] = p["shaft"]
                 rib["length"] = math.dist(rib["a"], rib["b"])
                 rib["kg"] = rib["length"] * rib["height"] * rib["thickness"] * DENSITY
                 ribs.append(rib)
@@ -224,6 +267,8 @@ def skeleton_ribs(stem: str, threshold: float = 6.0, tolerance: float = 6.0) -> 
     result = {"stem": stem, "method": "skeleton", "ribs_kg": used, "chosen": ribs}
     (OUT / f"{stem}_skeleton.json").write_text(json.dumps(result, indent=1), encoding="utf-8")
     outline = [tuple(p) for p in shell["outer_outline"]]
+    if shell.get("pods"):
+        outline = [tuple(pt) for p in shell["pods"] for pt in p["outer"]]
     _picture(maps, lo, h, outline, ribs, OUT / f"{stem}_skeleton.png", stem + " (skeleton)")
     print(f"skeleton: {len(ribs)} ribs, {used:.2f} kg")
     return result
@@ -274,6 +319,6 @@ def _picture(maps, lo, h, outline, chosen, path, stem):
 if __name__ == "__main__":
     args = sys.argv[1:]
     if len(args) > 1 and args[1] == "skeleton":
-        skeleton_ribs(args[0])
+        skeleton_ribs(args[0], shell_stem=args[2] if len(args) > 2 else "shell")
     else:
         read(args[0], float(args[1]) if len(args) > 1 else 1.0)

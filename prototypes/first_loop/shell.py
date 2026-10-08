@@ -23,6 +23,7 @@ Run: uv run python prototypes/first_loop/shell.py      (outputs in data/first_lo
 from __future__ import annotations
 
 import json
+import os
 import math
 import sys
 import time
@@ -39,7 +40,8 @@ from zenryx.domains.gearbox.chain import complete_chain  # noqa: E402
 from zenryx.domains.gearbox.forces import value_in  # noqa: E402
 from zenryx.geometry.solids import cylinder, hull_of_circles, prism  # noqa: E402
 
-CONTRACT = ROOT / "checks" / "data" / "contracts" / "ev_reducer_posed.json"
+# The contract judged: the product's, unless LOOP_CONTRACT names a what-if variant of it.
+CONTRACT = Path(os.environ.get("LOOP_CONTRACT", ROOT / "checks" / "data" / "contracts" / "ev_reducer_posed.json"))
 OUT = ROOT / "data" / "first_loop"
 
 # The shell-and-wall tool's settings: the housing's own choices, each with where it comes from.

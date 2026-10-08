@@ -23,6 +23,7 @@ Run: uv run python prototypes/first_loop/fe.py [stem] [size_mm]     (default: sh
 from __future__ import annotations
 
 import json
+import os
 import math
 import sys
 import time
@@ -42,11 +43,15 @@ from zenryx.contract.validate import load_and_validate  # noqa: E402
 from zenryx.domains.gearbox.chain import complete_chain  # noqa: E402
 
 OUT = ROOT / "data" / "first_loop"
-CONTRACT = ROOT / "checks" / "data" / "contracts" / "ev_reducer_posed.json"
+# The contract judged: the product's, unless LOOP_CONTRACT names a what-if variant of it.
+CONTRACT = Path(os.environ.get("LOOP_CONTRACT", ROOT / "checks" / "data" / "contracts" / "ev_reducer_posed.json"))
 YOUNG, POISSON, DENSITY = 69_000.0, 0.33, 2.6e-9  # MPa, -, t/mm³: the contract's EN AC-42100 T6
 PENALTY_T = 1.0e8  # N/mm on a coupling's mean translation
 PENALTY_R = 1.0e10  # N·mm/rad on its best-fit rotation
 TOL = 0.25  # mm: how near a node must lie to a coupled surface
+# How a seat takes its bearing's load: "rbe3", the engineer's whole-seat distributing coupling,
+# or "cosine", the plan's D6a for comparison (LOOP_LOADS=cosine).
+LOAD_MODEL = os.environ.get("LOOP_LOADS", "rbe3")
 
 
 def say(text: str) -> None:
@@ -156,6 +161,29 @@ def rbe3_loads(x: np.ndarray, ids: np.ndarray, point, force, moment=(0.0, 0.0, 0
     m = np.cross(np.asarray(point) - c, np.asarray(force)) + np.asarray(moment)
     theta = np.linalg.solve(a, m)
     return np.asarray(force)[None, :] / n + np.cross(theta[None, :], r)
+
+
+def cosine_loads(x: np.ndarray, ids: np.ndarray, axis, force) -> np.ndarray:
+    """The plan's D6a, for comparison with the engineer's whole-seat coupling: the radial force as
+    a pressure over the seat's loaded half, normal to the bore and growing as the cosine of the
+    angle from the load's direction; the axial force spread evenly over the seat. Nothing pulls
+    the unloaded half."""
+    p = x[ids]
+    radial = np.array([force[0], force[1]])
+    size = float(np.hypot(*radial))
+    out = np.zeros((len(ids), 3))
+    out[:, 2] = force[2] / len(ids)
+    if size == 0:
+        return out
+    e = radial / size
+    n = p[:, :2] - np.asarray(axis)[None, :]
+    n /= np.linalg.norm(n, axis=1, keepdims=True)
+    cos = n @ e
+    w = np.where(cos > 0, cos, 0.0)
+    # The pressure's resultant along the load: sum of w_i (n_i . e) = sum of w_i cos_i.
+    scale = size / float((w * cos).sum())
+    out[:, :2] = scale * w[:, None] * n
+    return out
 
 
 def rigid_fit(x, u, ids):
@@ -271,7 +299,10 @@ def judge(stem: str = "shell", size: float = 6.0) -> dict:
             half, ids, b = seats[(s.shaft, s.side)]
             h = halves[half]
             point = (*b["axis"], 0.5 * (b["z"][0] + b["z"][1]))
-            loads = rbe3_loads(h["nodes"], ids, point, s.force)
+            if LOAD_MODEL == "cosine":
+                loads = cosine_loads(h["nodes"], ids, b["axis"], s.force)
+            else:
+                loads = rbe3_loads(h["nodes"], ids, point, s.force)
             for k in range(3):
                 np.add.at(f[:, j], h["offset"] + 3 * ids + k, loads[:, k])
         # the motor's reaction on its flange's bolt holes, about the input's axis
@@ -318,8 +349,8 @@ def judge(stem: str = "shell", size: float = 6.0) -> dict:
     weights = sp.diags([PENALTY_T] * 3 + [PENALTY_R] * 3)
     penalty = sp.csr_matrix((n_dof, n_dof))
     mounts = []
-    h = halves["motor_side"]
     for m in info["mounts"]:
+        h = halves[half_of(0.5 * (m["z"][0] + m["z"][1]))]
         ids = on_cylinder(
             h["nodes"], h["skin"], m["centre"], info["settings"]["mount_hole"] / 2, *m["z"]
         )
@@ -368,7 +399,8 @@ def judge(stem: str = "shell", size: float = 6.0) -> dict:
         f"solved in {time.time() - t2:.0f} s ({solve_info.get('solver')}, residual {solve_info.get('residual'):.1e})"
     )
 
-    result = {"stem": stem, "size_mm": size, "unknowns": n_dof, "cases": {}}
+    out_stem = stem if LOAD_MODEL == "rbe3" else f"{stem}_{LOAD_MODEL}"
+    result = {"stem": out_stem, "load_model": LOAD_MODEL, "size_mm": size, "unknowns": n_dof, "cases": {}}
     for j, case in enumerate(cases):
         u = u_all[:, j]
         out = {"seats": {}, "reactions": {}, "shafts": {}}
@@ -457,9 +489,9 @@ def judge(stem: str = "shell", size: float = 6.0) -> dict:
         k_: (v if isinstance(v, (int, float, str)) else str(v)) for k_, v in solve_info.items()
     }
     result["seconds"] = time.time() - t0
-    (OUT / f"fe_{stem}.json").write_text(json.dumps(result, indent=1), encoding="utf-8")
+    (OUT / f"fe_{out_stem}.json").write_text(json.dumps(result, indent=1), encoding="utf-8")
     np.savez_compressed(
-        OUT / f"fe_{stem}.npz",
+        OUT / f"fe_{out_stem}.npz",
         **{f"{half}_nodes": h["nodes"] for half, h in halves.items()},
         **{f"{half}_tets": h["tets"] for half, h in halves.items()},
         **{f"{half}_offset": np.array(h["offset"]) for half, h in halves.items()},

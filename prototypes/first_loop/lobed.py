@@ -126,15 +126,41 @@ def build(stem: str = "lobed", ribs: list | None = None, overrides: dict | None 
     cx = sum(pt[0] for pt, _ in points) / len(points)
     cy = sum(pt[1] for pt, _ in points) / len(points)
     mounts = []
-    for direction in ((-1.0, -0.6), (1.0, -0.4), (0.15, 1.0)):
+    sides = s.get("mount_sides", ["-z", "-z", "-z"])
+    for direction, side in zip(((-1.0, -0.6), (1.0, -0.4), (0.15, 1.0)), sides, strict=True):
         n = math.hypot(*direction)
         ux, uy = direction[0] / n, direction[1] / n
         far, pod = max(points, key=lambda q: (q[0][0] - cx) * ux + (q[0][1] - cy) * uy)
         centre = (far[0] + ux * s["mount_diameter"] * 0.25, far[1] + uy * s["mount_diameter"] * 0.25)
-        z0 = pod["z"][0] + 8.0
-        z1 = z0 + s["mount_length"]
+        if side == "-z":
+            z0 = pod["z"][0] + 8.0
+            z1 = z0 + s["mount_length"]
+        else:
+            z1 = pod["z"][1] - 8.0
+            z0 = z1 - s["mount_length"]
         body = body.fuse(cylinder(centre, z0, z1, s["mount_diameter"]))
         mounts.append({"centre": centre, "z": (z0, z1), "normal": (ux, uy, 0.0), "pod": pod["shaft"]})
+    # Ribs (LOP-4): each on its own pod's end face (z_base), clipped to that pod's outline, and
+    # kept out of the room the motor and the half-shafts need.
+    output_axis_xy = next(st.axis for st in chain.layout.shafts if st.shaft == "output")
+    rib_boxes = []
+    for rib in ribs or []:
+        (ax, ay), (bx, by) = rib["a"], rib["b"]
+        length = math.hypot(bx - ax, by - ay)
+        if length < 1.0:
+            continue
+        nx, ny = -(by - ay) / length, (bx - ax) / length
+        t = rib["thickness"] / 2
+        poly = [(ax + nx * t, ay + ny * t), (bx + nx * t, by + ny * t), (bx - nx * t, by - ny * t), (ax - nx * t, ay - ny * t)]
+        base = rib.get("z_base", z_hi if rib["face"] == "+z" else z_lo)
+        z0, z1 = (base - 1.0, base + rib["height"]) if rib["face"] == "+z" else (base - rib["height"], base + 1.0)
+        outline = pod_of[rib["pod"]]["outer"] if rib.get("pod") in pod_of else pods[0]["outer"]
+        solid = prism(poly, z0, z1).intersect(prism(outline, z_lo - 500, z_hi + 500))
+        if rib["face"] == "-z":
+            solid = solid.cut(cylinder(input_axis, z_lo - 400, z_motor + 0.5, ring_out + 30))
+        solid = solid.cut(cylinder(output_axis_xy, z_lo - 400, z_hi + 400, 90.0))
+        body = body.fuse(solid)
+        rib_boxes.append({"poly": poly, "z": (z0, z1)})
     body = body.clean()
     # Seats, shoulders, seal bores, holes.
     for b in bearings:
@@ -193,8 +219,8 @@ def build(stem: str = "lobed", ribs: list | None = None, overrides: dict | None 
     say(f"lobed halves built: {len(bolts)} bolts on the flange")
 
     names = {
-        "motor_side": convex._name_faces(lower, bearings, bolts, mounts, motor_holes, z_split, s),
-        "cover": convex._name_faces(upper, bearings, bolts, mounts, motor_holes, z_split, s),
+        "motor_side": convex._name_faces(lower, bearings, bolts, mounts, motor_holes, z_split, s, rib_boxes),
+        "cover": convex._name_faces(upper, bearings, bolts, mounts, motor_holes, z_split, s, rib_boxes),
     }
     OUT.mkdir(parents=True, exist_ok=True)
     for half, shape in (("motor_side", lower), ("cover", upper)):

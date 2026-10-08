@@ -2,7 +2,10 @@
 
 For each data/first_loop/fe_<stem>.json:
 - each seat's tilt against its bearing type's limit with the 25 % model margin (the contract's
-  limits; the margin applied as FE value <= 0.75 x limit, as proposed on the Physics page);
+  limits; the margin applied as FE value <= 0.75 x limit, as proposed on the Physics page). The
+  tilt graded is the seat's against its shaft's line through its two seats' centres: the housing's
+  share of the bearing's misalignment (LOP-6). The seat's own rotation, which a rigid turn of the
+  whole housing would also show, is reported beside it;
 - the worst seat displacement against the reference housing's bearing beds (52 µm forward, 138 µm
   in reverse: the design to beat);
 - the modes against the mesh frequencies at the rated speed (at least 3 % apart);
@@ -15,6 +18,8 @@ Run: uv run python prototypes/first_loop/grade.py
 from __future__ import annotations
 
 import json
+import math
+import os
 import sys
 from pathlib import Path
 
@@ -25,8 +30,22 @@ OUT = ROOT / "data" / "first_loop"
 from zenryx.contract.validate import load_and_validate  # noqa: E402
 from zenryx.domains.gearbox.forces import value_in  # noqa: E402
 
-CONTRACT = ROOT / "checks" / "data" / "contracts" / "ev_reducer_posed.json"
+# The contract judged: the product's, unless LOOP_CONTRACT names a what-if variant of it.
+CONTRACT = Path(os.environ.get("LOOP_CONTRACT", ROOT / "checks" / "data" / "contracts" / "ev_reducer_posed.json"))
 REFERENCE = {"mass_kg": 7.732, "peak drive": 52.2, "peak reverse": 138.0}  # µm, the example's
+
+
+def shaft_tilt_mrad(out: dict, shaft: str, seat: dict) -> float:
+    """A seat's tilt against its shaft's line through the two seats' centres, in mrad.
+
+    The seat's axis turns to (theta_y, -theta_x, 1); the line to (du_x, du_y, 1) / span, du the
+    +z seat's displacement less the -z seat's. A rigid turn of the whole housing moves both alike.
+    """
+    a, b = out["seats"][f"{shaft} -z"], out["seats"][f"{shaft} +z"]
+    span = out["shafts"][shaft]["span_mm"]
+    dx, dy = (b["u"][0] - a["u"][0]) / span, (b["u"][1] - a["u"][1]) / span
+    tx, ty = seat["theta"][0], seat["theta"][1]
+    return 1000 * math.hypot(ty - dx, -tx - dy)
 
 
 def main() -> None:
@@ -39,23 +58,24 @@ def main() -> None:
         fe = json.loads(path.read_text(encoding="utf-8"))
         stem = fe["stem"]
         row = {"stem": stem, "mass_kg": fe["mass_kg"], "lines": {}}
-        worst_ratio = 0.0
+        worst_ratio, worst_own = 0.0, 0.0
         for case, out in fe["cases"].items():
             for seat, v in out["seats"].items():
                 shaft, side = seat.split()
                 line = (1 - margin) * limits[types[(shaft, side)]]
-                ratio = v["tilt_mrad"] / line
-                worst_ratio = max(worst_ratio, ratio)
+                worst_ratio = max(worst_ratio, shaft_tilt_mrad(out, shaft, v) / line)
+                worst_own = max(worst_own, v["tilt_mrad"] / line)
             disp = max(1000 * v["displacement_mm"] for v in out["seats"].values())
             row["lines"][f"displacement, {case}"] = {
                 "value_um": disp,
                 "to_beat_um": REFERENCE[case],
                 "pass": disp <= REFERENCE[case],
             }
-        row["lines"]["tilt (worst seat against its line)"] = {
+        row["lines"]["tilt against the shaft (worst seat against its line)"] = {
             "ratio": worst_ratio,
             "pass": worst_ratio <= 1.0,
         }
+        row["seat_own_tilt_ratio"] = worst_own
         row["lines"]["orders"] = {
             "clashes": fe.get("order_clashes", []),
             "pass": not fe.get("order_clashes"),
@@ -70,15 +90,15 @@ def main() -> None:
         grades.append(row)
     (OUT / "grades.json").write_text(json.dumps(grades, indent=1), encoding="utf-8")
     print(
-        f"{'design':22s} {'kg':>6s} {'drive µm':>9s} {'rev µm':>8s} {'tilt/line':>9s} {'mode1':>6s}  orders  verdict"
+        f"{'design':22s} {'kg':>6s} {'drive µm':>9s} {'rev µm':>8s} {'own':>6s} {'shaft':>6s} {'mode1':>6s}  orders  verdict"
     )
     for g in grades:
         d = g["lines"]["displacement, peak drive"]["value_um"]
         r = g["lines"]["displacement, peak reverse"]["value_um"]
-        t = g["lines"]["tilt (worst seat against its line)"]["ratio"]
+        t = g["lines"]["tilt against the shaft (worst seat against its line)"]["ratio"]
         o = "clash" if g["lines"]["orders"]["clashes"] else "clear"
         print(
-            f"{g['stem']:22s} {g['mass_kg']:6.2f} {d:9.0f} {r:8.0f} {t:9.2f} {g['first_mode_hz'] or 0:6.0f}  {o:6s}  {'PASS' if g['pass'] else 'fail'}"
+            f"{g['stem']:22s} {g['mass_kg']:6.2f} {d:9.0f} {r:8.0f} {g['seat_own_tilt_ratio']:6.2f} {t:6.2f} {g['first_mode_hz'] or 0:6.0f}  {o:6s}  {'PASS' if g['pass'] else 'fail'}"
         )
 
 
