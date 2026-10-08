@@ -29,6 +29,11 @@ dev = [
     "pytest>=8.3",
     "ruff>=0.7",
 ]
+solve = [
+    "cupy-cuda12x[ctk]==14.2.0",
+    "nvidia-cudss-cu12==0.8.0.10",
+    "nvmath-python[cu12]==1.0.0",
+]
 
 [build-system]
 requires = ["hatchling"]
