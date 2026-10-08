@@ -8,7 +8,7 @@ The gearbox's physics before any housing exists. From a contract's gear train, t
 
 It turns a posed contract into a derived one that can be frozen. The judge applies these seat loads to every design.
 
-**PBI key:** GBX · **State:** planned. The load tool's plan is written (equations, sources, checks); nothing is built yet. The gear-train kinematics it builds on exist in `zenryx.contract.train` and `zenryx.contract.involute` · **Updated:** 2026-10-08 21:01 by Claude
+**PBI key:** GBX · **State:** planned. The load tool's plan is written (equations, sources, checks) and committed in bbcdbac on `product/end-to-end`, not pushed; nothing is built yet. The gear-train kinematics it builds on exist in `zenryx.contract.train` and `zenryx.contract.involute` · **Updated:** 2026-10-08 21:30 by Claude
 **Code:** to come, under `src/zenryx/domains/` (CLAUDE.md: domain roles live in a domain module)
 
 ## Now
@@ -41,7 +41,7 @@ It turns a posed contract into a derived one that can be frozen. The judge appli
 
 - **Profile shift matters for Ivanov:** at 150 N·m the radial mesh force is +13.8 % (stage 1) and +10.4 % (stage 2) above the textbook formula; tangential −2.1 % and −1.6 %; axial unchanged.
   - The torque check (Ft × working radius) holds exactly.
-  - Source: scratchpad `helical_forces.py` with `zenryx.contract.involute`, 8 October 21:00.
+  - Source: the prototype `prototypes/helical_forces/forces.py` (on `zenryx.contract.involute`), 8 October 21:00; rerun at 21:30 with the same numbers.
 
 ## Decisions
 

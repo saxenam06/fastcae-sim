@@ -17,7 +17,7 @@
 
 The textbook formulas (Shigley, Łódź, Ivanov §2.2) assume standard gears: Ft = 2T/d, Fr = Ft·tan αn / cos β, Fa = Ft·tan β. Ivanov's gears carry a profile shift of about +1.0 per stage. That moves the operating pressure angle from 20.6° to 23.6° (stage 1) and 22.8° (stage 2).
 
-Worked with our own involute code at 150 N·m (scratchpad `helical_forces.py`):
+Worked with our own involute code at 150 N·m (the prototype `prototypes/helical_forces/forces.py`):
 
 | Mesh | Simple formulas (N) | Shift taken into account (N) | Change |
 |---|---|---|---|

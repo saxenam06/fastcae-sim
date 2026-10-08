@@ -2,7 +2,7 @@
 
 zenryx designs housings from requirements. A gearbox's functional interfaces, loads, package, targets and one manufacturing process go in. Housings come out that are FE-proven and pass the process's rules, each labelled with its rung, together with the whole campaign: every hypothesis, decision and physical consequence. A general platform; the first family is an EV two-stage reducer housing. This page holds the plan of record every other feature follows, and its decisions.
 
-**PBI key:** PRD · **State:** the plan of record. PRD-3 (the engineer's questions before P0) is under way: the direction for the contract is decided (Decisions, first row) · **Updated:** 2026-10-08 18:39 by Claude
+**PBI key:** PRD · **State:** the plan of record. PRD-3 (the engineer's questions before P0) is under way: the direction for the contract is decided (Decisions, first row). The calculation chain from the contract to a graded design is written up (Docs) · **Updated:** 2026-10-08 21:35 by Claude
 **Code:** none - the plan and decisions the other features follow
 
 ## Now
@@ -74,4 +74,5 @@ Sources: fastcae's simulate page, and the plan, section 5.3.
 - [2026-10-08-decisions-and-build-record.md](2026-10-08-decisions-and-build-record.md): PRD-3's record. The 13 decisions of 7-8 October in order, where every doc is, the overnight build's progress, and how to resume.
 - [plan.md](plan.md): the plan of record.
 - [decisions.md](decisions.md): every decision, with its options, evidence, consequences, gains and losses.
+- [2026-10-08-the-calculation-chain.md](2026-10-08-the-calculation-chain.md): the contract's most binding inputs and the sixteen steps from them to a graded design, each with its method, inputs, outputs and the step it feeds, worked with Ivanov's numbers. Steps 1-3 are built. Committed in 93dbcc2 (not pushed).
 - The evidence, in fastcae's library: [the research index](../../../../fastcae/docs/research/README.md), its five reports of 6-7 October, and [the inputs](../../../../fastcae/docs/inputs/README.md).

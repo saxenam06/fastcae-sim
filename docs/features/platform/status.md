@@ -8,10 +8,10 @@ The repository and what every other feature runs on: the Python project and its 
 - **PLT-6 done locally (19:52-20:45):** every tab is one clean product page, asked for by the engineer.
   - The tabs, in the order the work runs: Contract → Campaigns → Designs → Data → Flow.
   - The Contract page shows one contract (Ivanov 2018): its inputs, the calculations with their methods pre-selected, the pass criteria, and the design to beat. The others show their frames, saying what fills them.
-  - The old views are archived. Uncommitted.
+  - The old views are archived. Committed: the page model in 9acf466, the UI in 61e51c8 (not pushed).
 - Committed on `product/end-to-end`, not pushed: PLT-2 in feca5c1, PLT-4 in ca44539. A fresh clone of the branch passes every check and builds the UI.
 
-**Updated:** 2026-10-08 20:45 by Claude
+**Updated:** 2026-10-08 21:33 by Claude
 **Code:** `pyproject.toml`, `uv.lock`, `src/zenryx/` (with `src/zenryx/api/`), `checks/`, `web/`, `.github/workflows/checks.yml`
 
 ## Now
@@ -20,7 +20,7 @@ The repository and what every other feature runs on: the Python project and its 
 |---|---|---|---|---|
 | PLT-2 | The Python project: `pyproject.toml` (package `zenryx`), its own `.venv` (CadQuery and the solver's needs), `checks/` tracked with pytest pointed there, ruff, CI | Claude · LAPTOP-IR8VEG53 · `product/end-to-end`, the one branch for now | 2026-10-08 02:12 | Locally done: `uv sync --all-extras` builds the venv from `uv.lock`; the checks pass; ruff check and format are clean. **Committed in feca5c1** (not pushed). **Left:** the first CI run, once the branch is pushed |
 | PLT-4 | The web UI (`web/`), built as the product rather than a viewer of prototypes: the contract, the campaigns made from it, their hypotheses, designs and grades, and the datapoints they become. What exists now (the contracts, their checks and sources) is shown; the rest is laid out and left blank. fastcae's sheet design copied. Design: [2026-10-08-ui-design.md](2026-10-08-ui-design.md) | Claude · LAPTOP-IR8VEG53 · `product/end-to-end` (from `main` at 640a0f7, 8 Oct 18:18) | 2026-10-08 10:38 | **Done locally.** Five tabs: Flow, Contracts, Campaigns, Designs, Data. `npm run build` passes; the snapshot's 16 checks pass; every view was looked at in a screenshot of the built page (headless Edge, no server). **Committed in ca44539** (not pushed). **Left:** CI's first run of the web job once pushed |
-| PLT-6 | **The contract page, made a product page** (the engineer, 19:52): one contract; clean inputs; calculations with their method pre-selected (authors in brackets); criteria; the design to beat; short source labels; the old long views archived | Claude · LAPTOP-IR8VEG53 · `product/end-to-end` | 2026-10-08 19:52 | **Done locally, 20:10.**<br>- The Ivanov contract written (CON-3, posed, validator clean).<br>- `zenryx.contract.train`: ratio, speeds, mesh frequencies, shaft angle; 9 checks.<br>- The page model `zenryx.api.contract_page`: 5 calculations computed, 5 planned.<br>- The page in `web/src/contracts/` (ContractPage, parts, contract.css); a tab may now have no rail or card; the old views moved to `web/archive/contracts-v1/`.<br>- 125 checks pass, `npm run build` passes, and the page was looked at in screenshots at 1,600 and 1,280 px.<br>- Uncommitted.<br>**20:41, the rest made the same way** (the engineer, 20:35: "build it like this").<br>- The tabs, in the order the work runs: Contract → Campaigns → Designs → Data → Flow. One page each, no rail, no card; the contract is the default view.<br>- **Campaigns:** the new-campaign form (contract, solver, budget, stop rules, a Start button that says what it waits for) and the steps table.<br>- **Designs:** the design to beat, the designs table with a dot per stage, mass against margin with the published mass drawn, the rungs.<br>- **Data:** datapoint kinds A-E with examples in words, the cuts from campaigns, the 20 task types worded for any contract with their graders.<br>- **Flow:** the factory as one strip, and what to build next.<br>- The old pages are in `web/archive/{campaigns,designs,data,flow}-v1/`; their word lists moved to `web/src/words/`.<br>**Done locally, 20:45:** builds, 125 checks pass, every tab looked at in screenshots, the UI design rewritten (§3-8) and the old views described in `docs/archive/2026-10-08-ui-views-v1.md`. Uncommitted. **Next:** the engineer's look |
+| PLT-6 | **The contract page, made a product page** (the engineer, 19:52): one contract; clean inputs; calculations with their method pre-selected (authors in brackets); criteria; the design to beat; short source labels; the old long views archived | Claude · LAPTOP-IR8VEG53 · `product/end-to-end` | 2026-10-08 19:52 | **Done locally, 20:10.**<br>- The Ivanov contract written (CON-3, posed, validator clean).<br>- `zenryx.contract.train`: ratio, speeds, mesh frequencies, shaft angle; 9 checks.<br>- The page model `zenryx.api.contract_page`: 5 calculations computed, 5 planned.<br>- The page in `web/src/contracts/` (ContractPage, parts, contract.css); a tab may now have no rail or card; the old views moved to `web/archive/contracts-v1/`.<br>- 125 checks pass, `npm run build` passes, and the page was looked at in screenshots at 1,600 and 1,280 px.<br>**20:41, the rest made the same way** (the engineer, 20:35: "build it like this").<br>- The tabs, in the order the work runs: Contract → Campaigns → Designs → Data → Flow. One page each, no rail, no card; the contract is the default view.<br>- **Campaigns:** the new-campaign form (contract, solver, budget, stop rules, a Start button that says what it waits for) and the steps table.<br>- **Designs:** the design to beat, the designs table with a dot per stage, mass against margin with the published mass drawn, the rungs.<br>- **Data:** datapoint kinds A-E with examples in words, the cuts from campaigns, the 20 task types worded for any contract with their graders.<br>- **Flow:** the factory as one strip, and what to build next.<br>- The old pages are in `web/archive/{campaigns,designs,data,flow}-v1/`; their word lists moved to `web/src/words/`.<br>**Done locally, 20:45:** builds, 125 checks pass, every tab looked at in screenshots, the UI design rewritten (§3-8) and the old views described in `docs/archive/2026-10-08-ui-views-v1.md`. **Committed in 9acf466 and 61e51c8** (not pushed); a fresh clone of each passes every check and builds. **Next:** the engineer's look |
 
 ## Next
 
@@ -38,7 +38,8 @@ The repository and what every other feature runs on: the Python project and its 
 - **The checks:** `uv run pytest checks -q`. `checks/test_environment.py` checks that the package and every dependency import, and that CadQuery builds an exact box.
 - **Lint:** `uv run ruff check src checks` and `uv run ruff format --check src checks`.
 - **The snapshot** (`src/zenryx/api/snapshot.py`): `uv run python -m zenryx.api.snapshot` writes `web/src/records/snapshot.json`.
-  - It reads every contract in `checks/data/contracts/`. For each one it records: the entries in words, each with its provenance, authority and kind; the validator's 18 rules and its refusals; what freezing it now would say; the items to keep; the scenarios it implies.
+  - It reads the product's contracts, today one: `checks/data/contracts/ivanov2018_posed.json`. For each it records: the entries in words, each with its provenance, authority and kind; the validator's 18 rules and its refusals; what freezing it now would say; the items to keep; the scenarios it implies.
+  - With them goes the contract's page (`zenryx.api.contract_page`): the inputs with their short sources, the calculations with their methods, the criteria and the design to beat.
   - It keeps the records the agent and the judge will make, which are empty today.
   - It is deterministic (no timestamp), and `checks/api/test_snapshot.py` fails when the committed copy is stale. `--check` says the same from the command line.
 - **The web UI** (`web/`):
@@ -67,11 +68,11 @@ The repository and what every other feature runs on: the Python project and its 
 
 ## Measured
 
-- **The checks:** `uv run pytest checks -q` gives 109 passed in 1.9 s. The snapshot adds 16 of them.
-- **The UI's build:** 1.2 s, after `tsc -b`.
-  - The bundle: 391 kB of script (113 kB gzipped), 63 kB of styles, and a 141 kB snapshot chunk (14 kB gzipped).
-  - The snapshot file is 152 kB for three contracts.
-- **What the UI shows today:** 3 contracts (2 posed, 1 derived, 1 ready to freeze, 0 frozen), 17 cited sources and 18 validator rules, all passed. Every record downstream is 0.
+- **The checks:** `uv run pytest checks -q` gives 125 passed in 3.1 s (8 October 21:28). The snapshot's are 19 of them.
+- **The UI's build:** 1.1 s, after `tsc -b`.
+  - The bundle: 260 kB of script (81 kB gzipped), 37 kB of styles, and an 81 kB snapshot chunk (10 kB gzipped).
+  - The snapshot file is 89 kB for one contract.
+- **What the UI shows today:** one contract, Ivanov 2018, posed: its inputs, 5 calculations computed and 5 planned, and the validator's 18 rules, all passed. Every record downstream is 0.
 
 ## Decisions
 
@@ -84,7 +85,7 @@ The repository and what every other feature runs on: the Python project and its 
 ## Open
 
 - The remote is `github.com/saxenam06/fastcae-sim` (private). A rename to `zenryx` can come at any time; GitHub keeps redirects. The local folder keeps its name, because Claude's memory for this repository is tied to the folder's path.
-- **The UI's words for the agent and the record** (the stop rules, statuses, seeds, tools, rungs and stages) sit in each tab's own `words.ts`. They move into `app/product.ts` when a second tab needs the same word.
+- **The UI's words for the agent and the record** (the stop rules, statuses, seeds, tools, rungs, stages, datapoint kinds and task types) sit in `web/src/words/`, shared by every tab (PLT-6).
 - **The record's shapes in `web/src/records/types.ts` are provisional** until the record schema (DAT-1) is agreed. Two wishes from building against them:
   - a design's stage states, or a failure that names its stage;
   - a campaign's hours spent.
