@@ -12,7 +12,7 @@ The repository and what every other feature runs on: the Python project and its 
 - **PLT-7, committed in cefd868 and 577de20:** the Contract page says what is given and what is calculated. Inputs hold only what can be chosen freely (not the ratio or the centre distances, which the gear data fix). The calculations are the chain's ten steps, each naming what it takes in and what it gives out. Step 1 shows the gear geometry per stage: the working pressure angles 23.566° and 22.824°, the tip diameters, and the working centre distances 82.917 and 125.037 mm. Step 3 names the gears that overlap seen along the shafts. The Bearings and layout card holds the arrangement, the gaps, the sealed shaft ends and the least clearances (9 October 01:06).
 - Committed on `product/end-to-end`, not pushed: PLT-2 in feca5c1, PLT-4 in ca44539. A fresh clone of the branch passes every check and builds the UI.
 
-**Updated:** 2026-10-09 01:25 by Claude
+**Updated:** 2026-10-09 03:20 by Claude
 **Code:** `pyproject.toml`, `uv.lock`, `src/zenryx/` (with `src/zenryx/api/`), `checks/`, `web/`, `.github/workflows/checks.yml`
 
 ## Now
@@ -28,7 +28,6 @@ The repository and what every other feature runs on: the Python project and its 
 
 | PBI | Goal | Done when |
 |---|---|---|
-| PLT-8 | **The contract's result on its page: the design space in 3D** (the engineer, 9 October 01:54). The volumes the completed contract fixes: each gear (tip Ø × face width), each shaft (its sections), each bearing bore (the selected bearing's outside Ø × width), the packaging space, and the design space left for the housing's material. Every volume shown or hidden with its chip, so the design space can be seen alone or with the rest. three.js (approved 02:12), the way fastcae's viewer showed the CAD and the mesh | The page shows the EV reducer's volumes from its completed contract; every chip toggles; a screenshot looked at |
 | PLT-3 | The runner and its guards copied from fastcae (`runner`, `heavy_guard`, `away_only`), with their parity checks | One job runs and is cancelled; the guard stops a fake heavy job |
 | PLT-5 | The API (FastAPI, its own port 8030, no `--reload`) serving the snapshot and the records, and fastcae's 3D viewer copied into the Designs tab (split from PLT-4 on 8 October) | The UI reads the API, and shows a mesh and its contours from a solved reference case |
 
@@ -100,6 +99,7 @@ The repository and what every other feature runs on: the Python project and its 
 
 | PBI | Delivered | Date | Commits |
 |---|---|---|---|
+| PLT-8 | **The contract's result on its page, in 3D** (the engineer, 9 October 01:54): the gears, shafts, bearings' bores and the differential solid, the packaging space and the design space see-through, every volume with its chip, "Design space only" and "All". `zenryx.geometry.solids` (CadQuery), `zenryx.domains.gearbox.volumes`, `zenryx.api.volumes` (writes `web/src/records/volumes.json`, 315 kB, FCMESH03 in base64; a check fails when stale), `zenryx.api.mesh` (fastcae-v1's encoder, copied, with a parity check); `web/src/render/renderer.ts` (fastcae-v1's WebGL2 renderer, copied: no new dependency, three.js stays the approved fallback), `render/mesh.ts`, `contracts/Volumes.tsx`. The EV reducer: packaging 21.5 L, design space 18.7 L. Looked at in a headless-Edge screenshot (SwiftShader) | 2026-10-09 | 60f6d84 |
 | PLT-1 | The repository and its context for zenryx: CLAUDE.md, the board, the feature pages, the plan and decisions moved from fastcae (links rewritten), the plans of 4-5 October archived, the notes hook (with `*.sh` kept at LF), Claude's memory for this folder seeded from fastcae's; merged into `main` | 2026-10-07 | bcd86fe, and the commit that records it |
 
 ## Docs

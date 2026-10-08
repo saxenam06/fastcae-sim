@@ -1,10 +1,10 @@
 # Status: the board
 
-**Updated:** 2026-10-09 03:08 by Claude.
+**Updated:** 2026-10-09 03:20 by Claude.
 - **For the engineer's morning: the night of 9 October** (the brief of 01:54; Claude works alone). In order:
   1. **Done, 02:25:** the product's contract is the "EV two-stage reducer" and names no paper (CON-4); committed with the night's earlier work in 577de20, not pushed.
   2. The contract completed: **GBX-1 done** (mesh forces and moments, ac34e4c); **GBX-2 done** (layout with the differential, clearances, seat loads, 4a3ba35); **GBX-3 and GBX-4 built** (f79760c: shaft sections, bearing selection, the round, and completing and freezing a contract). The EV reducer waits on one seat: no catalogue bearing lasts on the intermediate's +z seat because the two left-handed pinions' thrusts add; with stage 2's pinion right-handed it completes and freezes clean (questions on the Gearbox page). The stage between posed and frozen is now called "completed".
-  3. PLT-8: the contract's result on its page, the design space in 3D with a chip per volume.
+  3. **PLT-8 done** (60f6d84): the Contract page's "The result" shows the volumes in 3D (gears, shafts, bearings, the differential, the packaging space 21.5 L, the design space 18.7 L), a chip per volume, "Design space only". fastcae's WebGL2 renderer copied: no new dependency.
   4. **Two reviews done** (4c7c14f, c6bc94a): the spaces inside a reducer (the differential, the sump, the split flange, the motor flange and the mounts now in the contract or next); how housing topology optimisation is iterated (the loop LOP follows its recipe).
   5. The first loop (LOP): plain shell and wall, topology optimisation, ribs, mesh, couplings, loads, solve, grade.
 - **Where the code stands:** one branch, `product/end-to-end`, not pushed. The contract schema, its validator and the product's contract (CON); the web UI, five pages, the Contract page showing what is given and what is calculated (PLT); the load tool planned (GBX). 151 checks pass.

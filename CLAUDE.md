@@ -54,6 +54,8 @@ zenryx designs housings from requirements. The engineer states a gearbox's funct
 - **The web UI** (`web/`, PLT-4): React 19 + Vite 7 + TypeScript, no other dependency; its design is `docs/features/platform/2026-10-08-ui-design.md`.
   - It shows the product's flow (contract → campaign → hypothesis → design → grade → datapoints), never a prototype's output. What is not built yet is drawn blank, never filled with example numbers.
   - It reads `web/src/records/snapshot.json`, written by `uv run python -m zenryx.api.snapshot`. Run that after any contract change; a check fails when the snapshot is stale.
+  - The Contract page's 3D result reads `web/src/records/volumes.json`, written by `uv run python -m zenryx.api.volumes` (the volumes and the design space, PLT-8). Run it after any contract change too; its check fails when stale.
+  - The 3D views use fastcae-v1's WebGL2 renderer, copied into `web/src/render/` (no 3D library). A screenshot of them needs `--use-angle=swiftshader --enable-unsafe-swiftshader` with headless Edge.
   - Check: in `web/`, `npm ci` then `npm run build` (types and bundle). CI runs the same. In PowerShell, type `npm.cmd` for `npm` (see the pitfalls).
   - `npm run dev` serves it on port 5190: a server, so only on the engineer's word. To look at it without one, screenshot `web/dist/index.html` with headless Edge and `--allow-file-access-from-files`.
 - **Prototypes** live in `prototypes/`, labelled as prototypes. Nothing in `src/` imports them, and their outputs go to `data/` (gitignored).
