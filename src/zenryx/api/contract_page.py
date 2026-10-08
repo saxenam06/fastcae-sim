@@ -30,6 +30,7 @@ from zenryx.contract.train import (
     stage_angle,
 )
 from zenryx.contract.units import Quantity, Vector
+from zenryx.domains.gearbox.chain import complete_chain
 from zenryx.domains.gearbox.forces import case_forces
 
 # Short names for the sources the contracts cite, by how their citation starts.
@@ -621,10 +622,139 @@ def _forces_table(spec: HousingDesignSpec) -> dict[str, Any] | None:
     return {"columns": [f"Stage {i + 1}" for i in range(len(first.meshes))], "rows": rows}
 
 
+def _chain(spec: HousingDesignSpec):
+    """Steps 4 to 8 together, or None while the contract lacks what they need."""
+    try:
+        return complete_chain(spec)
+    except (ValueError, NotImplementedError, KeyError, ArithmeticError, StopIteration):
+        return None
+
+
+def _kn(newtons: float) -> str:
+    return f"{_num(newtons / 1000, 3)} kN"
+
+
+def _layout_table(chain) -> dict[str, Any] | None:
+    if chain is None:
+        return None
+    rows = []
+    for stack in chain.layout.shafts:
+        low, high = stack.bearing("-z"), stack.bearing("+z")
+        rows.append(
+            {
+                "label": stack.shaft,
+                "cells": [
+                    f"bearings at {_num(low.centre, 4)} / {_num(high.centre, 4)} mm · housing "
+                    f"faces at {_num(stack.ends[0], 4)} / {_num(stack.ends[1], 4)} mm"
+                ],
+            }
+        )
+    carriers = [p for s in chain.layout.shafts for p in s.parts if p.kind == "carrier"]
+    for p in carriers:
+        rows.append(
+            {
+                "label": p.name,
+                "cells": [
+                    f"Ø{_num(p.diameter, 4)} mm from {_num(p.z_min, 4)} to {_num(p.z_max, 4)} mm"
+                ],
+            }
+        )
+    checks = chain.layout.clearances
+    if checks:
+        least = min(checks, key=lambda c: c.gap)
+        text = (
+            f"{len(checks)} pairs overlap end-on; the closest along the shafts {least.a} and "
+            f"{least.b}, {_num(least.gap, 3)} mm (at least {_num(least.least, 3)} mm)"
+        )
+        rows.append({"label": "Clearances", "cells": [text]})
+    for c in chain.layout.breaches:
+        rows.append(
+            {
+                "label": "Too close",
+                "cells": [
+                    f"{c.a} and {c.b}: {_num(c.gap, 3)} mm, short by {_num(c.least - c.gap, 3)} mm"
+                ],
+            }
+        )
+    return {"columns": [], "rows": rows}
+
+
+def _loads_table(chain) -> dict[str, Any] | None:
+    if chain is None:
+        return None
+    drive = next(c for c in chain.loads if c.name == chain.drive_case)
+    rows = [
+        {
+            "label": f"{s.shaft} {s.side}, {drive.name}",
+            "cells": [f"Fr {_kn(s.radial)} · Fa {_kn(s.axial)}"],
+        }
+        for s in drive.seats
+    ]
+    worst = {}
+    for case in chain.loads:
+        for s in case.seats:
+            key = (s.shaft, s.side)
+            if s.radial > worst.get(key, (0.0, ""))[0]:
+                worst[key] = (s.radial, case.name)
+    heavy = max(worst.items(), key=lambda kv: kv[1][0])
+    rows.append(
+        {
+            "label": "Heaviest radial",
+            "cells": [f"{heavy[0][0]} {heavy[0][1]}: {_kn(heavy[1][0])} in {heavy[1][1]}"],
+        }
+    )
+    rows.append(
+        {
+            "label": "Motor's reaction on the housing",
+            "cells": [f"{_num(drive.motor_torque / 1000, 4)} N·m about the input's axis"],
+        }
+    )
+    return {"columns": [], "rows": rows}
+
+
+def _sections_table(chain) -> dict[str, Any] | None:
+    if chain is None:
+        return None
+    rows = []
+    for s in chain.sections:
+        bores = " / ".join(_num(s.bore_needed[k], 3) for k in ("-z", "+z"))
+        slopes = " / ".join(_num(1000 * s.slope_at_bearing[k], 3) for k in ("-z", "+z"))
+        rows.append(
+            {
+                "label": s.shaft,
+                "cells": [
+                    f"seats need Ø{bores} mm · shaft Ø{_num(s.diameter, 3)} mm · slopes at the "
+                    f"bearings {slopes} mrad"
+                ],
+            }
+        )
+    return {"columns": [], "rows": rows}
+
+
+def _bearings_table(chain) -> dict[str, Any] | None:
+    if chain is None:
+        return None
+    rows = []
+    for (shaft, side), c in sorted(chain.bearings.items()):
+        b = c.bearing
+        rows.append(
+            {
+                "label": f"{shaft} {side}",
+                "cells": [
+                    f"{b.designation} · {_num(b.d, 3)}/{_num(b.D, 3)} × {_num(b.width, 4)} mm · "
+                    f"L10 {_num(c.life, 4)} h"
+                ],
+            }
+        )
+    for (shaft, side), why in sorted(chain.refused.items()):
+        rows.append({"label": f"{shaft} {side}: none", "cells": [why]})
+    return {"columns": [], "rows": rows}
+
+
 def calculations(spec: HousingDesignSpec) -> list[dict[str, Any]]:
     """The calculation chain's steps 1-10, from the inputs to the pass lines. Each has its method
     pre-selected, what it takes in (an input, or another step's output) and what it gives out.
-    Steps 1-4 are computed here by zenryx's functions; the others name the PBI that builds them."""
+    Steps 1-8 are computed here by zenryx's functions; the others name the PBI that builds them."""
     out: list[dict[str, Any]] = []
 
     def step(number, quantity, method, by, function, takes_in, gives, table=None, plan=""):
@@ -719,12 +849,13 @@ def calculations(spec: HousingDesignSpec) -> list[dict[str, Any]]:
     # Steps 5 to 8 go round: the layout needs the bearings' widths, the loads need the layout, the
     # shaft sections need the loads, and the bearings need the loads and the shaft's diameter. From
     # a first guess they settle in two or three passes (Shigley Ch. 18).
+    chain = _chain(spec)
     step(
         5,
         "Layout along each shaft",
         "A stack of widths and gaps from a datum",
         "Shigley §18-4 · Maciejczyk & Zdziennicki Ch. 3",
-        "the load tool (GBX-2)",
+        "zenryx.domains.gearbox.layout.place",
         [
             _given("face widths"),
             _given("bearing arrangement"),
@@ -732,75 +863,82 @@ def calculations(spec: HousingDesignSpec) -> list[dict[str, Any]]:
             _given("space behind a bearing, closed bore or sealed"),
             _given("shaft ends that leave the housing"),
             _given("gap between two gears on a shaft"),
+            _given("differential: bearing spacing, case Ø"),
             _given("least clearance along the shafts"),
             _from("gears that overlap seen along the shafts", 3),
-            _from("bearing widths (a first guess, then step 8's)", 8),
+            _from("bearing widths and outside Ø", 8),
         ],
-        "each gear's and bearing's centre along its shaft, from the datum; and every pair that "
+        "each gear's and bearing's place along its shaft, from the datum; and every pair that "
         "overlaps seen along the shafts checked against the least clearance",
-        plan="GBX-2",
+        _layout_table(chain),
+        plan="needs the shaft layout",
     )
     step(
         6,
         "Bearing loads",
         "Two-support statics with the axial force's moment",
-        "JTEKT · NSK",
-        "the load tool (GBX-2)",
+        "JTEKT eq. 5-29 · Shigley Ch. 11 · NSK",
+        "zenryx.domains.gearbox.loads.seat_loads",
         [
-            _from("working pitch Ø (the axial force's lever)", 1),
-            _from("shaft angle (the forces' directions)", 3),
-            _from("tangential, radial and axial forces", 4),
-            _from("gear and bearing centres on each shaft", 5),
+            _from("forces at each mesh, with their moments", 4),
+            _from("gear and bearing places on each shaft", 5),
+            _from("a tapered bearing's Y", 8),
         ],
-        "each seat's radial and axial force, in every load case",
-        plan="GBX-2",
+        "each seat's radial and axial force in every load case, and the motor's reaction on the "
+        "housing",
+        _loads_table(chain),
+        plan="needs the layout",
     )
     step(
         7,
         "Shaft sections",
-        "Strength in bending and torsion; stiffness: deflection and slope",
-        "Shigley Ch. 7 · Maciejczyk & Zdziennicki Ch. 3",
-        "the load tool (GBX-3)",
+        "Strength in bending and torsion; stiffness: slope",
+        "Shigley Ch. 7 · Table 7-2",
+        "zenryx.domains.gearbox.shafts.sections",
         [
             _given("peak drive, reverse and regeneration torques"),
-            _given("shaft material (to be assumed)"),
-            _from("tangential, radial and axial forces", 4),
-            _from("gear and bearing centres on each shaft", 5),
+            _given("shaft steel"),
+            _given("differential: hub Ø"),
+            _given("bearing tilt limits"),
+            _from("forces at each mesh, with their moments", 4),
+            _from("gear and bearing places on each shaft", 5),
             _from("each seat's radial and axial force", 6),
         ],
-        "each shaft's diameter at its seats and gears, and its deflection and slope there",
-        plan="GBX-3",
+        "the bore each seat needs, each shaft's diameter for its slopes, and the slopes",
+        _sections_table(chain),
+        plan="needs the loads",
     )
     step(
         8,
         "Bearing selection",
-        "Rating life L10, with the bore, the load capacity and the arrangement",
-        "ISO 281 · Shigley Ch. 11 · Maciejczyk & Zdziennicki",
-        "the load tool (GBX-3)",
+        "Rating life L10 at the drive case, with the bore and the arrangement",
+        "Shigley Ch. 11 · SKF's catalogue",
+        "zenryx.domains.gearbox.bearings.select",
         [
             _given("service life"),
             _given("bearing arrangement"),
             _from("shaft speeds", 2),
             _from("each seat's radial and axial force", 6),
-            _from("shaft diameter at each seat", 7),
+            _from("the bore each seat needs", 7),
         ],
-        "each seat's catalogue bearing: its bore, width and outside Ø, and a tapered one's load "
-        "centre",
-        plan="GBX-3",
+        "each seat's catalogue bearing: its bore, outside Ø and width, its life",
+        _bearings_table(chain),
+        plan="needs the loads",
     )
     step(
         9,
-        "Derive and freeze",
-        "Every derived value stamped with its tool, version and inputs",
+        "Complete and freeze",
+        "Every calculated value stamped with its tool, version and inputs",
         "the contract's rules",
         "the load tool (GBX-4)",
         [
-            _from("shaft angle", 3),
-            _from("bearing centres on each shaft", 5),
+            _from("the shafts' places in the plane", 3),
+            _from("bearing places on each shaft", 5),
             _from("each seat's radial and axial force", 6),
             _from("each seat's bearing, its outside Ø and width", 8),
         ],
-        "the seats and load cases, stamped; the task frozen with its hash",
+        "the seats and load cases written into the contract, stamped; the task frozen with its "
+        "hash",
         plan="GBX-4",
     )
     step(

@@ -64,7 +64,7 @@ def test_stage_rules():
     # a derived contract needs interfaces and physics
     data = two_bearing_derived()
     del data["physics"]
-    assert "stage.derived_needs_physics" in rules(data)
+    assert "stage.completed_needs_physics" in rules(data)
     # physics values are derived by their tool, never typed
     data = two_bearing_derived()
     data["physics"]["load_cases"][0]["seat_loads"][0]["force"] = published(vec(0, 5000, 0, "N"))

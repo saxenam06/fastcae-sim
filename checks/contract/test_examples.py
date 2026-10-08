@@ -15,7 +15,7 @@ NAMES = [
     "ev_reducer_posed.json",
     "hofstetter2018_posed.json",
     "agri_ev_gearbox_posed.json",
-    "textbook_two_bearing_derived.json",
+    "textbook_two_bearing_completed.json",
 ]
 
 
@@ -41,7 +41,7 @@ def test_each_example_is_current_with_its_generator(name):
 
 
 def test_a_derived_example_freezes_to_a_valid_task():
-    spec, _ = load_and_validate(DATA / "textbook_two_bearing_derived.json")
+    spec, _ = load_and_validate(DATA / "textbook_two_bearing_completed.json")
     frozen = freeze(spec)
     assert validate(frozen) == []
     assert frozen.frozen_hash == spec_hash(frozen)
@@ -54,7 +54,7 @@ def test_a_derived_example_freezes_to_a_valid_task():
 def test_a_posed_example_cannot_be_frozen_before_it_is_derived(name):
     spec, _ = load_and_validate(DATA / name)
     rules = {r.rule for r in validate(freeze(spec))}
-    assert rules == {"stage.derived_needs_physics"}
+    assert rules == {"stage.completed_needs_physics"}
 
 
 def test_the_ev_reducer_carries_the_engineers_requirements():
@@ -96,6 +96,7 @@ def test_the_ev_reducer_carries_the_engineers_requirements():
         "A21",
         "A22",
         "A23",
+        "A24",
     ]
     # The input's sense of rotation sets the forces' directions (GBX-1); not given, so assumed.
     assert req.forward_rotation.provenance.assumption_id == "A21"

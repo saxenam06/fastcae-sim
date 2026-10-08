@@ -15,7 +15,7 @@ from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from zenryx.contract.entry import Entry
 
-Stage = Literal["posed", "derived", "frozen"]
+Stage = Literal["posed", "completed", "frozen"]
 RequirementStyle = Literal["package", "gear_train"]
 BearingType = Literal[
     "deep_groove_ball",
@@ -125,6 +125,18 @@ class ShaftCarrier(_Model):
     bearing_spacing: Entry
     diameter: Entry
     gear_beside: Entry
+    # The hubs its bearings sit on: their least diameter (the half-shafts pass through them).
+    hub_diameter: Entry | None = None
+
+
+class ShaftMaterial(_Model):
+    """The shafts' steel, for their sections (GBX-3): its yield and stiffness, and the design
+    factor the peak torques are taken with."""
+
+    name: str = Field(min_length=1)
+    yield_strength: Entry
+    youngs_modulus: Entry
+    design_factor: Entry
 
 
 class ShaftLayout(_Model):
@@ -191,10 +203,14 @@ class Requirement(_Model):
     forward_rotation: Entry | None = None
     service_life: Entry | None = None
     gear_material: Entry | None = None
+    shaft_material: ShaftMaterial | None = None
     gear_quality: Entry | None = None
     stages: list[GearStage] = []
     bearings: list[BearingSpec] = []
     shaft_layout: ShaftLayout | None = None
+    # The outside interfaces the vehicle and the motor give (the engineer, 9 Oct 02:16).
+    mounts: list[MountPad] = []
+    motor_flange: MotorFlange | None = None
     installation_space: InstallationSpace
 
     @model_validator(mode="after")
@@ -222,6 +238,9 @@ class CylindricalSeat(_Model):
     width: Entry
     shoulder: Literal["+axis", "-axis"]
     stock: Entry
+    # The bearing the load tool selected for it (GBX-3), and that bearing's type.
+    bearing: Entry | None = None
+    bearing_type: BearingType | None = None
 
 
 class SplitFace(_Model):
@@ -283,9 +302,18 @@ class SeatLoad(_Model):
     force: Entry
 
 
+class InterfaceMoment(_Model):
+    """A moment on an interface (N·mm, a vector in the contract's frame), such as the motor's
+    reaction torque on its flange."""
+
+    interface: Name
+    moment: Entry
+
+
 class LoadCase(_Model):
     name: Name
     seat_loads: list[SeatLoad] = Field(min_length=1)
+    interface_moments: list[InterfaceMoment] = []
 
 
 class MeshOrder(_Model):

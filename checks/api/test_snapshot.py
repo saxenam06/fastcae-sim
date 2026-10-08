@@ -32,7 +32,7 @@ def every_example() -> dict:
             "ev_reducer_posed.json",
             "hofstetter2018_posed.json",
             "agri_ev_gearbox_posed.json",
-            "textbook_two_bearing_derived.json",
+            "textbook_two_bearing_completed.json",
         )
     ]
     return snapshot.build(files)
@@ -50,7 +50,7 @@ def test_a_contract_carries_its_hash_stage_and_verdict(every_example):
         assert contract["refusals"] == [r.model_dump() for r in refusals]
 
 
-def test_only_the_derived_contract_is_ready_to_freeze(every_example):
+def test_only_the_completed_contract_is_ready_to_freeze(every_example):
     ready = {c["id"]: c["freeze"]["ready"] for c in every_example["contracts"]}
     assert ready == {
         "ev-reducer-l1": False,
@@ -59,7 +59,7 @@ def test_only_the_derived_contract_is_ready_to_freeze(every_example):
         "textbook-two-bearing": True,
     }
     posed = next(c for c in every_example["contracts"] if c["id"] == "ev-reducer-l1")
-    assert {r["rule"] for r in posed["freeze"]["refusals"]} == {"stage.derived_needs_physics"}
+    assert {r["rule"] for r in posed["freeze"]["refusals"]} == {"stage.completed_needs_physics"}
 
 
 def test_the_page_shows_the_gear_train_as_the_users_requirement(payload):
@@ -138,7 +138,7 @@ def test_the_inputs_hold_only_what_is_given_or_assumed(every_example):
 def test_the_calculations_are_the_chains_steps_each_with_what_it_takes_and_gives(payload):
     steps = payload["contracts"][0]["page"]["calculations"]
     assert [s["step"] for s in steps] == list(range(1, 11))
-    assert [s["status"] for s in steps] == ["computed"] * 4 + ["planned"] * 6
+    assert [s["status"] for s in steps] == ["computed"] * 8 + ["planned"] * 2
     for s in steps:
         assert s["quantity"] and s["method"] and s["by"] and s["takes_in"] and s["gives"]
         for item in s["takes_in"]:
@@ -185,9 +185,7 @@ def test_the_shaft_sections_come_before_the_bearings_that_must_fit_them(payload)
     steps = {s["quantity"]: s for s in payload["contracts"][0]["page"]["calculations"]}
     sections, selection = steps["Shaft sections"], steps["Bearing selection"]
     assert "stiffness" in sections["method"]
-    assert {"name": "shaft diameter at each seat", "step": sections["step"]} in selection[
-        "takes_in"
-    ]
+    assert {"name": "the bore each seat needs", "step": sections["step"]} in selection["takes_in"]
     layout = steps["Layout along each shaft"]
     assert any(i["step"] == selection["step"] for i in layout["takes_in"])
 

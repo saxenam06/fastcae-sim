@@ -225,7 +225,7 @@ def two_bearing_derived():
     """A derived contract: one gear between two bearings (GHE §6.2's worked example)."""
     data = minimal_posed()
     data["task"]["id"] = "test-two-bearing"
-    data["stage"] = "derived"
+    data["stage"] = "completed"
     req = data["requirement"]
     req["style"] = "gear_train"
     mn = 60.0 * 0.9063077870366499 / 20  # so that the pinion's pitch diameter is 60 mm

@@ -1,6 +1,6 @@
 {
   "schema_version": "0.1",
-  "stage": "derived",
+  "stage": "completed",
   "task": {
     "id": "textbook-two-bearing",
     "title": "One helical gear between two bearings (a worked example)",

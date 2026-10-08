@@ -162,6 +162,45 @@
       "authority": "engineer_locked",
       "kind": "hard"
     },
+    "shaft_material": {
+      "name": "20MnCr5, case-hardened",
+      "yield_strength": {
+        "value": {
+          "value": 590,
+          "unit": "MPa"
+        },
+        "provenance": {
+          "kind": "assumption",
+          "assumption_id": "A24"
+        },
+        "authority": "engineer_locked",
+        "kind": "hard"
+      },
+      "youngs_modulus": {
+        "value": {
+          "value": 210,
+          "unit": "GPa"
+        },
+        "provenance": {
+          "kind": "assumption",
+          "assumption_id": "A24"
+        },
+        "authority": "engineer_locked",
+        "kind": "hard"
+      },
+      "design_factor": {
+        "value": {
+          "value": 2,
+          "unit": "1"
+        },
+        "provenance": {
+          "kind": "assumption",
+          "assumption_id": "A24"
+        },
+        "authority": "engineer_locked",
+        "kind": "hard"
+      }
+    },
     "stages": [
       {
         "name": "s1",
@@ -727,6 +766,18 @@
             },
             "authority": "engineer_locked",
             "kind": "hard"
+          },
+          "hub_diameter": {
+            "value": {
+              "value": 45,
+              "unit": "mm"
+            },
+            "provenance": {
+              "kind": "assumption",
+              "assumption_id": "A23"
+            },
+            "authority": "engineer_locked",
+            "kind": "hard"
           }
         }
       ]
@@ -1170,8 +1221,15 @@
     {
       "id": "A23",
       "what": "the differential",
-      "value": "a bevel unit: bearings 96 mm apart centre to centre, case Ø105 mm, the output gear beside its +z bearing",
-      "why": "a 2,100 N·m class unit for about 1,080 N·m here · Schaeffler Symposium 2010, Figs. 13-14 (the case Ø read off a figure)",
+      "value": "a bevel unit: bearings 96 mm apart centre to centre, case Ø105 mm, hubs Ø45 mm, the output gear beside its +z bearing",
+      "why": "a 2,100 N·m class unit for about 1,080 N·m here · Schaeffler Symposium 2010, Figs. 13-14 (the case Ø read off a figure; the hubs' Ø not given)",
+      "varied": true
+    },
+    {
+      "id": "A24",
+      "what": "the shafts' steel",
+      "value": "20MnCr5, case-hardened: core yield 590 MPa, E 210 GPa; design factor 2 on the peak torques",
+      "why": "a common gear steel (the engineer, 9 Oct 00:50); the core yield is the low end of public datasheets, to source",
       "varied": true
     }
   ]

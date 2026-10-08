@@ -101,7 +101,7 @@ export const PROVENANCE: Record<ProvenanceKind, { label: string; words: string }
   published: { label: "published", words: "From a published paper, cited" },
   standard: { label: "standard", words: "From a standard or a design guideline, cited" },
   measured: { label: "measured", words: "Measured, with its source cited" },
-  derived: { label: "derived", words: "Computed by a versioned tool from the entries above it" },
+  derived: { label: "calculated", words: "Calculated by a versioned tool from the entries above it" },
   assumption: { label: "assumption", words: "An assumption, listed with its reason, for the engineer to confirm" },
   engineer: { label: "engineer", words: "Set by the engineer, with who and when" },
 };
@@ -124,12 +124,12 @@ export const AUTHORITY: Record<Authority, { label: string; words: string }> = {
 export const KIND: Record<EntryKind, { label: string; words: string }> = {
   hard: { label: "hard", words: "Must hold: a design that breaks it fails" },
   soft: { label: "soft", words: "Preferred: may be traded, with the trade recorded" },
-  derived: { label: "derived", words: "Computed, never typed; it follows from the hard entries" },
+  derived: { label: "calculated", words: "Calculated, never typed; it follows from the hard entries" },
 };
 
 export const STAGES: { id: Stage; label: string; words: string }[] = [
   { id: "posed", label: "posed", words: "The requirement stated, every value sourced" },
-  { id: "derived", label: "derived", words: "Interfaces and physics computed by the tools" },
+  { id: "completed", label: "completed", words: "The interfaces and physics calculated by the tools and written in" },
   { id: "frozen", label: "frozen", words: "Hashed: the hash is the task's identity, and nothing in it changes" },
 ];
 

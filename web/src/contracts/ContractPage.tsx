@@ -136,8 +136,8 @@ function Head({ contract, rules }: { contract: ContractView; rules: number }) {
   const refused = contract.refusals.length;
   const next =
     contract.stage === "posed"
-      ? "Next: derive the seats and loads (the load tool, GBX-1 to GBX-4)"
-      : contract.stage === "derived"
+      ? "Next: complete it with the seats and loads (the load tool, GBX-4)"
+      : contract.stage === "completed"
         ? "Next: freeze it into a task"
         : "Frozen: ready for campaigns";
   return (

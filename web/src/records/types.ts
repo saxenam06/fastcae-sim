@@ -7,7 +7,7 @@
  * (docs/features/data, §2-§5 and §7) until the record schema (DAT-1) is agreed.
  */
 
-export type Stage = "posed" | "derived" | "frozen";
+export type Stage = "posed" | "completed" | "frozen";
 export type ProvenanceKind = "published" | "standard" | "measured" | "derived" | "assumption" | "engineer";
 export type Authority = "engineer_locked" | "agent_bounded" | "agent_free";
 export type EntryKind = "hard" | "soft" | "derived";

@@ -3,7 +3,7 @@
 Rules, in four groups:
     schema         the contract must load: types, units, required entries (pydantic's errors)
     provenance.*   every assumption an entry points to is listed
-    stage.*        posed carries no physics; derived and frozen carry interfaces and physics,
+    stage.*        posed carries no physics; completed and frozen carry interfaces and physics,
                    every physics value derived by its tool; a frozen contract carries its own hash
     consistency.*  dimensions; no input the other inputs fix (a centre distance the gear data
                    fix, a ratio the teeth fix); the ratio where no teeth are given; the offset;
@@ -101,6 +101,9 @@ _DIMENSIONS: dict[str, str] = {
     "min_axial_clearance": "mm",
     "min_radial_clearance": "mm",
     "bearing_spacing": "mm",
+    "hub_diameter": "mm",
+    "yield_strength": "MPa",
+    "design_factor": "1",
     "outer_diameter": "mm",
     "width": "mm",
     "box_min": "mm",
@@ -118,6 +121,7 @@ _DIMENSIONS: dict[str, str] = {
     "spigot_diameter": "mm",
     "bolt_circle": "mm",
     "force": "N",
+    "moment": "N*mm",
     "mesh_misalignment_share": "1",
     "centre_distance_share": "1",
     "ovalisation_share": "1",
@@ -139,7 +143,7 @@ _DIMENSIONS: dict[str, str] = {
 
 # entries that hold three components: positions, directions and forces
 _VECTOR_FIELDS = frozenset(
-    {"box_min", "box_max", "centre", "origin", "axis", "normal", "direction", "force"}
+    {"box_min", "box_max", "centre", "origin", "axis", "normal", "direction", "force", "moment"}
 )
 
 
@@ -213,16 +217,16 @@ def _check_stage(spec: HousingDesignSpec) -> list[Refusal]:
             Refusal(
                 rule="stage.posed",
                 entry="physics",
-                reason="a posed contract carries no physics cases; derive them and set the "
-                "stage to derived",
+                reason="a posed contract carries no physics cases; the load tool completes it "
+                "and sets the stage to completed",
             )
         )
-    if spec.stage in ("derived", "frozen"):
+    if spec.stage in ("completed", "frozen"):
         for name in ("interfaces", "physics"):
             if getattr(spec, name) is None:
                 out.append(
                     Refusal(
-                        rule="stage.derived_needs_physics",
+                        rule="stage.completed_needs_physics",
                         entry=name,
                         reason=f"a {spec.stage} contract needs its {name}",
                     )
@@ -558,7 +562,7 @@ def _check_arrangement(layout, shafts: set[str]) -> list[Refusal]:
 def _check_tilt_limits(spec: HousingDesignSpec) -> list[Refusal]:
     """The judge needs a tilt limit for every seat, so for every bearing type in the contract."""
     limited = {t.bearing_type for t in spec.limits.bearing_tilt}
-    return [
+    out = [
         Refusal(
             rule="consistency.tilt_limit",
             entry=f"requirement.bearings[{b}].type",
@@ -567,6 +571,17 @@ def _check_tilt_limits(spec: HousingDesignSpec) -> list[Refusal]:
         for b, bearing in enumerate(spec.requirement.bearings)
         if bearing.type not in limited
     ]
+    if spec.interfaces is not None:
+        out += [
+            Refusal(
+                rule="consistency.tilt_limit",
+                entry=f"interfaces.seats[{i}].bearing_type",
+                reason=f"no tilt limit is given for {seat.bearing_type} bearings",
+            )
+            for i, seat in enumerate(spec.interfaces.seats)
+            if seat.bearing_type is not None and seat.bearing_type not in limited
+        ]
+    return out
 
 
 def validate(spec: HousingDesignSpec) -> list[Refusal]:

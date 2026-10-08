@@ -7,7 +7,7 @@ Four contracts:
                                       style, the engineer's requirements, its gaps assumed, listed
     hofstetter2018_posed.json         package style, from Hofstetter et al. 2018 (Tables 2 and 3)
     agri_ev_gearbox_posed.json        gear-train style, from Kim et al. 2024 (Tables 1 and 3)
-    textbook_two_bearing_derived.json derived stage: one gear between two bearings (GHE §6.2)
+    textbook_two_bearing_completed.json completed: one gear between two bearings (GHE §6.2)
 
 Every value is published (with its table), standard (with its clause), the engineer's (who and
 when), or an assumption listed in the contract. Nothing comes from GRC. The tables were re-read
@@ -419,7 +419,7 @@ def agri_ev_gearbox_posed():
     }
 
 
-def textbook_two_bearing_derived():
+def textbook_two_bearing_completed():
     beta = math.radians(25)
     mn = round(60 * math.cos(beta) / 20, 6)  # z 20 with this module gives the example's d = 60 mm
     inputs = "T=300 N·m; d=60 mm; alpha_n=20 deg; beta=25 deg; span 120 mm, gear centred"
@@ -445,7 +445,7 @@ def textbook_two_bearing_derived():
 
     return {
         "schema_version": "0.1",
-        "stage": "derived",
+        "stage": "completed",
         "task": {
             "id": "textbook-two-bearing",
             "title": "One helical gear between two bearings (a worked example)",
@@ -600,6 +600,13 @@ def ev_reducer_posed():
             "service_life": asm(qty(944, "h"), "A4"),
             "gear_material": given("SS 2511"),
             "gear_quality": asm("N6", "A5"),
+            # A common gear steel (the engineer, 9 Oct 00:50), labelled as an assumption.
+            "shaft_material": {
+                "name": "20MnCr5, case-hardened",
+                "yield_strength": asm(qty(590, "MPa"), "A24"),
+                "youngs_modulus": asm(qty(210, "GPa"), "A24"),
+                "design_factor": asm(qty(2, "1"), "A24"),
+            },
             "stages": [
                 stage(
                     "s1",
@@ -661,6 +668,7 @@ def ev_reducer_posed():
                         "bearing_spacing": asm(qty(96, "mm"), "A23"),
                         "diameter": asm(qty(105, "mm"), "A23"),
                         "gear_beside": asm("+z", "A23"),
+                        "hub_diameter": asm(qty(45, "mm"), "A23"),
                     }
                 ],
             },
@@ -850,10 +858,18 @@ def ev_reducer_posed():
             assumption(
                 "A23",
                 "the differential",
-                "a bevel unit: bearings 96 mm apart centre to centre, case Ø105 mm, the output "
-                "gear beside its +z bearing",
+                "a bevel unit: bearings 96 mm apart centre to centre, case Ø105 mm, hubs Ø45 mm, "
+                "the output gear beside its +z bearing",
                 "a 2,100 N·m class unit for about 1,080 N·m here · Schaeffler Symposium 2010, "
-                "Figs. 13-14 (the case Ø read off a figure)",
+                "Figs. 13-14 (the case Ø read off a figure; the hubs' Ø not given)",
+            ),
+            assumption(
+                "A24",
+                "the shafts' steel",
+                "20MnCr5, case-hardened: core yield 590 MPa, E 210 GPa; design factor 2 on the "
+                "peak torques",
+                "a common gear steel (the engineer, 9 Oct 00:50); the core yield is the low end "
+                "of public datasheets, to source",
             ),
         ],
     }
@@ -863,7 +879,7 @@ EXAMPLES = {
     "ev_reducer_posed.json": ev_reducer_posed,
     "hofstetter2018_posed.json": hofstetter2018_posed,
     "agri_ev_gearbox_posed.json": agri_ev_gearbox_posed,
-    "textbook_two_bearing_derived.json": textbook_two_bearing_derived,
+    "textbook_two_bearing_completed.json": textbook_two_bearing_completed,
 }
 
 
