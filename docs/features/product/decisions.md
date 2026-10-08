@@ -73,7 +73,9 @@ A reducer is assembled: shafts and bearings go in, so the housing is split, eith
 | C. Casting | fastcae's rules record: draft, pull, sand |
 | D. No process rules | Physics only |
 
-**Recommended: A; C returns as a contrast profile in P4.**
+**Re-taken on 8 October 2026, 02:02, by the engineer: C, aluminium high-pressure die casting, with NADCA's rules.** Casting is the series process for e-drive housings, and the competitor in sight (Cognitive Design Systems) works in it. Printing stays a possible later profile. D4 is widened at the same time: field-built cast surfaces count too, since only machined faces must be exact. See the product page. The text below is the original recommendation of 7 October.
+
+**Recommended (7 October): A; C returns as a contrast profile in P4.**
 
 **Evidence.**
 - **The rules exist only for A** (AM): ISO/ASTM 52911-1 is the design standard for LPBF of metals, and NASA MSFC-STD-3716 / MSFC-SPEC-3717 cover qualification.
@@ -106,6 +108,11 @@ The rule today: "Voxel, shell or field geometry never produces training data." T
 | C. Let voxel or field results be data, labelled | - |
 
 **Recommended: A, gated in P1.** Route S must match Route B on the same designs within the re-mesh noise before any of its data counts.
+
+**Widened on 8 October 2026, 02:02, by the engineer, with D3's re-take to die casting.**
+- Field-built (SDF) surfaces count for **cast** regions too. The same argument holds: as-cast surfaces have tolerances of tenths of a millimetre (NADCA), and only machined faces must be exact. Machined faces stay exact B-rep, built in CadQuery.
+- The gate is unchanged: Route S against Route B on the same designs in P1.
+- A foundry will later need the cast shape as CAD; the conversion from field to B-rep is later work.
 
 **Evidence.**
 - **Why the rule exists** (geometry): field meshing rounds bores and edges, and a seat's shoulder was missed by up to 15.6 mm until the edge lines were spaced right. That concerns *machined, functional* faces, and A keeps those exact.

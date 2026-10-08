@@ -2,7 +2,20 @@
 
 **Date.** 6-7 October 2026. Drafted from 23:30 on 6 October; completed on 7 October once the five research reports were in.
 
-**Status.** The plan of record. All its decisions were taken by the engineer on 7 October 2026: D1 at 11:03, D2-D13 and the changes from the engineer's Q&A record at 11:41 (section 15, [decisions.md](decisions.md)). Nothing is built yet. The engineer will put a few more questions before P0 starts.
+**Status.** The plan of record. Its decisions were taken by the engineer on 7 October 2026: D1 at 11:03, D2-D13 and the changes from the engineer's Q&A record at 11:41 (section 15, [decisions.md](decisions.md)).
+
+**Changed on 7-8 October (PRD-3, the engineer's questions before P0).** Each change was taken by the engineer and is recorded in [the session record](2026-10-08-decisions-and-build-record.md) and on the product page:
+- **Inputs:** the factory starts from **published requirements**, with no CAD. The first contract is Hofstetter et al. 2018's demonstration gearbox.
+- **Proof:** the verdict is built from standards and guidelines. Published values form a **plausibility band**; no paper is a head-to-head target.
+- **Tasks:** every problem is a **replayable graded task**, and any geometry may be handed in.
+- **D3 (first process) re-taken:** **aluminium high-pressure die casting** (NADCA's rules).
+- **D4 widened** to cast surfaces.
+- **The geometry split:** **CadQuery builds only the machined core**; the shell and structure are generated in field space.
+- **GRC is not used**, not even for the load check.
+
+The sections below carry these changes where marked. The contract's spec is [../contract/2026-10-08-contract-v0-design.md](../contract/2026-10-08-contract-v0-design.md).
+
+**Built:** PLT-2 (the Python project) and CON-1 (contract schema v0) work locally, uncommitted (8 October). A first variant is being built as a prototype.
 
 **What it converges.**
 - The engineer's two plan documents of 6 October: [From Rib Placement to an Agentic Gearbox-Housing Design Platform](../../../../fastcae/docs/From%20Rib%20Placement%20to%20an%20Agentic%20Gearbox-Housing%20Design%20Platform.md) ("From Rib Placement" below) and [Agentic Mechanical Design Platform: Final Implementation Plan](../../../../fastcae/docs/Agentic_Mechanical_Design_Final_Implementation_Plan.md) ("the Final Implementation Plan").
@@ -19,7 +32,11 @@
 ## 0. The plan on one page
 
 **The product.**
-- **What it does:** given a gearbox's functional interfaces, loads, package, targets and one manufacturing process, the platform builds the design problem and runs a design campaign that chooses and revises its structural hypotheses.
+- **What it does:** the platform starts from a published requirement in one of two forms:
+  - package-level, as in Hofstetter et al. 2018: ratio, input-output offset, duty and life, installation space;
+  - a given gear train.
+
+  Deterministic tools derive the functional interfaces and loads, and the platform builds the design problem (the contract). A design campaign then chooses and revises its structural hypotheses (8 October).
 - **What comes back:** housings that are FE-proven and pass the process's rules, with the whole trajectory kept as data.
 - **The level:** it starts at the functional interfaces. The MVP is L1 (fixed interfaces), the dataset spans L1 to L2 (bounded layout), and the platform releases L2. Gear-train and vehicle levels are upstream adapters, never the core (section 2).
 
@@ -30,17 +47,18 @@
 
 **What it is built on, each from the research of 6-7 October.**
 - **Geometry (5):**
-  - an exact CadQuery core;
+  - an exact CadQuery core: **only the machined interfaces** (8 October);
+  - the **closed shell and the structure generated in field space**, joined to the core by a mesh boolean;
   - an **explicit member grammar** as the editable, learnable recipe;
   - voxel SIMP only to discover, bound and seed;
-  - realised as B-rep (proven in fastcae) or as SDF (for printing), with a P1 gate between the two.
+  - realised as B-rep (proven in fastcae) or as SDF (for cast and printed surfaces, D4 widened), with a P1 gate between the two.
 - **Physics (6):**
   - judged **at the bearing seats in µm and mrad**: misalignment per face width, bearing tilt, centre distance, ovalisation;
   - modes by a Campbell check, and fits under temperature;
   - never by peak displacement or global strain energy.
 - **Process (7):**
-  - LPBF AlSi10Mg with machined interfaces;
-  - overhang, least member, no enclosed voids and the build volume enforced inside the optimisation and checked on the built part;
+  - **aluminium high-pressure die casting with machined interfaces** (D3 re-taken, 8 October). LPBF AlSi10Mg stays as a later profile;
+  - draft along each part's pull direction, no undercuts, the least wall and the machining stock (NADCA), enforced inside the optimisation and checked on the built part;
   - every design carries its **rung** on a qualification ladder, and the platform reaches "process-rule-feasible" on its own.
 - **Compute (5.3):** this laptop proves about 410k TET10 elements. So the least member is about 4 mm here, lattices and thin walls wait for cloud GPUs, and the 1,000-problem dataset is a cloud job.
 - **Learning (10), deterministic first:**
@@ -56,7 +74,8 @@
   - three repeats, and a pass mark registered beforehand;
   - shuffled-result and reflection controls;
   - **the kill criterion:** if the agent does not beat the adaptive rule-based arm, it is not fundamental;
-  - the demo: three counterfactual pairs, the same function with one requirement changed, each design different for a stated physical reason.
+  - the demo: three counterfactual pairs, the same function with one requirement changed, each design different for a stated physical reason;
+  - **against the literature (8 October):** designs are set against a plausibility band of published values, each with its conditions. No paper is a head-to-head target. Every problem is a replayable graded task.
 
 **The phases (12).** Each ends on a measured gate. No new plan until P1's gate is measured.
 - P0: the judge and the contract, about 1 week.
@@ -65,11 +84,13 @@
 - P3: the dataset factory and the first models, about 6 weeks.
 - P4: the L2 platform, thermal, other processes, a prototype.
 
-**Decided (15):** D1-D13, all taken by the engineer on 7 October. The four that weigh most:
+**Decided (15):** D1-D13, taken by the engineer on 7 October, and the changes of 8 October. The ones that weigh most:
 - D1, the repository: fastcae-sim.
-- D2-D3, the family and process: EV two-stage, LPBF.
-- D4, "field geometry never makes data" re-taken for printed regions.
+- D2, the family: an EV two-stage reducer.
+- D3, the process: **aluminium high-pressure die casting** (re-taken 8 October; LPBF before).
+- D4: field-built geometry counts for printed regions and, since 8 October, for cast surfaces; machined faces stay exact.
 - D6b, the verdict's measures.
+- 8 October: published requirements; the band; replayable graded tasks.
 
 ---
 
@@ -218,10 +239,12 @@ These are From Rib Placement's six layers. Every entity carries an **authority**
 | Design domain | Envelope less keep-outs, plus preserve regions around interfaces | Geometry |
 | The bound (section 3) | Domain, loads, limits | Topology optimisation with relaxed rules |
 
-**The load front-end is validated before its loads are trusted.** agenticCAE's gear-statics code reproduced its deck's total load to 1.4 % while getting the directions wrong ([plans lessons](../../../../fastcae/docs/research/2026-10-06-plans-lessons.md), pitfall 8). So the front-end passes three checks before any campaign uses it:
-1. a textbook worked example, to the digit;
-2. the GRC deck's own bearing loads (directions and magnitudes) from the GRC gear data, within a stated tolerance. This is an internal check, never published;
-3. fault injection: a flipped hand of helix, a reversed torque, a swapped bearing. Each must change the reactions as statics says it should.
+**The load front-end is validated before its loads are trusted.** agenticCAE's gear-statics code reproduced its deck's total load to 1.4 % while getting the directions wrong ([plans lessons](../../../../fastcae/docs/research/2026-10-06-plans-lessons.md), pitfall 8). So the front-end passes three checks before any campaign uses it. They are built from the published equations: JTEKT's gear forces and bearing reactions, including the axial-force moment; effective load centres and the tapered bearings' induced axial forces; Hofstetter et al.'s method.
+1. Published worked examples, to the digit. JTEKT's bearing-reaction example (eq. 5-29) is the first.
+2. An independent cross-check: the same shafts and bearings solved as a small FE model, with the reactions compared within a stated tolerance.
+3. Fault injection: a flipped hand of helix, a reversed torque, a swapped bearing. Each must change the reactions as statics says it should.
+
+Once designs are solved, their results are also set against the published band: modes, mass, seat deflection. That is a check of plausibility, not a proof. The GRC deck is not used: the engineer dropped it on 8 October, because the product works from published requirements, not from GRC.
 
 Each result is reported with its load case named. Where a direction is not fixed, such as a rotor's bending or a mount's preload, the targets are robust: the worst case over a band. Of 29 GRC designs scored under 12 load cases, none beat production under all of them (pitfall 9).
 
@@ -450,7 +473,19 @@ There is no reference deck for a sampled requirement (plans lesson 1). So:
 
 ## 7. Manufacturing profiles and the label ladder
 
-The evidence for this section is [the AM report](../../../../fastcae/docs/research/2026-10-06-am-housings-rules-and-cases.md) (6-7 October). Three of its five research threads finished. The gaps it names are listed in 7.6.
+**Changed on 8 October: the first profile is now aluminium high-pressure die casting** (D3 re-taken by the engineer).
+- **Why:** casting is the series process for e-drive housings, and the competitor in sight works in it (Cognitive Design Systems, docs/research/2026-10-07).
+- **Its rules:** from NADCA's 2015 standards (fastcae research, gearbox-housing engineering §5.3), as the contract spec §4.6 lists them:
+  - a pull direction per part, normal to its split face;
+  - draft of 2° inside and 1° outside for features at least 25.4 mm deep;
+  - no undercuts;
+  - a 4 mm least wall (D7);
+  - at least 0.25 mm machining stock;
+  - sealing faces and bores machined.
+- **Not yet sourced:** a maximum wall. The thickness map is recorded instead.
+- **What remains:** the label ladder (7.2) applies unchanged. The LPBF material below stays as the evidence for a later printed profile.
+
+The evidence for the LPBF material below is [the AM report](../../../../fastcae/docs/research/2026-10-06-am-housings-rules-and-cases.md) (6-7 October). Three of its five research threads finished. The gaps it names are listed in 7.6.
 
 ### 7.1 The first profile: LPBF, AlSi10Mg, machined interfaces
 
@@ -734,6 +769,12 @@ The curator (section 9.4) uses the same uncertainty to pick the next root proble
 
 ## 11. Benchmark and demo
 
+**Changed on 8 October** (the engineer). Each design is judged by the verdict built from standards and guidelines (section 6; the contract spec §4.5). The literature does not supply a head-to-head target:
+- **No paper is picked as a head-to-head rival.** Published values form a **plausibility band**, each with the conditions it was measured or computed under. A design inside the published range is the achievement.
+- **Comparison cases.** The judge can run a comparison case under a paper's own conditions, for example free-free modes against a modal test.
+- **Replayable tasks.** Every problem is a replayable graded task: the frozen contract is the question, the frozen judge is the grader. Anyone (our agent, another agent, a method, a person) may attempt it with any geometry.
+- **What stands:** the arms, the protocol and the controls below.
+
 ### 11.1 The arms, at equal budget
 
 1. A fixed free-topology workflow: the free-density seed, then a fixed rule for what comes next. Like fastcae's look-ahead, it screens the same moves the agent can make, and it is made as strong as a fixed rule fairly can be before the agent is judged.
@@ -789,6 +830,13 @@ For each pair, the system shows the two designs, the fields, the trajectory, and
 - No new plan until the current phase's gate is measured. Twenty plans arrived in ten days, and the fastCAD plans reported no measured number.
 
 Durations are estimates of working days with Claude writing most of the code and the engineer reviewing the physics and results.
+
+**Progress on 8 October:**
+- **P0 has begun.** PLT-2 (Python project, venv, checks, CI) and CON-1 (contract schema v0) work locally, uncommitted.
+- **The first contract** is Hofstetter et al. 2018's, posed (`checks/data/contracts/`).
+- **A first variant** is being built as a prototype (`prototypes/first_variant/`): a CadQuery machined core with a field-space shell and structure, to see how the route works and looks before P1.
+- **Still to come in P0:** the judge (PHY-1 to PHY-4) and the verification set.
+- **P1's core template** builds only the machined core in CadQuery; the shell and structure are in field space (8 October).
 
 ### P0: Foundations, the judge and the contract (about 1 week)
 
@@ -921,7 +969,7 @@ fastcae stays as it is: the GRC study, private, and the source of the L0 evidenc
 | The DfAM rules are not validated by a process partner | The rules come from standards and papers (section 7) | Claims stop at "process-rule-feasible"; the label ladder; a partner in P4 |
 | Benchmark contamination | Briefs v2-v4 carried earlier rounds' advice | Clean runs; every brief checked before each freeze |
 | Agent runs cost time and money | $1.27-16.39 a run in fastcae; 4-5 hours a 16-proof run | Agents on a subset; the deterministic factory for coverage; voxel screens inside the loop |
-| The licence | GRC data is NLR's | The new family is synthetic and publishable; GRC is used only for the internal load check |
+| The licence | GRC data is NLR's | The new family is synthetic and publishable, built from published sources. GRC is not used, not even for the load check (the engineer, 8 October) |
 | The CAD templates are fragile | nTop reports 70-80 % of automated parametric sweeps fail; OpenCascade's weak spots | Bounded templates; refusals named; P1's sweep counts what builds |
 
 ## 15. Decisions
@@ -933,8 +981,9 @@ All taken by the engineer on 7 October 2026: D1 at 11:03, the rest at 11:41, eac
 | D1 | Where the product lives | **Decided (the engineer, 7 October 11:03):** the repository `fastcae-sim` (`C:\Work\fastcae-sim`), the package `zenryx`. It is independent of fastcae: nothing imported, code copied from fastcae's tag `fastcae-v1` with a parity test each. fastcae stays the rib application, frozen | (A long-lived branch in fastcae: weighed and not taken, because independence holds by construction only in a separate repository) |
 | D2 | The first family | **An EV single-speed two-stage parallel-axis reducer housing** | A coaxial planetary, the paper's round housing, as the second family |
 | D2b | The housing's two parts | **Both parts designed (main housing and cover, or two halves); tied at the flange in V1's FE, each with its own build orientation**; the bolted joint checked with the finalists (VDI 2230) | One bonded body only |
-| D3 | The first process | **LPBF, AlSi10Mg, with machined interfaces.** Its guidance and qualification are the most formalised (section 7) | Turned core plus DED (the paper's route: deposition on a surface, interface metallurgy, the dearest in its own costing); casting as a contrast profile in P4 |
-| D4 | **Re-take the 18 September rule for printed regions.** The rule today: "voxel, shell or field geometry never produces training data". Proposed: the watertight surface made from the members' SDF is a printed region's own geometry, since it is what the printer builds. Machined faces stay exact B-rep, meshed face by face | **Yes**, gated by P1's Route S check | Keep the rule: Route B only, with every structure an exact B-rep |
+| D3 | The first process | **Re-taken on 8 October 02:02: aluminium high-pressure die casting, with machined interfaces and NADCA's rules** (section 7). On 7 October it was LPBF AlSi10Mg | LPBF, now a later printed profile; turned core plus DED |
+| D4 | **Re-take the 18 September rule for printed regions.** The rule was: "voxel, shell or field geometry never produces training data". Re-taken: the watertight surface made from the members' SDF counts as the region's own geometry. Machined faces stay exact B-rep, meshed face by face | **Yes**, gated by P1's Route S check. **Widened on 8 October to cast surfaces**: as-cast tolerances are tenths of a millimetre, and only machined faces must be exact | Keep the rule: Route B only, with every structure an exact B-rep |
+| 8 Oct | The contract's direction (PRD-3) | **Published requirements**, with no CAD start. The first contract is Hofstetter et al. 2018. The proof is the verdict built from standards, with published values as a plausibility band and no paper as a head-to-head. Every problem is a replayable graded task, and any geometry may be handed in. CadQuery builds only the machined core. **GRC is not used**, not even for the load check (section 4.3) | GRC as the target; a head-to-head on one paper |
 | D5 | The CAD for the core | **CadQuery** (code-first, headless, on the OCP fastcae already pins) | FreeCAD (feature tree, TechDraw; named by the labs and by MEKINT); both later through the same templates |
 | D6 | The physics of the MVP | **Statics for every load case plus modal in P1; a uniform-temperature case (fit loss, bore growth) and park-lock holding in P2.** A 72 mm aluminium seat warmed by 80 K loses about 66 µm of interference, more than the whole mechanical budget (6.1) | Steady conduction with oil heat in P2 rather than P4 |
 | D6a | How bearing loads enter the model | **A linear cosine distribution over each seat's loaded half in P1**; the compression-only iteration measured in P0 and added later | A rigid centre (26.6 % error against test) |
