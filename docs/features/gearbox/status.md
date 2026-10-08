@@ -8,21 +8,20 @@ The gearbox's physics before any housing exists. From a contract's gear train, t
 
 It completes a posed contract, so that it can be frozen. The judge applies these seat loads to every design.
 
-**PBI key:** GBX · **State:** GBX-1 (the mesh forces and moments) works locally (9 October 02:40): `zenryx.domains.gearbox.forces`, 13 checks, step 4 computed on the Contract page. GBX-2 (layout, clearances, bearing loads) is next. The plan is in bbcdbac; all on `product/end-to-end`, not pushed · **Updated:** 2026-10-09 02:40 by Claude
-**Code:** `src/zenryx/domains/gearbox/` (`forces.py`); checks in `checks/gearbox/`
+**PBI key:** GBX · **State:** GBX-1 (mesh forces and moments, ac34e4c) and GBX-2 (layout, clearances, seat loads, 4a3ba35) work locally. GBX-3 (shaft sections, bearing selection, the round of steps 5-8) and GBX-4 (complete and freeze) are built (f79760c). The EV reducer cannot be completed yet: no catalogue bearing lasts 944 h on the intermediate shaft's +z seat, whose thrust the two left-handed pinions add up; larger bearings are being added to the catalogue. With stage 2's pinion right-handed it completes and freezes clean. All on `product/end-to-end`, not pushed · **Updated:** 2026-10-09 03:08 by Claude
+**Code:** `src/zenryx/domains/gearbox/` (`forces.py`, `layout.py`, `loads.py`, `shafts.py`, `bearings.py`, `chain.py`, `complete.py`, the catalogue in `data/bearings.json`); checks in `checks/gearbox/`
 
 ## Now
 
 | PBI | Goal | Who · laptop · branch | Since | Where it stands |
 |---|---|---|---|---|
+| GBX-3 | The shaft sections (strength and stiffness) and the bearing selection (life, bore, arrangement), gone round with the layout and the loads: steps 7 and 8 | Claude · LAPTOP-IR8VEG53 · `product/end-to-end` | 2026-10-09 02:53 | **Built and committed (f79760c):** `shafts.sections`, `bearings.select`, `chain.complete_chain`; 10 checks; the round settles in 2-3 passes. **Left:** the catalogue's rows checked against SKF's public data and larger tapered bearings added (a subagent, since 02:55); then the EV reducer's round reruns |
+| GBX-4 | Complete the EV reducer's contract: seats and load cases stamped; the validator accepts it as completed; it freezes | Claude · LAPTOP-IR8VEG53 · `product/end-to-end` | 2026-10-09 03:04 | **Built and committed (f79760c):** `complete.complete`; 7 checks; a variant with stage 2's pinion right-handed completes and freezes, validator clean. **Left:** the EV reducer itself, once its +z intermediate seat has a bearing; the mounts (A20) and the motor flange as inputs (LOP-1) |
 
 ## Next
 
 | PBI | Goal | Done when |
 |---|---|---|
-| GBX-2 | The layout along the shafts (gap-driven or coordinate-driven, centres from a datum) and the bearing reactions, axial moments included: steps 5 and 6 | The textbook example's seat loads and Shigley's and Łódź's reactions are reproduced; an FE beam agrees; injected faults are caught |
-| GBX-3 | The shaft sections (strength and stiffness) and the bearing selection (life, bore, capacity, arrangement), iterated with the layout: steps 7 and 8 | Shigley Ch. 7's shaft and Ch. 11's and Łódź Ch. 5's worked selections are reproduced; the loop settles on the textbook example |
-| GBX-4 | Complete the EV reducer's contract: seats and load cases stamped; the validator accepts it as completed; it freezes | The contract freezes, and the UI's planned calculations show their results |
 
 ## What runs
 
@@ -31,6 +30,12 @@ It completes a posed contract, so that it can be frozen. The judge applies these
   - `mesh_forces(...)` is one mesh: the base-circle form Fbt = 2T/db1, Ft = Fbt·cos αwt, Fr = Fbt·sin αwt, Fa = Fbt·tan βb; on each gear the force at the pitch point as a vector in the contract's frame, and its moment about the gear's own centre (the torque about z and the axial force's moment Fa·rw in the plane).
   - `shaft_axes(spec)` places each shaft's axis in the end view (one stage on the x axis; two by the packaging offset).
   - The Contract page's step 4 shows the sizes, the force on each pinion in every case, and the gear's moment.
+- **The layout** (`layout.place`, GBX-2): the gap-driven stack from the first mesh plane (z = 0); the second plane the gear-to-gear gap beyond it on the shared shaft (`first_stage_side`); a plain shaft's bearings the bearing-to-gear gap beyond its gears; a carrier's (the differential's) bearings its spacing apart, the gear beside one of them; the housing's inner faces the space behind each bearing (sealed or closed). Every two parts on different shafts that overlap end-on are checked along the shafts against the least axial clearance; a breach is reported with its shortfall.
+- **The seat loads** (`loads.seat_loads`, GBX-2): each shaft a rigid body on its two bearings with the axial forces' moments; the thrust by the arrangement (locating, floating, or each bearing its own side with a tapered bearing's induced 0.5·Fr/Y); each seat takes the opposite of its bearing's reaction; the motor's stator puts −T_in on the housing, so the mounts hold i·T_in.
+- **The shaft sections** (`shafts.sections`, GBX-3): the bore each seat needs from the torque through it (distortion energy, design factor 2, A24), at least the differential's hub; each gear's least diameter; a uniform beam between the bearings stiffened until no slope passes the contract's tilt limit (0.5 mm/m at a gear).
+- **The bearing selection** (`bearings.select`, GBX-3): the catalogue's bearings of the arrangement's type with the bore needed; L10 at the drive case and the rated speed at least the contract's 944 h; the smallest outside Ø, then the narrowest. A seat none serves is refused with its loads.
+- **The round** (`chain.complete_chain`): layout, loads, sections and selection until the bearings stop changing (2 passes for the EV reducer). The Contract page's steps 5-8 show it.
+- **Completing a contract** (`complete.complete`, GBX-4): the seats (centre, axis, outside Ø, width, shoulder, stock, the bearing and its type), the load cases (seat forces, and the motor's reaction on its flange) and the mesh orders, each stamped with the tool and the posed contract's hash; the mounts and the motor flange copied from the requirement. The stage becomes "completed" (the engineer's word, 01:54); `freeze` then makes the task.
 - What it builds on:
   - `zenryx.contract.involute.mesh_geometry`: a shifted pair's pressure angles, its reference, base, working pitch and tip diameters, and its working centre distance (committed in e32000d; the tip diameters since 01:06, uncommitted). GBX-1's forces start from its working pressure angle and base diameters;
   - `zenryx.contract.train`: the ratio, shaft speeds, mesh frequencies, and the shaft angle from the packaging offset; since 01:06 the axes' end-view positions (`axis_positions`) and how far two circles on different shafts overlap end-on (`end_view_overlap`), for step 5's clearance check;
@@ -46,6 +51,11 @@ It completes a posed contract, so that it can be frozen. The judge applies these
 - **GBX-1's checks pass** (13, 9 October 02:39): the textbook form at zero shift (to 1e-12); equal and opposite forces; Ft·rw gives back the torque; the radial force pushes the gears apart; the hand rule for thrust; the axial force's moment Fa·rw; every shaft passes its torque on; reverse and regeneration alike; the forward rotation mirrors the directions only.
 - **A published worked example is reproduced:** drivetrainhub's notebook (z 15/45, mn 2.5 mm, αn 20°, β 20°, a 80 mm, 100 N·m) gives Ft 5,000.0 N and Fr 1,971.1 N, and the tool gives the same to 0.05 N. Its Fa 1,819.9 N is Ft·tan β; the tool's Fa = Ft·tan βw is 0.23 % higher for that pair, the known difference between the two conventions.
 - **The EV reducer at 150 N·m:** stage 1 Ft 5,499 · Fr 2,399 · Fa 3,243 N (Fbt 6,000 N); stage 2 Ft 11,066 · Fr 4,657 · Fa 6,490 N (Fbt 12,006 N), on 306 N·m into the intermediate pinion; 1,078 N·m out of the output.
+- **GBX-2's checks pass** (13, 02:52): the stack rules; the differential's 96 mm; the overlap rule with an injected breach; a too-short carrier refused; the textbook example's Fr/2 ∓ (d/2)·Fa/L; every shaft in balance; the seats' forces cancel and, with the motor's reaction, twist the housing by −i·T_in; the tapered pair's induced forces.
+- **GBX-3's checks pass** (10, 03:01): the rating life and the equivalent loads against their formulas; the smallest lasting bearing chosen; a refusal; the distortion-energy diameter; a centrally loaded beam's slope P·L²/(16EI) to 0.2 %; the round settles and every seat lasts or says why not.
+- **The EV reducer's round (03:01, before the catalogue check):** input 6309 at −z (45/100 × 25, L10 1,498 h) and NU 205 ECP at +z; intermediate 30205 J2/Q at −z, **none at +z** (Fr 5.6 kN, Fa 11.7 kN at 2,941 rpm); output 6309 at −z and 6209 at +z (on the differential's Ø45 mm hubs). Seat loads in drive from 3.0 to 9.1 kN radial; the heaviest 12.0 kN radial at the output's +z seat in reverse. All six end-on overlaps clear by at least 13.2 mm.
+- **The hand of stage 2's pinion decides the intermediate's bearings** (a what-if, 03:05): as given (both pinions left-handed) the +z seat takes Fa 11.7 kN and no catalogue bearing lasts; with stage 2's pinion right-handed it takes 1.6 kN, a 30205 J2/Q lasts 2,079 h, and the contract completes and freezes with no refusal.
+- **The life at the peak torque sizes the bearings large:** the 944 h is taken at the 150 N·m drive case (the engineer, 00:50), so the input's locating bearing is a 6309. A duty cycle or a nominal torque would give smaller bearings and a smaller housing.
 - **The intermediate shaft's two axial forces add:** with both pinions left-handed, the stage-1 gear (right-handed) and the stage-2 pinion (left-handed) both push the intermediate shaft towards +z in drive, 3,243 + 6,490 = 9,733 N. With the same hand on the intermediate's two gears they would partly cancel (6,490 − 3,243 = 3,247 N), which is how designers usually choose the hands.
 - **Profile shift matters for this gear train:** at 150 N·m the radial mesh force is +13.8 % (stage 1) and +10.4 % (stage 2) above the textbook formula; tangential −2.1 % and −1.6 %; axial unchanged.
   - The torque check (Ft × working radius) holds exactly.
@@ -65,6 +75,8 @@ It completes a posed contract, so that it can be frozen. The judge applies these
 
 ## Open
 
+- **No tapered bearing in the catalogue lasts on the intermediate's +z seat** (Fr 5.6 kN, Fa 11.7 kN, 2,941 rpm, 944 h). Larger and steep-angle (313) bearings are being added; with the same hand on the intermediate's two gears the thrust would fall to about 3.2 kN and an ordinary bearing would do.
+- **Is the life to be taken at the peak torque?** The 944 h at 150 N·m makes the bearings large; a duty cycle or a nominal torque would not. The engineer's to confirm.
 - **Is stage 2's pinion left-handed in the source?** The contract gives both pinions left-handed, so the intermediate shaft's axial forces add (9.7 kN in drive) instead of partly cancelling (3.2 kN). If the source's stage-2 pinion is right-handed, the intermediate's tapered pair carries a third of the thrust. The engineer's to confirm.
 - **The layout's values, as assumed** (A13-A19 in the Ivanov contract):
   - 12.7 mm between a bearing and its gear and 6.35 mm behind a bearing in a closed bore, both from Shigley's Fig. 18-2, an industrial gearbox, so likely generous;
@@ -81,7 +93,8 @@ It completes a posed contract, so that it can be frozen. The judge applies these
 
 | PBI | Delivered | Date | Commits |
 |---|---|---|---|
-| GBX-1 | The mesh forces and moments in every load case (`zenryx.domains.gearbox.forces`): the base-circle form, the directions on each gear in the contract's frame, each gear's moment; the input's forward rotation as a contract input (A21, `consistency.rotation`); step 4 computed on the Contract page; 13 checks, a published example among them | 2026-10-09 | (this commit) |
+| GBX-2 | The layout along each shaft from the gaps and the differential, the end-on clearance check, and the seat loads with the arrangement's thrust and the motor's reaction; the contract's structured arrangement (A8), A22 and A23; 13 checks | 2026-10-09 | 4a3ba35 |
+| GBX-1 | The mesh forces and moments in every load case (`zenryx.domains.gearbox.forces`): the base-circle form, the directions on each gear in the contract's frame, each gear's moment; the input's forward rotation as a contract input (A21, `consistency.rotation`); step 4 computed on the Contract page; 13 checks, a published example among them | 2026-10-09 | ac34e4c |
 
 ## Docs
 

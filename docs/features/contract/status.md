@@ -56,7 +56,7 @@ The validator refuses a fault with its rule, the entry and the reason. A frozen 
 - **The hash** (`canonical.py`):
   - SHA-256 over canonical JSON: sorted keys, canonical units, 12 significant digits, the hash excluded.
   - `freeze()` sets the stage to frozen and stamps the hash.
-  - A posed contract cannot be frozen into a valid task until it has been derived.
+  - A posed contract cannot be frozen into a valid task until it has been completed.
 - **The mesh geometry** (`involute.py`, since 22:46 with PLT-7): `mesh_geometry()` gives a shifted helical pair's transverse and working pressure angles, its reference, base, working pitch and tip diameters (da = d + 2mn(1 + x)), and the working centre distance. The validator's centre-distance rule and the contract page's steps 1 and 3 use it; GBX-1's forces will start from it.
 - **The shaft layout** (`requirement.shaft_layout`, since 9 Oct 00:06; completed 01:06): the inputs from which the load tool places the gears and bearings along each shaft. All lengths are in mm (`consistency.dimension`):
   - the gaps: bearing to gear, behind a bearing in a closed bore, and between two gears on one shaft;
@@ -64,6 +64,8 @@ The validator refuses a fault with its rule, the entry and the reason. A frozen 
   - the least clearances: along the shafts, between parts on different shafts that overlap seen end-on, and from a gear's tips to the wall.
 
   The EV reducer's contract assumes them, each labelled: A13 and A14 from Shigley Ch. 18, Fig. 18-2; A15 12.7 mm (no source yet); A16 a radial shaft seal's width; A17 its three sealed ends; A18 3 mm (no source yet); A19 8.25 mm from Maciejczyk & Zdziennicki Ch. 9, Fig. 9.1, (1.1-1.2)·δ.
+- **The stages** are posed (the user's requirements), completed (the load tool's results written in, GBX-4) and frozen (hashed: the task). "Completed" replaced "derived" on 9 October 03:05 (the engineer's word, 01:54); a tool's value keeps the provenance kind "derived" and reads "calculated" on the UI. Rule `stage.completed_needs_physics`.
+- **New inputs for the load tool and the judge** (9 October): the input's forward rotation (A21); the bearing arrangement bearing by bearing, the side stage 1 meshes on (A22) and a carrier for the differential (A23) in `shaft_layout`; the shafts' steel (A24); the mounts and the motor flange (`requirement.mounts`, `requirement.motor_flange`; their values come with LOP-1). A completed seat names its bearing and type; a load case carries the motor's reaction on its flange (`interface_moments`).
 - **The order check** (`limits.order_check_at`, since 9 Oct 01:06): it names one of the duty's speeds by its kind instead of copying its value, so a changed duty speed carries the criterion with it. The EV reducer's is the rated 6,000 rpm (the engineer).
 - **The gear train** (`train.py`):
   - the total ratio, the shaft speeds, and each mesh's frequency (teeth × rpm / 60);
