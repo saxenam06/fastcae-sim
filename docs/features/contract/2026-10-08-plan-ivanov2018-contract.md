@@ -70,7 +70,7 @@
 | The spacing along each shaft | face widths (published) + bearing widths + gaps; the layout method of Łódź Ch. 3 and Shigley §18-4 | der, with the gaps asm B10 |
 | Bearing seats: diameter, width, stock | from the bearings chosen; stock 0.25 mm (NADCA) | der |
 | Split faces | Ivanov §3.1: three parts (the flange, the motor side, the back side), so two split planes | pub (the count); asm B11 (where they sit) |
-| Mount pads | Ivanov: the frame's mounting bosses, fixed in his FE; their number and positions are not given | asm B12 |
+| Mount pads | Ivanov: the frame's mounting bosses, fixed in the thesis's FE; their number and positions are not given | asm B12 |
 | Motor flange | Ivanov §3.5: the motor sits on the flange alone, and the flange carries its 150 N·m reaction | pub (the role); asm B13 (spigot, bolt circle) |
 | Ports | Ivanov §3.1: oil inlet and outlet on the back side | pub (where); asm B14 (sizes) |
 
@@ -95,7 +95,7 @@
 | Order-check speeds | 6,000 rpm (cruise) and the maximum (B3) | asm B16 |
 | Model margin | 25 % | as the spec (§4.5) |
 | Objective | least mass | - |
-| Stress | recorded, not judged. Ivanov used the alloy's yield, 230 MPa, as his line | open: the safety factor is the engineer's |
+| Stress | recorded, not judged. Ivanov used the alloy's yield, 230 MPa, as the thesis's line | open: the safety factor is the engineer's |
 
 ### Manufacturing: the process, chosen afresh
 
@@ -104,7 +104,7 @@ The product's decisions are being rethought (the engineer, 19:43), so the choice
 | | Sand casting, with 3D-printed sand moulds and cores | Metal printing (LPBF, AlSi10Mg) | High-pressure die casting |
 |---|---|---|---|
 | **How attractive the result can be** | High: cores allow hollow and organic members; printed moulds lift most draft limits | Highest: free organic shapes, lattices, thin members. Porsche printed an e-drive housing whose honeycomb stiffened and damped the walls (fastcae AM report) | Lowest: thin, even walls that all pull straight out of a steel die, so it looks like a ribbed shell |
-| **Fair against Ivanov's 7.7 kg** | **Yes:** his housing is sand-cast EN AC-42100 T6 | No | No |
+| **Fair against Ivanov's 7.7 kg** | **Yes:** the thesis's housing is sand-cast EN AC-42100 T6 | No | No |
 | **Where it is used** | Prototypes and small series of real housings | Prototypes, motorsport, small series | Mass production; die casting wins by a wide margin at e-drive volumes (fastcae AM report) |
 | **Material** | Ivanov's AC-42100 T6: E 69 GPa, ν 0.33, yield 230 MPa, UTS 290 MPa (Rm ≥ 230 MPa, ROTH, in fastcae's AM report) | AlSi10Mg (fastcae AM report) | A die-casting alloy (a sourced card still to choose) |
 | **Rules we have** | Tolerances from 0.76 mm (fastcae AM report). **The printed-mould design rules still need a public source:** least wall, junctions, core support, sand removal | Walls, overhangs, powder escape, NASA's risk score and rungs (fastcae AM report) | NADCA: drafts 2° / 1°, 0.25 mm stock; our 4 mm least wall (D7, the FE budget) |
@@ -119,8 +119,8 @@ The product's decisions are being rethought (the engineer, 19:43), so the choice
 
 - **Mass:** 7.732 kg (three sand-cast parts; CAD, at 2.6 g/cm³).
 - **Free modes of the initial design:** the first elastic mode at 1,127 Hz, on stage 2's mesh frequency at cruise; mode 13 at 2,851 Hz; mode 16 at 3,159 Hz. With the ribs removed: 1,189 and 1,337 Hz.
-  - Caveat: his three parts are bonded together, so his modes read high, as he says.
-- **Displacement of the bearing beds' centres** (his Fig. 51; artificial peak combinations):
+  - Caveat: the thesis's three parts are bonded together, so its modes read high, as it says.
+- **Displacement of the bearing beds' centres** (the thesis's Fig. 51; artificial peak combinations):
   - forward: 0.0384, 0.0079, 0.0349, 0.0085, 0.0111, 0.0522 mm (slots 1-6);
   - reverse: 0.1076, 0.1236, 0.0672, 0.110, 0.0219, 0.1380 mm.
 - **Stress:** far below 230 MPa, but for one singular element.
@@ -154,8 +154,8 @@ The product's decisions are being rethought (the engineer, 19:43), so the choice
 
 ## 5. Caveats
 
-- **The layout angle (B9)** is not a published number. If neither original gives it, our seats will differ from AVL's, and comparing against his 7.7 kg assumes his layout.
+- **The layout angle (B9)** is not a published number. If neither original gives it, our seats will differ from AVL's, and comparing against the thesis's 7.7 kg assumes its layout.
 - **The bearings (B7)** are our selection unless Brauer 2017 names AVL's.
 - **The thesis is a student's,** with AVL's data passed through. The copy read is a Scribd upload. Treat it with moderate confidence until checked against the KTH original.
-- **His FE bonds the three parts and the bearing rings** (TIE constraints). His stiffness and modes read high, so his band is optimistic.
+- **The thesis's FE bonds the three parts and the bearing rings** (TIE constraints). Its stiffness and modes read high, so its band is optimistic.
 - **Łódź's rules suit a simpler gearbox:** one stage, belt-driven, sand-cast iron. The rival design needs the adaptations of step 6, and those adaptations are ours.

@@ -48,7 +48,8 @@ zenryx designs housings from requirements. The engineer states a gearbox's funct
 
   CI runs the same (`.github/workflows/checks.yml`).
 - **Example contracts** are written by `checks/data/contracts/make_examples.py`. Run it after any change; the checks fail when a file is stale.
-  - `ivanov2018_posed.json` is the product's one contract, the first (the engineer, 8 October). It is the only one the UI shows (`zenryx.api.snapshot.CONTRACTS`).
+  - `ev_reducer_posed.json` ("EV two-stage reducer") is the product's one contract, the first (the engineer, 8 October). It is the only one the UI shows (`zenryx.api.snapshot.CONTRACTS`).
+  - **The product's contract names no paper** (the engineer, 9 October). Its requirements are the engineer's ("you" on the page). An assumption gives its reason and a bare reference ("Shigley Ch. 18, Fig. 18-2"), never a statement about an author. Standards stay as sources. Where the example came from is said in the docs only (`docs/features/contract/status.md`).
   - The other three are the validator's fixtures.
 - **The web UI** (`web/`, PLT-4): React 19 + Vite 7 + TypeScript, no other dependency; its design is `docs/features/platform/2026-10-08-ui-design.md`.
   - It shows the product's flow (contract → campaign → hypothesis → design → grade → datapoints), never a prototype's output. What is not built yet is drawn blank, never filled with example numbers.
@@ -59,7 +60,8 @@ zenryx designs housings from requirements. The engineer states a gearbox's funct
 - Claude commits, pushes and starts servers only when the person it works for says so.
 - Ask the engineer before changing a limit in a contract, a process profile's value, a load case or the FE budget.
 - **Derived physics is computed, never written.** Every derived quantity (forces, reactions, mesh orders, margins) comes from a deterministic, versioned tool. The agent never writes one. The deterministic evaluator decides PASS or FAIL.
-- **An input is only what can be chosen freely** (the engineer, 8 October). Anything the other inputs fix is a calculation step's output: the centre distance, fixed by the gear data; the ratio, fixed by the teeth. A published figure for it is kept only to check the calculation against.
+- **An input is only what can be chosen freely** (the engineer, 8 October). Anything the other inputs fix is a calculation step's output: the centre distance, fixed by the gear data; the ratio, fixed by the teeth. The validator refuses such a value in a contract (`consistency.redundant`).
+- **Papers verify the tools, once, in `checks/`** (the engineer, 8 October): for example Ivanov's and Kim's centre distances and ratios. A contract carries no paper figure for a calculated value; users bring their own requirements, and most will have no paper.
 - **No part-specific code in the core.** Things are named by geometric kind (a cylindrical seat, a fastener circle). Domain roles live in data, under a domain module (`src/zenryx/domains/<family>/`).
 - **Nothing an agent reads in a benchmark run may hold a result, a lesson or advice from another run.** Agent runs happen in clean folders outside this repository (`../fastcae-agent/runs/<run>/`).
 - **Licences:**
@@ -89,8 +91,8 @@ zenryx designs housings from requirements. The engineer states a gearbox's funct
   - Start one heavy job, see it running, then the next. Two jobs submitted within seconds once started two runners.
   - Stopping a watcher with `taskkill /T` kills its child agent session.
 - **CP-SAT repeatability:** one search worker and a deterministic limit (`max_deterministic_time`), not a wall-clock one. Log OPTIMAL or FEASIBLE, and break ties explicitly.
-- **Ignore rules are anchored:** `/data/`, `/assets/`, `/results/` and `/archive/`, never a bare `data/` or `archive/`.
+- **Ignore rules are anchored:** `/data/`, `/assets/` and `/results/`, never a bare `data/`. The one bare rule is `archive/` (the engineer, 9 October: VS Code then greys the folder), followed by `!/docs/archive/`, which takes `docs/archive/` back.
   - A bare `data/` also hides `checks/data/` (the example contracts) and `web/src/data/` (the UI's Data tab). It did until 8 October, so a commit would have left them out.
-  - A bare `archive/` would hide `docs/archive/`.
+  - Without its `!/docs/archive/` line, the bare `archive/` would hide new files in `docs/archive/`. Check a rule with `git check-ignore -v <path>`.
 - **Unusual paths:** never hand an unusual path (`\\?\`, relative, empty) to a call that deletes or overwrites. Stage in a short temp folder and check the path first.
 - **Usage limits:** a Claude session limit can stop long agent work mid-way. On 6 October it stopped three research agents. Give long work a resume path, and write results to files as they come.

@@ -1,19 +1,14 @@
 # Status: the board
 
-**Updated:** 2026-10-08 23:14 by Claude.
-- **The overnight build is done** (03:29). PLT-2 (Python project, venv, checks, CI) and CON-1 (contract schema v0) work locally.
-- **The first variant** (a prototype, not a feature, in `prototypes/first_variant/`) runs end to end: 3.57 kg, one watertight body, seven pictures in `data/prototypes/first_variant/`.
-- **This morning** the data and learning side was designed in discussion; the Data feature now has its page.
-- **The web UI (PLT-4) works locally** (10:38-11:50). It follows the product from the contract through campaigns, hypotheses, designs and grades to the datapoints. The contracts are shown in full; everything downstream is laid out and blank until the agent, the geometry and the judge exist. 109 checks pass.
-- **Committed on `product/end-to-end`, not pushed** (18:30-18:37): five commits, feca5c1 (PLT-2) … ca44539 (PLT-4). Until the workflow runs end to end, all work goes on that one branch (the engineer, 18:20).
-- **The evening (18:47-21:25):**
-  - seven more sources read;
-  - Ivanov 2018 chosen as the first contract and written (CON-3, posed);
-  - every tab remade as one clean product page (PLT-6);
-  - the load tool planned (GBX);
-  - the calculation chain written up.
-
-  Committed in six commits on `product/end-to-end` (3fdb333 … 93dbcc2), not pushed.
+**Updated:** 2026-10-09 02:28 by Claude.
+- **For the engineer's morning: the night of 9 October** (the brief of 01:54; Claude works alone). In order:
+  1. **Done, 02:25:** the product's contract is the "EV two-stage reducer" and names no paper (CON-4); committed with the night's earlier work in 577de20, not pushed.
+  2. The contract completed: GBX-1 (mesh forces and moments), GBX-2 (layout, clearances, bearing loads), GBX-3 (shaft sections, bearing selection), GBX-4 (complete and freeze).
+  3. PLT-8: the contract's result on its page, the design space in 3D with a chip per volume.
+  4. Two reviews (spaces inside a reducer; how housing topology optimisation is iterated), under way.
+  5. The first loop (LOP): plain shell and wall, topology optimisation, ribs, mesh, couplings, loads, solve, grade.
+- **Where the code stands:** one branch, `product/end-to-end`, not pushed. The contract schema, its validator and the product's contract (CON); the web UI, five pages, the Contract page showing what is given and what is calculated (PLT); the load tool planned (GBX). 151 checks pass.
+- **Earlier:** the overnight build of 8 October (PLT-2, CON-1, the first-variant prototype in `prototypes/first_variant/`); the web UI (PLT-4, PLT-6); the calculation chain; PLT-7.
 
 See [the build record](features/product/2026-10-08-decisions-and-build-record.md).
 
@@ -24,11 +19,12 @@ Every feature of zenryx: where it stands, who works on it, what comes next. Each
 | Feature | Key | State | Now | Next | Who |
 |---|---|---|---|---|---|
 | [Product](features/product/status.md) | PRD | The plan of record. The contract's direction was decided on 8 October: published requirements; a verdict built from standards, with published values as a plausibility band; replayable graded tasks; GRC not used | PRD-3 (the engineer's questions before P0), under way | - | Manasvi |
-| [Platform](features/platform/status.md) | PLT | PLT-2 (Python project, venv, checks, CI) works locally. PLT-4 and PLT-6 (the web UI) work locally: five tabs, one clean product page each, in the order the work runs (Contract, Campaigns, Designs, Data, Flow). The Contract page shows Ivanov 2018: its inputs, the calculations with their methods, the criteria and the design to beat; the rest is laid out blank. In PowerShell, `cd web` then `npm.cmd run dev` opens it on port 5190. Committed (feca5c1, ca44539, 9acf466, 61e51c8), not pushed; CI not yet run. PLT-7 (22:35-23:13, uncommitted): the Contract page says what is given and what is calculated, step by step; an input is only what can be chosen freely (the engineer, 22:57) | PLT-2, PLT-4, PLT-6 and PLT-7, done locally | PLT-3: the runner and its guards | Claude |
-| [Physics and the judge](features/physics/status.md) | PHY | Nothing built | - | PHY-1 (the FE solve): the cuDSS static solve copied from fastcae, with its parity test | - |
-| [Contract](features/contract/status.md) | CON | CON-1 (contract schema v0) works locally: schema, validator, hash, example contracts. CON-3: Ivanov 2018 written and posed, the product's one contract. Its 96 checks pass (125 in all). Committed (f51aba1, 840c486, 9acf466), not pushed; awaiting the engineer's review and two choices (the process, the first packaging) | CON-1 and CON-3, done locally | CON-2: check the examples' open points (bearing dimensions, the offset reading, A8) | Claude |
+| [Platform](features/platform/status.md) | PLT | PLT-2 (Python project, venv, checks, CI) works locally. PLT-4 and PLT-6 (the web UI) work locally: five tabs, one clean product page each, in the order the work runs (Contract, Campaigns, Designs, Data, Flow). The Contract page shows the EV two-stage reducer: its inputs, the calculations with their methods, the criteria and the design to beat; the rest is laid out blank. In PowerShell, `cd web` then `npm.cmd run dev` opens it on port 5190. Committed (feca5c1, ca44539, 9acf466, 61e51c8), not pushed; CI not yet run. PLT-7: the Contract page says what is given and what is calculated, step by step; an input is only what can be chosen freely (the engineer, 22:57). Committed (e32000d, cefd868, 17cdbf2); the ten-step chain, the contracts without paper figures and the gap-driven layout on the Bearings and layout card (the gaps, the sealed shaft ends, the least clearances), committed in 577de20 | PLT-2, PLT-4, PLT-6 and PLT-7, done locally | PLT-3: the runner and its guards | Claude |
+| [Physics and the judge](features/physics/status.md) | PHY | Nothing built. Decided: the FE model's practice (distributed couplings for bolts; bearing loads spread over each seat with the bearing's stiffness) and the 25 % model margin, kept for now (the engineer, 9 October 00:57 and 01:06) | - | PHY-1 (the FE solve): the cuDSS static solve copied from fastcae, with its parity test | - |
+| [Contract](features/contract/status.md) | CON | CON-1 (contract schema v0) works locally: schema, validator, hash, example contracts. CON-3 and CON-4: the EV two-stage reducer, posed, the product's one contract, naming no paper (9 October 02:25). Its 112 checks pass (151 in all). Committed (f51aba1, 840c486, 9acf466, 577de20), not pushed: no value its inputs fix (`consistency.redundant`), the shaft layout (A13-A19) and one order-check speed (9 October 01:06); the process and the first packaging taken at 02:12; awaiting the engineer's review | CON-1 and CON-3, done locally | CON-2: check the examples' open points (bearing dimensions, the offset reading, A8) | Claude |
 | [Data](features/data/status.md) | DAT | Designed in discussion (8 October): one contract is one task; the four axes; the datapoint kinds; campaigns cut into decision records, snapshot tasks and preference pairs; 20 task types; LLM fine-tuning and physics AI. Nothing built | - | DAT-1 (the record schema), once the engineer agrees the proposals | - |
-| [Gearbox domain](features/gearbox/status.md) | GBX | The load tool planned (8 October): helical, profile-shifted mesh forces; spacing along the shafts; bearing reactions with axial moments; bearing sizes by L10 life. Each step takes its equations from its best source, and the low-confidence points were searched and confirmed. The plan committed (bbcdbac), not pushed; nothing built | - | GBX-1 (mesh forces), checked against Shigley, Łódź and the textbook example | - |
+| [Gearbox domain](features/gearbox/status.md) | GBX | The load tool planned (8 October): helical, profile-shifted mesh forces; spacing along the shafts; bearing reactions with axial moments; bearing sizes by L10 life. Each step takes its equations from its best source, and the low-confidence points were searched and confirmed. The plan committed (bbcdbac), not pushed; nothing built. The layout is gap-driven (9 Oct 00:06), with an interactive explainer of the gaps (`docs/features/gearbox/2026-10-09-gaps-along-a-shaft.html`). Decided on 9 October: the base-circle forces; bearing life 944 h at the drive case; the shaft steel as an assumption; a maker's catalogue; a seal allowance per shaft end and the clearances calculated in step 5 | GBX-1 (mesh forces and moments), from 02:30 | GBX-2 (layout, clearances, bearing loads), GBX-3 (shaft sections, bearing selection), GBX-4 (complete and freeze) | Claude |
+| [The first loop](features/loop/status.md) | LOP | One housing taken start to end as a prototype: plain shell and wall, topology optimisation, ribs, mesh, couplings, loads, solve, grade (the engineer, 9 October 01:54). Planned; it waits on the completed contract | - | LOP-1 (the design space, the plain shell and wall, named faces) | Claude |
 
 ## Planned features (a page each when their first PBI starts)
 

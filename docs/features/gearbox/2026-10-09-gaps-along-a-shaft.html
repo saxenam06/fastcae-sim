@@ -1,0 +1,857 @@
+<title>Gaps Along a Shaft</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* Layout: one reading column; each idea is a short text, a live drawing, its sliders and its numbers.
+     Palette and faces are zenryx's own UI tokens (web/src/styles/tokens.css), with a dark set. */
+  :root {
+    --ground: #f2f3f1;
+    --sheet: #ffffff;
+    --ink: #1b1f1e;
+    --muted: #5d6462;
+    --faint: #8a918e;
+    --hairline: #d8dbd7;
+    --blue: #0f3d91;
+    --blue-wash: #e7edf9;
+    --red: #9e2b2b;
+    --red-wash: #f7eaea;
+    --green: #2f6b4f;
+    --green-wash: #e8f1eb;
+    --ochre: #8a6a1f;
+    --steel: #a9b1b8;
+    --wall: #d9d4c7;
+    --wall-line: #8c8577;
+    --oil: #a9cbe9;
+    --sans: "IBM Plex Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, "Cascadia Code", Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #121514; --sheet: #1a1e1d; --ink: #e4e8e6; --muted: #a6adaa; --faint: #7c8481;
+      --hairline: #2d3331; --blue: #8eb0ef; --blue-wash: #1c2a45; --red: #e58a8a; --red-wash: #3a2224;
+      --green: #79c39f; --green-wash: #1d3329; --ochre: #d6b46c; --steel: #5d6870; --wall: #3b3830;
+      --wall-line: #8a8374; --oil: #2c4d6c; color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground: #121514; --sheet: #1a1e1d; --ink: #e4e8e6; --muted: #a6adaa; --faint: #7c8481;
+    --hairline: #2d3331; --blue: #8eb0ef; --blue-wash: #1c2a45; --red: #e58a8a; --red-wash: #3a2224;
+    --green: #79c39f; --green-wash: #1d3329; --ochre: #d6b46c; --steel: #5d6870; --wall: #3b3830;
+    --wall-line: #8a8374; --oil: #2c4d6c; color-scheme: dark;
+  }
+
+  body { background: var(--ground); color: var(--ink); font-family: var(--sans); font-size: 16px; line-height: 1.55; }
+  .page { max-width: 860px; margin: 0 auto; padding-inline: 20px; padding-block: 36px 64px; display: grid; gap: 28px; }
+  header { display: grid; gap: 8px; }
+  .kicker { font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--blue); }
+  h1 { margin: 0; font-size: 32px; line-height: 1.15; font-weight: 600; text-wrap: balance; }
+  h2 { margin: 0; font-size: 21px; line-height: 1.25; font-weight: 600; text-wrap: balance; }
+  h3 { margin: 0; font-size: 15px; font-weight: 600; }
+  p { margin: 0; max-width: 66ch; }
+  .lede { font-size: 17px; color: var(--muted); }
+  section.idea { background: var(--sheet); border: 1px solid var(--hairline); border-radius: 4px; padding: 22px; display: grid; gap: 14px; }
+  .idea .num { font-family: var(--mono); font-size: 12px; color: var(--faint); }
+  .head { display: grid; gap: 2px; }
+  svg.fig { width: 100%; height: auto; display: block; background: var(--sheet); }
+  .figwrap { border: 1px solid var(--hairline); border-radius: 3px; overflow-x: auto; }
+  .controls { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px 20px; }
+  .ctl { display: grid; gap: 4px; min-width: 0; }
+  .ctl label { font-size: 13px; color: var(--muted); display: flex; justify-content: space-between; gap: 8px; }
+  .ctl output { font-family: var(--mono); font-size: 13px; color: var(--ink); font-variant-numeric: tabular-nums; }
+  input[type="range"] { width: 100%; accent-color: var(--blue); }
+  input[type="range"]:focus-visible, button:focus-visible, input[type="checkbox"]:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+  .readout { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+  .stat { background: var(--ground); border-radius: 3px; padding: 10px 12px; display: grid; gap: 2px; min-width: 0; }
+  .stat .k { font-size: 12px; color: var(--muted); }
+  .stat .v { font-family: var(--mono); font-size: 18px; font-variant-numeric: tabular-nums; }
+  .stat .v small { font-size: 12px; color: var(--muted); }
+  .notice { border-left: 3px solid var(--blue); padding-left: 12px; color: var(--ink); }
+  .note { font-size: 13px; color: var(--muted); }
+  .pill { display: inline-block; font-family: var(--mono); font-size: 12px; padding: 2px 8px; border-radius: 10px; }
+  .pill.ok { background: var(--green-wash); color: var(--green); }
+  .pill.bad { background: var(--red-wash); color: var(--red); }
+  .pill.mid { background: var(--blue-wash); color: var(--blue); }
+  .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  .check { font-size: 14px; display: flex; gap: 8px; align-items: center; }
+  button { font-family: var(--sans); font-size: 14px; padding: 6px 14px; border-radius: 3px; border: 1px solid var(--blue); background: var(--sheet); color: var(--blue); cursor: pointer; }
+  button[disabled] { opacity: 0.4; cursor: default; }
+  table { border-collapse: collapse; font-size: 14px; width: 100%; }
+  th, td { text-align: left; padding: 6px 10px 6px 0; border-bottom: 1px solid var(--hairline); vertical-align: top; }
+  th { font-weight: 500; color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; }
+  td.mono { font-family: var(--mono); white-space: nowrap; }
+  .tablewrap { overflow-x: auto; }
+  ul.plain { margin: 0; padding-left: 18px; display: grid; gap: 6px; max-width: 66ch; }
+
+  /* drawing classes, all from the tokens */
+  .shaft { fill: var(--steel); }
+  .brg { fill: var(--sheet); stroke: var(--ink); stroke-width: 1.4; }
+  .brgx { stroke: var(--ink); stroke-width: 0.8; }
+  .gear { fill: var(--blue-wash); stroke: var(--blue); stroke-width: 1.6; }
+  .wall { fill: var(--wall); stroke: var(--wall-line); stroke-width: 1; }
+  .oil { fill: var(--oil); }
+  .dimline { stroke: var(--muted); stroke-width: 1; fill: none; }
+  .dimred { stroke: var(--red); stroke-width: 1.2; fill: none; }
+  .defl { stroke: var(--red); stroke-width: 1.6; fill: none; stroke-dasharray: 5 4; }
+  .force { stroke: var(--red); stroke-width: 2.2; fill: none; }
+  .react { stroke: var(--blue); stroke-width: 2.2; fill: none; }
+  .t { font-family: var(--sans); font-size: 12px; fill: var(--ink); }
+  .tm { font-family: var(--mono); font-size: 12px; fill: var(--ink); }
+  .tmuted { font-family: var(--sans); font-size: 11px; fill: var(--muted); }
+  .tred { font-family: var(--mono); font-size: 12px; fill: var(--red); }
+  .tblue { font-family: var(--mono); font-size: 12px; fill: var(--blue); }
+  .axis { stroke: var(--hairline); stroke-width: 1; }
+  .curve { stroke: var(--blue); stroke-width: 2; fill: none; }
+  .area { fill: var(--blue-wash); }
+  .dot { fill: var(--red); }
+  .node { fill: var(--sheet); stroke: var(--hairline); stroke-width: 1.5; }
+  .node.on { fill: var(--blue-wash); stroke: var(--blue); stroke-width: 2.2; }
+  .ring { fill: var(--ink); }
+  .bfill { fill: var(--blue); }
+  .lip { fill: var(--wall); stroke: var(--wall-line); stroke-width: 1; }
+  .band { fill: none; stroke: var(--green); stroke-width: 1.2; stroke-dasharray: 4 3; }
+  .outline { fill: none; stroke: var(--ink); stroke-width: 2; }
+  .pkg { stroke: var(--ochre); stroke-width: 1.5; stroke-dasharray: 6 4; fill: none; }
+  .lens { fill: var(--red); fill-opacity: 0.28; stroke: none; }
+  svg .gear { fill-opacity: 0.85; }
+  @media (max-width: 520px) { h1 { font-size: 26px; } section.idea { padding: 16px; } }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<main class="page">
+  <header>
+    <div class="kicker">zenryx · the load tool, step 5</div>
+    <h1>Gaps along a shaft</h1>
+    <p class="lede">Step 5 of the calculation chain places each gear and bearing along its shaft from three gaps you give. This page shows what those gaps hold, what they change, and why the smallest is not always the best. Move the sliders.</p>
+  </header>
+
+  <section class="idea" aria-labelledby="h0">
+    <div class="head"><span class="num">the inputs</span><h2 id="h0">The three gaps in the Ivanov contract</h2></div>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>Gap</th><th>Value</th><th>Where it came from</th></tr></thead>
+        <tbody>
+          <tr><td>Between a bearing and the gear beside it (A13)</td><td class="mono">12.7 mm</td><td>Shigley Ch. 18, Fig. 18-2 (½ in). An industrial gearbox, so likely generous for an EV reducer</td></tr>
+          <tr><td>Behind each bearing (A14)</td><td class="mono">6.35 mm</td><td>The same sketch (¼ in): the housing behind the bearing</td></tr>
+          <tr><td>Between two gears on one shaft (A15)</td><td class="mono">12.7 mm</td><td>No source yet; taken equal to the bearing-to-gear gap</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">The running example below is Ivanov's input shaft: the stage-1 pinion, 16.5 mm wide, between two bearings. At 150 N·m its mesh forces are 5,499 N tangential, 2,399 N radial and 3,243 N axial, at a 27.3 mm working pitch radius (from zenryx's force prototype). The beam formulas are the simple textbook ones, for intuition; the load tool and the FE judge will compute the real values.</p>
+  </section>
+
+  <section class="idea" aria-labelledby="h1">
+    <div class="head"><span class="num">1</span><h2 id="h1">What fills the gap between a bearing and its gear</h2></div>
+    <p>The gap is not empty space. Three things must fit in it, side by side. On the shaft: the <b>shoulder</b> the bearing's inner ring rests on, and the <b>retaining ring</b> that holds the gear. At the housing: the <b>lip</b> that locates the bearing's outer ring, plus a clearance so the turning gear never touches it. And room for a <b>puller's jaws</b> to grip the bearing when it is taken off. The gap must be at least the largest of these.</p>
+    <div class="figwrap"><svg id="fig1" class="fig" viewBox="0 0 640 300" role="img" aria-label="Section through a shaft, a bearing and a gear, with the parts that fill the gap"></svg></div>
+    <div class="controls">
+      <div class="ctl"><label for="s1-sh">Shaft shoulder width <output id="o1-sh"></output></label><input id="s1-sh" type="range" min="1" max="8" step="0.5" value="4"></div>
+      <div class="ctl"><label for="s1-ring">Retaining ring and groove <output id="o1-ring"></output></label><input id="s1-ring" type="range" min="0" max="4" step="0.5" value="1.5"></div>
+      <div class="ctl"><label for="s1-lip">Housing lip width <output id="o1-lip"></output></label><input id="s1-lip" type="range" min="0" max="8" step="0.5" value="4"></div>
+      <div class="ctl"><label for="s1-clr">Clearance, gear to lip <output id="o1-clr"></output></label><input id="s1-clr" type="range" min="0.5" max="6" step="0.5" value="2"></div>
+      <div class="ctl"><label for="s1-jaw">Room for a puller's jaws <output id="o1-jaw"></output></label><input id="s1-jaw" type="range" min="2" max="12" step="0.5" value="7"></div>
+    </div>
+    <div class="readout">
+      <div class="stat"><span class="k">On the shaft: shoulder + ring</span><span class="v" id="r1-shaft"></span></div>
+      <div class="stat"><span class="k">At the housing: lip + clearance</span><span class="v" id="r1-house"></span></div>
+      <div class="stat"><span class="k">Puller's jaws</span><span class="v" id="r1-jaw"></span></div>
+      <div class="stat"><span class="k">Smallest gap that works</span><span class="v" id="r1-min"></span></div>
+    </div>
+    <p class="notice" id="n1"></p>
+    <p class="note">These part sizes are example values to show how the minimum is set; the real ones come from the bearing chosen (its catalogue abutment diameter sets the shoulder's height), the ring's standard and the housing's design.</p>
+  </section>
+
+  <section class="idea" aria-labelledby="h2">
+    <div class="head"><span class="num">2</span><h2 id="h2">A gear between its bearings: the gap sets the span</h2></div>
+    <p>The span is the distance between the two bearings' centres: the bearing width, two gaps and the gear's face width. The shaft is a beam on two supports, and the gear's force bends it. Bending grows with the <b>cube</b> of the span, so a few millimetres of gap make a real difference to how much the gear moves and tilts.</p>
+    <div class="figwrap"><svg id="fig2" class="fig" viewBox="0 0 640 270" role="img" aria-label="A shaft with a gear between two bearings, its span and its exaggerated bending"></svg></div>
+    <div class="controls">
+      <div class="ctl"><label for="s2-gap">Gap, bearing to gear <output id="o2-gap"></output></label><input id="s2-gap" type="range" min="2" max="25" step="0.1" value="12.7"></div>
+      <div class="ctl"><label for="s2-w">Bearing width <output id="o2-w"></output></label><input id="s2-w" type="range" min="10" max="30" step="0.5" value="15"></div>
+      <div class="ctl"><label for="s2-d">Shaft diameter <output id="o2-d"></output></label><input id="s2-d" type="range" min="20" max="45" step="1" value="30"></div>
+    </div>
+    <div class="readout">
+      <div class="stat"><span class="k">Span L</span><span class="v" id="r2-L"></span></div>
+      <div class="stat"><span class="k">Sag at the gear</span><span class="v" id="r2-d"></span></div>
+      <div class="stat"><span class="k">Shaft slope at the bearings</span><span class="v" id="r2-s"></span></div>
+      <div class="stat"><span class="k">Bearing loads</span><span class="v" id="r2-R"></span></div>
+    </div>
+    <div class="figwrap"><svg id="fig2c" class="fig" viewBox="0 0 640 200" role="img" aria-label="Sag at the gear against the gap"></svg></div>
+    <p class="notice">For a gear between its bearings, a smaller gap is a shorter span: a stiffer shaft, less sag, better gear alignment. The axial force also tips the shaft through its lever (3,243 N × 27.3 mm), loading one bearing more than the other; a shorter span makes that difference larger.</p>
+  </section>
+
+  <section class="idea" aria-labelledby="h3">
+    <div class="head"><span class="num">3</span><h2 id="h3">An overhung gear: here a short span is worse</h2></div>
+    <p>Some gears sit outside their two bearings, at the end of a shaft. Then the bearings act like a lever and its pivot. The bearing next to the gear carries <b>more</b> than the gear's force, the far one is pulled the other way, and the end of the shaft sags. A long span between the bearings, against a short overhang, is what keeps this in check: Łódź asks for a span of at least three times the overhang. Ivanov's gears all sit between their bearings, so for that layout short spans are the good case.</p>
+    <div class="figwrap"><svg id="fig3" class="fig" viewBox="0 0 640 270" role="img" aria-label="An overhung gear on a shaft with two bearings, the reactions and the sag at the end"></svg></div>
+    <div class="controls">
+      <div class="ctl"><label for="s3-a">Overhang a <output id="o3-a"></output></label><input id="s3-a" type="range" min="10" max="80" step="1" value="40"></div>
+      <div class="ctl"><label for="s3-L">Span L between the bearings <output id="o3-L"></output></label><input id="s3-L" type="range" min="20" max="200" step="1" value="60"></div>
+    </div>
+    <div class="readout">
+      <div class="stat"><span class="k">Near bearing</span><span class="v" id="r3-near"></span></div>
+      <div class="stat"><span class="k">Far bearing (pulled the other way)</span><span class="v" id="r3-far"></span></div>
+      <div class="stat"><span class="k">Sag at the gear</span><span class="v" id="r3-tip"></span></div>
+      <div class="stat"><span class="k">Łódź's rule, L ≥ 3a</span><span class="v" id="r3-rule"></span></div>
+    </div>
+    <p class="note">Shaft 30 mm, the same 6.0 kN gear force (the tangential and radial forces combined).</p>
+  </section>
+
+  <section class="idea" aria-labelledby="h4">
+    <div class="head"><span class="num">4</span><h2 id="h4">The seat needs material around it</h2></div>
+    <p>A bearing is held only by the housing wall around its bore. Under the shaft's load a thin wall bends, the bearing tilts with it, and a tilted bearing puts the gears out of line. That misalignment is exactly what the housing is judged on. Thickness helps a lot, because a wall's stiffness against bending grows with the cube of its thickness; ribs behind the seat help more.</p>
+    <div class="figwrap"><svg id="fig4" class="fig" viewBox="0 0 640 270" role="img" aria-label="A housing wall with a bearing in its bore, bending and tilting under load"></svg></div>
+    <div class="controls">
+      <div class="ctl"><label for="s4-t">Wall thickness at the seat <output id="o4-t"></output></label><input id="s4-t" type="range" min="4" max="20" step="0.5" value="8"></div>
+      <div class="ctl"><span class="check"><input id="s4-ribs" type="checkbox"><label for="s4-ribs">Ribs behind the seat</label></span></div>
+    </div>
+    <div class="readout">
+      <div class="stat"><span class="k">Seat tilt, relative to an 8 mm wall</span><span class="v" id="r4-tilt"></span></div>
+    </div>
+    <p class="note">A relative picture, for intuition: the tilt scales as one over the thickness cubed, and the ribs are counted as tripling the stiffness. The FE judge computes the real tilt, against the contract's limits: 0.5 mrad for a tapered bearing, 0.8 for a cylindrical roller, 1.0 for a ball bearing (Shigley).</p>
+  </section>
+
+  <section class="idea" aria-labelledby="h5">
+    <div class="head"><span class="num">5</span><h2 id="h5">Oil and heat: gears need room in the oil</h2></div>
+    <p>The gears dip into the oil at the bottom of the housing and drag it round. Packed tight against the walls, a gear traps the oil and shears it; that drag is lost power, and it turns into heat. With room around the gear the oil falls back freely. So the radial gap from the gear's tips to the wall has a lower limit too. The Łódź handbook keeps it at 1.1 to 1.2 times the wall's thickness δ.</p>
+    <div class="figwrap"><svg id="fig5" class="fig" viewBox="0 0 640 330" role="img" aria-label="A gear in its housing with oil at the bottom and the gap to the wall"></svg></div>
+    <div class="controls">
+      <div class="ctl"><label for="s5-c">Gap from the gear's tips to the wall <output id="o5-c"></output></label><input id="s5-c" type="range" min="1" max="20" step="0.5" value="9"></div>
+    </div>
+    <p class="notice" id="n5"></p>
+    <p class="note">For Ivanov's 125 mm stage, Łódź's wall is δ = 0.025 × 125 + 1 = 4.1 mm, raised to its 7.5 mm floor for sand casting; so the guide is 8.3 to 9.0 mm.</p>
+  </section>
+
+  <section class="idea" aria-labelledby="h6">
+    <div class="head"><span class="num">6</span><h2 id="h6">Where the housing puts its material: the trade-off</h2></div>
+    <p>To stiffen a seat the housing needs more material around the bearing. Material on the <b>outside</b> of the bearing (a boss, ribs on the outer face) stiffens the seat without moving it, if the package has room there. Material on the <b>inside</b>, between the gear and the bearing, pushes the bearing outward: the seat is stiffer, but the span grows and the shaft bends more. With a tight package the only room is inside, and then there is a balance to find. This is the choice zenryx's agent could explore.</p>
+    <div class="figwrap"><svg id="fig6" class="fig" viewBox="0 0 640 230" role="img" aria-label="A gear between two bearings in walls, with material added inside or outside"></svg></div>
+    <div class="controls">
+      <div class="ctl"><label for="s6-in">Material inside, each seat <output id="o6-in"></output></label><input id="s6-in" type="range" min="0" max="15" step="0.5" value="0"></div>
+      <div class="ctl"><label for="s6-out">Material outside, each seat <output id="o6-out"></output></label><input id="s6-out" type="range" min="0" max="15" step="0.5" value="3"></div>
+      <div class="ctl"><label for="s6-room">Package room outside the bearing <output id="o6-room"></output></label><input id="s6-room" type="range" min="0" max="15" step="0.5" value="3"></div>
+    </div>
+    <div class="readout">
+      <div class="stat"><span class="k">Span L</span><span class="v" id="r6-L"></span></div>
+      <div class="stat"><span class="k">Shaft bending, relative</span><span class="v" id="r6-shaft"></span></div>
+      <div class="stat"><span class="k">Seat tilt, relative</span><span class="v" id="r6-seat"></span></div>
+      <div class="stat"><span class="k">Misalignment, relative</span><span class="v" id="r6-total"></span></div>
+    </div>
+    <div class="figwrap"><svg id="fig6c" class="fig" viewBox="0 0 640 200" role="img" aria-label="Relative misalignment against the material inside"></svg></div>
+    <p class="notice" id="n6"></p>
+    <p class="note">A relative picture with equal weights at the start: the shaft's part grows with the span cubed, the seat's part falls with the wall's thickness cubed. Only the shape matters here; the FE judge finds the real balance. Bearing 15 mm, gap 12.7 mm, gear 16.5 mm.</p>
+  </section>
+
+  <section class="idea" aria-labelledby="h7">
+    <div class="head"><span class="num">7</span><h2 id="h7">The round: steps 5 to 8 go round until they agree</h2></div>
+    <p>The gaps stay fixed; what changes from pass to pass is the bearings' width. The layout needs the widths, the loads need the layout, the shaft needs the loads, and the bearings need the loads and the shaft. So the tool starts from a guess and goes round. Step through one example.</p>
+    <div class="figwrap"><svg id="fig7" class="fig" viewBox="0 0 640 250" role="img" aria-label="The four steps in a cycle, the current one highlighted"></svg></div>
+    <div class="row">
+      <button id="b7-back" type="button">Back</button>
+      <button id="b7-next" type="button">Next</button>
+      <span class="note" id="c7"></span>
+    </div>
+    <p class="notice" id="n7"></p>
+  </section>
+
+  <section class="idea" aria-labelledby="h9">
+    <div class="head"><span class="num">8</span><h2 id="h9">Three shafts: a gap on one shaft keeps gears on another apart</h2></div>
+    <p>Look along the shafts. Ivanov's output wheel is big: its outer edge reaches 99 mm from the output shaft, which is only 125 mm from the intermediate shaft. So it comes within 26 mm of the intermediate shaft's centre, while the stage-1 wheel on the intermediate shaft reaches 57 mm out. In this view the two wheels cover the same ground. They do not collide only because they sit at different places <b>along</b> the shafts.</p>
+    <div class="figwrap"><svg id="fig8" class="fig" viewBox="0 0 640 330" role="img" aria-label="End view of Ivanov's three shafts with their gears' outer circles, to scale"></svg></div>
+    <p>Now look from the side, each shaft drawn as its own row. The output wheel sits beside the stage-2 pinion it meshes with. Between it and the stage-1 wheel there is only the gap between the two gears on the intermediate shaft. That gap's size is not set by the radii: the radii only tell that the gap must also keep two turning gears of different shafts apart.</p>
+    <div class="figwrap"><svg id="fig8s" class="fig" viewBox="0 0 640 310" role="img" aria-label="The three shafts from the side, each a row, with the gaps and the clearance between the stage-1 wheel and the output wheel"></svg></div>
+    <div class="controls">
+      <div class="ctl"><label for="s8-gg">Gap between the two gears on the intermediate shaft <output id="o8-gg"></output></label><input id="s8-gg" type="range" min="0" max="20" step="0.1" value="12.7"></div>
+      <div class="ctl"><label for="s8-min">Smallest clearance allowed along the shafts <output id="o8-min"></output></label><input id="s8-min" type="range" min="1" max="10" step="0.5" value="3"></div>
+      <div class="ctl"><label for="s8-od">Bearing outside diameter (an example) <output id="o8-od"></output></label><input id="s8-od" type="range" min="40" max="90" step="1" value="62"></div>
+    </div>
+    <h3>Calculating the clearances</h3>
+    <p>This is the check the tool would run by itself once step 5 has placed everything. First it finds every pair of parts on different shafts that overlap in the end view. Then, for each, it measures their distance along the shafts and compares it with the smallest clearance allowed. A pair that falls short fails the layout, by name. Pairs that are apart in the end view need no check.</p>
+    <div class="tablewrap"><table id="t8">
+      <thead><tr><th>Pair, on different shafts</th><th>Overlap seen along the shafts</th><th>Clearance along the shafts</th><th>Result</th></tr></thead>
+      <tbody></tbody>
+    </table></div>
+    <p class="note">Outer edges from the gear data: tip diameter ≈ reference diameter + 2 × module × (1 + profile shift), so about 58.7, 114.8, 60.3 and 198.2 mm. The shafts' places are step 1's working centre distances (82.9 and 125.0 mm) at step 3's 103.1°. Meshing gears are centred on each other; each bearing sits 12.7 mm from its gear (the contract's A13) and is 15 mm wide, with an example outside diameter, until step 8 selects the real ones. Here each shaft is stacked on its own; many housings hold all the bearings in the same two walls, which ties the shafts' stacks together. Turning parts are also checked against the housing's walls (radially, Łódź's 1.1-1.2 × the wall's thickness from the tips to the wall), once the walls exist. Our first prototype used 3 mm along the shafts and 5 mm radially, with no source; the smallest clearances become inputs.</p>
+  </section>
+
+  <section class="idea" aria-labelledby="h8">
+    <div class="head"><span class="num">so</span><h2 id="h8">Is the smallest gap always best?</h2></div>
+    <ul class="plain">
+      <li>For a gear between its bearings, mostly yes: a shorter span is a stiffer shaft, so less sag and tilt at the gear, and a narrower, lighter housing (2).</li>
+      <li>But never below what must fit in it: the shoulder, the ring, the lip and its clearance, the puller's room (1).</li>
+      <li>Not for an overhung gear, which wants a long span (3).</li>
+      <li>Not at the cost of the seat: it needs its material (4), and material inside the wall lengthens the span (6).</li>
+      <li>And the gears need room in the oil (5).</li>
+      <li>With several shafts, a gap on one shaft can be what keeps gears on another apart: the tool checks every pair that overlaps when seen along the shafts (8).</li>
+    </ul>
+  </section>
+</main>
+
+<script>
+(() => {
+  "use strict";
+  const NS = "http://www.w3.org/2000/svg";
+  const $ = (s) => document.querySelector(s);
+  // Ivanov 2018, stage-1 pinion at 150 N·m (zenryx's force prototype); steel shaft.
+  const FT = 5499, FR = 2399, FA = 3243, RW = 27.28, FACE = 16.5, E = 210000;
+  const F = Math.hypot(FT, FR);
+
+  function el(tag, attrs, parent) {
+    const e = document.createElementNS(NS, tag);
+    for (const k in attrs) e.setAttribute(k, attrs[k]);
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function text(parent, x, y, str, cls, anchor) {
+    const t = el("text", { x, y, class: cls || "t", "text-anchor": anchor || "start" }, parent);
+    t.textContent = str;
+    return t;
+  }
+  function clear(svg) { while (svg.firstChild) svg.removeChild(svg.firstChild); }
+  function fmt(x, d) { return x.toLocaleString("en-GB", { minimumFractionDigits: d, maximumFractionDigits: d }); }
+  function setText(sel, str) { const n = $(sel); if (n) n.textContent = str; }
+  function setHTML(sel, html) { const n = $(sel); if (n) n.innerHTML = html; }
+  function num(sel) { return parseFloat($(sel).value); }
+  function inertia(d) { return Math.PI * Math.pow(d, 4) / 64; }
+
+  function arrowHead(parent, x, y, dir, cls) {
+    // a small filled triangle pointing up (dir -1) or down (dir 1)
+    const s = 6;
+    el("path", { d: `M${x} ${y} L${x - s} ${y - dir * s * 1.6} L${x + s} ${y - dir * s * 1.6} Z`, class: cls }, parent);
+  }
+  function vArrow(parent, x, y0, y1, cls, fillCls) {
+    el("line", { x1: x, y1: y0, x2: x, y2: y1, class: cls }, parent);
+    arrowHead(parent, x, y1, y1 > y0 ? 1 : -1, fillCls);
+  }
+  function hDim(parent, x0, x1, y, label, cls, tcls, above) {
+    el("line", { x1: x0, y1: y, x2: x1, y2: y, class: cls }, parent);
+    el("line", { x1: x0, y1: y - 5, x2: x0, y2: y + 5, class: cls }, parent);
+    el("line", { x1: x1, y1: y - 5, x2: x1, y2: y + 5, class: cls }, parent);
+    text(parent, (x0 + x1) / 2, above === false ? y + 16 : y - 6, label, tcls || "tm", "middle");
+  }
+  function bearing(parent, cx, cy, w, h) {
+    el("rect", { x: cx - w / 2, y: cy - h / 2, width: w, height: h, class: "brg" }, parent);
+    el("line", { x1: cx - w / 2, y1: cy - h / 2, x2: cx + w / 2, y2: cy + h / 2, class: "brgx" }, parent);
+    el("line", { x1: cx - w / 2, y1: cy + h / 2, x2: cx + w / 2, y2: cy - h / 2, class: "brgx" }, parent);
+  }
+  function bindOutputs(pairs, unit, fn) {
+    for (const [inp, out, d] of pairs) {
+      const update = () => { setText(out, fmt(num(inp), d) + " " + unit); fn(); };
+      $(inp).addEventListener("input", update);
+      setText(out, fmt(num(inp), d) + " " + unit);
+    }
+  }
+
+  // 1. What fills the gap -------------------------------------------------------------------
+  function draw1() {
+    const sh = num("#s1-sh"), ring = num("#s1-ring"), lip = num("#s1-lip"), clr = num("#s1-clr"), jaw = num("#s1-jaw");
+    const shaftSide = sh + ring, house = lip + clr;
+    const gmin = Math.max(shaftSide, house, jaw);
+    const svg = $("#fig1"); clear(svg);
+    // An axial section through the upper half: the centre line at axisY. 9 px per mm along the shaft.
+    const s = 9, axisY = 196, B = 15;
+    const xb0 = 70, xFace = xb0 + B * s * 0.9, bw = xFace - xb0;
+    const xGear = xFace + gmin * s;
+    // shaft: bearing seat, shoulder, gear seat
+    el("rect", { x: 20, y: axisY - 60, width: xFace - 20, height: 60, class: "shaft" }, svg);
+    el("rect", { x: xFace, y: axisY - 76, width: sh * s, height: 76, class: "shaft" }, svg);
+    el("rect", { x: xFace + sh * s, y: axisY - 68, width: 620 - xFace - sh * s, height: 68, class: "shaft" }, svg);
+    el("line", { x1: 10, y1: axisY, x2: 630, y2: axisY, class: "dimline", "stroke-dasharray": "8 4 2 4" }, svg);
+    // bearing: inner ring, ball, outer ring
+    el("rect", { x: xb0, y: axisY - 82, width: bw, height: 22, class: "brg" }, svg);
+    el("circle", { cx: (xb0 + xFace) / 2, cy: axisY - 93, r: 10, class: "brg" }, svg);
+    el("rect", { x: xb0, y: axisY - 126, width: bw, height: 22, class: "brg" }, svg);
+    // housing: the wall round the bore, and the lip toward the gear
+    el("rect", { x: xb0 - 18, y: 22, width: bw + 18, height: axisY - 126 - 22, class: "wall" }, svg);
+    if (lip > 0) el("rect", { x: xFace, y: 22, width: lip * s, height: axisY - 114 - 22, class: "lip" }, svg);
+    // the retaining ring at the gear's face, in its groove
+    if (ring > 0) el("rect", { x: xGear - ring * s, y: axisY - 80, width: ring * s, height: 16, class: "ring" }, svg);
+    // the gear
+    el("rect", { x: xGear, y: 30, width: 160, height: axisY - 68 - 30, class: "gear" }, svg);
+    text(svg, xGear + 14, 64, "gear", "tblue");
+    text(svg, xb0 + 4, axisY - 38, "bearing seat", "tmuted");
+    text(svg, xb0 - 18, 16, "housing wall", "tmuted");
+    text(svg, xb0 + bw / 2, axisY - 130, "bearing", "tmuted", "middle");
+    // under the drawing: each requirement from the bearing's face, and the gap they set
+    const rows = [
+      ["shoulder + ring", shaftSide, 222],
+      ["lip + clearance", house, 240],
+      ["puller's jaws", jaw, 258],
+    ];
+    el("line", { x1: xFace, y1: 206, x2: xFace, y2: 292, class: "dimline", "stroke-dasharray": "2 3" }, svg);
+    for (const [lab, len, y] of rows) {
+      const gov = Math.abs(len - gmin) < 1e-9;
+      el("line", { x1: xFace, y1: y, x2: xFace + len * s, y2: y, class: gov ? "dimred" : "dimline" }, svg);
+      el("line", { x1: xFace + len * s, y1: y - 4, x2: xFace + len * s, y2: y + 4, class: gov ? "dimred" : "dimline" }, svg);
+      text(svg, xFace - 8, y + 4, lab, "tmuted", "end");
+      text(svg, xFace + len * s + 6, y + 4, fmt(len, 1) + " mm", gov ? "tred" : "tmuted");
+    }
+    hDim(svg, xFace, xGear, 284, "", "dimred", "tred");
+    text(svg, xFace - 8, 288, "the gap", "tred", "end");
+    text(svg, xGear + 6, 288, fmt(gmin, 1) + " mm, the largest", "tred");
+    setText("#r1-shaft", fmt(shaftSide, 1) + " mm");
+    setText("#r1-house", fmt(house, 1) + " mm");
+    setText("#r1-jaw", fmt(jaw, 1) + " mm");
+    setText("#r1-min", fmt(gmin, 1) + " mm");
+    const spare = 12.7 - gmin;
+    const which = gmin === jaw ? "the puller's jaws" : gmin === house ? "the housing lip and its clearance" : "the shoulder and the ring";
+    setHTML("#n1", spare >= 0
+      ? `Here <b>${which}</b> set the minimum. The contract's assumed 12.7 mm leaves <b>${fmt(spare, 1)} mm</b> spare.`
+      : `Here <b>${which}</b> set the minimum, and the contract's assumed 12.7 mm is <b>${fmt(-spare, 1)} mm short</b>.`);
+  }
+
+  // 2. Straddle-mounted ---------------------------------------------------------------------
+  function straddle(g, B, d) {
+    const L = B + 2 * g + FACE, I = inertia(d);
+    const sag = F * Math.pow(L, 3) / (48 * E * I);
+    const slope = F * L * L / (16 * E * I);
+    const couple = FA * RW / L;
+    const r1 = Math.hypot(FT / 2, FR / 2 + couple), r2 = Math.hypot(FT / 2, FR / 2 - couple);
+    return { L, sag, slope, couple, r1, r2 };
+  }
+  function draw2() {
+    const g = num("#s2-gap"), B = num("#s2-w"), d = num("#s2-d");
+    const r = straddle(g, B, d);
+    const svg = $("#fig2"); clear(svg);
+    const s = Math.min(5, 560 / (r.L + B + 12)), cy = 120, cx = 320;
+    const xa = cx - r.L * s / 2, xb = cx + r.L * s / 2;
+    el("rect", { x: xa - B * s / 2 - 30, y: cy - 7, width: r.L * s + B * s + 60, height: 14, class: "shaft" }, svg);
+    bearing(svg, xa, cy, B * s, 44);
+    bearing(svg, xb, cy, B * s, 44);
+    el("rect", { x: cx - FACE * s / 2, y: cy - 70, width: FACE * s, height: 140, class: "gear" }, svg);
+    // gaps
+    hDim(svg, xa + B * s / 2, cx - FACE * s / 2, cy + 32, "g " + fmt(g, 1), "dimred", "tred", false);
+    hDim(svg, cx + FACE * s / 2, xb - B * s / 2, cy + 32, "g " + fmt(g, 1), "dimred", "tred", false);
+    // span
+    hDim(svg, xa, xb, cy + 86, "span L = " + fmt(r.L, 1) + " mm", "dimline", "tm", false);
+    // force and reactions
+    vArrow(svg, cx, 18, cy - 74, "force", "dot");
+    text(svg, cx + 8, 30, "F = " + fmt(F / 1000, 1) + " kN", "tred");
+    vArrow(svg, xa, cy + 66, cy + 26, "react", "bfill");
+    vArrow(svg, xb, cy + 66, cy + 26, "react", "bfill");
+    text(svg, xa - 6, cy + 58, fmt(r.r1 / 1000, 2) + " kN", "tblue", "end");
+    text(svg, xb + 6, cy + 58, fmt(r.r2 / 1000, 2) + " kN", "tblue");
+    // the sagged shaft, exaggerated with one fixed factor so the cube shows
+    const k = 8000, n = 40;
+    let off = false, pts = [];
+    for (let i = 0; i <= n; i++) {
+      const x = r.L * i / n, xs = Math.min(x, r.L - x);
+      let y = F * xs * (3 * r.L * r.L - 4 * xs * xs) / (48 * E * inertia(d)) * k;
+      if (y > 70) { y = 70; off = true; }
+      pts.push(`${xa + x * s},${cy + y}`);
+    }
+    el("polyline", { points: pts.join(" "), class: "defl" }, svg);
+    text(svg, 630, 262, off ? "bending drawn × 8,000, off scale" : "bending drawn × 8,000", "tmuted", "end");
+    setText("#r2-L", fmt(r.L, 1) + " mm");
+    setHTML("#r2-d", fmt(r.sag * 1000, 1) + " <small>µm</small>");
+    setHTML("#r2-s", fmt(r.slope * 1000, 2) + " <small>mrad</small>");
+    setHTML("#r2-R", fmt(r.r1 / 1000, 2) + " / " + fmt(r.r2 / 1000, 2) + " <small>kN</small>");
+    draw2chart(B, d, g);
+  }
+  function draw2chart(B, d, gNow) {
+    const svg = $("#fig2c"); clear(svg);
+    const x0 = 70, x1 = 610, y0 = 160, y1 = 24;
+    const gMin = 2, gMax = 25;
+    const sagAt = (g) => straddle(g, B, d).sag * 1000;
+    const top = sagAt(gMax);
+    const step = niceStep(top / 4);
+    const yMax = Math.ceil(top / step) * step;
+    const X = (g) => x0 + (g - gMin) / (gMax - gMin) * (x1 - x0);
+    const Y = (v) => y0 - v / yMax * (y0 - y1);
+    for (let v = 0; v <= yMax + 1e-9; v += step) {
+      el("line", { x1: x0, y1: Y(v), x2: x1, y2: Y(v), class: "axis" }, svg);
+      text(svg, x0 - 8, Y(v) + 4, fmt(v, step < 1 ? 1 : 0), "tmuted", "end");
+    }
+    for (const g of [5, 10, 15, 20, 25]) text(svg, X(g), y0 + 18, String(g), "tmuted", "middle");
+    text(svg, (x0 + x1) / 2, 196, "gap, bearing to gear (mm)", "tmuted", "middle");
+    text(svg, 14, 16, "sag at the gear (µm)", "tmuted");
+    let d1 = `M${X(gMin)} ${y0}`, d2 = "";
+    for (let i = 0; i <= 60; i++) {
+      const g = gMin + (gMax - gMin) * i / 60;
+      d1 += ` L${X(g)} ${Y(sagAt(g))}`;
+      d2 += (i ? " L" : "M") + `${X(g)} ${Y(sagAt(g))}`;
+    }
+    el("path", { d: d1 + ` L${X(gMax)} ${y0} Z`, class: "area" }, svg);
+    el("path", { d: d2, class: "curve" }, svg);
+    el("circle", { cx: X(gNow), cy: Y(sagAt(gNow)), r: 5, class: "dot" }, svg);
+    text(svg, X(gNow) + 8, Y(sagAt(gNow)) - 8, fmt(sagAt(gNow), 1) + " µm", "tred");
+    el("line", { x1: X(12.7), y1: y0, x2: X(12.7), y2: y1, class: "dimline", "stroke-dasharray": "3 3" }, svg);
+    text(svg, X(12.7) + 4, y1 + 10, "the contract's 12.7", "tmuted");
+  }
+  function niceStep(raw) {
+    const p = Math.pow(10, Math.floor(Math.log10(raw)));
+    for (const m of [1, 2, 2.5, 5, 10]) if (raw <= m * p) return m * p;
+    return 10 * p;
+  }
+
+  // 3. Overhung -----------------------------------------------------------------------------
+  function draw3() {
+    const a = num("#s3-a"), L = num("#s3-L"), I = inertia(30);
+    const near = F * (L + a) / L, far = F * a / L;
+    const tip = F * a * a * (L + a) / (3 * E * I);
+    const svg = $("#fig3"); clear(svg);
+    const s = Math.min(2.4, 520 / (L + a)), cy = 120;
+    const xA = 50, xB = xA + L * s, xG = xB + a * s;
+    el("rect", { x: xA - 30, y: cy - 7, width: xG - xA + 60, height: 14, class: "shaft" }, svg);
+    bearing(svg, xA, cy, 26, 44);
+    bearing(svg, xB, cy, 26, 44);
+    el("rect", { x: xG - 18, y: cy - 66, width: 36, height: 132, class: "gear" }, svg);
+    vArrow(svg, xG, 14, cy - 70, "force", "dot");
+    text(svg, xG + 10, 22, "F " + fmt(F / 1000, 1) + " kN", "tred");
+    vArrow(svg, xB, cy + 92, cy + 26, "react", "bfill");
+    text(svg, xB + 8, cy + 84, fmt(near / 1000, 1) + " kN", "tblue");
+    vArrow(svg, xA, cy - 92, cy - 26, "react", "bfill");
+    text(svg, xA + 8, cy - 80, fmt(far / 1000, 1) + " kN", "tblue");
+    hDim(svg, xA, xB, cy + 112, "L " + fmt(L, 0) + " mm", "dimline", "tm", false);
+    hDim(svg, xB, xG, cy - 84, "a " + fmt(a, 0) + " mm", "dimline", "tm");
+    const k = 1500, n = 60;
+    let pts = [], off = false;
+    for (let i = 0; i <= n; i++) {
+      const x = (L + a) * i / n;
+      let y;
+      if (x <= L) y = -F * a * x * (L * L - x * x) / (6 * E * I * L);
+      else { const u = x - L; y = F * u * (2 * a * L + 3 * a * u - u * u) / (6 * E * I); }
+      y *= k;
+      if (y > 95) { y = 95; off = true; }
+      if (y < -40) y = -40;
+      pts.push(`${xA + x * s},${cy + y}`);
+    }
+    el("polyline", { points: pts.join(" "), class: "defl" }, svg);
+    text(svg, 630, 262, off ? "bending drawn × 1,500, off scale" : "bending drawn × 1,500", "tmuted", "end");
+    setHTML("#r3-near", fmt(near / 1000, 1) + " <small>kN</small>");
+    setHTML("#r3-far", fmt(far / 1000, 1) + " <small>kN</small>");
+    setHTML("#r3-tip", fmt(tip * 1000, 0) + " <small>µm</small>");
+    const ok = L >= 3 * a;
+    setHTML("#r3-rule", ok ? '<span class="pill ok">met</span>' : `<span class="pill bad">short by ${fmt(3 * a - L, 0)} mm</span>`);
+  }
+
+  // 4. The seat's material ------------------------------------------------------------------
+  function draw4() {
+    const t = num("#s4-t"), ribs = $("#s4-ribs").checked;
+    const rel = Math.pow(8 / t, 3) * (ribs ? 1 / 3 : 1);
+    const svg = $("#fig4"); clear(svg);
+    const cx = 260, cy = 135, s = 8, bore = 70;
+    const w = t * s, xw = cx - w / 2;
+    // the wall above and below the bore, bent by a little in proportion to the tilt
+    const bend = Math.min(30, 9 * rel);
+    const upper = `M${xw} 20 L${xw + w} 20 Q${xw + w + bend} ${cy - bore / 2 - 40} ${xw + w + bend * 0.8} ${cy - bore / 2} L${xw + bend * 0.8} ${cy - bore / 2} Q${xw + bend} ${cy - bore / 2 - 40} ${xw} 20 Z`;
+    const lower = `M${xw} 250 L${xw + w} 250 Q${xw + w - bend} ${cy + bore / 2 + 40} ${xw + w - bend * 0.8} ${cy + bore / 2} L${xw - bend * 0.8} ${cy + bore / 2} Q${xw - bend} ${cy + bore / 2 + 40} ${xw} 250 Z`;
+    el("path", { d: upper, class: "wall" }, svg);
+    el("path", { d: lower, class: "wall" }, svg);
+    if (ribs) {
+      el("path", { d: `M${xw + w} ${cy - bore / 2} L${xw + w + 70} ${cy - bore / 2} L${xw + w} 40 Z`, class: "wall" }, svg);
+      el("path", { d: `M${xw + w} ${cy + bore / 2} L${xw + w + 70} ${cy + bore / 2} L${xw + w} 230 Z`, class: "wall" }, svg);
+    }
+    el("rect", { x: 40, y: cy - 8, width: 520, height: 16, class: "shaft" }, svg);
+    const ang = Math.min(14, 4 * rel);
+    const g = el("g", { transform: `rotate(${ang} ${cx} ${cy})` }, svg);
+    el("rect", { x: cx - 18, y: cy - bore / 2, width: 36, height: bore, class: "brg" }, g);
+    el("line", { x1: cx - 18, y1: cy - bore / 2, x2: cx + 18, y2: cy + bore / 2, class: "brgx" }, g);
+    el("line", { x1: cx - 18, y1: cy + bore / 2, x2: cx + 18, y2: cy - bore / 2, class: "brgx" }, g);
+    vArrow(svg, cx - 90, 40, cy - 14, "force", "dot");
+    text(svg, cx - 96, 52, "shaft's load", "tred", "end");
+    text(svg, 600, 40, "tilt drawn exaggerated", "tmuted", "end");
+    text(svg, 600, 60, ang > 0.5 ? "tilt ≈ " + fmt(ang, 1) + "° on the drawing" : "the seat stays square", "tred", "end");
+    setHTML("#r4-tilt", fmt(rel, 2) + " <small>× an 8 mm wall's tilt</small>");
+  }
+
+  // 5. Oil and heat ---------------------------------------------------------------------------
+  function draw5() {
+    const c = num("#s5-c");
+    const lo = 1.1 * 7.5, hi = 1.2 * 7.5;
+    const svg = $("#fig5"); clear(svg);
+    const cx = 320, cy = 160, R = 90, k = 3.5;
+    const half = R + c * k;
+    el("rect", { x: cx - half, y: cy - half, width: 2 * half, height: 2 * half, class: "outline" }, svg);
+    const level = cy + R - 34;
+    el("rect", { x: cx - half + 1, y: level, width: 2 * half - 2, height: cy + half - level - 1, class: "oil" }, svg);
+    el("circle", { cx, cy, r: R, class: "gear" }, svg);
+    el("rect", { x: cx - half - (lo - c) * k, y: cy - half - (lo - c) * k, width: 2 * (R + lo * k), height: 2 * (R + lo * k), class: "band" }, svg);
+    hDim(svg, cx + R, cx + half, cy - 20, fmt(c, 1) + " mm", "dimred", "tred");
+    const tight = c < lo, roomy = c > hi + 3;
+    const msg = tight
+      ? `<b>Tight.</b> The oil is trapped against the wall and sheared: more drag, more heat. Below Łódź's ${fmt(lo, 1)}-${fmt(hi, 1)} mm.`
+      : roomy
+        ? "<b>Roomy.</b> The oil falls back freely, but every millimetre makes the housing bigger and heavier."
+        : `<b>Within Łódź's guide</b> (${fmt(lo, 1)}-${fmt(hi, 1)} mm, the dashed square): room enough for the oil.`;
+    setHTML("#n5", msg);
+    for (let i = 0; i < 3; i++) {
+      const x = cx - 50 + i * 50;
+      const cls = tight ? "force" : "react";
+      el("path", { d: `M${x} ${level + 6} Q${x - 24} ${level - 28} ${x - 44} ${level - 54}`, class: cls }, svg);
+    }
+    text(svg, 626, 16, "the gear seen along its shaft; oil at the bottom", "tmuted", "end");
+  }
+
+  // 6. The trade-off --------------------------------------------------------------------------
+  const B6 = 15, G6 = 12.7;
+  function tradeoff(inside, outside) {
+    const L0 = B6 + 2 * G6 + FACE, L = L0 + 2 * inside;
+    const t0 = B6, t = B6 + inside + outside;
+    const shaft = Math.pow(L / L0, 3), seat = Math.pow(t0 / t, 3);
+    return { L, shaft, seat, total: 0.5 * shaft + 0.5 * seat };
+  }
+  function draw6() {
+    const room = num("#s6-room");
+    const outIn = $("#s6-out");
+    if (num("#s6-out") > room) { outIn.value = String(room); setText("#o6-out", fmt(room, 1) + " mm"); }
+    const inside = num("#s6-in"), outside = num("#s6-out");
+    const r = tradeoff(inside, outside);
+    const svg = $("#fig6"); clear(svg);
+    const s = 3.2, cy = 110, cx = 320;
+    el("rect", { x: 20, y: cy - 6, width: 600, height: 12, class: "shaft" }, svg);
+    el("rect", { x: cx - FACE * s / 2, y: cy - 60, width: FACE * s, height: 120, class: "gear" }, svg);
+    for (const side of [-1, 1]) {
+      const face = cx + side * (FACE / 2 + G6) * s;
+      const bc = face + side * (inside + B6 / 2) * s;
+      const wIn = face, wOut = face + side * (inside + B6 + outside) * s;
+      const x0 = Math.min(wIn, wOut), x1 = Math.max(wIn, wOut);
+      el("rect", { x: x0, y: cy - 70, width: x1 - x0, height: 140, class: "wall" }, svg);
+      bearing(svg, bc, cy, B6 * s, 34);
+      const pkg = face + side * (inside + B6 + room) * s;
+      el("line", { x1: pkg, y1: 20, x2: pkg, y2: 200, class: "pkg" }, svg);
+      if (side === 1) text(svg, pkg + 4, 30, "package", "tmuted");
+    }
+    const xa = cx - (FACE / 2 + G6 + inside + B6 / 2) * s, xb = cx + (FACE / 2 + G6 + inside + B6 / 2) * s;
+    hDim(svg, xa, xb, cy + 92, "span L = " + fmt(r.L, 1) + " mm", "dimline", "tm", false);
+    setText("#r6-L", fmt(r.L, 1) + " mm");
+    setHTML("#r6-shaft", fmt(r.shaft, 2) + " <small>×</small>");
+    setHTML("#r6-seat", fmt(r.seat, 2) + " <small>×</small>");
+    setHTML("#r6-total", fmt(r.total, 2) + " <small>×</small>");
+    draw6chart(outside, inside);
+  }
+  function draw6chart(outside, insideNow) {
+    const svg = $("#fig6c"); clear(svg);
+    const x0 = 70, x1 = 610, y0 = 160, y1 = 24;
+    const vals = [];
+    for (let i = 0; i <= 60; i++) { const ins = 15 * i / 60; vals.push([ins, tradeoff(ins, outside).total]); }
+    const vmax = Math.max(1.2, ...vals.map((v) => v[1]));
+    const X = (ins) => x0 + ins / 15 * (x1 - x0);
+    const Y = (v) => y0 - v / vmax * (y0 - y1);
+    const step = niceStep(vmax / 4);
+    for (let v = 0; v <= vmax + 1e-9; v += step) {
+      el("line", { x1: x0, y1: Y(v), x2: x1, y2: Y(v), class: "axis" }, svg);
+      text(svg, x0 - 8, Y(v) + 4, fmt(v, 2), "tmuted", "end");
+    }
+    for (const ins of [0, 5, 10, 15]) text(svg, X(ins), y0 + 18, String(ins), "tmuted", "middle");
+    text(svg, (x0 + x1) / 2, 196, "material inside each seat (mm), with the material outside as set", "tmuted", "middle");
+    text(svg, 14, 16, "misalignment, relative", "tmuted");
+    let d = "";
+    vals.forEach(([ins, v], i) => { d += (i ? " L" : "M") + `${X(ins)} ${Y(v)}`; });
+    el("path", { d, class: "curve" }, svg);
+    let best = vals[0];
+    for (const v of vals) if (v[1] < best[1]) best = v;
+    el("circle", { cx: X(best[0]), cy: Y(best[1]), r: 4, class: "ring" }, svg);
+    text(svg, X(best[0]) + 6, Y(best[1]) + 16, "best " + fmt(best[0], 1) + " mm", "tm");
+    const now = tradeoff(insideNow, outside).total;
+    el("circle", { cx: X(insideNow), cy: Y(now), r: 5, class: "dot" }, svg);
+    const room = num("#s6-room");
+    setHTML("#n6", best[0] < 0.3
+      ? `With ${fmt(outside, 1)} mm outside, adding material <b>inside</b> only makes it worse: the seat is already stiff enough, and every millimetre inside lengthens the span.`
+      : `With only ${fmt(outside, 1)} mm outside (the package allows ${fmt(room, 1)} mm), about <b>${fmt(best[0], 1)} mm inside</b> balances a stiffer seat against a longer span.`);
+  }
+
+  // 7. The round --------------------------------------------------------------------------------
+  const G7 = 12.7;
+  const states = [
+    { node: -1, caption: "Start", text: "The gaps are fixed at 12.7 mm. Nothing is known about the bearings yet, so guess their width: 20 mm." },
+    { node: 0, caption: "Pass 1 · step 5, layout", width: 20, text: "" },
+    { node: 1, caption: "Pass 1 · step 6, bearing loads", width: 20, text: "" },
+    { node: 2, caption: "Pass 1 · step 7, shaft sections", text: "From those loads and the torque, the shaft's diameter at each seat: say 30 mm (an example)." },
+    { node: 3, caption: "Pass 1 · step 8, bearing selection", text: "The loads, the speed and the 944 h life set the rating the bearing needs. Say the catalogue's smallest bearing that carries it and fits a 30 mm shaft is 15 mm wide (an example), not the 20 mm guessed. So go round again." },
+    { node: 0, caption: "Pass 2 · step 5, layout", width: 15, text: "" },
+    { node: 1, caption: "Pass 2 · step 6, bearing loads", width: 15, text: "" },
+    { node: 3, caption: "Pass 2 · steps 7 and 8", text: "A slightly higher load gives the same diameter and the same 15 mm bearing. The bearing the layout assumed is the bearing the selection chose: they agree, and the round stops." },
+  ];
+  let at = 0;
+  function draw7() {
+    const st = states[at];
+    const svg = $("#fig7"); clear(svg);
+    const pos = [[320, 40], [520, 125], [320, 210], [120, 125]];
+    const names = ["5 Layout", "6 Bearing loads", "7 Shaft sections", "8 Bearing selection"];
+    for (let i = 0; i < 4; i++) {
+      const [x, y] = pos[i], [nx, ny] = pos[(i + 1) % 4];
+      el("line", { x1: x + (nx - x) * 0.32, y1: y + (ny - y) * 0.32, x2: x + (nx - x) * 0.68, y2: y + (ny - y) * 0.68, class: "dimline", "marker-end": "url(#m7)" }, svg);
+    }
+    const defs = el("defs", {}, svg);
+    const m = el("marker", { id: "m7", viewBox: "0 0 10 10", refX: 8, refY: 5, markerWidth: 7, markerHeight: 7, orient: "auto" }, defs);
+    el("path", { d: "M0 0 L10 5 L0 10 Z", class: "ring" }, m);
+    for (let i = 0; i < 4; i++) {
+      const [x, y] = pos[i];
+      el("rect", { x: x - 82, y: y - 20, width: 164, height: 40, rx: 4, class: "node" + (st.node === i ? " on" : "") }, svg);
+      text(svg, x, y + 5, names[i], "t", "middle");
+    }
+    let body = st.text;
+    if (st.width) {
+      const L = st.width + 2 * G7 + FACE, couple = FA * RW / L;
+      body = st.node === 0
+        ? `With ${st.width} mm bearings the span is ${st.width} + 2 × 12.7 + 16.5 = <b>${fmt(L, 1)} mm</b>.`
+        : `On that span the axial force tips the shaft: 3,243 N × 27.3 mm / ${fmt(L, 1)} mm = <b>${fmt(couple, 0)} N</b> more on one bearing, less on the other.`;
+    }
+    setText("#c7", st.caption + " (" + (at + 1) + " of " + states.length + ")");
+    setHTML("#n7", body);
+    $("#b7-back").disabled = at === 0;
+    $("#b7-next").disabled = at === states.length - 1;
+  }
+  $("#b7-back").addEventListener("click", () => { if (at > 0) { at--; draw7(); } });
+  $("#b7-next").addEventListener("click", () => { if (at < states.length - 1) { at++; draw7(); } });
+
+  // 8. Three shafts -------------------------------------------------------------------------------
+  // Ivanov's gears (zenryx's step 1): teeth, module, profile shift, face width; helix 30°.
+  const BETA = Math.PI / 6;
+  const tipR = (z, mn, x) => (z * mn / Math.cos(BETA) + 2 * mn * (1 + x)) / 2;
+  const GEARS = {
+    P1: { name: "input pinion", shaft: "input", r: tipR(25, 1.85, 0.43672), b: 16.5 },
+    W1: { name: "stage-1 wheel", shaft: "inter", r: tipR(51, 1.85, 0.57199922), b: 15.5 },
+    P2: { name: "stage-2 pinion", shaft: "inter", r: tipR(23, 2.05, 0.431143), b: 25.625 },
+    W2: { name: "output wheel", shaft: "output", r: tipR(81, 2.05, 0.56857692), b: 22.25 },
+  };
+  const MESHES = [["P1", "W1"], ["P2", "W2"]];
+  const A1 = 82.917, A2 = 125.037, OFFSET = 165;
+  const GAMMA = Math.acos((A1 * A1 + A2 * A2 - OFFSET * OFFSET) / (2 * A1 * A2));
+  const AXES = {
+    input: [-A1, 0],
+    inter: [0, 0],
+    output: [A2 * Math.cos(Math.PI - GAMMA), A2 * Math.sin(Math.PI - GAMMA)],
+  };
+  const SHAFT_NAME = { input: "input", inter: "intermediate", output: "output" };
+  const G8 = 12.7, BW8 = 15;
+
+  function layout8(gg, od) {
+    // Each shaft stacked on its own, centres along the shafts (z, mm); meshing gears centred on each other.
+    const parts = {};
+    const span = (z0, w) => [z0, z0 + w];
+    parts.BiA = { name: "intermediate bearing (stage-1 side)", shaft: "inter", r: od / 2, z: span(0, BW8) };
+    parts.W1 = { ...GEARS.W1, z: span(BW8 + G8, GEARS.W1.b) };
+    parts.P2 = { ...GEARS.P2, z: span(parts.W1.z[1] + gg, GEARS.P2.b) };
+    parts.BiB = { name: "intermediate bearing (stage-2 side)", shaft: "inter", r: od / 2, z: span(parts.P2.z[1] + G8, BW8) };
+    const c1 = (parts.W1.z[0] + parts.W1.z[1]) / 2, c2 = (parts.P2.z[0] + parts.P2.z[1]) / 2;
+    parts.P1 = { ...GEARS.P1, z: span(c1 - GEARS.P1.b / 2, GEARS.P1.b) };
+    parts.BnA = { name: "input bearing (motor side)", shaft: "input", r: od / 2, z: span(parts.P1.z[0] - G8 - BW8, BW8) };
+    parts.BnB = { name: "input bearing (far side)", shaft: "input", r: od / 2, z: span(parts.P1.z[1] + G8, BW8) };
+    parts.W2 = { ...GEARS.W2, z: span(c2 - GEARS.W2.b / 2, GEARS.W2.b) };
+    parts.BoA = { name: "output bearing (near side)", shaft: "output", r: od / 2, z: span(parts.W2.z[0] - G8 - BW8, BW8) };
+    parts.BoB = { name: "output bearing (far side)", shaft: "output", r: od / 2, z: span(parts.W2.z[1] + G8, BW8) };
+    return parts;
+  }
+  function axisDist(a, b) { const [x1, y1] = AXES[a], [x2, y2] = AXES[b]; return Math.hypot(x2 - x1, y2 - y1); }
+  function pairs8(parts) {
+    const keys = Object.keys(parts), out = [];
+    for (let i = 0; i < keys.length; i++) {
+      for (let j = i + 1; j < keys.length; j++) {
+        const p = parts[keys[i]], q = parts[keys[j]];
+        if (p.shaft === q.shaft) continue;
+        if (MESHES.some(([m, n]) => (m === keys[i] && n === keys[j]) || (m === keys[j] && n === keys[i]))) continue;
+        const overlap = p.r + q.r - axisDist(p.shaft, q.shaft);
+        if (overlap <= 0) continue;
+        const clear = Math.max(q.z[0] - p.z[1], p.z[0] - q.z[1]);
+        out.push({ p, q, overlap, clear });
+      }
+    }
+    return out.sort((a, b) => a.clear - b.clear);
+  }
+
+  function draw8() {
+    const gg = num("#s8-gg"), minc = num("#s8-min"), od = num("#s8-od");
+    const parts = layout8(gg, od);
+    // the end view, to scale: 1 px per mm, y up
+    const svg = $("#fig8"); clear(svg);
+    const ox = 300, oy = 265, P = ([x, y]) => [ox + x, oy - y];
+    const defs = el("defs", {}, svg);
+    const clip = el("clipPath", { id: "c8" }, defs);
+    const [ix, iy] = P(AXES.inter);
+    el("circle", { cx: ix, cy: iy, r: GEARS.W1.r }, clip);
+    for (const key of ["input", "inter", "output"]) {
+      const [x, y] = P(AXES[key]);
+      el("circle", { cx: x, cy: y, r: od / 2, class: "dimline", "stroke-dasharray": "3 3" }, svg);
+    }
+    const circle = (g, cls, dash) => {
+      const [x, y] = P(AXES[g.shaft]);
+      const c = el("circle", { cx: x, cy: y, r: g.r, class: cls }, svg);
+      if (dash) c.setAttribute("stroke-dasharray", dash);
+      return [x, y];
+    };
+    circle(GEARS.W2, "gear");
+    circle(GEARS.W1, "gear");
+    circle(GEARS.P2, "gear", "5 3");
+    circle(GEARS.P1, "gear");
+    const [qx, qy] = P(AXES.output);
+    el("circle", { cx: qx, cy: qy, r: GEARS.W2.r, class: "lens", "clip-path": "url(#c8)" }, svg);
+    for (const key of ["input", "inter", "output"]) {
+      const [x, y] = P(AXES[key]);
+      el("circle", { cx: x, cy: y, r: 3, class: "ring" }, svg);
+    }
+    // the overlap along the line between the intermediate and the output axes
+    const [ux, uy] = AXES.output, d = Math.hypot(ux, uy), e = [ux / d, uy / d];
+    const near = d - GEARS.W2.r, far = GEARS.W1.r;
+    const [ax0, ay0] = P([e[0] * near, e[1] * near]), [ax1, ay1] = P([e[0] * far, e[1] * far]);
+    el("line", { x1: ix, y1: iy, x2: qx, y2: qy, class: "dimline", "stroke-dasharray": "2 3" }, svg);
+    el("line", { x1: ax0, y1: ay0, x2: ax1, y2: ay1, class: "dimred", "stroke-width": 3 }, svg);
+    text(svg, ax1 + 10, ay1 + 4, "overlap " + fmt(far - near, 0) + " mm", "tred");
+    text(svg, (ix + qx) / 2 - 12, (iy + qy) / 2 - 10, fmt(A2, 0) + " mm apart", "tmuted", "end");
+    const [px, py] = P(AXES.input);
+    text(svg, px, py + GEARS.P1.r + 16, "input", "tm", "middle");
+    text(svg, ix + GEARS.W1.r + 8, iy + 4, "intermediate", "tm");
+    text(svg, qx + 8, qy - 6, "output", "tm");
+    text(svg, 12, 40, "output wheel, reaches " + fmt(GEARS.W2.r, 0) + " mm", "tblue");
+    text(svg, 12, 58, "stage-1 wheel, reaches " + fmt(GEARS.W1.r, 0) + " mm", "tblue");
+    text(svg, 12, 76, "stage-2 pinion (dashed), " + fmt(GEARS.P2.r, 0) + " mm", "tblue");
+    text(svg, 12, 94, "input pinion, " + fmt(GEARS.P1.r, 0) + " mm", "tblue");
+    text(svg, 12, 112, "bearings (dotted), " + fmt(od / 2, 0) + " mm, an example", "tmuted");
+    text(svg, 628, 322, "to scale, seen along the shafts", "tmuted", "end");
+
+    // the side view: each shaft a row, along the shafts (z)
+    const sv = $("#fig8s"); clear(sv);
+    const zs = Object.values(parts).flatMap((p) => p.z);
+    const zmin = Math.min(...zs), zmax = Math.max(...zs);
+    const x0 = 110, s = Math.min(4.6, 500 / (zmax - zmin));
+    const X = (z) => x0 + (z - zmin) * s;
+    const rows = { input: 55, inter: 150, output: 245 }, hs = 0.3;
+    for (const key of ["input", "inter", "output"]) {
+      el("rect", { x: X(zmin) - 10, y: rows[key] - 3, width: (zmax - zmin) * s + 20, height: 6, class: "shaft" }, sv);
+      text(sv, 12, rows[key] + 4, SHAFT_NAME[key], "tm");
+    }
+    for (const [key, p] of Object.entries(parts)) {
+      const h = (key.startsWith("B") ? p.r * 2 : p.r * 2) * hs;
+      const cls = key.startsWith("B") ? "brg" : "gear";
+      el("rect", { x: X(p.z[0]), y: rows[p.shaft] - h / 2, width: (p.z[1] - p.z[0]) * s, height: h, class: cls }, sv);
+    }
+    const w1 = parts.W1, p2 = parts.P2, w2 = parts.W2;
+    hDim(sv, X(w1.z[1]), X(p2.z[0]), rows.inter - 30, "gap " + fmt(gg, 1), "dimred", "tred");
+    // the stage-1 wheel against the output wheel: their distance along the shafts
+    const c = Math.max(w2.z[0] - w1.z[1], w1.z[0] - w2.z[1]);
+    const ok = c >= minc;
+    const yb = (rows.inter + rows.output) / 2 + 22;
+    el("line", { x1: X(w1.z[1]), y1: rows.inter + 18, x2: X(w1.z[1]), y2: yb, class: "dimline", "stroke-dasharray": "2 3" }, sv);
+    el("line", { x1: X(w2.z[0]), y1: rows.output - 30, x2: X(w2.z[0]), y2: yb, class: "dimline", "stroke-dasharray": "2 3" }, sv);
+    hDim(sv, X(w1.z[1]), X(w2.z[0]), yb, (c < 0 ? "they collide, " : "") + fmt(c, 1) + " mm", ok ? "dimline" : "dimred", ok ? "tm" : "tred", false);
+    const mid = (p) => X((p.z[0] + p.z[1]) / 2);
+    text(sv, X(w1.z[1]) - 4, rows.inter + w1.r * hs + 16, "stage-1 wheel", "tblue", "end");
+    text(sv, mid(p2), rows.inter - p2.r * hs - 6, "stage-2 pinion", "tblue", "middle");
+    text(sv, mid(w2), rows.output + w2.r * hs + 16, "output wheel", "tblue", "middle");
+    text(sv, mid(parts.P1), rows.input - parts.P1.r * hs - 6, "input pinion", "tblue", "middle");
+    text(sv, 628, 14, "along the shafts, " + fmt(s, 1) + " px per mm; heights show size only", "tmuted", "end");
+
+    // the table of overlapping pairs
+    const body = $("#t8 tbody");
+    body.innerHTML = "";
+    for (const { p, q, overlap, clear: cl } of pairs8(parts)) {
+      const tr = document.createElement("tr");
+      const res = cl < 0 ? '<span class="pill bad">collide</span>' : cl < minc ? '<span class="pill bad">too close</span>' : '<span class="pill ok">clear</span>';
+      tr.innerHTML = `<td>${p.name} (${SHAFT_NAME[p.shaft]}) and ${q.name} (${SHAFT_NAME[q.shaft]})</td><td class="mono">${fmt(overlap, 1)} mm</td><td class="mono">${fmt(cl, 1)} mm</td><td>${res}</td>`;
+      body.appendChild(tr);
+    }
+  }
+
+  // wiring ---------------------------------------------------------------------------------------
+  bindOutputs([["#s1-sh", "#o1-sh", 1], ["#s1-ring", "#o1-ring", 1], ["#s1-lip", "#o1-lip", 1], ["#s1-clr", "#o1-clr", 1], ["#s1-jaw", "#o1-jaw", 1]], "mm", draw1);
+  bindOutputs([["#s2-gap", "#o2-gap", 1], ["#s2-w", "#o2-w", 1], ["#s2-d", "#o2-d", 0]], "mm", draw2);
+  bindOutputs([["#s3-a", "#o3-a", 0], ["#s3-L", "#o3-L", 0]], "mm", draw3);
+  bindOutputs([["#s4-t", "#o4-t", 1]], "mm", draw4);
+  $("#s4-ribs").addEventListener("change", draw4);
+  bindOutputs([["#s5-c", "#o5-c", 1]], "mm", draw5);
+  bindOutputs([["#s6-in", "#o6-in", 1], ["#s6-out", "#o6-out", 1], ["#s6-room", "#o6-room", 1]], "mm", draw6);
+  bindOutputs([["#s8-gg", "#o8-gg", 1], ["#s8-min", "#o8-min", 1], ["#s8-od", "#o8-od", 0]], "mm", draw8);
+  draw1(); draw2(); draw3(); draw4(); draw5(); draw6(); draw7(); draw8();
+})();
+</script>

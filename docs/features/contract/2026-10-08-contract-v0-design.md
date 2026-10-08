@@ -73,7 +73,7 @@ Every value in the contract is an entry with four things.
 
 | Entry | Hofstetter 2018 (first instance) | Provenance |
 |---|---|---|
-| Total centre distance (input to output) | 165 mm | published, Table 2 ("Total center distance"). Read as the straight-line offset between the input and output axes: his requirement b, "(range of) offset between input- and output shaft", with the intermediate shaft off that line. This reading is to be checked against the paper's Fig. 4 before the first derivation |
+| Total centre distance (input to output) | 165 mm | published, Table 2 ("Total center distance"). Read as the straight-line offset between the input and output axes: the paper's requirement b, "(range of) offset between input- and output shaft", with the intermediate shaft off that line. This reading is to be checked against the paper's Fig. 4 before the first derivation |
 | Total ratio | 9.32 ± 1 % | published, Table 2 |
 | Input torque | 366 N·m, **nominal**, at the input shaft | published, Table 2 |
 | Peak drive, peak regeneration and reverse torques | 366 N·m each; regeneration and reverse with reversed sign | **assumption A1**: the paper gives only the nominal torque |

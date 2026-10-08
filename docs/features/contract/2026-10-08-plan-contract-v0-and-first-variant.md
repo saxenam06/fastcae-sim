@@ -258,9 +258,9 @@ The rules (spec §7):
 - `provenance.*`: an assumption id must exist in `assumptions`.
 - `stage.derived_needs_stamps`: in a derived or frozen contract, every entry under `interfaces` and `physics` is stamped.
 - `stage.frozen_hash`: the hash matches.
-- `consistency.ratio`: the product of the stages' z_gear/z_pinion lies within total_ratio ± tolerance.
-- `consistency.centre_distance`: with αt = atan(tan αn / cos β), the working pressure angle from inv αw = inv αt + 2(x1 + x2) tan αn / (z1 + z2), and a = (mn (z1 + z2) / (2 cos β)) · cos αt / cos αw, the result lies within 0.05 mm of the given centre distance.
-- `consistency.offset`: |a1 − a2| ≤ offset ≤ a1 + a2.
+- `consistency.redundant` (since 8 October 23:37, replacing the first plan's `consistency.centre_distance`): no input is one the other inputs fix. A stage whose full gear data are given (teeth, module, pressure angle, helix angle, both profile shifts) carries no centre distance; with αt = atan(tan αn / cos β), inv αw = inv αt + 2(x1 + x2) tan αn / (z1 + z2) and a = (mn (z1 + z2) / (2 cos β)) · cos αt / cos αw, the gear data fix it. With every stage's teeth given, the contract carries no ratio, and no ratio tolerance without a ratio.
+- `consistency.ratio`: where the teeth are not given, the ratio is.
+- `consistency.offset`: |a1 − a2| ≤ offset ≤ a1 + a2, each centre distance calculated where the gear data fix it.
 - `consistency.seat_inside_space`: a seat lies inside the installation space, when it is a box.
 - `consistency.power`: P = T·ω, when both are given.
 - `hygiene.verdict_rule`: a verdict rule version is present.

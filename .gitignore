@@ -19,9 +19,12 @@ web/dist/
 *.tsbuildinfo
 
 # Archived code, kept only on the engineer's laptop: archive/web/ (the UI's old views) and
-# archive/src/ (retired Python). Anchored, so docs/archive/ stays tracked. Git's history keeps
-# what was committed: the UI's first views at 61e51c8, under web/archive/.
-/archive/
+# archive/src/ (retired Python). Git's history keeps what was committed: the UI's first views
+# at 61e51c8, under web/archive/. A bare rule (the engineer, 9 Oct: VS Code then greys the
+# folder), so it also matches docs/archive/, which the next line takes back: those docs are
+# tracked.
+archive/
+!/docs/archive/
 
 # Credentials: read from the environment, never committed
 .env
