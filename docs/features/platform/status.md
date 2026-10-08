@@ -4,10 +4,14 @@ The repository and what every other feature runs on: the Python project and its 
 
 **PBI key:** PLT · **State:**
 - PLT-2 (Python project, venv, checks, CI) works locally.
-- PLT-4 (the web UI) works locally: the product's flow from the contract to the datapoints, asked for by the engineer at 10:38. It shows the three contracts in full, and lays out everything downstream of them blank.
+- PLT-4 (the web UI) works locally: the product's flow from the contract to the datapoints (committed in ca44539).
+- **PLT-6 done locally (19:52-20:45):** every tab is one clean product page, asked for by the engineer.
+  - The tabs, in the order the work runs: Contract → Campaigns → Designs → Data → Flow.
+  - The Contract page shows one contract (Ivanov 2018): its inputs, the calculations with their methods pre-selected, the pass criteria, and the design to beat. The others show their frames, saying what fills them.
+  - The old views are archived. Uncommitted.
 - Committed on `product/end-to-end`, not pushed: PLT-2 in feca5c1, PLT-4 in ca44539. A fresh clone of the branch passes every check and builds the UI.
 
-**Updated:** 2026-10-08 18:38 by Claude
+**Updated:** 2026-10-08 20:45 by Claude
 **Code:** `pyproject.toml`, `uv.lock`, `src/zenryx/` (with `src/zenryx/api/`), `checks/`, `web/`, `.github/workflows/checks.yml`
 
 ## Now
@@ -15,7 +19,8 @@ The repository and what every other feature runs on: the Python project and its 
 | PBI | Goal | Who · laptop · branch | Since | Where it stands |
 |---|---|---|---|---|
 | PLT-2 | The Python project: `pyproject.toml` (package `zenryx`), its own `.venv` (CadQuery and the solver's needs), `checks/` tracked with pytest pointed there, ruff, CI | Claude · LAPTOP-IR8VEG53 · `product/end-to-end`, the one branch for now | 2026-10-08 02:12 | Locally done: `uv sync --all-extras` builds the venv from `uv.lock`; the checks pass; ruff check and format are clean. **Committed in feca5c1** (not pushed). **Left:** the first CI run, once the branch is pushed |
-| PLT-4 | The web UI (`web/`), built as the product rather than a viewer of prototypes: the contract, the campaigns made from it, their hypotheses, designs and grades, and the datapoints they become. What exists now (the contracts, their checks and sources) is shown; the rest is laid out and left blank. fastcae's sheet design copied. Design: [2026-10-08-ui-design.md](2026-10-08-ui-design.md) | Claude · LAPTOP-IR8VEG53 · `product/end-to-end` (from `main` at 640a0f7, 8 Oct 18:18) | 2026-10-08 10:38 | **Done locally.** Five tabs: Flow, Contracts, Campaigns, Designs, Data. `npm run build` passes; the snapshot's 16 checks pass; every view was looked at in a screenshot of the built page (headless Edge, no server). **Committed in ca44539** (not pushed). **Left:** the engineer opens it (in PowerShell: `cd web`, then `npm.cmd run dev`, then http://localhost:5190) and says what to change; CI's first run of the web job once pushed |
+| PLT-4 | The web UI (`web/`), built as the product rather than a viewer of prototypes: the contract, the campaigns made from it, their hypotheses, designs and grades, and the datapoints they become. What exists now (the contracts, their checks and sources) is shown; the rest is laid out and left blank. fastcae's sheet design copied. Design: [2026-10-08-ui-design.md](2026-10-08-ui-design.md) | Claude · LAPTOP-IR8VEG53 · `product/end-to-end` (from `main` at 640a0f7, 8 Oct 18:18) | 2026-10-08 10:38 | **Done locally.** Five tabs: Flow, Contracts, Campaigns, Designs, Data. `npm run build` passes; the snapshot's 16 checks pass; every view was looked at in a screenshot of the built page (headless Edge, no server). **Committed in ca44539** (not pushed). **Left:** CI's first run of the web job once pushed |
+| PLT-6 | **The contract page, made a product page** (the engineer, 19:52): one contract; clean inputs; calculations with their method pre-selected (authors in brackets); criteria; the design to beat; short source labels; the old long views archived | Claude · LAPTOP-IR8VEG53 · `product/end-to-end` | 2026-10-08 19:52 | **Done locally, 20:10.**<br>- The Ivanov contract written (CON-3, posed, validator clean).<br>- `zenryx.contract.train`: ratio, speeds, mesh frequencies, shaft angle; 9 checks.<br>- The page model `zenryx.api.contract_page`: 5 calculations computed, 5 planned.<br>- The page in `web/src/contracts/` (ContractPage, parts, contract.css); a tab may now have no rail or card; the old views moved to `web/archive/contracts-v1/`.<br>- 125 checks pass, `npm run build` passes, and the page was looked at in screenshots at 1,600 and 1,280 px.<br>- Uncommitted.<br>**20:41, the rest made the same way** (the engineer, 20:35: "build it like this").<br>- The tabs, in the order the work runs: Contract → Campaigns → Designs → Data → Flow. One page each, no rail, no card; the contract is the default view.<br>- **Campaigns:** the new-campaign form (contract, solver, budget, stop rules, a Start button that says what it waits for) and the steps table.<br>- **Designs:** the design to beat, the designs table with a dot per stage, mass against margin with the published mass drawn, the rungs.<br>- **Data:** datapoint kinds A-E with examples in words, the cuts from campaigns, the 20 task types worded for any contract with their graders.<br>- **Flow:** the factory as one strip, and what to build next.<br>- The old pages are in `web/archive/{campaigns,designs,data,flow}-v1/`; their word lists moved to `web/src/words/`.<br>**Done locally, 20:45:** builds, 125 checks pass, every tab looked at in screenshots, the UI design rewritten (§3-8) and the old views described in `docs/archive/2026-10-08-ui-views-v1.md`. Uncommitted. **Next:** the engineer's look |
 
 ## Next
 
@@ -41,12 +46,12 @@ The repository and what every other feature runs on: the Python project and its 
   - `npm ci`, then `npm run build` (types and bundle) or `npm run dev` (port 5190, a server: on the engineer's word).
   - In PowerShell, type `npm.cmd` for `npm`: its default execution policy refuses the `npm.ps1` wrapper. The engineer met this at 18:14 on 8 October.
   - It bundles the snapshot; nothing on screen comes from anywhere else.
-  - The tabs:
-    - **Flow:** the factory's 11 stages with counts, and a contract a row through every stage; how one campaign is cut into datapoints.
-    - **Contracts:** what binds a design (six boxes), every entry with its provenance, the validator's rules, the sources, the JSON; the entry or assumption card.
-    - **Campaigns:** the steps table (the decision record), hypotheses, the tool trace and the budget, laid out blank; the stop rules, arms, seeds and tools.
-    - **Designs:** the grid (a design a row, a stage a column), the trade-off and the evaluations, laid out blank; the verdict each contract sets, the rungs.
-    - **Data:** the four axes with the scenarios each contract implies, the kinds A-E, the 20 task types with their graders' state, the counterfactual pairs, and a comparison of any two contracts.
+  - The tabs, one clean page each, in the order the work runs (PLT-6):
+    - **Contract:** the inputs, with short sources; the calculations, each with its method pre-selected (five computed now, five planned); the pass criteria; the design to beat; the assumptions, folded.
+    - **Campaigns:** the new-campaign form, whose Start says what it waits for; the steps table.
+    - **Designs:** the design to beat; a design a row with a dot per stage; mass against margin; the rungs.
+    - **Data:** datapoint kinds A-E with examples in words; the cuts from campaigns; the 20 task types and their graders.
+    - **Flow:** the factory as one strip, and what to build next.
 - **Copied from fastcae** (`fastcae-v1`, each with its origin header): the design tokens and the shell, rail and campaign styles; the crash screen, the splitter and the metric card; the art. The frame of `App.tsx` and `product.ts` is adapted from fastcae's.
 - **CI:** `.github/workflows/checks.yml` builds from the locks on ubuntu. Its first job runs lint, format and checks; the second runs `npm ci` and `npm run build` in `web/`. Neither has run yet.
 

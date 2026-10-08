@@ -1,42 +1,120 @@
 /**
- * Data: what the record becomes, and what it can train.
+ * Data: what the record becomes.
  *
- * The rail lists the datapoint kinds, the cuts made from campaigns and the task types; the card is
- * the one in focus; the stage holds four pages - the axes every datapoint sits on, the kinds, the
- * twenty task types with their graders, and the pairs. What exists is shown from the snapshot (the
- * contracts, the scenarios they imply, the graders that exist, any two contracts compared); what
- * the agent, the judge and the record will make is drawn as structure and left blank.
+ * Everything the factory does is kept as datapoints of five kinds: the contract itself (A), each
+ * graded design (B), each step of the agent (C), the engineer's accept or reject (D), and pairs of
+ * contracts one input apart (E). From campaigns, three more things are cut: decision records,
+ * snapshot tasks and preference pairs. And tasks are made from all of it. Each task gives
+ * something, asks for something back, and names the grader that marks the answer.
+ *
+ * The counts are real and zero today; the examples are in words, never numbers. The first
+ * version (axes, pairs, a comparison of contracts) is in `web/archive/data-v1/`.
  */
 
-import type { ReactElement } from "react";
 import type { Tab, TabProps } from "../app/tab";
-import { AxesPage } from "./AxesPage";
-import { DataCard } from "./DataCard";
-import { DataRail } from "./DataRail";
-import { DatapointsPage } from "./DatapointsPage";
-import { PairsPage } from "./PairsPage";
-import { TasksPage } from "./TasksPage";
-import "./data.css";
+import { Dot } from "../panel/bits";
+import { Badge, PageHead, Section } from "../panel/page";
+import { CUTS, datapoints, KINDS } from "../words/kinds";
+import { gradableNow, GRADER_STATUS, graderOf, TASK_TYPES } from "../words/taskTypes";
 
-const PAGES: Record<string, (props: TabProps) => ReactElement> = {
-  axes: AxesPage,
-  datapoints: DatapointsPage,
-  tasks: TasksPage,
-  pairs: PairsPage,
-};
-
-function DataStage(props: TabProps) {
-  const Page = PAGES[props.page] ?? AxesPage;
+function Stage({ snap }: TabProps) {
+  const total = datapoints(snap);
+  const ready = gradableNow().length;
   return (
-    <div className="stage-scroll data-page">
-      <Page {...props} />
+    <div className="stage-scroll cp-scroll">
+      <div className="cp-page">
+        <PageHead
+          kicker="Data"
+          title="What the record becomes"
+          sub="Datapoints from every step, and the tasks cut from them"
+          side={
+            <div className="cp-badges">
+              <Badge>{total === 1 ? "1 datapoint" : `${total} datapoints`}</Badge>
+              <Badge tone="ok">
+                {TASK_TYPES.length} task types · {ready} gradable now
+              </Badge>
+            </div>
+          }
+        />
+
+        <Section title="Datapoints" aside="what the factory records">
+          <table className="cp-table cp-kinds">
+            <thead>
+              <tr>
+                <th>Kind</th>
+                <th>What it is</th>
+                <th>Example</th>
+                <th>Trains</th>
+                <th className="num">Count</th>
+              </tr>
+            </thead>
+            <tbody>
+              {KINDS.map((k) => (
+                <tr key={k.letter}>
+                  <th>
+                    <span className="cp-letter">{k.letter}</span> {k.name}
+                  </th>
+                  <td>{k.what}</td>
+                  <td className="dim">{k.example}</td>
+                  <td>{k.trains}</td>
+                  <td className="num mono">{k.count(snap)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </Section>
+
+        <Section title="Cut from campaigns">
+          <div className="cp-cuts">
+            {CUTS.map((c) => (
+              <div key={c.name} className="cp-card">
+                <div className="cp-cut-head">
+                  <b>{c.name}</b>
+                  <span className="mono">{c.count(snap)}</span>
+                </div>
+                <div className="dim">{c.what}</div>
+              </div>
+            ))}
+          </div>
+        </Section>
+
+        <Section title="Tasks" aside="given · hand in · graded by">
+          <table className="cp-table cp-tasks">
+            <thead>
+              <tr>
+                <th className="num">#</th>
+                <th>Task</th>
+                <th>Given</th>
+                <th>Hand in</th>
+                <th>Graded by</th>
+                <th>Used for</th>
+                <th className="num">Made</th>
+              </tr>
+            </thead>
+            <tbody>
+              {TASK_TYPES.map((t) => {
+                const grader = graderOf(t);
+                const status = GRADER_STATUS[grader.status];
+                return (
+                  <tr key={t.n} data-ready={grader.status === "exists"}>
+                    <td className="num mono">{t.n}</td>
+                    <th>{t.task}</th>
+                    <td>{t.given}</td>
+                    <td>{t.handIn}</td>
+                    <td title={status.words}>
+                      <Dot status={status.dot} /> {grader.label}
+                    </td>
+                    <td className="dim">{t.usedFor}</td>
+                    <td className="num mono">{snap.records.snapshot_tasks.filter((s) => s.task_type === t.n).length}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </Section>
+      </div>
     </div>
   );
 }
 
-export const dataTab: Tab = {
-  Rail: DataRail,
-  Stage: DataStage,
-  Card: DataCard,
-  cardName: "The kind",
-};
+export const dataTab: Tab = { Stage, cardName: "" };

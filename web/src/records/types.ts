@@ -83,6 +83,68 @@ export interface Reference {
   confidence: string;
 }
 
+// --- the contract page (zenryx.api.contract_page) -----------------------------------------------
+
+/** Where a value came from, in two words, with the full text for the hover. */
+export interface Sourced {
+  /** A short label: "Ivanov 2018", "Shigley", "assumed", "you", "calculated". */
+  source: string;
+  /** The provenance kind, for the label's style; empty where none applies. */
+  kind: ProvenanceKind | "";
+  title: string;
+}
+
+export interface InputRow extends Sourced {
+  label: string;
+  value: string;
+  path: string;
+  /** For a choice (the process): what could be chosen instead. */
+  options?: string[];
+}
+
+export interface InputCell extends Sourced {
+  value: string;
+}
+
+export interface InputGroup {
+  group: string;
+  rows: InputRow[];
+  /** The gear train's stages, a column each. */
+  table?: { columns: string[]; rows: { label: string; cells: InputCell[] }[] } | null;
+}
+
+export interface Calculation {
+  quantity: string;
+  method: string;
+  /** The standard or the authors the method follows. */
+  by: string;
+  /** The function that computes it, or the tool that will. */
+  function: string;
+  status: "computed" | "planned";
+  result: string;
+}
+
+export interface Criterion extends Sourced {
+  label: string;
+  value: string;
+}
+
+export interface ToBeat {
+  quantity: string;
+  value: string;
+  source: string;
+  title: string;
+  /** A computed remark, such as a published mode sitting on a mesh frequency. */
+  note: string;
+}
+
+export interface ContractPage {
+  inputs: InputGroup[];
+  calculations: Calculation[];
+  criteria: Criterion[];
+  to_beat: ToBeat[];
+}
+
 export interface ContractView {
   id: string;
   /** The JSON file it was read from, relative to the repository. */
@@ -115,6 +177,8 @@ export interface ContractView {
   scenarios: Scenario[];
   assumptions: Assumption[];
   references: Reference[];
+  /** The contract page's view: inputs, calculations, criteria, the design to beat. */
+  page: ContractPage;
   /** The file as written, indented. */
   json: string;
 }

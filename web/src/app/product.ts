@@ -5,7 +5,7 @@
  * their pages are zenryx's own, and the words for provenance, authority and stages are new.
  *
  * The tabs come in the order the work happens: the contract, the campaigns that attempt it, the
- * designs they make, the data the record becomes - with Flow first, the factory at a glance. Every
+ * designs they make, the data the record becomes, then Flow, the factory at a glance. Every
  * tab is shown whether or not what fills it is built yet. A shell that hides its unbuilt stages
  * describes a tool; one that shows them describes a product, and tells anyone looking where what
  * they are doing now leads.
@@ -48,64 +48,46 @@ export interface ViewSpec {
   pages: Page[];
 }
 
+/**
+ * The tabs in the order the work happens (the engineer, 8 Oct 20:35): the contract you give, the
+ * campaigns the agent runs on it, the designs they make and their grades, the data it all becomes,
+ * and Flow, where the whole factory stands. One page each, no rail, no card.
+ */
 export const VIEWS: ViewSpec[] = [
   {
-    id: "flow",
-    label: "Flow",
-    summary: "The factory end to end: each contract on its way through campaigns, designs and grades into data",
-    ready: true,
-    pages: [
-      { id: "contracts", label: "Contracts through the factory", summary: "A contract a row, a stage of the factory a column" },
-      { id: "campaign", label: "A campaign into data", summary: "How one campaign's steps become datapoints and tasks" },
-    ],
-  },
-  {
     id: "contracts",
-    label: "Contracts",
-    summary: "The tasks: what a design must meet, every value with where it came from",
+    label: "Contract",
+    summary: "Your inputs, what the tools calculate from them, and what a design must meet",
     ready: true,
-    pages: [
-      { id: "binding", label: "Binding", summary: "What binds a design: the duty, the interfaces, the verdict, the process, the agent's authority, the assumptions" },
-      { id: "sheet", label: "Sheet", summary: "Every entry by layer, with its provenance, authority and kind" },
-      { id: "check", label: "Check", summary: "The stage ladder and every validator rule" },
-      { id: "sources", label: "Sources", summary: "Every source and the entries it supports; the published values kept as a band" },
-      { id: "json", label: "JSON", summary: "The contract as written, with its hash" },
-    ],
+    pages: [{ id: "contract", label: "Contract", summary: "Inputs, calculations, pass criteria, the design to beat" }],
   },
   {
     id: "campaigns",
     label: "Campaigns",
-    summary: "Attempts at a task: each hypothesis, the design it made, its grade, the reasoning and the next step",
+    summary: "The agent's attempts at the contract: each step, what it tried and why, what happened",
     ready: false,
-    pages: [
-      { id: "steps", label: "Steps", summary: "A step a row: what the agent saw, the hypothesis, the tools, the design, its grade, the next step" },
-      { id: "hypotheses", label: "Hypotheses", summary: "Every idea tried, with its reason, its test and the status code gave it" },
-      { id: "trace", label: "Trace", summary: "Every tool call, in order, with its version and hashes" },
-      { id: "budget", label: "Budget", summary: "FE proofs spent, and the best design so far" },
-    ],
+    pages: [{ id: "campaign", label: "Campaigns", summary: "A new campaign, and its steps" }],
   },
   {
     id: "designs",
     label: "Designs",
-    summary: "Every design a campaign made: its geometry, how it was tested, its grade and its rung",
+    summary: "Every housing a campaign makes: its stages, its grade, its rung, against the design to beat",
     ready: false,
-    pages: [
-      { id: "grid", label: "Grid", summary: "A design a row, a stage a column" },
-      { id: "tradeoff", label: "Trade-off", summary: "Mass against the worst margin, every design" },
-      { id: "evaluations", label: "Evaluations", summary: "Every test of every design, by scenario" },
-    ],
+    pages: [{ id: "designs", label: "Designs", summary: "Every design and its grade" }],
   },
   {
     id: "data",
     label: "Data",
-    summary: "What the record becomes: datapoints, tasks cut from campaigns, the sets they train",
+    summary: "What the record becomes: datapoints, and the tasks cut from them",
     ready: true,
-    pages: [
-      { id: "axes", label: "Axes", summary: "Task, attempt, evaluation, result: what sits on each" },
-      { id: "datapoints", label: "Datapoints", summary: "The kinds A-E: what each is, what it trains, how many exist" },
-      { id: "tasks", label: "Tasks", summary: "The 20 task types, each with its grader and whether it exists yet" },
-      { id: "pairs", label: "Pairs", summary: "Counterfactual pairs, and any two contracts compared entry by entry" },
-    ],
+    pages: [{ id: "data", label: "Data", summary: "Datapoints and tasks" }],
+  },
+  {
+    id: "flow",
+    label: "Flow",
+    summary: "Where the whole factory stands, from the contract to the data",
+    ready: true,
+    pages: [{ id: "flow", label: "Flow", summary: "The factory, step by step" }],
   },
 ];
 

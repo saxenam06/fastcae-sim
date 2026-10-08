@@ -1,0 +1,740 @@
+/*
+ * Every tab's page: a product's form on fastcae's sheet. White cards on the grey ground,
+ * hairlines, one blue. Values sit in boxes as a form's fields do, methods read as pre-selected
+ * choices, sources are short labels styled by their kind, and a row still to come is drawn faint
+ * and dashed, in words. First written for the contract page (PLT-6), shared since.
+ */
+
+.cp-scroll {
+  background: var(--ground);
+}
+
+.cp-page {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 18px 24px 40px;
+}
+
+/* --- the head ------------------------------------------------------------------------------ */
+
+.cp-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px 32px;
+  padding: 18px 22px;
+  margin-bottom: 18px;
+  background: var(--sheet);
+  border: 1px solid var(--hairline);
+  border-top: 3px solid var(--blue);
+}
+
+.cp-kicker {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--blue);
+}
+
+.cp-head h1 {
+  margin: 2px 0 3px;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.cp-sub {
+  font-size: 12.5px;
+  color: var(--muted);
+}
+
+.cp-head-side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+/* The stage ladder: three steps on a line, filled up to where the contract stands. */
+.cp-ladder {
+  display: flex;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 11.5px;
+  color: var(--faint);
+}
+
+.cp-ladder li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.cp-ladder li + li::before {
+  content: "";
+  width: 28px;
+  height: 1px;
+  margin: 0 8px;
+  background: var(--hairline);
+}
+
+.cp-ladder i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: 1.5px solid var(--faint);
+  background: var(--sheet);
+}
+
+.cp-ladder li[data-reached="true"] {
+  color: var(--ink);
+}
+
+.cp-ladder li[data-reached="true"] i {
+  border-color: var(--blue);
+  background: var(--blue);
+}
+
+.cp-ladder li[data-current="true"] {
+  font-weight: 600;
+  color: var(--blue);
+}
+
+.cp-badges {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.cp-badge {
+  padding: 2px 9px;
+  font-size: 11.5px;
+  border: 1px solid var(--hairline);
+  border-radius: 10px;
+  color: var(--muted);
+  background: var(--sheet);
+}
+
+.cp-badge[data-ok="true"] {
+  color: var(--measured);
+  border-color: var(--measured);
+  background: var(--measured-wash);
+}
+
+.cp-badge[data-ok="false"] {
+  color: var(--conflict);
+  border-color: var(--conflict);
+  background: var(--conflict-wash);
+}
+
+.cp-badge[data-tone="next"] {
+  color: var(--running);
+  border-color: var(--running);
+  border-style: dashed;
+  background: var(--running-wash);
+}
+
+/* --- sections and cards -------------------------------------------------------------------- */
+
+.cp-section {
+  margin-bottom: 20px;
+}
+
+.cp-section > header {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.cp-section h2 {
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.cp-aside {
+  font-size: 11.5px;
+  color: var(--faint);
+}
+
+/* Two columns of cards; the gear train takes the full width. "dense" lets a short card fill the
+   hole beside another rather than start a new row. */
+.cp-groups {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-auto-flow: row dense;
+  gap: 14px;
+}
+
+.cp-card {
+  min-width: 0;
+  padding: 12px 16px 14px;
+  background: var(--sheet);
+  border: 1px solid var(--hairline);
+}
+
+.cp-card[data-wide="true"] {
+  grid-column: 1 / -1;
+}
+
+.cp-card h3 {
+  margin: 0 0 8px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+@media (max-width: 900px) {
+  .cp-groups {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* --- inputs -------------------------------------------------------------------------------- */
+
+.cp-inputs {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+}
+
+.cp-inputs th {
+  width: 42%;
+  padding: 4px 10px 4px 0;
+  font-weight: 400;
+  text-align: left;
+  color: var(--muted);
+  vertical-align: middle;
+}
+
+.cp-inputs td {
+  padding: 4px 0;
+  vertical-align: middle;
+}
+
+.cp-src {
+  width: 1%;
+  padding-left: 10px !important;
+  white-space: nowrap;
+  text-align: right;
+}
+
+/* A value in its box, as a form's field. */
+.cp-value {
+  display: inline-block;
+  max-width: 100%;
+  padding: 3px 9px;
+  font-family: var(--mono);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+  background: var(--ground);
+  border: 1px solid var(--hairline);
+  border-radius: 3px;
+  overflow-wrap: anywhere;
+}
+
+/* A choice already made, shown as a pre-selected drop-down. */
+.cp-choice {
+  font-family: var(--sans);
+  background: var(--sheet);
+  border-color: var(--blue);
+  color: var(--blue);
+}
+
+.cp-choice i,
+.cp-method i {
+  margin-left: 8px;
+  font-style: normal;
+  font-size: 10px;
+  opacity: 0.7;
+}
+
+/* The gear train: a column a stage. */
+.cp-stages {
+  margin-top: 10px;
+}
+
+.cp-stages caption {
+  caption-side: bottom;
+  padding-top: 6px;
+  font-size: 11px;
+  text-align: left;
+  color: var(--faint);
+}
+
+.cp-stages caption b {
+  font-weight: 500;
+  color: var(--blue);
+}
+
+/* --- tables -------------------------------------------------------------------------------- */
+
+.cp-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+  background: var(--sheet);
+}
+
+.cp-table thead th {
+  padding: 6px 10px;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  text-align: left;
+  color: var(--faint);
+  border-bottom: 1px solid var(--hairline);
+}
+
+.cp-table tbody th {
+  padding: 6px 10px;
+  font-weight: 500;
+  text-align: left;
+  white-space: nowrap;
+  vertical-align: top;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.cp-table td {
+  padding: 6px 10px;
+  vertical-align: top;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.cp-section > .cp-table {
+  border: 1px solid var(--hairline);
+}
+
+/* --- calculations -------------------------------------------------------------------------- */
+
+.cp-method {
+  display: inline-flex;
+  align-items: baseline;
+  padding: 3px 9px;
+  font-size: 12px;
+  color: var(--blue);
+  background: var(--sheet);
+  border: 1px solid var(--blue);
+  border-radius: 3px;
+}
+
+.cp-method em {
+  margin-left: 4px;
+  font-style: normal;
+  color: var(--muted);
+}
+
+.cp-fn {
+  margin-top: 3px;
+  font-size: 10.5px;
+  color: var(--faint);
+}
+
+.cp-result {
+  font-family: var(--mono);
+  font-size: 12px;
+}
+
+.cp-calcs tr[data-status="planned"] .cp-result {
+  color: var(--faint);
+  font-style: italic;
+}
+
+.cp-calcs tr[data-status="planned"] .cp-method {
+  border-style: dashed;
+  border-color: var(--muted);
+  color: var(--muted);
+}
+
+/* --- criteria and the design to beat ------------------------------------------------------- */
+
+.cp-pair {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 14px;
+}
+
+@media (max-width: 900px) {
+  .cp-pair {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.cp-pair .cp-table {
+  border: 1px solid var(--hairline);
+}
+
+/* Beside the design to beat, a criterion's name may wrap, so its value keeps its line. */
+.cp-pair .cp-table tbody th {
+  width: 36%;
+  white-space: normal;
+}
+
+/* The gear train's row names read as the other inputs' names do. */
+.cp-stages tbody th {
+  font-weight: 400;
+  color: var(--muted);
+}
+
+.cp-beat {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cp-beat-item {
+  position: relative;
+  padding: 9px 12px 9px 14px;
+  background: var(--sheet);
+  border: 1px solid var(--hairline);
+  border-left: 3px solid var(--blue);
+}
+
+.cp-beat-item[data-warn="true"] {
+  border-left-color: var(--conflict);
+}
+
+.cp-beat-item .prov {
+  position: absolute;
+  top: 9px;
+  right: 10px;
+}
+
+.cp-beat-q {
+  padding-right: 90px;
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+.cp-beat-v {
+  margin-top: 2px;
+  font-size: 12.5px;
+}
+
+.cp-beat-note {
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--conflict);
+}
+
+/* --- assumptions, folded ------------------------------------------------------------------- */
+
+.cp-assumptions {
+  margin-top: 4px;
+  background: var(--sheet);
+  border: 1px solid var(--hairline);
+}
+
+.cp-assumptions summary {
+  padding: 10px 16px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--running);
+  cursor: pointer;
+}
+
+.cp-assumptions ul {
+  margin: 0;
+  padding: 0 16px 12px;
+  list-style: none;
+}
+
+.cp-assumptions li {
+  display: grid;
+  grid-template-columns: 34px minmax(140px, 1.1fr) minmax(160px, 1.4fr) minmax(0, 2fr);
+  gap: 10px;
+  padding: 5px 0;
+  font-size: 12px;
+  border-top: 1px solid var(--hairline);
+}
+
+.cp-a-what {
+  color: var(--muted);
+}
+
+.cp-a-value {
+  font-family: var(--mono);
+  font-size: 11.5px;
+}
+
+/* --- shared by the other tabs ---------------------------------------------------------------- */
+
+/* A row still to come: its cells say in words what they will hold. */
+.cp-table tr.cp-template td {
+  color: var(--faint);
+  font-style: italic;
+  border-bottom-style: dashed;
+}
+
+.cp-table caption {
+  caption-side: bottom;
+  padding: 7px 2px 0;
+  font-size: 11.5px;
+  text-align: left;
+  color: var(--faint);
+}
+
+.cp-section > .cp-table,
+.cp-section > .cp-steps,
+.cp-section > .cp-designs {
+  border: 1px solid var(--hairline);
+}
+
+/* A form's labels sit close to their values. */
+.cp-form .cp-inputs th {
+  width: 140px;
+}
+
+/* A link that is a value: the contract named on the campaign form. */
+button.cp-link {
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+button.cp-link .cp-value:hover {
+  border-color: var(--blue);
+}
+
+.cp-stops {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.cp-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--hairline);
+  font-size: 12px;
+}
+
+button.cp-start {
+  padding: 6px 16px;
+  font-weight: 500;
+  color: var(--sheet);
+  background: var(--blue);
+  border: 1px solid var(--blue);
+  border-radius: 3px;
+}
+
+button.cp-start:disabled {
+  color: var(--faint);
+  background: var(--ground);
+  border-color: var(--hairline);
+  cursor: not-allowed;
+}
+
+/* The design to beat, as a row of cards on the Designs page. */
+.cp-beat-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+.cp-designs td {
+  text-align: center;
+}
+
+.cp-designs td:first-child,
+.cp-designs th:first-child {
+  text-align: left;
+}
+
+.cp-chart {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.cp-chart-frame {
+  fill: var(--sheet);
+  stroke: var(--hairline);
+}
+
+.cp-chart-tick {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  fill: var(--faint);
+}
+
+.cp-chart-axis {
+  font-size: 10.5px;
+  fill: var(--muted);
+}
+
+.cp-chart-label {
+  font-size: 10.5px;
+  fill: var(--measured);
+}
+
+.cp-chart-pass {
+  stroke: var(--measured);
+  stroke-dasharray: 5 4;
+}
+
+.cp-chart-beat {
+  stroke: var(--conflict);
+}
+
+.cp-chart-beat-label {
+  fill: var(--conflict);
+}
+
+.cp-rungs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: rung;
+}
+
+.cp-rungs li {
+  counter-increment: rung;
+  padding: 3px 10px;
+  font-size: 12px;
+  border: 1px solid var(--hairline);
+  border-radius: 12px;
+  color: var(--muted);
+}
+
+.cp-rungs li::before {
+  content: counter(rung) " ";
+  font-family: var(--mono);
+  color: var(--faint);
+}
+
+.cp-rungs li[data-own="true"] {
+  color: var(--blue);
+  border-color: var(--blue);
+  background: var(--blue-wash);
+}
+
+.cp-rungs-note {
+  margin: 10px 0 0;
+  font-size: 11.5px;
+}
+
+/* Data: the kinds' letters, the cuts, the tasks. */
+.cp-letter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  margin-right: 4px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--sheet);
+  background: var(--blue);
+  border-radius: 3px;
+}
+
+.cp-table .num {
+  text-align: right;
+}
+
+.cp-cuts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.cp-cut-head {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+  font-size: 12.5px;
+}
+
+.cp-tasks tbody th {
+  white-space: normal;
+}
+
+.cp-tasks tr[data-ready="true"] th {
+  color: var(--measured);
+}
+
+/* Flow: the factory as one strip of steps, each opening its tab. */
+.cp-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cp-strip li {
+  position: relative;
+  display: flex;
+}
+
+/* The arrow between two steps. */
+.cp-strip li + li::before {
+  content: "›";
+  position: absolute;
+  left: -6px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+  font-size: 18px;
+  color: var(--faint);
+}
+
+button.cp-step {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  margin: 0 6px;
+  padding: 12px 12px 10px;
+  text-align: left;
+  background: var(--sheet);
+  border: 1px dashed var(--faint);
+  border-radius: 3px;
+}
+
+button.cp-step[data-built="true"] {
+  border-style: solid;
+  border-color: var(--hairline);
+  border-top: 3px solid var(--blue);
+}
+
+button.cp-step:hover {
+  border-color: var(--blue);
+}
+
+.cp-step-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.cp-step-count {
+  font-size: 18px;
+  color: var(--ink);
+}
+
+.cp-step-by {
+  font-size: 11px;
+  color: var(--faint);
+}

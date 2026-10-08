@@ -13,7 +13,7 @@ import { useEffect, useState } from "react";
 import { campaignsTab } from "../campaigns/Campaigns";
 import { contractsTab } from "../contracts/Contracts";
 import { dataTab } from "../data/Data";
-import { datapoints as countDatapoints } from "../data/kinds";
+import { datapoints as countDatapoints } from "../words/kinds";
 import { designsTab } from "../designs/Designs";
 import { flowTab } from "../flow/Flow";
 import { Splitter } from "../panel/Splitter";
@@ -21,7 +21,7 @@ import { Hash } from "../panel/bits";
 import { loadSnapshot } from "../records/source";
 import type { Snapshot } from "../records/types";
 import type { View } from "./product";
-import { ART, PRODUCT, VENDOR, VIEWS, viewSpec } from "./product";
+import { ART, PRODUCT, shortTitle, VENDOR, VIEWS, viewSpec } from "./product";
 import { useRoute } from "./route";
 import type { Tab, TabProps } from "./tab";
 
@@ -61,16 +61,17 @@ export function App() {
   const page = spec.pages.some((p) => p.id === route.page) ? (route.page as string) : spec.pages[0].id;
   const props: TabProps | null = snap ? { snap, route, go, page } : null;
   const context = props ? (tab.context?.(props) ?? factory(props.snap)) : null;
+  // A tab may have no rail or no card (the contract page is one full-width column).
+  const Rail = tab.Rail;
+  const Card = tab.Card;
+  const railColumn = Rail ? `${railWidth}px` : "0px";
+  const cardColumn = Card ? `${cardOpen ? cardWidth : 28}px` : "0px";
 
   return (
     <div
       className="shell"
       data-open={snap !== null}
-      style={
-        snap
-          ? { gridTemplateColumns: `${railWidth}px minmax(0, 1fr) ${cardOpen ? cardWidth : 28}px` }
-          : undefined
-      }
+      style={snap ? { gridTemplateColumns: `${railColumn} minmax(0, 1fr) ${cardColumn}` } : undefined}
     >
       <header className="topbar">
         <img className="mark" src={ART.mark} alt="" aria-hidden="true" />
@@ -110,44 +111,51 @@ export function App() {
 
       {props ? (
         <>
-          <div className="rail">
-            <div className="rail-scroll">
-              <tab.Rail {...props} />
+          {Rail ? (
+            <div className="rail">
+              <div className="rail-scroll">
+                <Rail {...props} />
+              </div>
+              <Splitter side="right" onResize={(d) => setRailWidth((w) => clampPane(w + d))} />
             </div>
-            <Splitter side="right" onResize={(d) => setRailWidth((w) => clampPane(w + d))} />
-          </div>
+          ) : null}
 
           <div className="stage">
-            <nav className="stage-tabs">
-              {spec.pages.map((p) => (
-                <button
-                  key={p.id}
-                  data-active={page === p.id}
-                  onClick={() => go({ page: p.id, focus: null })}
-                  title={p.summary}
-                >
-                  {p.label}
-                </button>
-              ))}
-              <span className="stage-tabs-spacer" />
-            </nav>
+            {/* One page needs no page tabs. */}
+            {spec.pages.length > 1 ? (
+              <nav className="stage-tabs">
+                {spec.pages.map((p) => (
+                  <button
+                    key={p.id}
+                    data-active={page === p.id}
+                    onClick={() => go({ page: p.id, focus: null })}
+                    title={p.summary}
+                  >
+                    {p.label}
+                  </button>
+                ))}
+                <span className="stage-tabs-spacer" />
+              </nav>
+            ) : null}
             <div className="stage-body">
               <tab.Stage {...props} />
             </div>
           </div>
 
-          <div className="card-pane">
-            {cardOpen ? (
-              <>
-                <Splitter side="left" onResize={(d) => setCardWidth((w) => clampPane(w - d))} />
-                <tab.Card {...props} onCollapse={() => setCardOpen(false)} />
-              </>
-            ) : (
-              <button className="pane-strip" onClick={() => setCardOpen(true)} title="Open it again">
-                <span>{tab.cardName}</span>
-              </button>
-            )}
-          </div>
+          {Card ? (
+            <div className="card-pane">
+              {cardOpen ? (
+                <>
+                  <Splitter side="left" onResize={(d) => setCardWidth((w) => clampPane(w - d))} />
+                  <Card {...props} onCollapse={() => setCardOpen(false)} />
+                </>
+              ) : (
+                <button className="pane-strip" onClick={() => setCardOpen(true)} title="Open it again">
+                  <span>{tab.cardName}</span>
+                </button>
+              )}
+            </div>
+          ) : null}
 
           <TitleBlock snap={props.snap} />
         </>
@@ -173,7 +181,7 @@ function TitleBlock({ snap }: { snap: Snapshot }) {
       <span>contract schema {snap.contract_schema}</span>
       <span>{snap.rules.length} validator rules</span>
       <span>
-        {snap.contracts.length} contracts · {frozen} frozen
+        {snap.contracts.length} {snap.contracts.length === 1 ? "contract" : "contracts"} · {frozen} frozen
       </span>
       <span>
         {r.campaigns.length} campaigns · {r.candidates.length} designs · {r.evaluations.length} evaluations
@@ -184,9 +192,12 @@ function TitleBlock({ snap }: { snap: Snapshot }) {
   );
 }
 
-function factory(snap: Snapshot): { name: string; detail: string } {
-  const frozen = snap.contracts.filter((c) => c.stage === "frozen").length;
-  return { name: "the factory", detail: `${snap.contracts.length} contracts · ${frozen} frozen` };
+/** What the bar names on every tab: the contract all the work is about. */
+function factory(snap: Snapshot): { name: string; detail: string } | null {
+  const c = snap.contracts[0];
+  if (!c) return null;
+  const checks = c.refusals.length ? `${c.refusals.length} refused` : "checks passed";
+  return { name: shortTitle(c.title), detail: `${c.stage} · ${checks}` };
 }
 
 const MIN_PANE = 220;

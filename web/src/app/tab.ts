@@ -20,10 +20,12 @@ export interface CardProps extends TabProps {
 }
 
 export interface Tab {
-  Rail: (props: TabProps) => ReactElement;
+  /** The left column. A tab without one (the contract page) gets the full width. */
+  Rail?: (props: TabProps) => ReactElement;
   /** Drawn inside `.stage-body`, which is positioned: fill it with `.stage-scroll` to scroll. */
   Stage: (props: TabProps) => ReactElement;
-  Card: (props: CardProps) => ReactElement;
+  /** The right-hand card. A tab without one has no card pane. */
+  Card?: (props: CardProps) => ReactElement;
   /** What the card says on its strip when folded away. */
   cardName: string;
   /** What the bar's third lockup names: the record in view, or null for the factory. */

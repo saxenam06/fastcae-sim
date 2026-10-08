@@ -25,7 +25,8 @@ const EMPTY = "-";
 
 export function parse(hash: string): Route {
   const parts = hash.replace(/^#\/?/, "").split("/");
-  const view = VIEWS.some((v) => v.id === parts[0]) ? (parts[0] as View) : "flow";
+  // The product starts from the contract.
+  const view = VIEWS.some((v) => v.id === parts[0]) ? (parts[0] as View) : "contracts";
   const part = (i: number) => (parts[i] && parts[i] !== EMPTY ? decodeURIComponent(parts[i]) : null);
   return { view, id: part(1), page: part(2), focus: part(3) };
 }
