@@ -2298,7 +2298,7 @@
         {
          "label": "intermediate",
          "cells": [
-          "bearings at -28.58 / 68.78 mm · housing faces at -43.05 / 85.12 mm"
+          "bearings at -28.58 / 69.65 mm · housing faces at -43.05 / 86.88 mm"
          ]
         },
         {
@@ -2363,13 +2363,13 @@
         {
          "label": "intermediate -z, peak drive",
          "cells": [
-          "Fr 6.4 kN · Fa -2 kN"
+          "Fr 6.42 kN · Fa -2.01 kN"
          ]
         },
         {
          "label": "intermediate +z, peak drive",
          "cells": [
-          "Fr 5.57 kN · Fa 11.7 kN"
+          "Fr 5.52 kN · Fa 11.7 kN"
          ]
         },
         {
@@ -2450,7 +2450,7 @@
         {
          "label": "intermediate",
          "cells": [
-          "seats need Ø0 / 0 mm · shaft Ø37 mm · slopes at the bearings 0.485 / 0.438 mrad"
+          "seats need Ø0 / 0 mm · shaft Ø50 mm · slopes at the bearings 0.148 / 0.133 mrad"
          ]
         },
         {
@@ -2499,7 +2499,7 @@
         {
          "label": "input +z",
          "cells": [
-          "NU 205 ECP · 25/52 × 15 mm · L10 5,249 h"
+          "NU 205 ECP · 25/52 × 15 mm · L10 8,037 h"
          ]
         },
         {
@@ -2509,9 +2509,15 @@
          ]
         },
         {
+         "label": "intermediate +z",
+         "cells": [
+          "30210 · 50/90 × 21.75 mm · L10 1,206 h"
+         ]
+        },
+        {
          "label": "intermediate -z",
          "cells": [
-          "30205 J2/Q · 25/52 × 16.25 mm · L10 1,069 h"
+          "30205 · 25/52 × 16.25 mm · L10 2,149 h"
          ]
         },
         {
@@ -2524,12 +2530,6 @@
          "label": "output -z",
          "cells": [
           "6309 · 45/100 × 25 mm · L10 1,457 h"
-         ]
-        },
-        {
-         "label": "intermediate +z: none",
-         "cells": [
-          "no tapered_roller bearing in the catalogue with a bore of at least 0.0 mm lasts 944 h at Fr 5575 N, Fa 11732 N and 2941 rpm"
          ]
         }
        ]
@@ -2700,5 +2700,5 @@
   "snapshot_tasks": [],
   "preference_pairs": []
  },
- "hash": "sha256:7352cd319f93b9ec341ebbf1f5460026a9953650f495a0abd0b2ac829ac360ba"
+ "hash": "sha256:db96c73d46dcecacc10035606e93fdee8a743454b2c92a0fdbb4122710de22de"
 }
