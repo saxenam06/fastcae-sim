@@ -6,16 +6,15 @@ The gearbox's physics before any housing exists. From a contract's gear train, t
 - the loads each bearing puts into its seat, for every load case;
 - the bearing sizes, and the mesh orders.
 
-It turns a posed contract into a derived one that can be frozen. The judge applies these seat loads to every design.
+It completes a posed contract, so that it can be frozen. The judge applies these seat loads to every design.
 
-**PBI key:** GBX · **State:** planned. The load tool's plan is written (equations, sources, checks) and committed in bbcdbac on `product/end-to-end`, not pushed; nothing is built yet. The gear-train kinematics it builds on exist in `zenryx.contract.train` and `zenryx.contract.involute`. Since 01:06 the contract carries what GBX-1 and GBX-2 need from the engineer: one order-check speed (6,000 rpm), the seal allowance per shaft end, and the least clearances for step 5's check (uncommitted) · **Updated:** 2026-10-09 01:22 by Claude
-**Code:** to come, under `src/zenryx/domains/` (CLAUDE.md: domain roles live in a domain module)
+**PBI key:** GBX · **State:** GBX-1 (the mesh forces and moments) works locally (9 October 02:40): `zenryx.domains.gearbox.forces`, 13 checks, step 4 computed on the Contract page. GBX-2 (layout, clearances, bearing loads) is next. The plan is in bbcdbac; all on `product/end-to-end`, not pushed · **Updated:** 2026-10-09 02:40 by Claude
+**Code:** `src/zenryx/domains/gearbox/` (`forces.py`); checks in `checks/gearbox/`
 
 ## Now
 
 | PBI | Goal | Who · laptop · branch | Since | Where it stands |
 |---|---|---|---|---|
-| GBX-1 | Mesh forces and moments for helical, profile-shifted gears (the base-circle form), with their directions in each load case ([plan](2026-10-08-load-tool-plan.md)). Done when the invariants hold, the forms agree at zero shift, and Shigley's and Łódź's force numbers are reproduced | Claude · LAPTOP-IR8VEG53 · `product/end-to-end` | 2026-10-09 02:28 | Claimed; starting from the prototype `prototypes/helical_forces/forces.py` and the plan's §4 |
 
 ## Next
 
@@ -23,11 +22,15 @@ It turns a posed contract into a derived one that can be frozen. The judge appli
 |---|---|---|
 | GBX-2 | The layout along the shafts (gap-driven or coordinate-driven, centres from a datum) and the bearing reactions, axial moments included: steps 5 and 6 | The textbook example's seat loads and Shigley's and Łódź's reactions are reproduced; an FE beam agrees; injected faults are caught |
 | GBX-3 | The shaft sections (strength and stiffness) and the bearing selection (life, bore, capacity, arrangement), iterated with the layout: steps 7 and 8 | Shigley Ch. 7's shaft and Ch. 11's and Łódź Ch. 5's worked selections are reproduced; the loop settles on the textbook example |
-| GBX-4 | Derive the Ivanov contract: seats and load cases stamped; the validator accepts it as derived; it freezes | The contract freezes, and the UI's planned calculations show their results |
+| GBX-4 | Complete the EV reducer's contract: seats and load cases stamped; the validator accepts it as completed; it freezes | The contract freezes, and the UI's planned calculations show their results |
 
 ## What runs
 
-- Nothing of the load tool yet.
+- **The mesh forces and moments** (`zenryx.domains.gearbox.forces`, GBX-1):
+  - `case_forces(spec)` gives one load case per torque in the contract: its signed input torque, each mesh, and the torque each shaft passes on. The torque's sense comes from its direction and the input's forward rotation (`requirement.forward_rotation`; A21 assumes +z): drive turns the input forwards, reverse and regeneration act against it, so they load the teeth alike.
+  - `mesh_forces(...)` is one mesh: the base-circle form Fbt = 2T/db1, Ft = Fbt·cos αwt, Fr = Fbt·sin αwt, Fa = Fbt·tan βb; on each gear the force at the pitch point as a vector in the contract's frame, and its moment about the gear's own centre (the torque about z and the axial force's moment Fa·rw in the plane).
+  - `shaft_axes(spec)` places each shaft's axis in the end view (one stage on the x axis; two by the packaging offset).
+  - The Contract page's step 4 shows the sizes, the force on each pinion in every case, and the gear's moment.
 - What it builds on:
   - `zenryx.contract.involute.mesh_geometry`: a shifted pair's pressure angles, its reference, base, working pitch and tip diameters, and its working centre distance (committed in e32000d; the tip diameters since 01:06, uncommitted). GBX-1's forces start from its working pressure angle and base diameters;
   - `zenryx.contract.train`: the ratio, shaft speeds, mesh frequencies, and the shaft angle from the packaging offset; since 01:06 the axes' end-view positions (`axis_positions`) and how far two circles on different shafts overlap end-on (`end_view_overlap`), for step 5's clearance check;
@@ -40,7 +43,11 @@ It turns a posed contract into a derived one that can be frozen. The judge appli
 
 ## Measured
 
-- **Profile shift matters for Ivanov:** at 150 N·m the radial mesh force is +13.8 % (stage 1) and +10.4 % (stage 2) above the textbook formula; tangential −2.1 % and −1.6 %; axial unchanged.
+- **GBX-1's checks pass** (13, 9 October 02:39): the textbook form at zero shift (to 1e-12); equal and opposite forces; Ft·rw gives back the torque; the radial force pushes the gears apart; the hand rule for thrust; the axial force's moment Fa·rw; every shaft passes its torque on; reverse and regeneration alike; the forward rotation mirrors the directions only.
+- **A published worked example is reproduced:** drivetrainhub's notebook (z 15/45, mn 2.5 mm, αn 20°, β 20°, a 80 mm, 100 N·m) gives Ft 5,000.0 N and Fr 1,971.1 N, and the tool gives the same to 0.05 N. Its Fa 1,819.9 N is Ft·tan β; the tool's Fa = Ft·tan βw is 0.23 % higher for that pair, the known difference between the two conventions.
+- **The EV reducer at 150 N·m:** stage 1 Ft 5,499 · Fr 2,399 · Fa 3,243 N (Fbt 6,000 N); stage 2 Ft 11,066 · Fr 4,657 · Fa 6,490 N (Fbt 12,006 N), on 306 N·m into the intermediate pinion; 1,078 N·m out of the output.
+- **The intermediate shaft's two axial forces add:** with both pinions left-handed, the stage-1 gear (right-handed) and the stage-2 pinion (left-handed) both push the intermediate shaft towards +z in drive, 3,243 + 6,490 = 9,733 N. With the same hand on the intermediate's two gears they would partly cancel (6,490 − 3,243 = 3,247 N), which is how designers usually choose the hands.
+- **Profile shift matters for this gear train:** at 150 N·m the radial mesh force is +13.8 % (stage 1) and +10.4 % (stage 2) above the textbook formula; tangential −2.1 % and −1.6 %; axial unchanged.
   - The torque check (Ft × working radius) holds exactly.
   - Source: the prototype `prototypes/helical_forces/forces.py` (on `zenryx.contract.involute`), 8 October 21:00; rerun at 21:30 with the same numbers.
 
@@ -58,6 +65,7 @@ It turns a posed contract into a derived one that can be frozen. The judge appli
 
 ## Open
 
+- **Is stage 2's pinion left-handed in the source?** The contract gives both pinions left-handed, so the intermediate shaft's axial forces add (9.7 kN in drive) instead of partly cancelling (3.2 kN). If the source's stage-2 pinion is right-handed, the intermediate's tapered pair carries a third of the thrust. The engineer's to confirm.
 - **The layout's values, as assumed** (A13-A19 in the Ivanov contract):
   - 12.7 mm between a bearing and its gear and 6.35 mm behind a bearing in a closed bore, both from Shigley's Fig. 18-2, an industrial gearbox, so likely generous;
   - 12.7 mm between the intermediate shaft's two gears, and 3 mm least clearance along the shafts: no source yet;
@@ -73,6 +81,7 @@ It turns a posed contract into a derived one that can be frozen. The judge appli
 
 | PBI | Delivered | Date | Commits |
 |---|---|---|---|
+| GBX-1 | The mesh forces and moments in every load case (`zenryx.domains.gearbox.forces`): the base-circle form, the directions on each gear in the contract's frame, each gear's moment; the input's forward rotation as a contract input (A21, `consistency.rotation`); step 4 computed on the Contract page; 13 checks, a published example among them | 2026-10-09 | (this commit) |
 
 ## Docs
 

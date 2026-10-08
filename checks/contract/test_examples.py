@@ -93,7 +93,10 @@ def test_the_ev_reducer_carries_the_engineers_requirements():
         "A17",
         "A18",
         "A19",
+        "A21",
     ]
+    # The input's sense of rotation sets the forces' directions (GBX-1); not given, so assumed.
+    assert req.forward_rotation.provenance.assumption_id == "A21"
     # The layout's inputs are its gaps (the engineer, 9 Oct 00:06), assumed from Shigley's sketch.
     gaps = req.shaft_layout
     assert gaps.bearing_to_gear.value.to_canonical() == (12.7, "mm")

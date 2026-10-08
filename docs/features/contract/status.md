@@ -45,6 +45,7 @@ The validator refuses a fault with its rule, the entry and the reason. A frozen 
     - `seat_reference`;
     - `speed_reference`: the order check names a speed kind the duty gives (rated, maximum);
     - `shaft_reference`: each sealed shaft end names a stage's shaft (input, intermediate, output) and a side, −z or +z;
+    - `rotation`: the input's sense of rotation in forward drive is +z or −z;
     - `unit_vector`;
     - `bearing_seat`: the bearing's outside diameter against its seat;
     - `tilt_limit`: every bearing type in the contract has a tilt limit, since the judge needs one per seat.

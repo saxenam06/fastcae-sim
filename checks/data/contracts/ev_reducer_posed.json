@@ -121,6 +121,15 @@
       "authority": "engineer_locked",
       "kind": "hard"
     },
+    "forward_rotation": {
+      "value": "+z",
+      "provenance": {
+        "kind": "assumption",
+        "assumption_id": "A21"
+      },
+      "authority": "engineer_locked",
+      "kind": "hard"
+    },
     "service_life": {
       "value": {
         "value": 944,
@@ -960,6 +969,13 @@
       "what": "the least clearance from a gear's tips to the housing wall",
       "value": "8.25 mm",
       "why": "(1.1-1.2) × the wall thickness δ, at δ = 7.5 mm · Maciejczyk & Zdziennicki Ch. 9, Fig. 9.1",
+      "varied": true
+    },
+    {
+      "id": "A21",
+      "what": "the input's rotation in forward drive",
+      "value": "+z: anticlockwise seen from the cover side (+z)",
+      "why": "not given; it sets the forces' directions, not their sizes",
       "varied": true
     }
   ]

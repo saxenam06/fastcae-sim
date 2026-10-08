@@ -8,8 +8,8 @@ Rules, in four groups:
     consistency.*  dimensions; no input the other inputs fix (a centre distance the gear data
                    fix, a ratio the teeth fix); the ratio where no teeth are given; the offset;
                    seats inside the space; power against torque; unique names; references to
-                   seats, to the duty's speeds and to the shafts; unit axes; bearings against
-                   their seats
+                   seats, to the duty's speeds and to the shafts; the input's sense of rotation;
+                   unit axes; bearings against their seats
 
 A paper's figure for a calculated value is not part of a contract: papers verify the tools once,
 in checks/ (the engineer, 8 October).
@@ -467,6 +467,15 @@ def _check_references(spec: HousingDesignSpec) -> list[Refusal]:
     """What points elsewhere in the contract must find it: the order check names a duty speed by
     its kind, and each sealed shaft end names a shaft of the gear train and a side."""
     out = []
+    rotation = spec.requirement.forward_rotation
+    if rotation is not None and rotation.value not in ("+z", "-z"):
+        out.append(
+            Refusal(
+                rule="consistency.rotation",
+                entry="requirement.forward_rotation",
+                reason=f"the input turns '+z' or '-z' in forward drive, not {rotation.value!r}",
+            )
+        )
     kind = spec.limits.order_check_at.value
     if kind not in {s.kind for s in spec.requirement.speeds}:
         out.append(

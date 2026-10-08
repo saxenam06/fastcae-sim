@@ -158,6 +158,9 @@ class Requirement(_Model):
     total_ratio: Entry | None = None
     ratio_tolerance: Entry | None = None
     input_output_offset: Entry | None = None
+    # The input shaft's sense of rotation in forward drive, "+z" or "-z" (the right-hand rule about
+    # the shafts' axis). It sets the forces' directions, not their sizes.
+    forward_rotation: Entry | None = None
     service_life: Entry | None = None
     gear_material: Entry | None = None
     gear_quality: Entry | None = None

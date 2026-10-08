@@ -138,7 +138,7 @@ def test_the_inputs_hold_only_what_is_given_or_assumed(every_example):
 def test_the_calculations_are_the_chains_steps_each_with_what_it_takes_and_gives(payload):
     steps = payload["contracts"][0]["page"]["calculations"]
     assert [s["step"] for s in steps] == list(range(1, 11))
-    assert [s["status"] for s in steps] == ["computed"] * 3 + ["planned"] * 7
+    assert [s["status"] for s in steps] == ["computed"] * 4 + ["planned"] * 6
     for s in steps:
         assert s["quantity"] and s["method"] and s["by"] and s["takes_in"] and s["gives"]
         for item in s["takes_in"]:
@@ -237,6 +237,18 @@ def test_the_shafts_sit_where_the_gears_run_and_the_offset_puts_them(payload):
     assert rows["Gears that overlap seen along the shafts"] == (
         "stage-1 gear (intermediate) and stage-2 gear (output), by 31.4 mm"
     )
+
+
+def test_step_four_gives_the_mesh_forces_in_every_load_case(payload):
+    """GBX-1: the forces' sizes per stage, and their directions on the pinion in each case."""
+    forces = payload["contracts"][0]["page"]["calculations"][3]
+    assert forces["quantity"] == "Gear forces" and forces["status"] == "computed"
+    assert forces["function"] == "zenryx.domains.gearbox.forces.case_forces"
+    rows = {r["label"]: r["cells"] for r in forces["table"]["rows"]}
+    assert rows["Ft / Fr / Fa"] == ["5,499 / 2,399 / 3,243 N", "11,066 / 4,657 / 6,490 N"]
+    assert rows["Torque into the pinion's shaft"] == ["150 N·m", "306 N·m"]
+    for case in ("peak drive", "peak reverse", "peak regeneration"):
+        assert f"Force on the pinion (x, y, z), {case}" in rows
 
 
 def test_the_gear_orders_are_checked_at_the_duty_speed_it_names(payload):

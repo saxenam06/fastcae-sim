@@ -596,6 +596,7 @@ def ev_reducer_posed():
                 },
             ],
             "input_output_offset": given(qty(165, "mm"), "the first packaging", "2026-10-09 02:12"),
+            "forward_rotation": asm("+z", "A21"),
             "service_life": asm(qty(944, "h"), "A4"),
             "gear_material": given("SS 2511"),
             "gear_quality": asm("N6", "A5"),
@@ -803,6 +804,12 @@ def ev_reducer_posed():
                 "8.25 mm",
                 "(1.1-1.2) × the wall thickness δ, at δ = 7.5 mm · Maciejczyk & Zdziennicki "
                 "Ch. 9, Fig. 9.1",
+            ),
+            assumption(
+                "A21",
+                "the input's rotation in forward drive",
+                "+z: anticlockwise seen from the cover side (+z)",
+                "not given; it sets the forces' directions, not their sizes",
             ),
         ],
     }

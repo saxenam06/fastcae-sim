@@ -30,6 +30,7 @@ from zenryx.contract.train import (
     stage_angle,
 )
 from zenryx.contract.units import Quantity, Vector
+from zenryx.domains.gearbox.forces import case_forces
 
 # Short names for the sources the contracts cite, by how their citation starts.
 SHORT: tuple[tuple[str, str], ...] = (
@@ -271,6 +272,15 @@ def inputs(spec: HousingDesignSpec) -> list[dict[str, Any]]:
     for i, p in enumerate(req.powers):
         duty.append(
             _row(f"{p.kind.capitalize()} power", p.power, spec, f"requirement.powers[{i}].power")
+        )
+    if req.forward_rotation is not None:
+        duty.append(
+            _row(
+                "Input's rotation, forward drive",
+                req.forward_rotation,
+                spec,
+                "requirement.forward_rotation",
+            )
         )
     if req.service_life is not None:
         duty.append(_row("Service life", req.service_life, spec, "requirement.service_life"))
@@ -564,10 +574,57 @@ def _overlaps(
     return "; ".join(found) if found else "none"
 
 
+def _vector(values: tuple[float, float, float], scale: float = 1.0, unit: str = "N") -> str:
+    return "(" + ", ".join(_num(v / scale, 4) for v in values) + f") {unit}"
+
+
+def _forces_table(spec: HousingDesignSpec) -> dict[str, Any] | None:
+    """Step 4's output, a column a stage: the forces' sizes, the torque each pinion's shaft
+    drives, the force on the pinion in each load case, and the gear's moment in the first."""
+    try:
+        cases = case_forces(spec)
+    except (ValueError, NotImplementedError, KeyError):
+        return None
+    if not cases:
+        return None
+    first = cases[0]
+    rows = [
+        {
+            "label": "Ft / Fr / Fa",
+            "cells": [
+                f"{_num(m.tangential, 4)} / {_num(m.radial, 4)} / {_num(m.axial, 4)} N"
+                for m in first.meshes
+            ],
+        },
+        {
+            "label": "Transmitted force Fbt",
+            "cells": [f"{_num(m.transmitted, 4)} N" for m in first.meshes],
+        },
+        {
+            "label": "Torque into the pinion's shaft",
+            "cells": [f"{_num(abs(m.pinion_torque) / 1000, 4)} N·m" for m in first.meshes],
+        },
+    ]
+    for case in cases:
+        rows.append(
+            {
+                "label": f"Force on the pinion (x, y, z), {case.name}",
+                "cells": [_vector(m.pinion.force) for m in case.meshes],
+            }
+        )
+    rows.append(
+        {
+            "label": f"Moment on the gear about its centre, {first.name}",
+            "cells": [_vector(m.gear.moment, 1000, "N·m") for m in first.meshes],
+        }
+    )
+    return {"columns": [f"Stage {i + 1}" for i in range(len(first.meshes))], "rows": rows}
+
+
 def calculations(spec: HousingDesignSpec) -> list[dict[str, Any]]:
     """The calculation chain's steps 1-10, from the inputs to the pass lines. Each has its method
     pre-selected, what it takes in (an input, or another step's output) and what it gives out.
-    Steps 1-3 are computed here by zenryx's functions; the others name the PBI that builds them."""
+    Steps 1-4 are computed here by zenryx's functions; the others name the PBI that builds them."""
     out: list[dict[str, Any]] = []
 
     def step(number, quantity, method, by, function, takes_in, gives, table=None, plan=""):
@@ -642,18 +699,22 @@ def calculations(spec: HousingDesignSpec) -> list[dict[str, Any]]:
     step(
         4,
         "Gear forces",
-        "Helical forces at the working pitch circle",
-        "Shigley · ISO 6336",
-        "the load tool (GBX-1)",
+        "The base-circle form at the working pitch circle",
+        "Shigley Ch. 13 · drivetrainhub",
+        "zenryx.domains.gearbox.forces.case_forces",
         [
             _given("peak drive, reverse and regeneration torques"),
-            _given("helix angle"),
+            _given("input's rotation, forward drive"),
+            _given("helix angle and hand"),
             _from("base Ø", 1),
             _from("working pressure angle", 1),
-            _from("transverse pressure angle", 1),
+            _from("working pitch Ø", 1),
+            _from("the shafts' places in the plane", 3),
         ],
-        "the tangential, radial and axial force at each mesh, in every load case",
-        plan="GBX-1",
+        "each mesh's tangential, radial and axial force with its direction on each gear, and each "
+        "gear's moment (its torque and the axial force's moment), in every load case",
+        _forces_table(spec),
+        plan="needs the gear data and the offset",
     )
     # Steps 5 to 8 go round: the layout needs the bearings' widths, the loads need the layout, the
     # shaft sections need the loads, and the bearings need the loads and the shaft's diameter. From
