@@ -18,6 +18,11 @@ web/node_modules/
 web/dist/
 *.tsbuildinfo
 
+# Archived code, kept only on the engineer's laptop: archive/web/ (the UI's old views) and
+# archive/src/ (retired Python). Anchored, so docs/archive/ stays tracked. Git's history keeps
+# what was committed: the UI's first views at 61e51c8, under web/archive/.
+/archive/
+
 # Credentials: read from the environment, never committed
 .env
 

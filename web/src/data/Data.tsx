@@ -8,7 +8,7 @@
  * something, asks for something back, and names the grader that marks the answer.
  *
  * The counts are real and zero today; the examples are in words, never numbers. The first
- * version (axes, pairs, a comparison of contracts) is in `web/archive/data-v1/`.
+ * version (axes, pairs, a comparison of contracts) is archived in `archive/web/data-v1/`.
  */
 
 import type { Tab, TabProps } from "../app/tab";

@@ -3,8 +3,8 @@
  * contract in words, never numbers: nothing is recorded yet, and an invented number would read as
  * a result.
  *
- * Replaces the first version's kinds (`web/archive/data-v1/kinds.ts`), which were tied to the old
- * Flow tab's counts.
+ * Replaces the first version's kinds (archived in `archive/web/data-v1/kinds.ts`), which were
+ * tied to the old Flow tab's counts.
  */
 
 import type { Snapshot } from "../records/types";

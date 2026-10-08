@@ -13,6 +13,10 @@ zenryx designs housings from requirements. The engineer states a gearbox's funct
   - Read the indexes before researching anything again.
 - **Inputs from outside:** fastcae's `../fastcae/docs/inputs/`. It holds the engineer's plans of 6 October, the reviewer's suggestions and the Q&A record.
 - **The archive:** [docs/archive/](docs/archive/). This repository's earlier gearbox and bracket plans, superseded by the plan.
+- **Archived code:** `archive/` at the top, which git ignores, so it lives on the engineer's laptop only.
+  - `archive/web/` holds the UI's old views; `archive/src/` holds retired Python.
+  - Retired code moves there rather than being deleted (the engineer, 8 October).
+  - Git's history keeps what was committed: the UI's first views are at 61e51c8, under `web/archive/`.
 - **fastcae** (`C:\Work\fastcae`, tag `fastcae-v1`) is the earlier rib application, frozen. It is a reference to read and copy from, never a dependency.
 - **Session scratchpads are temporary.** Anything worth keeping is copied into the repo the same day.
 
@@ -84,6 +88,8 @@ zenryx designs housings from requirements. The engineer states a gearbox's funct
   - Start one heavy job, see it running, then the next. Two jobs submitted within seconds once started two runners.
   - Stopping a watcher with `taskkill /T` kills its child agent session.
 - **CP-SAT repeatability:** one search worker and a deterministic limit (`max_deterministic_time`), not a wall-clock one. Log OPTIMAL or FEASIBLE, and break ties explicitly.
-- **Ignore rules are anchored:** `/data/`, `/assets/` and `/results/`, never a bare `data/`. A bare `data/` also hides `checks/data/` (the example contracts) and `web/src/data/` (the UI's Data tab). It did until 8 October, so a commit would have left them out.
+- **Ignore rules are anchored:** `/data/`, `/assets/`, `/results/` and `/archive/`, never a bare `data/` or `archive/`.
+  - A bare `data/` also hides `checks/data/` (the example contracts) and `web/src/data/` (the UI's Data tab). It did until 8 October, so a commit would have left them out.
+  - A bare `archive/` would hide `docs/archive/`.
 - **Unusual paths:** never hand an unusual path (`\\?\`, relative, empty) to a call that deletes or overwrites. Stage in a short temp folder and check the path first.
 - **Usage limits:** a Claude session limit can stop long agent work mid-way. On 6 October it stopped three research agents. Give long work a resume path, and write results to files as they come.

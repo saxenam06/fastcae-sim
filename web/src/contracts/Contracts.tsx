@@ -1,7 +1,7 @@
 /**
  * The Contract tab: one page, one contract (the engineer, 8 Oct 19:52). No rail and no card, so the
  * page has the full width, as a product's form does. The views of 8 October, a page per layer with
- * an entry card, are kept in `web/archive/contracts-v1/`.
+ * an entry card, are archived in `archive/web/contracts-v1/`.
  */
 
 import type { Tab, TabProps } from "../app/tab";

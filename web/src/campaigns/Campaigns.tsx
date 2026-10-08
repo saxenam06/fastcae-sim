@@ -8,7 +8,8 @@
  *
  * Nothing runs yet: the agent (AGT-1) is not built, and the contract must be frozen first. So the
  * form is shown with its choices made, and the steps table shows the shape of a row in words.
- * The first version (a page per view, a rail of campaigns) is in `web/archive/campaigns-v1/`.
+ * The first version (a page per view, a rail of campaigns) is archived in
+ * `archive/web/campaigns-v1/`.
  */
 
 import { shortTitle } from "../app/product";

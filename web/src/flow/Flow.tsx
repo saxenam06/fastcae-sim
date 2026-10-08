@@ -4,7 +4,7 @@
  * One strip of steps, in the order the work runs. Each step shows its count, whether what makes it
  * is built, and what it waits for; a click opens its tab. Under the strip are the tools still to
  * build, in order, each with what it unlocks. The first version (a contract-by-stage table and a
- * campaign diagram) is in `web/archive/flow-v1/`.
+ * campaign diagram) is archived in `archive/web/flow-v1/`.
  */
 
 import type { View } from "../app/product";

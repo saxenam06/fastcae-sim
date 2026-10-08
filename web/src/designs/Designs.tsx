@@ -7,8 +7,8 @@
  * and the chart puts every design against it: mass across, the worst margin up.
  *
  * Nothing is made yet: geometry (GEO-1) and the judge (PHY-1) are not built. The published
- * design's mass is real, so it is drawn; the rest is the frame. The first version is in
- * `web/archive/designs-v1/`.
+ * design's mass is real, so it is drawn; the rest is the frame. The first version is archived
+ * in `archive/web/designs-v1/`.
  */
 
 import { shortTitle } from "../app/product";
