@@ -15,7 +15,7 @@ It exists because the session may be compacted (the engineer, 02:11).
 **8 October, 11:50.**
 - **The overnight build is done** (03:29). From 08:43 to 09:37 the engineer and Claude discussed the data and learning side; that discussion is documented (§2a).
 - **The web UI (PLT-4) works locally** (10:38-11:50, decision 14). It follows the product from the contract through campaigns, hypotheses, designs and grades to the datapoints. The three contracts are shown in full; everything downstream is laid out and blank. In PowerShell, `cd web` then `npm.cmd run dev` opens it at http://localhost:5190; plain `npm` is refused by the default execution policy. Its design is [the UI design](../platform/2026-10-08-ui-design.md).
-- **Nothing is committed or pushed.** The engineer has yet to answer four things:
+- **Committed on `product/end-to-end`, not pushed** (18:30-18:37), in five commits: feca5c1 (PLT-2, the Python project), f51aba1 (CON-1, the contract), cb0c4b3 (the prototype), 71bfc84 (PRD-3 and PRD-4, these docs), ca44539 (PLT-4, the web UI). The engineer has yet to answer four things:
   - the review of the contract spec and code;
   - assumptions A1-A8;
   - the motor-flange layout;
@@ -35,7 +35,7 @@ It exists because the session may be compacted (the engineer, 02:11).
   - no FE yet.
 - CLAUDE.md is updated: how to build and check; GRC no longer used.
 - **PRD-4** (fold the decisions into the plan) is done in its first pass. plan.md now carries the 8 October changes in its Status, §0, §7, §11, §12 and §15. decisions.md marks D3 re-taken and D4 widened.
-- **Nothing is committed or pushed.** All edits are on `main` in the working tree; the engineer commits.
+- **Committed on `product/end-to-end`** (the five commits above), not pushed.
 
 ## 2. The decisions, in order
 

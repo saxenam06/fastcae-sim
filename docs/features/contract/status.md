@@ -10,14 +10,14 @@ Its typed schema is `HousingDesignSpec`. Every value in it is an entry with four
 
 The validator refuses a fault with its rule, the entry and the reason. A frozen contract carries its own hash and is a replayable graded task. The dataset generator, the agent's state, the physics interface and the records all derive from it.
 
-**PBI key:** CON · **State:** CON-1 (contract schema v0) works locally: its checks pass, including the three example contracts. Not committed, and not yet reviewed by the engineer · **Updated:** 2026-10-08 11:48 by Claude
+**PBI key:** CON · **State:** CON-1 (contract schema v0) works locally: its checks pass, including the three example contracts. Committed in f51aba1 on `product/end-to-end`, not pushed, and not yet reviewed by the engineer · **Updated:** 2026-10-08 18:38 by Claude
 **Code:** `src/zenryx/contract/` (`units.py`, `entry.py`, `model.py`, `canonical.py`, `involute.py`, `validate.py`); checks in `checks/contract/`; example contracts in `checks/data/contracts/`
 
 ## Now
 
 | PBI | Goal | Who · laptop · branch | Since | Where it stands |
 |---|---|---|---|---|
-| CON-1 | `HousingDesignSpec` v0: its layers, entries with provenance, authority and kind; units and frames; derived values stamped; the three stages; the validator; the canonical hash | Claude · LAPTOP-IR8VEG53 · `product/end-to-end`, the one branch for now (uncommitted) | 2026-10-08 02:15 | **Done locally, against the spec's §8.** It accepts the three example contracts and refuses more than five broken ones, each with its rule. The hash is stable and changes with any value. The examples are licence-clean. **Left:** the engineer's review of the spec and the code, then the commit |
+| CON-1 | `HousingDesignSpec` v0: its layers, entries with provenance, authority and kind; units and frames; derived values stamped; the three stages; the validator; the canonical hash | Claude · LAPTOP-IR8VEG53 · `product/end-to-end`, the one branch for now | 2026-10-08 02:15 | **Done locally, against the spec's §8.** It accepts the three example contracts and refuses more than five broken ones, each with its rule. The hash is stable and changes with any value. The examples are licence-clean. **Committed in f51aba1** (not pushed). **Left:** the engineer's review of the spec and the code |
 
 ## Next
 

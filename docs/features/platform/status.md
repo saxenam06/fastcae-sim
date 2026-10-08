@@ -5,17 +5,17 @@ The repository and what every other feature runs on: the Python project and its 
 **PBI key:** PLT · **State:**
 - PLT-2 (Python project, venv, checks, CI) works locally.
 - PLT-4 (the web UI) works locally: the product's flow from the contract to the datapoints, asked for by the engineer at 10:38. It shows the three contracts in full, and lays out everything downstream of them blank.
-- Nothing committed.
+- Committed on `product/end-to-end`, not pushed: PLT-2 in feca5c1, PLT-4 in ca44539. A fresh clone of the branch passes every check and builds the UI.
 
-**Updated:** 2026-10-08 18:16 by Claude
+**Updated:** 2026-10-08 18:38 by Claude
 **Code:** `pyproject.toml`, `uv.lock`, `src/zenryx/` (with `src/zenryx/api/`), `checks/`, `web/`, `.github/workflows/checks.yml`
 
 ## Now
 
 | PBI | Goal | Who · laptop · branch | Since | Where it stands |
 |---|---|---|---|---|
-| PLT-2 | The Python project: `pyproject.toml` (package `zenryx`), its own `.venv` (CadQuery and the solver's needs), `checks/` tracked with pytest pointed there, ruff, CI | Claude · LAPTOP-IR8VEG53 · `product/end-to-end`, the one branch for now (uncommitted) | 2026-10-08 02:12 | Locally done: `uv sync --all-extras` builds the venv from `uv.lock`; the checks pass; ruff check and format are clean. **Left:** the engineer's commit, then the first CI run on GitHub |
-| PLT-4 | The web UI (`web/`), built as the product rather than a viewer of prototypes: the contract, the campaigns made from it, their hypotheses, designs and grades, and the datapoints they become. What exists now (the contracts, their checks and sources) is shown; the rest is laid out and left blank. fastcae's sheet design copied. Design: [2026-10-08-ui-design.md](2026-10-08-ui-design.md) | Claude · LAPTOP-IR8VEG53 · `product/end-to-end` (from `main` at 640a0f7, 8 Oct 18:18; uncommitted) | 2026-10-08 10:38 | **Done locally.** Five tabs: Flow, Contracts, Campaigns, Designs, Data. `npm run build` passes; the snapshot's 16 checks pass; every view was looked at in a screenshot of the built page (headless Edge, no server). **Left:** the engineer opens it (in PowerShell: `cd web`, then `npm.cmd run dev`, then http://localhost:5190) and says what to change; then the commit; then CI's first run of the web job |
+| PLT-2 | The Python project: `pyproject.toml` (package `zenryx`), its own `.venv` (CadQuery and the solver's needs), `checks/` tracked with pytest pointed there, ruff, CI | Claude · LAPTOP-IR8VEG53 · `product/end-to-end`, the one branch for now | 2026-10-08 02:12 | Locally done: `uv sync --all-extras` builds the venv from `uv.lock`; the checks pass; ruff check and format are clean. **Committed in feca5c1** (not pushed). **Left:** the first CI run, once the branch is pushed |
+| PLT-4 | The web UI (`web/`), built as the product rather than a viewer of prototypes: the contract, the campaigns made from it, their hypotheses, designs and grades, and the datapoints they become. What exists now (the contracts, their checks and sources) is shown; the rest is laid out and left blank. fastcae's sheet design copied. Design: [2026-10-08-ui-design.md](2026-10-08-ui-design.md) | Claude · LAPTOP-IR8VEG53 · `product/end-to-end` (from `main` at 640a0f7, 8 Oct 18:18) | 2026-10-08 10:38 | **Done locally.** Five tabs: Flow, Contracts, Campaigns, Designs, Data. `npm run build` passes; the snapshot's 16 checks pass; every view was looked at in a screenshot of the built page (headless Edge, no server). **Committed in ca44539** (not pushed). **Left:** the engineer opens it (in PowerShell: `cd web`, then `npm.cmd run dev`, then http://localhost:5190) and says what to change; CI's first run of the web job once pushed |
 
 ## Next
 

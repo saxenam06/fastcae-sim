@@ -2,7 +2,7 @@
 
 zenryx designs housings from requirements. A gearbox's functional interfaces, loads, package, targets and one manufacturing process go in. Housings come out that are FE-proven and pass the process's rules, each labelled with its rung, together with the whole campaign: every hypothesis, decision and physical consequence. A general platform; the first family is an EV two-stage reducer housing. This page holds the plan of record every other feature follows, and its decisions.
 
-**PBI key:** PRD · **State:** the plan of record. PRD-3 (the engineer's questions before P0) is under way: the direction for the contract is decided (Decisions, first row) · **Updated:** 2026-10-08 01:40 by Claude
+**PBI key:** PRD · **State:** the plan of record. PRD-3 (the engineer's questions before P0) is under way: the direction for the contract is decided (Decisions, first row) · **Updated:** 2026-10-08 18:39 by Claude
 **Code:** none - the plan and decisions the other features follow
 
 ## Now
@@ -15,7 +15,7 @@ zenryx designs housings from requirements. A gearbox's functional interfaces, lo
 | PBI | Goal | Done when |
 |---|---|---|
 | PRD-3 | The engineer's questions before P0, answered, and anything they change folded in. Under way: the direction and the first contract are decided (Decisions, first two rows) | The engineer says P0 may start |
-| PRD-4 | **First pass done locally (8 Oct, about 02:40, uncommitted):** plan.md Status, §0, §7, §11, §12 and §15, and decisions.md D3 and D4, carry the 8 October changes. Left: the engineer's review. Fold the 7-8 October decisions into the plan and decisions.md, as PRD-2 did. That means: published requirements; the standards-based verdict with a band; replayable tasks; die casting (D3); D4 widened; the geometry split; GRC dropped | plan.md sections 0, 4, 5, 7, 11, 12, 14 and 15, and decisions.md D3 and D4, say what the Decisions table says |
+| PRD-4 | **First pass done (8 Oct, about 02:40; committed in 71bfc84 on `product/end-to-end`, not pushed):** plan.md Status, §0, §7, §11, §12 and §15, and decisions.md D3 and D4, carry the 8 October changes. Left: the engineer's review. Fold the 7-8 October decisions into the plan and decisions.md, as PRD-2 did. That means: published requirements; the standards-based verdict with a band; replayable tasks; die casting (D3); D4 widened; the geometry split; GRC dropped | plan.md sections 0, 4, 5, 7, 11, 12, 14 and 15, and decisions.md D3 and D4, say what the Decisions table says |
 
 ## What runs
 
