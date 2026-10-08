@@ -138,10 +138,10 @@ All on 9 October, LAPTOP-IR8VEG53, 8 mm meshes unless noted. "Own" is the worst 
 
 | PBI | Delivered | Date | Commits |
 |---|---|---|---|
-| LOP-6 | The tilt a bearing sees: `grade.py` grades each seat's tilt against its shaft's line and prints the seat's own rotation beside it; every design 21-68 % worse, the ranking kept | 2026-10-09 | this commit |
-| LOP-5 | [What the first loop teaches](2026-10-09-first-loop-what-it-teaches.md): the iterations, what worked, the tools the product needs, where the agent's judgement belongs, what would open the space | 2026-10-09 | this commit |
-| LOP-4 | Ribs read from the fields and built into the CAD, judged again; three rounds, 16 designs, 19 judgements; nothing passes as the contract stands | 2026-10-09 | e524ea9, this commit |
-| LOP-3 | Three optimisations over the whole design space: compliance at 1 and 2 kg, the seats' tilt at 1 kg (by an adjoint); the local cycle moves to LOP-7 | 2026-10-09 | e524ea9, this commit |
+| LOP-6 | The tilt a bearing sees: `grade.py` grades each seat's tilt against its shaft's line and prints the seat's own rotation beside it; every design 21-68 % worse, the ranking kept | 2026-10-09 | 77af3ca |
+| LOP-5 | [What the first loop teaches](2026-10-09-first-loop-what-it-teaches.md): the iterations, what worked, the tools the product needs, where the agent's judgement belongs, what would open the space | 2026-10-09 | 77af3ca |
+| LOP-4 | Ribs read from the fields and built into the CAD, judged again; three rounds, 16 designs, 19 judgements; nothing passes as the contract stands | 2026-10-09 | e524ea9, 77af3ca |
+| LOP-3 | Three optimisations over the whole design space: compliance at 1 and 2 kg, the seats' tilt at 1 kg (by an adjoint); the local cycle moves to LOP-7 | 2026-10-09 | e524ea9, 77af3ca |
 | LOP-2 | The plain housing judged by FE, the engineer's practice: the measures above | 2026-10-09 | 7ca5e28, c7fbd59 |
 | LOP-1 | The plain shell and wall in two halves, 7.23 kg, every face named | 2026-10-09 | 7ca5e28 |
 
