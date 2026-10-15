@@ -38,6 +38,7 @@ import model as toymodel  # noqa: E402
 import rules  # noqa: E402
 
 L_LEAST = 20.0  # mm: a shorter rib piece is not drawn (the toy's gate)
+END_SLOPE = 1.0  # a rib's height past its least, a mm from where it ends (its end tapered)
 PLAN_OUT: Path | None = None  # where `rib_sdf` writes each half's plan reading (`plan_<design>_<half>.npz`)
 OUTLINE_SIGMA = 3.0  # mm: a group's and a solid zone's outline blurred (the product's LOOP_VOXEL_SMOOTH)
 
@@ -238,7 +239,14 @@ def rib_sdf(cols, half, f, xs, ys, zs, footprint, smooth_mm, smooth_range) -> np
             # thins under `T_LEAST` or drops under `H_LEAST`; the group's outline cuts it
             d_mid = spacing * np.abs(np.angle(np.exp(1j * phase))) / (2.0 * np.pi)
             a_k = 0.5 * np.clip(rho, 0.0, 1.0) * spacing - d_mid
-            a_k = np.minimum(a_k, np.minimum(rho * spacing - rules.T_LEAST, hk - rules.H_LEAST))
+            gate = np.minimum(rho * spacing - rules.T_LEAST, hk - rules.H_LEAST)
+            a_k = np.minimum(a_k, gate)
+            # a rib's end tapers: near where it ends its height falls to the least
+            # height at a slope of one (a full-height narrow tip read as a shard)
+            from scipy.ndimage import distance_transform_edt
+
+            d_end = distance_transform_edt(gate > 0) * step
+            hk = np.minimum(hk, rules.H_LEAST + END_SLOPE * d_end)
             a_k = np.where(area, a_k, np.minimum(a_k, -step))
             rib = _pieces(a_k > 0, step)
             a_k = np.where((a_k > 0) & ~rib, -step, a_k)  # the short pieces dropped
@@ -268,6 +276,7 @@ def rib_sdf(cols, half, f, xs, ys, zs, footprint, smooth_mm, smooth_range) -> np
             # other columns at none), reach half a cube: a smooth line, not the columns' steps
             level = grid(np.where(cols["zone"][sel], hs_eff, 0.0), 0.0)
             solid = (map_coordinates(level, at, order=3, mode="nearest") >= 0.5 * h) & area
+            # (an opening by the least width here cut the thin collars that join the lugs: not used)
             solid = fill_diagonals(solid[:, :, None])[:, :, 0]
             solid_n = int(solid.sum())
             if solid.any():
