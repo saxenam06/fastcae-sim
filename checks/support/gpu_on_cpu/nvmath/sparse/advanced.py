@@ -1,10 +1,11 @@
-"""cuDSS's direct solver as nvmath exposes it, on the CPU by SciPy's SuperLU, for the checks only.
+"""cuDSS's direct solver as nvmath exposes it, on the CPU, for the checks only: Intel's PARDISO
+(`pypardiso`, which factors in double: a stand-in for tracing and parity on a machine without a card,
+never the product's factor) when it is installed, else SciPy's SuperLU (fine for small models only).
 
 The solver keeps a reference to its matrix, as cuDSS does: the optimiser writes new values into the
-matrix in place and factorises again (`fast_factor.GpuStiffness.factor`). The factor is taken in the
-matrix's own precision (single, as on the card); the callers refine every answer to double by
-conjugate gradients, so a stand-in factor changes the steps taken, not the answer within its
-tolerance."""
+matrix in place and factorises again (`fast_factor.GpuStiffness.factor`). The callers refine every
+answer to double by conjugate gradients with the factor as their preconditioner, so a stand-in
+factor changes the steps taken, not the answer within its tolerance."""
 
 from __future__ import annotations
 
@@ -12,7 +13,6 @@ import enum
 
 import numpy as np
 import scipy.sparse as sp
-from scipy.sparse.linalg import splu
 
 
 class DirectSolverMatrixType(enum.Enum):
@@ -34,14 +34,26 @@ class ExecutionCUDA:
 class DirectSolver:
     def __init__(self, a, b, options=None, execution=None):
         self.a, self.b = a, b
-        self._lu = None
+        self._solve = None
 
     def plan(self) -> None:
         pass
 
     def factorize(self) -> None:
-        a = sp.csc_matrix(self.a)
-        self._lu = splu(a, permc_spec="MMD_AT_PLUS_A")
+        a = sp.csr_matrix(self.a)
+        try:
+            import pypardiso
+
+            solver = pypardiso.PyPardisoSolver()
+            a64 = a.astype(np.float64)
+            a64.sort_indices()
+            solver.factorize(a64)
+            self._solve = lambda b: solver.solve(a64, np.asarray(b, np.float64))
+        except ImportError:
+            from scipy.sparse.linalg import splu
+
+            lu = splu(sp.csc_matrix(a), permc_spec="MMD_AT_PLUS_A")
+            self._solve = lambda b: lu.solve(np.asarray(b, lu.L.dtype))
 
     def reset_operands(self, a=None, b=None) -> None:
         if a is not None:
@@ -51,8 +63,8 @@ class DirectSolver:
 
     def solve(self):
         b = np.asarray(self.b)
-        x = self._lu.solve(b.astype(self._lu.L.dtype))
-        return np.asfortranarray(x.reshape(b.shape))
+        x = self._solve(b.reshape(b.shape[0], -1))
+        return np.asfortranarray(np.asarray(x, np.float32).reshape(b.shape))
 
     def free(self) -> None:
-        self._lu = None
+        self._solve = None
