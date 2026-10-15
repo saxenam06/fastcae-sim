@@ -2,7 +2,7 @@
 # PROTOTYPE (LOP-32) - the members' fairing stage (the engineer, 15 October 16:10: "Reward. add rules"): the final recipe's
 # optimisation settings (recipes/final.json) started from a converged run's field at its own sharpness, with the fairing rules
 # (`member_fair`, `topo_free.py --fair`) and the topology frozen; then the final recipe's drawing, FE, castability, the grade
-# and the Designs tab's records, as `run_final.py` runs them.
+# and the Designs tab's records, as the final workflow (`python -m zenryx.workflow.run`) runs them.
 # Run: bash prototypes/first_loop/fair_run.sh <design> <start run stem> [targets, default 0.06:1.0:0.3] [beta, default 16]
 set -u
 cd "$(dirname "$0")/../.."

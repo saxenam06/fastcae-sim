@@ -118,7 +118,7 @@ export function RunPanel() {
       <div className="run-panel" data-state="down">
         <p>
           The API is not running. Start it on this machine, then reload:{" "}
-          <code>.venv/Scripts/python.exe prototypes/first_loop/serve.py</code>
+          <code>.venv/Scripts/python.exe -m zenryx.api.server</code>
         </p>
       </div>
     );

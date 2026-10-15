@@ -20,6 +20,9 @@ geometry = [
     "scikit-image>=0.24",
     "trimesh>=4.5",
     "pyvista>=0.44",
+    # the judges' mesh: decimation and self-intersection tests (`housing.mesh.coarse`), TetGen's quality tets (`housing.fe`)
+    "pymeshlab>=2025.7",
+    "tetgen>=0.8.4",
 ]
 # Reading published sources (tables in papers) when an example contract is written.
 docs = [

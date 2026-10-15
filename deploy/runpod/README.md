@@ -1,6 +1,6 @@
 # The GPU on RunPod, serverless (PLT-12)
 
-The loop's heavy work (the optimisation, FE, the whole `run_final.py`) runs on a RunPod serverless worker: a GPU billed
+The loop's heavy work (the optimisation, FE, the whole final workflow, `python -m zenryx.workflow.run`) runs on a RunPod serverless worker: a GPU billed
 by the second only while a job runs, nothing while idle. The engineer's aim (15 October): a 16 GB card, so the voxels can
 go finer than the laptop's 4 mm.
 
@@ -10,7 +10,7 @@ go finer than the laptop's 4 mm.
 laptop / cloud session                       RunPod
   git push  ───────────────────────────────▶  GitHub (the code at a ref)
   submit.py final ──▶ endpoint ──▶ worker (image: deps only) ──▶ git checkout <ref> on the network volume
-                                                │                 run_final.py / one script, on the GPU
+                                                │                 zenryx.workflow.run / one stage, on the GPU
                                                 └─ data/first_loop/, web/src/records/ stay on the volume
   sync.sh pull <pattern> ◀── S3 API ◀─────────── the volume (no worker started for this)
 ```
@@ -90,7 +90,7 @@ coarsened to 7 mm triangles whatever the voxel. So the laptop's 8 GB card can st
 ```
 python deploy/runpod/submit.py script topo_free.py <budget kg> <voxel mm> <the recipe's optimiser arguments>   # the GPU part alone
 bash   deploy/runpod/sync.sh pull '*<run stem>*'
-.venv/Scripts/python.exe prototypes/first_loop/run_final.py --run <run stem>            # draw, FE, grade on the laptop
+.venv/Scripts/python.exe -m zenryx.workflow.run --run <run stem>                        # draw, FE, grade on the laptop
 ```
 
 The worker is billed by the second whether its GPU is busy or not, so the CPU stages of a full run (drawing, TetGen,

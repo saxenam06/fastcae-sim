@@ -27,10 +27,10 @@ COPY --from=ghcr.io/astral-sh/uv:0.11.32 /uv /usr/local/bin/uv
 WORKDIR /build
 COPY pyproject.toml uv.lock ./
 # Every extra (the geometry, the GPU solve, the checks); the project itself comes from the checkout (PYTHONPATH).
-# tetgen and pymeshlab are outside uv.lock on the laptop too (CLAUDE.md); runpod is the worker's SDK.
+# tetgen and pymeshlab come with the geometry extra (uv.lock, since LOP-33); runpod is the worker's SDK.
 RUN uv python install 3.12 \
     && uv sync --frozen --all-extras --no-install-project \
-    && uv pip install --python /opt/venv/bin/python tetgen pymeshlab runpod \
+    && uv pip install --python /opt/venv/bin/python runpod \
     && sha256sum uv.lock | cut -d' ' -f1 > /opt/uv.lock.sha256 \
     && rm -rf /root/.cache
 

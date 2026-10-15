@@ -142,14 +142,16 @@ def command(inp: dict, job_id: str = "") -> list[str]:
     py = str(VENV / "bin" / "python")
     mode = inp.get("mode", "final")
     if mode == "optimise":
-        spec = WORK / "data" / "first_loop" / f"stage_{job_id}.json"
         keys = ("design", "budget", "voxel", "args")
         if any(k not in inp for k in keys):
             raise RuntimeError(f"mode optimise needs {keys}")
-        spec.write_text(json.dumps({k: inp[k] for k in keys}), encoding="utf-8")
-        return [py, "-u", "prototypes/first_loop/stage_cli.py", "optimise", str(spec)]
+        out = WORK / "data" / "first_loop"
+        contract = WORK / str(inp.get("contract") or "checks/data/contracts/ev_reducer_posed.json")
+        return [py, "-u", "-m", "zenryx.workflow.stage", "optimise", "--out", str(out), "--contract", str(contract),
+                "--design", str(inp["design"]), "--budget", str(inp["budget"]), "--voxel", str(inp["voxel"]), "--",
+                *[str(a) for a in inp["args"]]]
     if mode == "final":
-        cmd = [py, "-u", "prototypes/first_loop/run_final.py"]
+        cmd = [py, "-u", "-m", "zenryx.workflow.run"]
         if inp.get("recipe"):
             cmd += ["--recipe", str(inp["recipe"])]
         if inp.get("run"):
@@ -188,7 +190,8 @@ def handler(job: dict) -> dict:
         out_dir.mkdir(parents=True, exist_ok=True)
         env = dict(os.environ)
         env.pop("GITHUB_TOKEN", None)  # the run needs no access to GitHub
-        env.update({"LOOP_PY": str(VENV / "bin" / "python"), "PYTHONPATH": str(WORK / "src"), "PYTHONUNBUFFERED": "1", "MPLBACKEND": "Agg"})
+        env.update({"LOOP_PY": str(VENV / "bin" / "python"), "PYTHONPATH": str(WORK / "src"), "PYTHONUNBUFFERED": "1", "MPLBACKEND": "Agg",
+                    "ZENRYX_OPTIMISE_ON": "local"})  # fmt: skip  (on the worker every stage is local)
         env.update(start_display())
         env.update({k: str(v) for k, v in inp.get("env", {}).items()})
         out_dir.mkdir(parents=True, exist_ok=True)

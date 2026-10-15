@@ -47,25 +47,19 @@ def test_its_optimiser_arguments_are_words() -> None:
     assert "--least-width" in args
 
 
-def test_the_scripts_its_engines_run_exist() -> None:
-    for name in (
-        "run_final.py",
-        "engines.py",
-        "memory_guard.py",
-        "contract_layout.py",
-        "setup_export.py",
-        "topo_free.py",
-        "outcome_cad.py",
-        "oiltight.py",
-        "fe.py",
-        "castable.py",
-        "view_export.py",
-        "look.py",
-        "topo_export.py",
-        "names.py",
-        "process_export.py",
-    ):
-        assert (LOOP / name).exists(), name
+def test_every_stage_its_engines_run_is_in_src() -> None:
+    from zenryx.workflow.stage import STAGES
+
+    assert set(STAGES) == {
+        "layout",
+        "optimise",
+        "draw",
+        "oiltight",
+        "fe",
+        "castable",
+        "records",
+        "process",
+    }
 
 
 def test_its_numbers() -> None:

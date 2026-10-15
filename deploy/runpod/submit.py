@@ -74,7 +74,7 @@ def report(s: dict) -> None:
 def main() -> None:
     ap = argparse.ArgumentParser(description="Run the loop's heavy work on the RunPod worker (PLT-12).")
     sub = ap.add_subparsers(dest="what", required=True)
-    f = sub.add_parser("final", help="run_final.py on the worker")
+    f = sub.add_parser("final", help="the final workflow (python -m zenryx.workflow.run) on the worker")
     f.add_argument("--recipe", default="")
     f.add_argument("--run", default="")
     f.add_argument("--design", default="")

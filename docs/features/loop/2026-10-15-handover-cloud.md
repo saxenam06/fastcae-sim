@@ -31,7 +31,7 @@ how to run it, what a cloud session can and cannot do, the engineer's working ru
   `LOOP_DRAW_SMOOTH_RANGE=15`, `LOOP_DRAW_FINE=1`: `baseline2_lw8_smooth`'s drawing; the fairing is out until mount-1 holds,
   section 5). A change of setting is a change of this file, with a new version and the engineer's word (rule 3 below).
   `checks/loop/test_final_recipe.py` checks its shape.
-- **The command:** `.venv/Scripts/python.exe prototypes/first_loop/run_final.py` (on the laptop). It fingerprints the
+- **The command:** `.venv/Scripts/python.exe -m zenryx.workflow.run` (on the laptop; `run_final.py` until LOP-33 moved every stage into `src/zenryx`). It fingerprints the
   contract and the recipe; rebuilds the layout from the contract when the contract changed (`contract_layout.py`,
   `setup_export.py`); runs `campaign_run.sh` (the optimisation, the drawing, FE, castability, oil-tightness, the grade and
   the Designs tab's records, under the memory guard); writes the outcome to `data/first_loop/final_state.json`. Nothing

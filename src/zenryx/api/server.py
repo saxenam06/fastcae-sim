@@ -201,4 +201,15 @@ def serve(
     uvicorn.run(create_app(make_engines), host=host, port=port, log_level="info")
 
 
-__all__ = ["create_app", "serve", "ROOT"]
+def main() -> None:
+    """`python -m zenryx.api.server`: the API the Run button calls, on port 8030, its runs' stages
+    `zenryx.workflow.run.engines` (the optimisation on RunPod unless `.env` says
+    `ZENRYX_OPTIMISE_ON=local`). A server: start it only on the engineer's word."""
+    serve(lambda out: workflow.engines(out))
+
+
+__all__ = ["create_app", "serve", "main", "ROOT"]
+
+
+if __name__ == "__main__":
+    main()

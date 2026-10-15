@@ -23,9 +23,6 @@ from zenryx.domains.gearbox.spaces import Hypothesis, spaces
 # a bolt head's socket beyond each flange face, its diameter and depth (mm): an M8 cap head (13 mm)
 # and a hex key's room
 BOLT_SOCKET = [16.0, 25.0]
-# settings the final stages read that the contract does not hold (each with where it is read);
-# filled from the traces
-EXTRA: dict = {}
 
 
 def record(contract: Path, hypothesis: Hypothesis | None = None) -> dict:
@@ -39,7 +36,6 @@ def record(contract: Path, hypothesis: Hypothesis | None = None) -> dict:
     sealed = {(e.shaft, e.side.value) for e in req.shaft_layout.sealed_ends}
     m0 = req.mounts[0] if req.mounts else None
     settings = {
-        **EXTRA,
         "wall": sp.wall,
         "bolt_hole": value_in(joint.hole_diameter, "mm"),
         "bolt_boss": value_in(joint.boss_diameter, "mm"),
