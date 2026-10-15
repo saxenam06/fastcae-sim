@@ -2,7 +2,7 @@
 
 **The engineer, 16 October 00:50 (IST): "lets build this".** Agreed in conversation from 15 October 22:00: the members' shapes (wobbly, uneven, stretched, the screenshots of `baseline2_lw8` drawn smooth) are not cured by another representation of metal-or-not (cubes, B-splines, NURBS) or by smoothing afterwards; nothing in such an optimisation rewards order. fastcae's way (patterns drew candidate ribs, CP-SAT chose which stand) and Refine's (LOP-26: straight parts read from a free run) are libraries, which the engineer refuses: "we came to this repo to unleash creativity and innovation".
 
-**Updated:** 2026-10-16 00:58 by Claude
+**Updated:** 2026-10-16 01:50 by Claude
 
 ## 1. The idea, plainly
 
@@ -65,10 +65,19 @@ The set-up: 4 mm cubes, 13,104 of them (the wall one layer, the band six), 1,670
 |---|---|---|---|---|
 | **The field**, two crossing families, ribs at most 7 mm thick, 24 mm apart, at most 4 × their thickness tall | 25.2 N·mm | **28.3 N·mm** | 0.046 mrad | 0.231 kg |
 | **Today's free columns**, with our optimiser's lump rule (`--max-member 16`, p 40) | 13.5 N·mm | **15.2 N·mm** | 0.028 mrad | 0.240 kg |
-| The field, ribs up to 12 mm | (running) | | | |
+| The field, ribs up to 12 mm (`RIB_T_MOST=12`) | 21.1 N·mm | **22.4 N·mm** | 0.044 mrad | 0.238 kg |
 
 - **The method works end to end:** the field draws ribs (spokes from the bearing's boss to the bolts and the lug, a second family crossing them), nobody laid them; the derivatives agree with central differences within 3·10⁻⁶ (`gradcheck.py`).
 - **The smeared model is fair:** it reads 12 % stiffer than FE of its own drawing, as it does for the free columns (12 %).
-- **At the same mass the ribs are 1.9 times softer than the free columns** (tilt 1.6 times). The free columns pile metal into full-height stepped wings from the boss to the three nearest bolts (the lumpy look); both rib families sit at their 7 mm cap round the boss, so the field wants more metal there than thin ribs hold, and spreads it.
+- **At the same mass the ribs are 1.9 times softer than the free columns** (tilt 1.6 times); **allowed 12 mm, 1.5 times** (tilt 1.6 times): the thin-rib cap costs about a fifth, the rest is open. The free columns pile metal into full-height stepped wings from the boss to the three nearest bolts (the lumpy look); both rib families sit at their 7 mm cap round the boss, so the field wants more metal there than thin ribs hold, and spreads it.
 - **What the drawing still lacks:** ribs end in the open, short fragments stand alone, and some branch; the end rules (an end on a wall or a boss, steeply) and a least length are not in yet.
 - **Learned on the way:** the strains' best direction flips ribs stiff one way only (stiffened along it, the strain moves across), so 95-99 % of the directions turned their full step every iteration; as MMA's own variables (a smooth B-spline turn from the strains' start) they settle (median turn 0.4° at the end). One family alone is far worse than two (two load cases). At 8 mm cubes the 4 mm wall rounds to no layer: judge 4 mm runs only. The 0.5 mm drawing's FE mesh (2.3 M unknowns) ran the container's 15 GB out; judge at 1 mm.
+
+## 7. Next (for the engineer)
+
+The open half of the gap, and the look, in order of what they may buy:
+1. **Ends on walls and bosses, and a least length:** fastcae's end rules held while the field is found, so no rib ends in the open and no fragment stands alone (ends in the open carry nothing).
+2. **Thickness by place:** thicker ribs where the load gathers (round the boss and the lug), thin elsewhere, as production does; one cap everywhere spreads the metal.
+3. **A third family** where the load comes from several ways (triangles).
+4. **The comparison's fairness:** the free columns keep wide stepped wings under the lump rule (the look the engineer refuses); a fair target for the ribs is their stiffness at the same mass, or the mass at the same stiffness, with the engineer's call on how much stiffness the production look may cost.
+

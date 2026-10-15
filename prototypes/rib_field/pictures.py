@@ -82,7 +82,7 @@ def sheet(out: Path, items: list[tuple[str, str]]) -> None:
 def main() -> None:
     if sys.argv[1] == "--sheet":
         out = Path(sys.argv[2])
-        items = [tuple(a.split(":", 1)) for a in sys.argv[3:]]
+        items = [tuple(a.rsplit(":", 1)) for a in sys.argv[3:]]
         sheet(out, items)
         print(out)
         return
