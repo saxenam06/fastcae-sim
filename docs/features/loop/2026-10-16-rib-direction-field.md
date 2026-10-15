@@ -55,4 +55,20 @@ A flat end wall, 4 mm, 200 × 160 mm, with a bearing's boss (its bore rigid with
 
 Then, if the ribs hold their own: the field on a wall's surface (a side wall meeting an end wall at an edge, a lug in its room), then the housing's cover in the real optimiser.
 
-Code: `prototypes/rib_field/` (a prototype: nothing in `src/` imports it; outputs in `data/rib_field/`).
+Code: `prototypes/rib_field/` (a prototype: nothing in `src/` imports it; outputs in `data/rib_field/`); its README has the commands.
+
+## 6. The toy, measured (16 October, the cloud session's CPU)
+
+The set-up: 4 mm cubes, 13,104 of them (the wall one layer, the band six), 1,670 design columns, 42,750 unknowns; 0.25 kg of placed metal; the two load cases' compliance minimised by MMA (our GCMMA's step), 80 iterations each.
+
+| Design | The model | FE of the drawing (1 mm, TET10) | Tilt (FE) | Placed metal (drawn) |
+|---|---|---|---|---|
+| **The field**, two crossing families, ribs at most 7 mm thick, 24 mm apart, at most 4 × their thickness tall | 25.2 N·mm | **28.3 N·mm** | 0.046 mrad | 0.231 kg |
+| **Today's free columns**, with our optimiser's lump rule (`--max-member 16`, p 40) | 13.5 N·mm | **15.2 N·mm** | 0.028 mrad | 0.240 kg |
+| The field, ribs up to 12 mm | (running) | | | |
+
+- **The method works end to end:** the field draws ribs (spokes from the bearing's boss to the bolts and the lug, a second family crossing them), nobody laid them; the derivatives agree with central differences within 3·10⁻⁶ (`gradcheck.py`).
+- **The smeared model is fair:** it reads 12 % stiffer than FE of its own drawing, as it does for the free columns (12 %).
+- **At the same mass the ribs are 1.9 times softer than the free columns** (tilt 1.6 times). The free columns pile metal into full-height stepped wings from the boss to the three nearest bolts (the lumpy look); both rib families sit at their 7 mm cap round the boss, so the field wants more metal there than thin ribs hold, and spreads it.
+- **What the drawing still lacks:** ribs end in the open, short fragments stand alone, and some branch; the end rules (an end on a wall or a boss, steeply) and a least length are not in yet.
+- **Learned on the way:** the strains' best direction flips ribs stiff one way only (stiffened along it, the strain moves across), so 95-99 % of the directions turned their full step every iteration; as MMA's own variables (a smooth B-spline turn from the strains' start) they settle (median turn 0.4° at the end). One family alone is far worse than two (two load cases). At 8 mm cubes the 4 mm wall rounds to no layer: judge 4 mm runs only. The 0.5 mm drawing's FE mesh (2.3 M unknowns) ran the container's 15 GB out; judge at 1 mm.
