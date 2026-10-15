@@ -1,0 +1,17 @@
+[15:52:51] baseline2_lw8_motor_side: TetGen, 15,974 surface triangles, 232,858 tets, worst shape 0.0025, 5.0 s
+[15:52:52] motor_side: 232,858 TET10, 395,868 nodes
+[15:52:55] baseline2_lw8_cover: TetGen, 12,430 surface triangles, 146,035 tets, worst shape 0.00307, 2.4 s
+[15:52:56] cover: 146,035 TET10, 251,341 nodes
+[15:52:56] meshed in 10 s; 1,941,627 unknowns (TetGen's radius-edge 2, dihedral 12°)
+[15:52:56] loads: 2 cases; motor flange 0 nodes
+C:\Work\fastcae-sim\.venv\Lib\site-packages\cupy\_environment.py:286: UserWarning: CUDA path could not be detected. Set CUDA_PATH environment variable if CuPy fails to load.
+  warnings.warn(
+[15:53:03] stiffness assembled in 7 s: 145,563,381 entries
+[15:53:12] rigid couplings: 6 seats with their bearings' centres, 13 bolts each one rigid body through both halves, 3 mounts' holes held; 60,636 unknowns eliminated, 1,881,105 remain
+[15:53:27] single factor (SPD) in 8 s
+[15:53:31] solved in 19 s (at most 5 refining steps, residual 2.8e-11)
+[15:54:46] modes in 73 s: 678, 885, 956, 1021, 1296, 1378, 1528, 1844, 2411, 2637, 2867, 2987 Hz
+[15:54:46] mesh frequencies s1 2500 Hz, s2 1127 Hz; clashes: none
+[15:54:56] peak drive: worst seat output -z 34.4 um; worst tilt input +z 0.398 mrad; mounts' moment [  0.    0.  927.7] N·m against the loads' [  -0.    -0.  -927.7] N·m
+[15:54:56] peak reverse: worst seat output +z 247.7 um; worst tilt output +z 2.745 mrad; mounts' moment [  -0.     0.  -927.7] N·m against the loads' [  0.    0.  927.7] N·m
+[15:54:56] mass from the mesh 4.94 kg; 120 s in all

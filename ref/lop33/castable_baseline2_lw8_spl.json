@@ -1,0 +1,591 @@
+{
+ "stem": "baseline2_lw8_spl",
+ "halves": [
+  {
+   "half": "motor_side",
+   "pull": [
+    0.0,
+    0.0,
+    -1.0
+   ],
+   "largest_section_members_mm": 17.9,
+   "lump_rule": "FAIL",
+   "area_cm2": 3593.5,
+   "volume_cm3_mesh": 1017.1,
+   "volume_cm3_voxels": 1007.3,
+   "undercut_cm2": 15.2,
+   "undercut_share": 0.0042,
+   "undercut_by_role_cm2": {
+    "wall": 15.2
+   },
+   "undercut_faces": [
+    {
+     "face": 41560,
+     "kind": "MESH",
+     "role": "wall",
+     "cm2": 0.12,
+     "share_of_face": 1.0,
+     "lo": [
+      172.0,
+      43.5,
+      11.0
+     ],
+     "hi": [
+      172.0,
+      43.5,
+      11.0
+     ],
+     "normal": [
+      -0.0,
+      -0.0,
+      -1.0
+     ]
+    },
+    {
+     "face": 11616,
+     "kind": "MESH",
+     "role": "wall",
+     "cm2": 0.09,
+     "share_of_face": 1.0,
+     "lo": [
+      -135.1,
+      32.4,
+      6.7
+     ],
+     "hi": [
+      -135.1,
+      32.4,
+      6.7
+     ],
+     "normal": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    },
+    {
+     "face": 41478,
+     "kind": "MESH",
+     "role": "wall",
+     "cm2": 0.07,
+     "share_of_face": 1.0,
+     "lo": [
+      161.0,
+      51.1,
+      11.0
+     ],
+     "hi": [
+      161.0,
+      51.1,
+      11.0
+     ],
+     "normal": [
+      -0.0,
+      -0.0,
+      -1.0
+     ]
+    },
+    {
+     "face": 9635,
+     "kind": "MESH",
+     "role": "wall",
+     "cm2": 0.06,
+     "share_of_face": 1.0,
+     "lo": [
+      -151.0,
+      -37.6,
+      9.9
+     ],
+     "hi": [
+      -151.0,
+      -37.6,
+      9.9
+     ],
+     "normal": [
+      -0.56,
+      -0.59,
+      -0.58
+     ]
+    },
+    {
+     "face": 10663,
+     "kind": "MESH",
+     "role": "wall",
+     "cm2": 0.06,
+     "share_of_face": 1.0,
+     "lo": [
+      -132.4,
+      38.6,
+      -18.7
+     ],
+     "hi": [
+      -132.4,
+      38.6,
+      -18.7
+     ],
+     "normal": [
+      0.0,
+      -0.0,
+      1.0
+     ]
+    },
+    {
+     "face": 38350,
+     "kind": "MESH",
+     "role": "wall",
+     "cm2": 0.06,
+     "share_of_face": 1.0,
+     "lo": [
+      145.1,
+      73.2,
+      -18.0
+     ],
+     "hi": [
+      145.1,
+      73.2,
+      -18.0
+     ],
+     "normal": [
+      -0.01,
+      0.96,
+      0.27
+     ]
+    },
+    {
+     "face": 41562,
+     "kind": "MESH",
+     "role": "wall",
+     "cm2": 0.06,
+     "share_of_face": 1.0,
+     "lo": [
+      172.0,
+      45.4,
+      11.1
+     ],
+     "hi": [
+      172.0,
+      45.4,
+      11.1
+     ],
+     "normal": [
+      -0.01,
+      0.16,
+      -0.99
+     ]
+    },
+    {
+     "face": 46849,
+     "kind": "MESH",
+     "role": "wall",
+     "cm2": 0.06,
+     "share_of_face": 1.0,
+     "lo": [
+      90.0,
+      141.7,
+      2.7
+     ],
+     "hi": [
+      90.0,
+      141.7,
+      2.7
+     ],
+     "normal": [
+      0.95,
+      0.3,
+      0.03
+     ]
+    },
+    {
+     "face": 9104,
+     "kind": "MESH",
+     "role": "wall",
+     "cm2": 0.05,
+     "share_of_face": 1.0,
+     "lo": [
+      -154.3,
+      -34.5,
+      -19.2
+     ],
+     "hi": [
+      -154.3,
+      -34.5,
+      -19.2
+     ],
+     "normal": [
+      -0.57,
+      -0.61,
+      0.55
+     ]
+    },
+    {
+     "face": 11625,
+     "kind": "MESH",
+     "role": "wall",
+     "cm2": 0.05,
+     "share_of_face": 1.0,
+     "lo": [
+      -132.2,
+      34.1,
+      6.7
+     ],
+     "hi": [
+      -132.2,
+      34.1,
+      6.7
+     ],
+     "normal": [
+      0.0,
+      0.0,
+      -1.0
+     ]
+    },
+    {
+     "face": 41670,
+     "kind": "MESH",
+     "role": "wall",
+     "cm2": 0.05,
+     "share_of_face": 1.0,
+     "lo": [
+      153.2,
+      60.4,
+      10.6
+     ],
+     "hi": [
+      153.2,
+      60.4,
+      10.6
+     ],
+     "normal": [
+      0.72,
+      -0.01,
+      -0.69
+     ]
+    },
+    {
+     "face": 9088,
+     "kind": "MESH",
+     "role": "wall",
+     "cm2": 0.04,
+     "share_of_face": 1.0,
+     "lo": [
+      -152.9,
+      -39.6,
+      -19.9
+     ],
+     "hi": [
+      -152.9,
+      -39.6,
+      -19.9
+     ],
+     "normal": [
+      -0.04,
+      0.01,
+      1.0
+     ]
+    }
+   ],
+   "closed_voids": 0,
+   "closed_void_cm3": 0.0,
+   "thinner_than_least_wall_cm2": 221.3,
+   "least_thickness_mm": 0.12,
+   "largest_section_mm": 17.9,
+   "thick_cm3": 205.9,
+   "thick_line_mm": 6.0,
+   "pull_rule": "FAIL",
+   "least_wall_rule": "FAIL"
+  },
+  {
+   "half": "cover",
+   "pull": [
+    0.0,
+    0.0,
+    1.0
+   ],
+   "largest_section_members_mm": 18.4,
+   "lump_rule": "FAIL",
+   "area_cm2": 2873.5,
+   "volume_cm3_mesh": 732.8,
+   "volume_cm3_voxels": 731.4,
+   "undercut_cm2": 2.3,
+   "undercut_share": 0.0008,
+   "undercut_by_role_cm2": {
+    "wall": 2.3
+   },
+   "undercut_faces": [
+    {
+     "face": 8737,
+     "kind": "MESH",
+     "role": "wall",
+     "cm2": 0.04,
+     "share_of_face": 1.0,
+     "lo": [
+      2.5,
+      -72.1,
+      46.0
+     ],
+     "hi": [
+      2.5,
+      -72.1,
+      46.0
+     ],
+     "normal": [
+      -0.02,
+      -1.0,
+      -0.04
+     ]
+    },
+    {
+     "face": 8567,
+     "kind": "MESH",
+     "role": "wall",
+     "cm2": 0.03,
+     "share_of_face": 1.0,
+     "lo": [
+      -34.9,
+      -58.3,
+      62.1
+     ],
+     "hi": [
+      -34.9,
+      -58.3,
+      62.1
+     ],
+     "normal": [
+      -0.69,
+      0.72,
+      -0.13
+     ]
+    },
+    {
+     "face": 9041,
+     "kind": "MESH",
+     "role": "wall",
+     "cm2": 0.03,
+     "share_of_face": 1.0,
+     "lo": [
+      -33.5,
+      -56.8,
+      62.1
+     ],
+     "hi": [
+      -33.5,
+      -56.8,
+      62.1
+     ],
+     "normal": [
+      -0.64,
+      0.69,
+      -0.35
+     ]
+    },
+    {
+     "face": 19081,
+     "kind": "MESH",
+     "role": "wall",
+     "cm2": 0.03,
+     "share_of_face": 1.0,
+     "lo": [
+      -27.8,
+      217.9,
+      25.4
+     ],
+     "hi": [
+      -27.8,
+      217.9,
+      25.4
+     ],
+     "normal": [
+      -0.59,
+      0.8,
+      -0.07
+     ]
+    },
+    {
+     "face": 21500,
+     "kind": "MESH",
+     "role": "wall",
+     "cm2": 0.03,
+     "share_of_face": 1.0,
+     "lo": [
+      -30.8,
+      149.7,
+      82.0
+     ],
+     "hi": [
+      -30.8,
+      149.7,
+      82.0
+     ],
+     "normal": [
+      -0.79,
+      0.61,
+      -0.04
+     ]
+    },
+    {
+     "face": 5527,
+     "kind": "MESH",
+     "role": "wall",
+     "cm2": 0.02,
+     "share_of_face": 1.0,
+     "lo": [
+      -91.5,
+      68.7,
+      48.7
+     ],
+     "hi": [
+      -91.5,
+      68.7,
+      48.7
+     ],
+     "normal": [
+      -0.31,
+      0.95,
+      -0.04
+     ]
+    },
+    {
+     "face": 5563,
+     "kind": "MESH",
+     "role": "wall",
+     "cm2": 0.02,
+     "share_of_face": 1.0,
+     "lo": [
+      -90.9,
+      68.8,
+      48.0
+     ],
+     "hi": [
+      -90.9,
+      68.8,
+      48.0
+     ],
+     "normal": [
+      -0.15,
+      0.97,
+      -0.21
+     ]
+    },
+    {
+     "face": 5564,
+     "kind": "MESH",
+     "role": "wall",
+     "cm2": 0.02,
+     "share_of_face": 1.0,
+     "lo": [
+      -88.9,
+      69.0,
+      48.0
+     ],
+     "hi": [
+      -88.9,
+      69.0,
+      48.0
+     ],
+     "normal": [
+      -0.03,
+      0.97,
+      -0.24
+     ]
+    },
+    {
+     "face": 5565,
+     "kind": "MESH",
+     "role": "wall",
+     "cm2": 0.02,
+     "share_of_face": 1.0,
+     "lo": [
+      -86.9,
+      68.9,
+      48.0
+     ],
+     "hi": [
+      -86.9,
+      68.9,
+      48.0
+     ],
+     "normal": [
+      0.02,
+      0.98,
+      -0.22
+     ]
+    },
+    {
+     "face": 5566,
+     "kind": "MESH",
+     "role": "wall",
+     "cm2": 0.02,
+     "share_of_face": 1.0,
+     "lo": [
+      -89.5,
+      69.1,
+      48.7
+     ],
+     "hi": [
+      -89.5,
+      69.1,
+      48.7
+     ],
+     "normal": [
+      -0.06,
+      0.98,
+      -0.21
+     ]
+    },
+    {
+     "face": 5567,
+     "kind": "MESH",
+     "role": "wall",
+     "cm2": 0.02,
+     "share_of_face": 1.0,
+     "lo": [
+      -87.5,
+      69.1,
+      48.7
+     ],
+     "hi": [
+      -87.5,
+      69.1,
+      48.7
+     ],
+     "normal": [
+      0.04,
+      0.97,
+      -0.24
+     ]
+    },
+    {
+     "face": 5568,
+     "kind": "MESH",
+     "role": "wall",
+     "cm2": 0.02,
+     "share_of_face": 1.0,
+     "lo": [
+      -84.9,
+      68.9,
+      48.0
+     ],
+     "hi": [
+      -84.9,
+      68.9,
+      48.0
+     ],
+     "normal": [
+      -0.0,
+      0.98,
+      -0.22
+     ]
+    }
+   ],
+   "closed_voids": 0,
+   "closed_void_cm3": 0.0,
+   "thinner_than_least_wall_cm2": 185.2,
+   "least_thickness_mm": 0.12,
+   "largest_section_mm": 20.9,
+   "thick_cm3": 110.1,
+   "thick_line_mm": 6.0,
+   "pull_rule": "FAIL",
+   "least_wall_rule": "FAIL"
+  }
+ ]
+}

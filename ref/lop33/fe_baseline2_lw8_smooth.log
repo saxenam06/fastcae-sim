@@ -1,0 +1,24 @@
+[13:22:47] baseline2_lw8_smooth_motor_side: TetGen, 15,796 surface triangles, 359,350 tets, worst shape 1.27e-05, 15.2 s
+[13:22:49] motor_side: 359,350 TET10, 598,480 nodes
+[13:23:06] baseline2_lw8_smooth_cover: TetGen refused the surface at 7 mm triangles (Internal TetGen error within `split_subface`.); coarsened again
+[13:23:11] baseline2_lw8_smooth_cover: TetGen, 11,044 surface triangles, 267,776 tets, worst shape 0.000819, 21.7 s
+[13:23:12] cover: 267,776 TET10, 446,429 nodes
+[13:23:12] meshed in 41 s; 3,134,727 unknowns (TetGen's radius-edge 2, dihedral 12°)
+[13:23:25] baseline2_lw8_smooth_motor_side: TetGen, 15,796 surface triangles, 227,673 tets, worst shape 1.03e-05, 12.8 s
+[13:23:27] motor_side: 227,673 TET10, 397,154 nodes
+[13:27:29] baseline2_lw8_smooth_cover: TetGen refused the surface at 7 mm triangles (TetGen ran past 240 s); coarsened again
+[13:27:32] baseline2_lw8_smooth_cover: TetGen, 11,044 surface triangles, 165,737 tets, worst shape 0.00056, 245.2 s
+[13:27:33] cover: 165,737 TET10, 289,396 nodes
+[13:27:33] meshed in 301 s; 2,059,650 unknowns (TetGen's radius-edge 3, dihedral 10°)
+[13:27:33] loads: 2 cases; motor flange 0 nodes
+C:\Work\fastcae-sim\.venv\Lib\site-packages\cupy\_environment.py:286: UserWarning: CUDA path could not be detected. Set CUDA_PATH environment variable if CuPy fails to load.
+  warnings.warn(
+[13:27:41] stiffness assembled in 8 s: 152,615,772 entries
+[13:27:50] rigid couplings: 6 seats with their bearings' centres, 13 bolts each one rigid body through both halves, 3 mounts' holes held; 53,028 unknowns eliminated, 2,006,736 remain
+[13:28:02] single factor (SPD) in 7 s
+[13:28:05] solved in 15 s (at most 7 refining steps, residual 5.3e-11)
+[13:28:49] modes in 42 s: 514, 701, 726, 763, 836, 1071, 1177, 1478, 1856, 1975, 2087, 2506 Hz
+[13:28:49] mesh frequencies s1 2500 Hz, s2 1127 Hz; clashes: ["2506 Hz within 3 % of s1's 2500 Hz"]
+[13:28:52] peak drive: worst seat output +z 49.5 um; worst tilt input +z 0.711 mrad; mounts' moment [  0.   -0.  927.7] N·m against the loads' [   0.    -0.  -927.7] N·m
+[13:28:52] peak reverse: worst seat output +z 301.1 um; worst tilt output +z 3.194 mrad; mounts' moment [   0.    -0.  -927.7] N·m against the loads' [  0.    0.  927.7] N·m
+[13:28:52] mass from the mesh 4.52 kg; 377 s in all

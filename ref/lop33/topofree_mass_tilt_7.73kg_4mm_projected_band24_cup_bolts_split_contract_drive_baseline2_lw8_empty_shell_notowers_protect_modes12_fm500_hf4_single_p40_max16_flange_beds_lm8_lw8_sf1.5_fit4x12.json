@@ -1,0 +1,149 @@
+{
+ "layout": "contract",
+ "objective": "fit to topofree_mass_tilt_7.73kg_4mm_projected_band24_cup_bolts_split_contract_drive_baseline2_lw8_empty_shell_notowers_protect_modes12_fm500_hf4_single_p40_max16_flange_beds_lm8_lw8_sf1.5",
+ "budget_kg": 7.73,
+ "frozen_kg": 3.3211776,
+ "voxel_mm": 4.0,
+ "cavity": "cup",
+ "joint": "the halves joined only at 0 of the layout's 13 bolts: 0 of the split's 1980 shared nodes kept; rigid couplings: 6 seats, 13 bolts through both halves, 3 mounts held",
+ "skin": {
+  "wall_mm": 0.0,
+  "mass_share": 1.0,
+  "stiffness_share": 1.0,
+  "voxels": 0,
+  "seat_voxels_whole": 3141,
+  "flange": {
+   "voxels": 3204,
+   "kg": 0.5331456
+  },
+  "wall_mass_scale": 1.0,
+  "empty": true
+ },
+ "element": "hex8 with Wilson's incompatible modes",
+ "factor": "fe.py's single-precision factor, refined",
+ "route": "split",
+ "casting": "each half's columns one piece from the joint out to the last metal (anchored)",
+ "projection": {
+  "eta": 0.5,
+  "every": 25,
+  "beta_most": 32.0,
+  "move_late": 0.05,
+  "damping": 0.3,
+  "mma_move": 0.2,
+  "settle": 0.02
+ },
+ "penalty_ramp": 20,
+ "band_mm": 24.0,
+ "mount_reach": "disc",
+ "start": null,
+ "max_member": {
+  "mm": 16.0,
+  "alpha": 0.6,
+  "radius_vox": 4.7114252061248525,
+  "p": 40.0
+ },
+ "plan_rule": null,
+ "height_field": {
+  "radius_mm": 4.0
+ },
+ "empty": true,
+ "least_kg": 2.5069408,
+ "protect": true,
+ "shell_fixed": true,
+ "towers": false,
+ "modes": {
+  "margin": 0.12,
+  "count": 14,
+  "first": 500.0,
+  "first_margin": 0.0
+ },
+ "safety_seats": null,
+ "wall_gate_mm": null,
+ "panel_spokes": null,
+ "lug_webs": null,
+ "trade": false,
+ "flange": true,
+ "flange_whole": true,
+ "drawing_clear": true,
+ "couplings": "kinematic",
+ "beds_mm": {
+  "peak drive": 0.0522
+ },
+ "safety": 1.5,
+ "safety_beds": 1.5,
+ "space": null,
+ "height_features": null,
+ "height_volumes": null,
+ "least_height_mm": 8.0,
+ "least_width_mm": 8.0,
+ "loose": {
+  "mass": 1e-06,
+  "stiffness": 1e-06
+ },
+ "resumed_at": 121,
+ "parts": null,
+ "bending": null,
+ "brackets": null,
+ "parts_read": null,
+ "perimeter_mm": null,
+ "ribs": null,
+ "cases": [
+  "peak drive"
+ ],
+ "fast": true,
+ "history": [],
+ "ratios": {
+  "input -z case 0": 0.8027587200668732,
+  "input +z case 0": 1.0016685507553091,
+  "intermediate -z case 0": 0.9908529470176412,
+  "intermediate +z case 0": 0.7126651546296111,
+  "output -z case 0": 0.654685081736263,
+  "output +z case 0": 0.8141419458218669
+ },
+ "realisations": null,
+ "binary": null,
+ "unknowns": 410913,
+ "seconds": 20.81819796562195,
+ "spline": {
+  "phi_mm": 4.0,
+  "h_mm": 12.0
+ },
+ "fitted_from": "topofree_mass_tilt_7.73kg_4mm_projected_band24_cup_bolts_split_contract_drive_baseline2_lw8_empty_shell_notowers_protect_modes12_fm500_hf4_single_p40_max16_flange_beds_lm8_lw8_sf1.5",
+ "fit": {
+  "run": "topofree_mass_tilt_7.73kg_4mm_projected_band24_cup_bolts_split_contract_drive_baseline2_lw8_empty_shell_notowers_protect_modes12_fm500_hf4_single_p40_max16_flange_beds_lm8_lw8_sf1.5",
+  "spline": {
+   "phi_mm": 4.0,
+   "h_mm": 12.0
+  },
+  "beta": 16.0,
+  "columns": {
+   "members_run": 1268,
+   "members_fit": 1266,
+   "outline_sign_agrees": 0.9950975279023678
+  },
+  "cubes": {
+   "run": 9820,
+   "fit": 10441,
+   "kept": 9475,
+   "lost": 345,
+   "added": 966
+  },
+  "placed_kg": {
+   "run": 1.634,
+   "fit": 1.737
+  },
+  "coefficients": {
+   "outline": 10599,
+   "height": 2450,
+   "columns": 9587
+  },
+  "model_run": {
+   "worst_seat_um": 35.19,
+   "worst_tilt": 0.6687
+  },
+  "model_fit": {
+   "worst_seat_um": 36.64,
+   "worst_tilt": 0.6735
+  }
+ }
+}

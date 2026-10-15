@@ -1,0 +1,63 @@
+{
+ "design": "baseline2_lw8_spl",
+ "flow": {
+  "id": "E",
+  "name": "The empty start",
+  "words": "No fixed shell: the walls, bosses, ribs and brackets one field the optimiser sizes, oil-tight by each column's least height; drawn as one body from that field, exact only where machined; the oil-tight gate beside the drawing; FE, castability, the grade as flow B"
+ },
+ "steps": [
+  {
+   "id": "setup",
+   "label": "Set-up",
+   "method": "4 mm voxels; nothing fixed but the seats' rings, the mounts and the bolts' bosses; the walls the optimiser's, oil-tight by each column's least height",
+   "seconds": 0.0,
+   "ok": true,
+   "note": "3.32 kg fixed, 4.41 kg to place, the walls' least 2.51 kg of it",
+   "outputs": [
+    "topofree_mass_tilt_7.73kg_4mm_projected_band24_cup_bolts_split_contract_drive_baseline2_lw8_empty_shell_notowers_protect_modes12_fm500_hf4_single_p40_max16_flange_beds_lm8_lw8_sf1.5_fit4x12"
+   ]
+  },
+  {
+   "id": "optimise",
+   "label": "Optimisation",
+   "method": "an existing run, reused: stiffness, every bearing's tilt and bed held; one run, GCMMA with MMA's dual",
+   "seconds": 20.8,
+   "ok": true,
+   "outputs": [
+    "topofree_mass_tilt_7.73kg_4mm_projected_band24_cup_bolts_split_contract_drive_baseline2_lw8_empty_shell_notowers_protect_modes12_fm500_hf4_single_p40_max16_flange_beds_lm8_lw8_sf1.5_fit4x12"
+   ],
+   "note": "reused"
+  },
+  {
+   "id": "draw",
+   "label": "Drawing",
+   "method": "the whole housing by marching cubes from its one field (no exact shell); the inside, bores, exits and holes cut exact: manifold3d's booleans; the least walls drawn from the exact inside, smooth, in the same field as the optimiser's metal; every metal cube the optimiser placed kept whole, each checked inside the drawing before FE",
+   "seconds": 21.7,
+   "ok": true,
+   "outputs": [
+    "baseline2_lw8_spl_motor_side.stl",
+    "baseline2_lw8_spl_cover.stl"
+   ],
+   "note": "oil-tight"
+  },
+  {
+   "id": "fe",
+   "label": "FE",
+   "method": "TetGen's tets from the mesh, cuDSS TET10, peak drive and 12 modes",
+   "seconds": 51.6,
+   "ok": false,
+   "note": ""
+  },
+  {
+   "id": "castable",
+   "label": "Castability",
+   "method": "rays along the pull and into the metal, on the mesh",
+   "seconds": 51.6,
+   "ok": true,
+   "note": "beside FE"
+  }
+ ],
+ "seconds": 95.4,
+ "failed": null,
+ "grade": null
+}

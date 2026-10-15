@@ -1,0 +1,4 @@
+[15:41:29] baseline2_lw8 (--height-field 4, --first-mode 500)
+baseline2_lw8: proposed in 1015 s; Set-up 0 s, Optimisation 645 s, Drawing 27 s, FE 276 s, Castability 276 s, Grade 1 s
+done baseline2_lw8 (exit 0)
+[15:58:39] baseline2_lw8 done

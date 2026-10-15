@@ -1,0 +1,26 @@
+[18:27:45] motor_side: 122 of 6,704 metal cubes' centres held by raising the nodes round them (at most 0.25)
+[18:27:47] motor_side: by the mesh route in 1.4 s: 190,764 triangles, watertight True, 1016 cm3, 13 of 13 bolts' bosses held
+[18:27:47] cover: 43 of 3,737 metal cubes' centres held by raising the nodes round them (at most 0.08)
+[18:27:48] cover: by the mesh route in 1.1 s: 138,638 triangles, watertight True, 732 cm3, 13 of 13 bolts' bosses held
+C:\Work\fastcae-sim\prototypes\first_loop\outcome_cad.py:407: PyVistaDeprecationWarning: This filter is deprecated. Use `select_interior_points` instead.
+  sel = pv.PolyData(pts).select_enclosed_points(surf, tolerance=1e-6, check_surface=False)  # as `model_vs_fe.inside_drawing`
+[18:27:48] the drawing holds 10,330 of the run's 10,441 metal cubes: 0 lost by the drawing (0.00 %), 26 in spaces it keeps clear (0.25 %), 85 loose in the run's own field, joined to nothing (0.81 %)
+[18:27:48] baseline2_lw8_spl: 4.55 kg (motor side 2.64, cover 1.90); bolts joining the halves 13 of 13; drawn in 20 s
+nanobind: leaked 1 instances!
+ - leaked instance 0000026AFDF2B0A8 of type "manifold3d.Mesh64"
+nanobind: leaked 1 types!
+ - leaked type "manifold3d.Mesh64"
+nanobind: leaked 14 functions!
+ - leaked function ""
+ - leaked function "backside"
+ - leaked function "__init__"
+ - leaked function ""
+ - leaked function ""
+ - leaked function ""
+ - leaked function ""
+ - leaked function "has_normals"
+ - leaked function ""
+ - leaked function ""
+ - ... skipped remainder
+nanobind: this is likely caused by a reference counting issue in the binding code.
+See https://nanobind.readthedocs.io/en/latest/refleaks.html

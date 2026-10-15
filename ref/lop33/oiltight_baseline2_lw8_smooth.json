@@ -1,0 +1,9 @@
+{
+ "design": "baseline2_lw8_smooth",
+ "cell_mm": 2.0,
+ "tight": true,
+ "inside_cells": 405241,
+ "metal_cm3": 1719.408,
+ "opened": null,
+ "seconds": 1.8
+}

@@ -1,0 +1,104 @@
+{
+ "design": "baseline2_lw8_smooth",
+ "flow": {
+  "id": "E",
+  "name": "The empty start",
+  "words": "No fixed shell: the walls, bosses, ribs and brackets one field the optimiser sizes, oil-tight by each column's least height; drawn as one body from that field, exact only where machined; the oil-tight gate beside the drawing; FE, castability, the grade as flow B"
+ },
+ "steps": [
+  {
+   "id": "setup",
+   "label": "Set-up",
+   "method": "4 mm voxels; nothing fixed but the seats' rings, the mounts and the bolts' bosses; the walls the optimiser's, oil-tight by each column's least height",
+   "seconds": 0.0,
+   "ok": true,
+   "note": "3.32 kg fixed, 4.41 kg to place, the walls' least 2.51 kg of it",
+   "outputs": [
+    "topofree_mass_tilt_7.73kg_4mm_projected_band24_cup_bolts_split_contract_drive_baseline2_lw8_empty_shell_notowers_protect_modes12_fm500_hf4_single_p40_max16_flange_beds_lm8_lw8_sf1.5"
+   ]
+  },
+  {
+   "id": "optimise",
+   "label": "Optimisation",
+   "method": "an existing run, reused: stiffness, every bearing's tilt and bed held; one run, GCMMA with MMA's dual",
+   "seconds": 640.0,
+   "ok": true,
+   "outputs": [
+    "topofree_mass_tilt_7.73kg_4mm_projected_band24_cup_bolts_split_contract_drive_baseline2_lw8_empty_shell_notowers_protect_modes12_fm500_hf4_single_p40_max16_flange_beds_lm8_lw8_sf1.5"
+   ],
+   "note": "reused"
+  },
+  {
+   "id": "draw",
+   "label": "Drawing",
+   "method": "the whole housing by marching cubes from its one field (no exact shell); the inside, bores, exits and holes cut exact: manifold3d's booleans; the least walls drawn from the exact inside, smooth, in the same field as the optimiser's metal; every metal cube the optimiser placed kept whole, each checked inside the drawing before FE",
+   "seconds": 163.9,
+   "ok": true,
+   "outputs": [
+    "baseline2_lw8_smooth_motor_side.stl",
+    "baseline2_lw8_smooth_cover.stl"
+   ],
+   "note": "oil-tight"
+  },
+  {
+   "id": "fe",
+   "label": "FE",
+   "method": "TetGen's tets from the mesh, cuDSS TET10, peak drive and 12 modes",
+   "seconds": 438.7,
+   "ok": true,
+   "note": "mass from the mesh 4.52 kg; 377 s in all"
+  },
+  {
+   "id": "castable",
+   "label": "Castability",
+   "method": "rays along the pull and into the metal, on the mesh",
+   "seconds": 438.7,
+   "ok": true,
+   "note": "beside FE"
+  },
+  {
+   "id": "grade",
+   "label": "Grade",
+   "method": "every line of the contract, peak drive",
+   "seconds": 0.5,
+   "ok": true
+  }
+ ],
+ "seconds": 662.0,
+ "failed": null,
+ "grade": {
+  "stem": "baseline2_lw8_smooth",
+  "mass_kg": 4.515639541080471,
+  "lines": {
+   "displacement, peak drive": {
+    "value_um": 49.486646514758526,
+    "to_beat_um": 52.2,
+    "pass": true
+   },
+   "misalignment (worst seat against its line)": {
+    "ratio": 0.79800164846697,
+    "pass": true
+   },
+   "orders": {
+    "clashes": [
+     "2506 Hz within 3 % of s1's 2500 Hz"
+    ],
+    "pass": false
+   },
+   "mass": {
+    "kg": 4.515639541080471,
+    "to_beat_kg": 7.732,
+    "pass": true
+   },
+   "first mode": {
+    "hz": 513.5703698750127,
+    "at_least_hz": 500.0,
+    "pass": true
+   }
+  },
+  "housing_only_ratio": 0.8734236764539828,
+  "seat_own_tilt_ratio": 1.185132582862693,
+  "first_mode_hz": 513.5703698750127,
+  "pass": false
+ }
+}

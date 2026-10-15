@@ -1,0 +1,487 @@
+baseline2_lw8_spl.json: 100,301 triangles, 8.1 MB
+optimisations/_index.json: 119
+  topofree_mass_tilt_7.73kg_4mm_projected_band24_cup_bolts_split_contract_drive_baseline2_lw8_empty_shell_notowers_protect_modes12_fm500_hf4_single_p40_max16_flange_beds_lm8_lw8_sf1.5_fit4x12: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC
+  topofree_mass_tilt_7.73kg_4mm_projected_band24_cup_bolts_split_contract_drive_baseline2_lw8_empty_shell_notowers_protect_modes12_fm500_hf4_single_p40_max16_flange_beds_lm8_lw8_sf1.5: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC
+  topofree_mass_tilt_7.73kg_4mm_projected_band24_cup_bolts_split_contract_drive_baseline2_fm500g_empty_shell_notowers_protect_modes12_fm500_hf4_single_p40_max16_flange_beds_lm8_sf1.5: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC
+  topofree_mass_tilt_7.73kg_4mm_projected_band24_cup_bolts_split_contract_drive_baseline2_fm500f_empty_shell_notowers_protect_modes12_fm500_hf4_single_p40_max16_flange_beds_lm8_sf1.5: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC
+  topofree_mass_tilt_7.73kg_4mm_projected_band24_cup_bolts_split_contract_drive_baseline2_fm500e_empty_shell_notowers_protect_modes12_fm500_hf4_single_p40_max16_flange_beds_lm8_sf1.5: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC
+  topofree_mass_tilt_7.73kg_4mm_projected_band24_cup_bolts_split_contract_drive_baseline2_fm500d_empty_shell_notowers_protect_modes12_fm500_hf4_single_p40_max16_flange_beds_lm8_sf1.25: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC
+  topofree_mass_tilt_7.73kg_4mm_projected_band24_cup_bolts_split_contract_drive_baseline2_fm500c_empty_shell_notowers_protect_modes12_fm500_hf4_single_p40_max16_flange_beds_lm8_sf1.25: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC
+  topofree_mass_tilt_7.73kg_4mm_projected_band24_cup_bolts_split_contract_drive_baseline2_fm500_empty_shell_notowers_protect_modes12_fm500_hf4_single_p40_max16_flange_beds_lm8_sf1.25: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC
+  topofree_mass_tilt_7.73kg_4mm_projected_band24_cup_bolts_split_contract_drive_baseline2_empty_shell_notowers_protect_modes12_hf4_single_p40_max16_flange_beds_lm8_sf1.25: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC
+  topofree_mass_tilt_7.73kg_4mm_projected_band24_cup_bolts_split_contract_drive_baseline1_empty_shell_notowers_protect_modes12_hf6_single_p40_max16_flange_beds_lm8_sf1.25: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC
+  topofree_mass_tilt_7.73kg_4mm_projected_band24_cup_bolts_split_contract_drive_base_mix6_empty_shell_protect_modes12_hf6_single_p40_max16_flange_beds_lm8_sf1.25: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC
+  topofree_mass_tilt_7.73kg_4mm_projected_band24_cup_bolts_split_contract_drive_lop29_clear_empty_protect_modes12_hf6_single_p40_max16_flange_beds_sf1.25_seatin-1.5: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC
+  topofree_mass_tilt_7.73kg_4mm_projected_band24_cup_bolts_split_contract_drive_lop29_modes_empty_protect_modes12_hf6_single_p40_max16_flange_beds_sf1.25_seatin-1.5: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC
+  topofree_mass_tilt_7.7kg_4mm_projected_band24_cup_bolts_split_contract_drive_final18_empty_protect_hf6_single_p40_max16_flange_beds_brk_sf1.3_seatin-1.65: Run 3, band 24 mm \xb7 7.7 kg \xb7 OC
+  topofree_mass_tilt_7.7kg_4mm_projected_band24_cup_bolts_split_contract_drive_final17_empty_protect_hf6_single_p40_max16_flange_beds_sf1.35_seatin-1.65: Run 3, band 24 mm \xb7 7.7 kg \xb7 OC
+  topofree_mass_tilt_7.6kg_4mm_projected_band24_cup_bolts_split_contract_drive_final16_empty_protect_hf6_single_p40_max16_flange_beds_sf1.3_seatin-1.65_reading_deep_an: Run 3, band 24 mm \xb7 7.6 kg \xb7 OC
+  topofree_mass_tilt_7.6kg_4mm_projected_band24_cup_bolts_split_contract_drive_final16_empty_protect_hf6_single_p40_max16_flange_beds_sf1.3_seatin-1.65: Run 3, band 24 mm \xb7 7.6 kg \xb7 OC
+  topofree_mass_tilt_7.6kg_4mm_projected_band24_cup_bolts_split_contract_drive_final15_empty_protect_hf6_single_p40_max16_flange_beds_sf1.25_seatin-1.65: Run 3, band 24 mm \xb7 7.6 kg \xb7 OC
+  topofree_mass_tilt_7.6kg_4mm_projected_band24_cup_bolts_split_contract_drive_final14_empty_protect_hf6_single_p40_max16_flange_beds_sf1.25_seatin-1.5: Run 3, band 24 mm \xb7 7.6 kg \xb7 OC
+  topofree_mass_tilt_7.7kg_4mm_projected_band24_cup_bolts_split_contract_drive_final13_empty_protect_hf6_single_p40_max16_flange_beds_brk_sf1.45_seatin-1.5: Run 3, band 24 mm \xb7 7.7 kg \xb7 OC
+  topofree_mass_tilt_7.7kg_4mm_projected_band24_cup_bolts_split_contract_drive_final12_empty_protect_hf6_single_p40_max16_flange_beds_brk_sf1.45_seatin-1.5: Run 3, band 24 mm \xb7 7.7 kg \xb7 OC
+  topofree_mass_tilt_7.6kg_4mm_projected_band24_cup_bolts_split_contract_drive_final11_empty_protect_hf6_single_p40_max16_flange_beds_brk_sf1.3_seatin-1.5: Run 3, band 24 mm \xb7 7.6 kg \xb7 OC
+  topofree_mass_tilt_7.4kg_4mm_projected_band24_cup_bolts_split_contract_drive_final10_empty_protect_hf6_single_p40_max16_flange_beds_brk_sf1.25_seatin-1.5_reading_deep: Run 3, band 24 mm \xb7 7.4 kg \xb7 OC
+  topofree_mass_tilt_7.4kg_4mm_projected_band24_cup_bolts_split_contract_drive_final10_empty_protect_hf6_single_p40_max16_flange_beds_brk_sf1.25_seatin-1.5_reading_deep_an: Run 3, band 24 mm \xb7 7.4 kg \xb7 OC
+  topofree_mass_tilt_7.4kg_4mm_projected_band24_cup_bolts_split_contract_drive_final10_empty_protect_hf6_single_p40_max16_flange_beds_brk_sf1.25_seatin-1.5_reading_all: Run 3, band 24 mm \xb7 7.4 kg \xb7 OC
+  topofree_mass_tilt_7.4kg_4mm_projected_band24_cup_bolts_split_contract_drive_final10_empty_protect_hf6_single_p40_max16_flange_beds_brk_sf1.25_seatin-1.5_reading_arms_nets: Run 3, band 24 mm \xb7 7.4 kg \xb7 OC
+  topofree_mass_tilt_7.4kg_4mm_projected_band24_cup_bolts_split_contract_drive_final10_empty_protect_hf6_single_p40_max16_flange_beds_brk_sf1.25_seatin-1.5_reading_arms: Run 3, band 24 mm \xb7 7.4 kg \xb7 OC
+  topofree_mass_tilt_7.4kg_4mm_projected_band24_cup_bolts_split_contract_drive_final10_empty_protect_hf6_single_p40_max16_flange_beds_brk_sf1.25_seatin-1.5_reading: Run 3, band 24 mm \xb7 7.4 kg \xb7 OC
+  topofree_mass_tilt_7.4kg_4mm_projected_band24_cup_bolts_split_contract_drive_final10_empty_protect_hf6_single_p40_max16_flange_beds_brk_sf1.25_seatin-1.5: Run 3, band 24 mm \xb7 7.4 kg \xb7 OC
+  topofree_mass_tilt_7.4kg_4mm_projected_band24_cup_bolts_split_contract_drive_final9_empty_protect_hf6_single_max16_flange_beds_brk_sf1.25_seatin-1.5: Run 3, band 24 mm \xb7 7.4 kg \xb7 OC
+  topofree_mass_tilt_7.4kg_4mm_projected_band24_cup_bolts_split_contract_drive_final8_empty_protect_hf6_single_flange_beds_brk_sf1.25_seatin-1.5: Run 3, band 24 mm \xb7 7.4 kg \xb7 OC
+  topofree_mass_tilt_7.4kg_4mm_projected_band24_cup_bolts_split_contract_drive_final7_empty_protect_hf6_single_flange_beds_brk_sf1.25_seatin-1.5: Run 3, band 24 mm \xb7 7.4 kg \xb7 OC
+  topofree_mass_tilt_7.3kg_4mm_projected_band24_cup_bolts_split_contract_drive_final6_empty_protect_hf6_single_flange_beds_brk_sf1.25_seatin-1.5: Run 3, band 24 mm \xb7 7.3 kg \xb7 OC
+  topofree_mass_tilt_7.3kg_4mm_projected_band24_cup_bolts_split_contract_drive_final5_empty_protect_hf6_single_flange_beds_brk_sf1.2_seatin-1.5: Run 3, band 24 mm \xb7 7.3 kg \xb7 OC
+  topofree_mass_tilt_7.4kg_4mm_projected_band24_cup_bolts_split_contract_drive_final4_empty_protect_hf6_single_flange_beds_brk_sf1.25_seatin-1.5: Run 3, band 24 mm \xb7 7.4 kg \xb7 OC
+  topofree_mass_tilt_7.3kg_4mm_projected_band24_cup_bolts_split_contract_drive_final3_empty_protect_hf6_single_flange_beds_brk_sf1.25_seatin-1.5: Run 3, band 24 mm \xb7 7.3 kg \xb7 OC
+  topofree_mass_tilt_7.2kg_4mm_projected_band24_cup_bolts_split_contract_drive_final2_empty_protect_hf6_single_flange_beds_brk_sf1.25_seatin-1.5: Run 3, band 24 mm \xb7 7.2 kg \xb7 OC
+  topofree_mass_tilt_7kg_4mm_projected_band24_cup_bolts_split_contract_drive_final1_empty_protect_hf6_single_flange_beds_benddev1_brk_sf1.25_seatin-1.4: Run 3, band 24 mm \xb7 7 kg \xb7 OC
+  topofree_mass_tilt_7kg_4mm_projected_band24_cup_bolts_split_contract_drive_rule2_dev_empty_protect_hf6_single_flange_beds_benddev1_brk_sf1.25_seatin-1.4: Run 3, band 24 mm \xb7 7 kg \xb7 OC
+  topofree_mass_tilt_7kg_4mm_projected_band24_cup_bolts_split_contract_drive_rule1_wall_empty_protect_hf6_single_flange_beds_brk_sf1.25_wg6_seatin-1.4: Run 3, band 24 mm \xb7 7 kg \xb7 OC
+  topofree_mass_tilt_7kg_4mm_projected_band24_cup_bolts_split_contract_drive_prot6_least_empty_protect_hf6_single_flange_beds_brk_sf1.25_seatin-1.4: Run 3, band 24 mm \xb7 7 kg \xb7 OC
+  topofree_mass_tilt_7kg_4mm_projected_band24_cup_bolts_split_contract_drive_prot5_least_empty_protect_hf6_single_flange_beds_brk_sf1.25_seatinp1.4: Run 3, band 24 mm \xb7 7 kg \xb7 OC
+  topofree_mass_tilt_7kg_4mm_projected_band24_cup_bolts_split_contract_drive_prot4_least_empty_protect_hf6_single_flange_beds_brk_sf1.25: Run 3, band 24 mm \xb7 7 kg \xb7 OC
+  topofree_mass_tilt_7kg_4mm_projected_band24_cup_bolts_split_contract_drive_prot3_least_empty_protect_hf6_single_flange_beds_brk_sf1.25: Run 3, band 24 mm \xb7 7 kg \xb7 OC
+  topofree_compliance_tilt_5.5kg_4mm_projected_band24_cup_bolts_split_contract_drive_prot1_5.5kg_empty_protect_hf6_single_flange_beds_sf1.15: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, safety factor 1.15, within 24 mm of the shell \xb7 5.5 kg \xb7 GCMMA
+  topofree_compliance_tilt_5.5kg_4mm_projected_band24_cup_bolts_split_contract_drive_sem1_5.5kg_empty_hf6_single_flange_beds_bends1_brk_sf1.15: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, safety factor 1.15, within 24 mm of the shell \xb7 5.5 kg \xb7 GCMMA
+  topofree_mass_tilt_5.5kg_4mm_projected_band24_cup_bolts_split_contract_drive_case1b_least_5.5kg_empty_hf6_single_flange_beds_sf1.15: Run 3, band 24 mm \xb7 5.5 kg \xb7 OC
+  topofree_compliance_tilt_5.5kg_4mm_projected_band24_cup_bolts_split_contract_drive_case3_web_5.5kg_empty_hf6_single_flange_beds_voljunction_web1_cols_sf1.15: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, safety factor 1.15, within 24 mm of the shell \xb7 5.5 kg \xb7 GCMMA
+  topofree_compliance_tilt_5.5kg_4mm_projected_band24_cup_bolts_split_contract_drive_case2_max12_5.5kg_empty_hf6_single_p40_max12_flange_beds_sf1.15: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, members \u2264 12 mm, safety factor 1.15, within 24 mm of the shell \xb7 5.5 kg \xb7 GCMMA
+  topofree_mass_tilt_5.5kg_4mm_projected_band24_cup_bolts_split_contract_drive_case1_least_5.5kg_empty_hf6_single_flange_beds_sf1.15_sfb1.5: Run 3, band 24 mm \xb7 5.5 kg \xb7 OC
+  topofree_compliance_tilt_5.5kg_4mm_projected_band24_cup_bolts_split_contract_drive_empty2_hf12_5.5kg_empty_hf12_single_flange_beds_sf1.15: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, safety factor 1.15, within 24 mm of the shell \xb7 5.5 kg \xb7 GCMMA
+  topofree_compliance_tilt_5.5kg_4mm_projected_band24_cup_bolts_split_contract_drive_empty1_5.5kg_empty_hf6_single_flange_beds_sf1.15: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, safety factor 1.15, within 24 mm of the shell \xb7 5.5 kg \xb7 GCMMA
+  topofree_compliance_tilt_5.5kg_4mm_projected_band24_cup_bolts_split_contract_drive_webcap_spaceweb12_hf6_single_max12_flange_beds_lm8_sf1.15: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, members \u2264 12 mm, safety factor 1.15, within 24 mm of the shell \xb7 5.5 kg \xb7 GCMMA
+  topofree_compliance_tilt_5.5kg_4mm_projected_band24_cup_bolts_split_contract_drive_p40_hf6_single_p40_max12_flange_beds_lm8_sf1.15: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, members \u2264 12 mm, safety factor 1.15, within 24 mm of the shell \xb7 5.5 kg \xb7 GCMMA
+  topofree_compliance_tilt_5.5kg_4mm_projected_band24_cup_bolts_split_contract_drive_web_spaceweb12_hf6_single_p40_max12_flange_beds_lm8_sf1.15_sfb1.35: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, members \u2264 12 mm, safety factor 1.15 (beds 1.35), within 24 mm of the shell \xb7 5.5 kg \xb7 GCMMA
+  topofree_compliance_tilt_5.5kg_4mm_projected_band24_cup_bolts_split_contract_drive_ol_hf6_single_max12_flange_beds_per6750_lm8_sf1.15: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, members \u2264 12 mm, safety factor 1.15, within 24 mm of the shell \xb7 5.5 kg \xb7 GCMMA
+  topofree_compliance_tilt_5.5kg_4mm_projected_band24_cup_bolts_split_contract_drive_mm12_hf6_single_max12_flange_beds_lm8_sf1.15: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, members \u2264 12 mm, safety factor 1.15, within 24 mm of the shell \xb7 5.5 kg \xb7 GCMMA
+  topofree_compliance_tilt_7kg_4mm_projected_band24_cup_bolts_split_contract_drive_rg20c_hf6_single_flange_beds_partsrg20_lm8_sf1.15: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, safety factor 1.15, within 24 mm of the shell \xb7 7 kg \xb7 GCMMA
+  topofree_compliance_tilt_6.5kg_4mm_projected_band24_cup_bolts_split_contract_drive_rg20b_hf6_single_flange_beds_partsrg20_lm8_sf1.15: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, safety factor 1.15, within 24 mm of the shell \xb7 6.5 kg \xb7 GCMMA
+  topofree_compliance_tilt_6.5kg_4mm_projected_band24_cup_bolts_split_contract_drive_rg20_hf6_single_flange_beds_partsrg20_lm8_sf1.15: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, safety factor 1.15, within 24 mm of the shell \xb7 6.5 kg \xb7 GCMMA
+  topofree_compliance_tilt_6kg_4mm_projected_band24_cup_bolts_split_contract_drive_rg20free_hf6_single_plan8x20_flange_beds_lm8_sf1.15: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, in plan members \u2264 8 mm wide, 20 mm gap, safety factor 1.15, within 24 mm of the shell \xb7 6 kg \xb7 GCMMA
+  topofree_compliance_tilt_5.5kg_4mm_projected_band24_cup_bolts_split_contract_drive_lop26_hf6_single_flange_beds_partsrf5_lm8_sf1.15: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, safety factor 1.15, within 24 mm of the shell \xb7 5.5 kg \xb7 GCMMA
+  topofree_compliance_tilt_5.5kg_4mm_projected_band24_cup_bolts_split_contract_drive_bc_spacea2_bspace_hf6_single_flange_beds_lm8_sf1.15: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, safety factor 1.15, within 24 mm of the shell \xb7 5.5 kg \xb7 GCMMA
+  topofree_compliance_tilt_5.5kg_4mm_projected_band24_cup_bolts_split_contract_drive_c1_hf6_single_flange_beds_lm8_sf1.15: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, safety factor 1.15, within 24 mm of the shell \xb7 5.5 kg \xb7 GCMMA
+  topofree_mass_tilt_7.73kg_4mm_projected_band24_cup_bolts_split_contract_drive_fa_9_hf9_single_flange_beds_volln6_cols_sf1.2_sfb1.3: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC
+  topofree_mass_tilt_7.73kg_4mm_projected_band24_cup_bolts_split_contract_drive_fa_6_hf6_single_flange_beds_volln6_cols_sf1.2_sfb1.3: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC
+  topofree_mass_tilt_7.73kg_4mm_projected_band24_cup_bolts_split_contract_drive_fa_12_hf12_single_flange_beds_volln6_cols_sf1.2_sfb1.3: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC
+  topofree_mass_tilt_7.73kg_4mm_projected_band24_cup_bolts_split_contract_drive_ln_8_hf12_single_flange_beds_volln6_cols_sf1.15_sfb1.25: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC
+  topofree_mass_tilt_7.73kg_4mm_projected_band24_cup_bolts_split_contract_drive_ln_7_hf6_single_flange_beds_volln6_cols_sf1.15_sfb1.25: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC
+  topofree_mass_tilt_7.73kg_4mm_projected_band24_cup_bolts_split_contract_drive_ln_6_hf6_single_flange_beds_volln6_cols_sf1.25_sfb1.5: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC
+  topofree_mass_tilt_7.73kg_4mm_projected_band24_cup_bolts_split_contract_drive_ln_4_hf6_single_flange_beds_volln4_cols_sf1.25_sfb1.5: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC
+  topofree_mass_tilt_7.73kg_4mm_projected_band24_cup_bolts_split_contract_drive_sf_4_hf6_single_flange_beds_volsf3_cols_sf1.25_sfb1.5: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC
+  topofree_compliance_tilt_5.5kg_4mm_projected_band24_cup_bolts_split_contract_drive_sf_3_hf6_single_flange_beds_volsf2_cols_sf1.15: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, safety factor 1.15, within 24 mm of the shell \xb7 5.5 kg \xb7 GCMMA
+  topofree_compliance_tilt_5.5kg_4mm_projected_band24_cup_bolts_split_contract_drive_dom_2_spacedom1_hf6_single_flange_beds_sf1.15: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, safety factor 1.15, within 24 mm of the shell \xb7 5.5 kg \xb7 GCMMA
+  topofree_mass_tilt_7.73kg_4mm_projected_band24_cup_bolts_split_contract_drive_hp_2_spacehp1_hf6_single_flange_beds_sf1.25_sfb1.5: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC
+  topofree_mass_tilt_7.73kg_4mm_projected_band24_cup_bolts_split_contract_drive_bsp_4_hf6_single_flange_beds_featbsp4_sf1.25_sfb1.5: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC
+  topofree_mass_tilt_7.73kg_4mm_projected_band24_cup_bolts_split_contract_drive_bore_free_hf6_single_flange_beds_sf1.25_sfb1.5: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC
+  topofree_mass_tilt_7.73kg_4mm_projected_band24_cup_bolts_split_contract_drive_bore_ties_hf6_single_flange_beds_featbore_ties_sf1.25_sfb1.5: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC
+  topofree_mass_tilt_7.73kg_4mm_projected_band24_cup_bolts_split_contract_drive_bore_web_hf6_single_flange_beds_featbore_web_sf1.25_sfb1.5: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC
+  topofree_mass_tilt_7.73kg_4mm_projected_band24_cup_bolts_split_contract_drive_bore_spokes_hf6_single_flange_beds_featbore_spokes_sf1.25_sfb1.5: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC
+  topofree_mass_tilt_7.73kg_4mm_projected_band24_cup_bolts_split_contract_drive_it4_refined_spaceit4_refined_hf6_single_flange_beds_sf1.25_sfb1.5: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC
+  topofree_mass_tilt_7.73kg_4mm_projected_band24_cup_bolts_split_contract_drive_it3_features_spaceit3_features_hf6_single_flange_beds_sf1.2_sfb1.5: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC
+  topofree_mass_tilt_7.73kg_4mm_projected_band24_cup_bolts_split_contract_drive_it2_core_spaceit2_core_hf6_single_flange_beds_sf1.15_sfb1.5: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC
+  topofree_mass_tilt_7.73kg_4mm_projected_band24_cup_bolts_split_contract_drive_it1_leastmetal_r6_hf6_single_flange_beds_sf1.15_sfb1.5: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC
+  topofree_mass_tilt_7.73kg_4mm_projected_band24_cup_bolts_split_contract_drive_it1_leastmetal_r5_hf5_single_flange_beds_sf1.15: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC
+  topofree_compliance_tilt_5.5kg_4mm_projected_band24_cup_bolts_split_contract_drive_hfsf_4mm_5.5kg_r6_hf6_single_flange_beds_sf1.15: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, safety factor 1.15, within 24 mm of the shell \xb7 5.5 kg \xb7 GCMMA
+  topofree_compliance_tilt_7kg_4mm_projected_band24_cup_bolts_split_contract_drive_hf6_4mm_7.0kg_hf6_single_flange_beds: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, within 24 mm of the shell \xb7 7 kg \xb7 GCMMA
+  topofree_compliance_tilt_7.5kg_4mm_projected_band24_cup_bolts_split_contract_drive_gap12_4mm_7.5kg_single_plan8x12_flange_beds: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, in plan members \u2264 8 mm wide, 12 mm gap, within 24 mm of the shell \xb7 7.5 kg \xb7 GCMMA
+  topofree_compliance_tilt_6.5kg_4mm_projected_band24_cup_bolts_split_contract_drive_gap12_4mm_6.5kg_single_plan8x12_flange_beds: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, in plan members \u2264 8 mm wide, 12 mm gap, within 24 mm of the shell \xb7 6.5 kg \xb7 GCMMA
+  topofree_compliance_tilt_6.5kg_4mm_projected_band24_cup_bolts_split_contract_drive_nomax24_4mm_6.5kg_single_max12_flange_beds: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, members \u2264 12 mm, within 24 mm of the shell \xb7 6.5 kg \xb7 GCMMA
+  topofree_compliance_tilt_6.5kg_4mm_projected_band24_cup_bolts_split_contract_drive_free24_4mm_6.5kg_single_max8_flange_beds: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, members \u2264 8 mm, within 24 mm of the shell \xb7 6.5 kg \xb7 GCMMA
+  topofree_compliance_tilt_7.3kg_4mm_projected_band24_cup_bolts_split_contract_drive_free24_4mm_7.3kg_single_max8_flange_beds: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, members \u2264 8 mm, within 24 mm of the shell \xb7 7.3 kg \xb7 GCMMA
+  topofree_compliance_tilt_7kg_4mm_projected_band24_cup_bolts_split_contract_drive_ribsfins_prod24_4mm_7.0kg_single_max8_flange_beds: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, members \u2264 8 mm, within 24 mm of the shell, on the rib network, side fins \xb7 7 kg \xb7 GCMMA
+  topofree_compliance_tilt_6.7kg_6mm_projected_band24_cup_bolts_skin4_split_contract_drive_ribsfieldfins_ribsfieldfins24_6.7kg_single_flange_beds: Split, compliance, tilt and beds held, one run, peak drive, within 24 mm of the shell, on the rib network and a free run's lines, side fins \xb7 6.7 kg \xb7 GCMMA
+  topofree_compliance_tilt_6.3kg_6mm_projected_band24_cup_bolts_skin4_split_contract_drive_ribsfieldfins_ribsfieldfins24_6.3kg_single_flange_beds: Split, compliance, tilt and beds held, one run, peak drive, within 24 mm of the shell, on the rib network and a free run's lines, side fins \xb7 6.3 kg \xb7 GCMMA
+  topofree_compliance_tilt_6.5kg_6mm_projected_band24_cup_bolts_skin4_split_contract_drive_ribsfieldfins_ribsfieldfins24_6.5kg_single_flange_beds: Split, compliance, tilt and beds held, one run, peak drive, within 24 mm of the shell, on the rib network and a free run's lines, side fins \xb7 6.5 kg \xb7 GCMMA
+  topofree_compliance_tilt_7kg_6mm_projected_band24_cup_bolts_skin4_split_contract_drive_ribsfieldfinsuni_ribsfieldfinsuni24_7.0kg_single_flange_beds: Split, compliance, tilt and beds held, one run, peak drive, within 24 mm of the shell \xb7 7 kg \xb7 GCMMA
+  topofree_compliance_tilt_6.5kg_6mm_projected_band24_cup_bolts_skin4_split_contract_drive_ribsfieldfinsuni_ribsfieldfinsuni24_6.5kg_single_flange_beds: Split, compliance, tilt and beds held, one run, peak drive, within 24 mm of the shell \xb7 6.5 kg \xb7 GCMMA
+  topofree_compliance_tilt_7kg_4mm_projected_band20_cup_bolts_split_contract_drive_ribsfieldfins_ribsfieldfins20_4mm_7.0kg_single_flange_beds: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, within 20 mm of the shell, on the rib network and a free run's lines, side fins \xb7 7 kg \xb7 GCMMA
+  topofree_compliance_tilt_7kg_4mm_projected_band20_cup_bolts_split_contract_drive_ribsfieldfinsuni_ribsfieldfinsuni20_4mm_7.0kg_single_flange_beds: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, within 20 mm of the shell \xb7 7 kg \xb7 GCMMA
+  topofree_compliance_tilt_6kg_4mm_projected_band20_cup_bolts_split_contract_drive_ribsfieldfins_ribsfieldfins20_4mm_6.0kg_single_flange_beds: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, within 20 mm of the shell, on the rib network and a free run's lines, side fins \xb7 6 kg \xb7 GCMMA
+  topofree_compliance_tilt_6kg_4mm_projected_band20_cup_bolts_split_contract_drive_ribsfield_ribsfield20_4mm_6.0kg_single_flange_beds: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, within 20 mm of the shell, on the rib network and a free run's lines \xb7 6 kg \xb7 GCMMA
+  topofree_compliance_tilt_6kg_4mm_projected_band20_cup_bolts_split_contract_drive_env20_4mm_6.0kg_single_max8_flange_beds: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, members \u2264 8 mm, within 20 mm of the shell \xb7 6 kg \xb7 GCMMA
+  topofree_compliance_tilt_6.5kg_6mm_projected_band24_cup_bolts_skin4_split_contract_drive_env24_6.5kg_single_max12_flange_beds: Split, compliance, tilt and beds held, one run, peak drive, members \u2264 12 mm, within 24 mm of the shell \xb7 6.5 kg \xb7 GCMMA
+  topofree_compliance_tilt_6.5kg_6mm_projected_band12_cup_bolts_skin4_split_contract_drive_env12_6.5kg_single_max12_flange_beds: Split, compliance, tilt and beds held, one run, peak drive, members \u2264 12 mm, within 12 mm of the shell \xb7 6.5 kg \xb7 GCMMA
+  topofree_compliance_tilt_7kg_6mm_projected_band18_cup_bolts_skin4_split_contract_drive_env18_7.0kg_single_max12_flange_beds: Split, compliance, tilt and beds held, one run, peak drive, members \u2264 12 mm, within 18 mm of the shell \xb7 7 kg \xb7 GCMMA
+  topofree_compliance_tilt_6.5kg_6mm_projected_band18_cup_bolts_skin4_split_contract_drive_env18_6.5kg_single_max12_flange_beds: Split, compliance, tilt and beds held, one run, peak drive, members \u2264 12 mm, within 18 mm of the shell \xb7 6.5 kg \xb7 GCMMA
+  topofree_compliance_tilt_6kg_6mm_projected_band18_cup_bolts_skin4_split_contract_drive_env18_6.0kg_single_max12_flange_beds: Split, compliance, tilt and beds held, one run, peak drive, members \u2264 12 mm, within 18 mm of the shell \xb7 6 kg \xb7 GCMMA
+  topofree_compliance_tilt_7.73kg_6mm_projected_band18_cup_bolts_skin4_split_contract_drive_band18_single_max12_flange_beds: Split, compliance, tilt and beds held, one run, peak drive, members \u2264 12 mm, within 18 mm of the shell \xb7 7.73 kg \xb7 GCMMA
+  topofree_compliance_tilt_7kg_6mm_projected_cup_bolts_skin4_split_contract_drive_v_7.0kg_single_max12_flange_beds: Split, compliance, tilt and beds held, one run, peak drive, members \u2264 12 mm \xb7 7 kg \xb7 GCMMA
+  topofree_compliance_tilt_7.4kg_6mm_projected_cup_bolts_skin4_split_contract_drive_v_7.4kg_single_max12_flange_beds: Split, compliance, tilt and beds held, one run, peak drive, members \u2264 12 mm \xb7 7.4 kg \xb7 GCMMA
+  topofree_compliance_tilt_7.73kg_6mm_projected_cup_bolts_skin4_split_contract_drive_v_max9_single_max9_flange_beds: Split, compliance, tilt and beds held, one run, peak drive, members \u2264 9 mm \xb7 7.73 kg \xb7 GCMMA
+  topofree_compliance_tilt_7.73kg_10mm_projected_cup_bolts_skin4_split_contract_drive_v_10mm_single_max12_flange_beds: Split, compliance, tilt and beds held, one run, peak drive, 10 mm voxels, members \u2264 12 mm \xb7 7.73 kg \xb7 GCMMA
+  topofree_compliance_tilt_7.2kg_6mm_projected_cup_bolts_skin4_split_contract_drive_v_7.2kg_single_max12_flange_beds: Split, compliance, tilt and beds held, one run, peak drive, members \u2264 12 mm \xb7 7.2 kg \xb7 GCMMA
+  topofree_compliance_tilt_7.73kg_6mm_projected_cup_bolts_skin4_split_contract_drive_b_6mm_drive_single_max12_flange_beds: Split, compliance, tilt and beds held, one run, peak drive, members \u2264 12 mm \xb7 7.73 kg \xb7 GCMMA
+  topofree_compliance_tilt_7.73kg_6mm_projected_cup_bolts_skin4_split_contract_drive_onerun2_single_max12_flange_beds: Split, compliance, tilt and beds held, one run, peak drive, members \u2264 12 mm \xb7 7.73 kg \xb7 GCMMA
+  topofree_compliance_tilt_7.73kg_6mm_projected_cup_bolts_skin4_split_contract_drive_single_max12_flange: Split, compliance, tilt held, from a stiff run, peak drive, members \u2264 12 mm \xb7 7.73 kg \xb7 GCMMA
+  topofree_compliance_gcmma_7.73kg_6mm_projected_cup_bolts_skin4_split_contract_drive_single_max12_flange: Split, compliance, peak drive, members \u2264 12 mm \xb7 7.73 kg \xb7 GCMMA
+  topofree_compliance_tilt_7.2kg_6mm_projected_cup_bolts_skin4_split_contract_single_robust0.15_max12: Split robust, compliance, tilt held, from a stiff run, both cases, members \u2264 12 mm \xb7 7.2 kg \xb7 GCMMA
+designs/_index.json: 365
+  baseline2_lw8_spl_organic: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 organic shape
+  baseline2_lw8_spl: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 mesh
+  baseline2_lw8_organic: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 organic shape
+  baseline2_lw8: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 mesh
+  baseline2_fm500g_organic: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 organic shape, smoothed
+  baseline2_fm500g: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 mesh, smoothed
+  baseline2_fm500f_t60_organic: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 organic shape, smoothed
+  baseline2_fm500f_organic: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 organic shape, smoothed
+  baseline2_fm500f: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 mesh, smoothed
+  baseline2_fm500e_t30_organic: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 organic shape, smoothed
+  baseline2_fm500e_t30: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 mesh, smoothed
+  baseline2_fm500e_organic: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 organic shape, smoothed
+  baseline2_fm500e: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 mesh, smoothed
+  baseline2_fm500d_t10_organic: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 organic shape, smoothed
+  baseline2_fm500d_t10: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 mesh, smoothed
+  baseline2_fm500d_organic: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 organic shape
+  baseline2_fm500d: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 mesh
+  baseline2_fm500c_organic: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 organic shape
+  baseline2_fm500c: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 mesh
+  baseline2_fm500_smooth_organic: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 organic shape
+  baseline2_fm500_smooth: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 mesh, redrawn
+  baseline2_fm500_organic: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 organic shape
+  baseline2_fm500: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 mesh
+  baseline2_smooth4_organic: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 organic shape
+  baseline2_smooth4: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 mesh, redrawn
+  baseline1_smooth4_organic: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 organic shape
+  baseline1_smooth4: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 mesh, redrawn
+  baseline2_smooth_organic: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 organic shape
+  baseline2_smooth: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 mesh, redrawn
+  baseline1_smooth_organic: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 organic shape
+  baseline1_smooth: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 mesh, redrawn
+  baseline2_organic: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 organic shape
+  baseline2: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 mesh
+  baseline1_organic: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 organic shape
+  baseline1: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 mesh
+  base_mix6_organic: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 organic shape
+  base_mix6: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 mesh
+  lop29_clear_organic: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 organic shape
+  lop29_clear: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 mesh
+  lop29_exact_organic: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 organic shape
+  lop29_exact: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 mesh, redrawn
+  lop29_keep_organic: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 organic shape
+  lop29_keep: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 mesh, redrawn
+  lop29_modes_organic: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 organic shape
+  lop29_modes: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 mesh
+  final18_l50_organic: Run 3, band 24 mm \xb7 7.7 kg \xb7 OC \xb7 organic shape
+  final18_l50: Run 3, band 24 mm \xb7 7.7 kg \xb7 OC \xb7 mesh, redrawn
+  final18_organic: Run 3, band 24 mm \xb7 7.7 kg \xb7 OC \xb7 organic shape
+  final18: Run 3, band 24 mm \xb7 7.7 kg \xb7 OC \xb7 mesh
+  final17_l50_organic: Run 3, band 24 mm \xb7 7.7 kg \xb7 OC \xb7 organic shape
+  final17_l50: Run 3, band 24 mm \xb7 7.7 kg \xb7 OC \xb7 mesh, redrawn
+  final17_organic: Run 3, band 24 mm \xb7 7.7 kg \xb7 OC \xb7 organic shape
+  final17: Run 3, band 24 mm \xb7 7.7 kg \xb7 OC \xb7 mesh
+  final16rp_organic: Run 3, band 24 mm \xb7 7.6 kg \xb7 OC \xb7 organic shape
+  final16rp: Run 3, band 24 mm \xb7 7.6 kg \xb7 OC \xb7 mesh
+  final16_l50_organic: Run 3, band 24 mm \xb7 7.6 kg \xb7 OC \xb7 organic shape
+  final16_l50: Run 3, band 24 mm \xb7 7.6 kg \xb7 OC \xb7 mesh, redrawn
+  final16_organic: Run 3, band 24 mm \xb7 7.6 kg \xb7 OC \xb7 organic shape
+  final16: Run 3, band 24 mm \xb7 7.6 kg \xb7 OC \xb7 mesh
+  final15_organic: Run 3, band 24 mm \xb7 7.6 kg \xb7 OC \xb7 organic shape
+  final15: Run 3, band 24 mm \xb7 7.6 kg \xb7 OC \xb7 mesh
+  final14_organic: Run 3, band 24 mm \xb7 7.6 kg \xb7 OC \xb7 organic shape
+  final14: Run 3, band 24 mm \xb7 7.6 kg \xb7 OC \xb7 mesh
+  final13_organic: Run 3, band 24 mm \xb7 7.7 kg \xb7 OC \xb7 organic shape
+  final13: Run 3, band 24 mm \xb7 7.7 kg \xb7 OC \xb7 mesh
+  final12_organic: Run 3, band 24 mm \xb7 7.7 kg \xb7 OC \xb7 organic shape
+  final12: Run 3, band 24 mm \xb7 7.7 kg \xb7 OC \xb7 mesh
+  final11_organic: Run 3, band 24 mm \xb7 7.6 kg \xb7 OC \xb7 organic shape
+  final11: Run 3, band 24 mm \xb7 7.6 kg \xb7 OC \xb7 mesh
+  final10_l50_organic: Run 3, band 24 mm \xb7 7.4 kg \xb7 OC \xb7 organic shape
+  final10_l50: Run 3, band 24 mm \xb7 7.4 kg \xb7 OC \xb7 mesh, redrawn
+  final10rd_organic: Run 3, band 24 mm \xb7 7.4 kg \xb7 OC \xb7 organic shape
+  final10rd: Run 3, band 24 mm \xb7 7.4 kg \xb7 OC \xb7 mesh
+  final10rp_organic: Run 3, band 24 mm \xb7 7.4 kg \xb7 OC \xb7 organic shape
+  final10rp: Run 3, band 24 mm \xb7 7.4 kg \xb7 OC \xb7 mesh
+  final10rz_organic: Run 3, band 24 mm \xb7 7.4 kg \xb7 OC \xb7 organic shape
+  final10rz: Run 3, band 24 mm \xb7 7.4 kg \xb7 OC \xb7 mesh
+  final10rn_organic: Run 3, band 24 mm \xb7 7.4 kg \xb7 OC \xb7 organic shape
+  final10rn: Run 3, band 24 mm \xb7 7.4 kg \xb7 OC \xb7 mesh
+  final10ra_organic: Run 3, band 24 mm \xb7 7.4 kg \xb7 OC \xb7 organic shape
+  final10ra: Run 3, band 24 mm \xb7 7.4 kg \xb7 OC \xb7 mesh
+  final10r_organic: Run 3, band 24 mm \xb7 7.4 kg \xb7 OC \xb7 organic shape
+  final10r: Run 3, band 24 mm \xb7 7.4 kg \xb7 OC \xb7 mesh
+  final10_organic: Run 3, band 24 mm \xb7 7.4 kg \xb7 OC \xb7 organic shape
+  final10: Run 3, band 24 mm \xb7 7.4 kg \xb7 OC \xb7 mesh
+  final9_organic: Run 3, band 24 mm \xb7 7.4 kg \xb7 OC \xb7 organic shape
+  final9: Run 3, band 24 mm \xb7 7.4 kg \xb7 OC \xb7 mesh
+  final8_organic: Run 3, band 24 mm \xb7 7.4 kg \xb7 OC \xb7 organic shape
+  final8: Run 3, band 24 mm \xb7 7.4 kg \xb7 OC \xb7 mesh
+  final7_organic: Run 3, band 24 mm \xb7 7.4 kg \xb7 OC \xb7 organic shape
+  final7: Run 3, band 24 mm \xb7 7.4 kg \xb7 OC \xb7 mesh
+  final6_organic: Run 3, band 24 mm \xb7 7.3 kg \xb7 OC \xb7 organic shape
+  final6: Run 3, band 24 mm \xb7 7.3 kg \xb7 OC \xb7 mesh
+  final5_organic: Run 3, band 24 mm \xb7 7.3 kg \xb7 OC \xb7 organic shape
+  final5: Run 3, band 24 mm \xb7 7.3 kg \xb7 OC \xb7 mesh
+  final4_organic: Run 3, band 24 mm \xb7 7.4 kg \xb7 OC \xb7 organic shape
+  final4: Run 3, band 24 mm \xb7 7.4 kg \xb7 OC \xb7 mesh
+  final3_organic: Run 3, band 24 mm \xb7 7.3 kg \xb7 OC \xb7 organic shape
+  final3: Run 3, band 24 mm \xb7 7.3 kg \xb7 OC \xb7 mesh
+  final2: Run 3, band 24 mm \xb7 7.2 kg \xb7 OC \xb7 mesh
+  final2_organic: Run 3, band 24 mm \xb7 7.2 kg \xb7 OC \xb7 organic shape
+  p6spk_organic: Run 3, band 24 mm \xb7 7 kg \xb7 OC \xb7 organic shape
+  p6spk: Run 3, band 24 mm \xb7 7 kg \xb7 OC \xb7 mesh, redrawn
+  final1_organic: Run 3, band 24 mm \xb7 7 kg \xb7 OC \xb7 organic shape
+  final1: Run 3, band 24 mm \xb7 7 kg \xb7 OC \xb7 mesh
+  rule2_dev_organic: Run 3, band 24 mm \xb7 7 kg \xb7 OC \xb7 organic shape
+  rule2_dev: Run 3, band 24 mm \xb7 7 kg \xb7 OC \xb7 mesh
+  rule1_wall_organic: Run 3, band 24 mm \xb7 7 kg \xb7 OC \xb7 organic shape
+  rule1_wall: Run 3, band 24 mm \xb7 7 kg \xb7 OC \xb7 mesh
+  prot6_least_organic: Run 3, band 24 mm \xb7 7 kg \xb7 OC \xb7 organic shape
+  prot6_least: Run 3, band 24 mm \xb7 7 kg \xb7 OC \xb7 mesh
+  prot5_least_organic: Run 3, band 24 mm \xb7 7 kg \xb7 OC \xb7 organic shape
+  prot5_least: Run 3, band 24 mm \xb7 7 kg \xb7 OC \xb7 mesh
+  prot4_least_organic: Run 3, band 24 mm \xb7 7 kg \xb7 OC \xb7 organic shape
+  prot4_least: Run 3, band 24 mm \xb7 7 kg \xb7 OC \xb7 mesh
+  prot3v_organic: Run 3, band 24 mm \xb7 7 kg \xb7 OC \xb7 organic shape
+  prot3v: Run 3, band 24 mm \xb7 7 kg \xb7 OC \xb7 mesh, redrawn
+  prot3f_organic: Run 3, band 24 mm \xb7 7 kg \xb7 OC \xb7 organic shape
+  prot3f: Run 3, band 24 mm \xb7 7 kg \xb7 OC \xb7 mesh
+  prot1_5.5kg_organic: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, safety factor 1.15, within 24 mm of the shell \xb7 5.5 kg \xb7 GCMMA \xb7 organic shape
+  prot1_5.5kg: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, safety factor 1.15, within 24 mm of the shell \xb7 5.5 kg \xb7 GCMMA \xb7 mesh
+  sem1h_5.5kg_organic: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, safety factor 1.15, within 24 mm of the shell \xb7 5.5 kg \xb7 GCMMA \xb7 organic shape
+  sem1h_5.5kg: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, safety factor 1.15, within 24 mm of the shell \xb7 5.5 kg \xb7 GCMMA \xb7 mesh, redrawn
+  empty1h_5.5kg_organic: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, safety factor 1.15, within 24 mm of the shell \xb7 5.5 kg \xb7 GCMMA \xb7 organic shape
+  empty1h_5.5kg: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, safety factor 1.15, within 24 mm of the shell \xb7 5.5 kg \xb7 GCMMA \xb7 mesh, redrawn
+  sem1_5.5kg_organic: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, safety factor 1.15, within 24 mm of the shell \xb7 5.5 kg \xb7 GCMMA \xb7 organic shape
+  sem1_5.5kg: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, safety factor 1.15, within 24 mm of the shell \xb7 5.5 kg \xb7 GCMMA \xb7 mesh
+  empty1_l40_5.5kg_organic: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, safety factor 1.15, within 24 mm of the shell \xb7 5.5 kg \xb7 GCMMA \xb7 organic shape
+  empty1_l40_5.5kg: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, safety factor 1.15, within 24 mm of the shell \xb7 5.5 kg \xb7 GCMMA \xb7 mesh, redrawn
+  case3_web_l40_5.5kg_organic: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, safety factor 1.15, within 24 mm of the shell \xb7 5.5 kg \xb7 GCMMA \xb7 organic shape
+  case3_web_l40_5.5kg: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, safety factor 1.15, within 24 mm of the shell \xb7 5.5 kg \xb7 GCMMA \xb7 mesh, redrawn
+  case1b_least_5.5kg_organic: Run 3, band 24 mm \xb7 5.5 kg \xb7 OC \xb7 organic shape
+  case1b_least_5.5kg: Run 3, band 24 mm \xb7 5.5 kg \xb7 OC \xb7 mesh
+  case3_web_5.5kg_organic: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, safety factor 1.15, within 24 mm of the shell \xb7 5.5 kg \xb7 GCMMA \xb7 organic shape
+  case3_web_5.5kg: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, safety factor 1.15, within 24 mm of the shell \xb7 5.5 kg \xb7 GCMMA \xb7 mesh
+  case2_max12_5.5kg_organic: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, members \u2264 12 mm, safety factor 1.15, within 24 mm of the shell \xb7 5.5 kg \xb7 GCMMA \xb7 organic shape
+  case2_max12_5.5kg: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, members \u2264 12 mm, safety factor 1.15, within 24 mm of the shell \xb7 5.5 kg \xb7 GCMMA \xb7 mesh
+  case1_least_5.5kg_organic: Run 3, band 24 mm \xb7 5.5 kg \xb7 OC \xb7 organic shape
+  case1_least_5.5kg: Run 3, band 24 mm \xb7 5.5 kg \xb7 OC \xb7 mesh
+  empty1_exact_5.5kg_organic: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, safety factor 1.15, within 24 mm of the shell \xb7 5.5 kg \xb7 GCMMA \xb7 organic shape
+  empty1_exact_5.5kg: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, safety factor 1.15, within 24 mm of the shell \xb7 5.5 kg \xb7 GCMMA \xb7 mesh, redrawn
+  empty2_exact_5.5kg_organic: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, safety factor 1.15, within 24 mm of the shell \xb7 5.5 kg \xb7 GCMMA \xb7 organic shape
+  empty2_exact_5.5kg: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, safety factor 1.15, within 24 mm of the shell \xb7 5.5 kg \xb7 GCMMA \xb7 mesh, redrawn
+  empty2_hf12_5.5kg_organic: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, safety factor 1.15, within 24 mm of the shell \xb7 5.5 kg \xb7 GCMMA \xb7 organic shape
+  empty2_hf12_5.5kg: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, safety factor 1.15, within 24 mm of the shell \xb7 5.5 kg \xb7 GCMMA \xb7 mesh
+  empty1_faithful_5.5kg_organic: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, safety factor 1.15, within 24 mm of the shell \xb7 5.5 kg \xb7 GCMMA \xb7 organic shape
+  empty1_faithful_5.5kg: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, safety factor 1.15, within 24 mm of the shell \xb7 5.5 kg \xb7 GCMMA \xb7 mesh, redrawn
+  empty1_5.5kg_organic: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, safety factor 1.15, within 24 mm of the shell \xb7 5.5 kg \xb7 GCMMA \xb7 organic shape
+  empty1_5.5kg: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, safety factor 1.15, within 24 mm of the shell \xb7 5.5 kg \xb7 GCMMA \xb7 mesh
+  p40_clean_organic: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, members \u2264 12 mm, safety factor 1.15, within 24 mm of the shell \xb7 5.5 kg \xb7 GCMMA \xb7 organic shape, skin drawing
+  p40_clean: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, members \u2264 12 mm, safety factor 1.15, within 24 mm of the shell \xb7 5.5 kg \xb7 GCMMA \xb7 mesh, skin drawing
+  webcap_free_organic: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, members \u2264 12 mm, safety factor 1.15, within 24 mm of the shell \xb7 5.5 kg \xb7 GCMMA \xb7 organic shape, skin drawing
+  webcap_free: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, members \u2264 12 mm, safety factor 1.15, within 24 mm of the shell \xb7 5.5 kg \xb7 GCMMA \xb7 mesh, skin drawing
+  p40_free_organic: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, members \u2264 12 mm, safety factor 1.15, within 24 mm of the shell \xb7 5.5 kg \xb7 GCMMA \xb7 organic shape, skin drawing
+  p40_free: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, members \u2264 12 mm, safety factor 1.15, within 24 mm of the shell \xb7 5.5 kg \xb7 GCMMA \xb7 mesh, skin drawing
+  web_free_organic: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, members \u2264 12 mm, safety factor 1.15 (beds 1.35), within 24 mm of the shell \xb7 5.5 kg \xb7 GCMMA \xb7 organic shape, skin drawing
+  web_free: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, members \u2264 12 mm, safety factor 1.15 (beds 1.35), within 24 mm of the shell \xb7 5.5 kg \xb7 GCMMA \xb7 mesh, skin drawing
+  ol_free: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, members \u2264 12 mm, safety factor 1.15, within 24 mm of the shell \xb7 5.5 kg \xb7 GCMMA \xb7 mesh, skin drawing
+  ol_free_organic: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, members \u2264 12 mm, safety factor 1.15, within 24 mm of the shell \xb7 5.5 kg \xb7 GCMMA \xb7 organic shape, skin drawing
+  mm12_free: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, members \u2264 12 mm, safety factor 1.15, within 24 mm of the shell \xb7 5.5 kg \xb7 GCMMA \xb7 mesh, skin drawing
+  mm12_free_organic: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, members \u2264 12 mm, safety factor 1.15, within 24 mm of the shell \xb7 5.5 kg \xb7 GCMMA \xb7 organic shape, skin drawing
+  rg20_free_organic: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, in plan members \u2264 8 mm wide, 20 mm gap, safety factor 1.15, within 24 mm of the shell \xb7 6 kg \xb7 GCMMA \xb7 organic shape, skin drawing
+  rg20_free: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, in plan members \u2264 8 mm wide, 20 mm gap, safety factor 1.15, within 24 mm of the shell \xb7 6 kg \xb7 GCMMA \xb7 mesh, skin drawing
+  rg20c_parts_organic: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, safety factor 1.15, within 24 mm of the shell \xb7 7 kg \xb7 GCMMA \xb7 organic shape, skin drawing
+  rg20c_parts: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, safety factor 1.15, within 24 mm of the shell \xb7 7 kg \xb7 GCMMA \xb7 mesh, skin drawing
+  rg20b_parts_organic: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, safety factor 1.15, within 24 mm of the shell \xb7 6.5 kg \xb7 GCMMA \xb7 organic shape, skin drawing
+  rg20b_parts: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, safety factor 1.15, within 24 mm of the shell \xb7 6.5 kg \xb7 GCMMA \xb7 mesh, skin drawing
+  rg20_parts: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, safety factor 1.15, within 24 mm of the shell \xb7 6.5 kg \xb7 GCMMA \xb7 mesh, skin drawing
+  rg20_parts_organic: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, safety factor 1.15, within 24 mm of the shell \xb7 6.5 kg \xb7 GCMMA \xb7 organic shape, skin drawing
+  rf1_parts_6.4kg_organic: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, safety factor 1.15, within 24 mm of the shell \xb7 5.5 kg \xb7 GCMMA \xb7 organic shape, skin drawing
+  rf1_parts_6.4kg: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, safety factor 1.15, within 24 mm of the shell \xb7 5.5 kg \xb7 GCMMA \xb7 mesh, skin drawing
+  a2_b1_organic: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, safety factor 1.15, within 24 mm of the shell \xb7 5.5 kg \xb7 GCMMA \xb7 organic shape, skin drawing
+  a2_b1: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, safety factor 1.15, within 24 mm of the shell \xb7 5.5 kg \xb7 GCMMA \xb7 mesh, skin drawing
+  a2_c1_organic: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, safety factor 1.15, within 24 mm of the shell \xb7 5.5 kg \xb7 GCMMA \xb7 organic shape, skin drawing
+  a2_c1: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, safety factor 1.15, within 24 mm of the shell \xb7 5.5 kg \xb7 GCMMA \xb7 mesh, skin drawing
+  param5_organic: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 organic shape
+  param5: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 CAD, redrawn
+  prod24_asis: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 mesh, skin drawing
+  prod24_asis_organic: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 organic shape, skin drawing
+  prod23_asis_organic: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 organic shape, skin drawing
+  prod23_asis: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 mesh, skin drawing
+  prod22_asis_organic: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 organic shape, skin drawing
+  prod22_asis: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 mesh, skin drawing
+  prod21_asis_organic: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 organic shape, skin drawing
+  prod21_asis: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 mesh, skin drawing
+  prod20_asis_organic: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 organic shape, skin drawing
+  prod20_asis: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 mesh, skin drawing
+  prod19_asis_organic: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 organic shape, skin drawing
+  prod19_asis: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 mesh, skin drawing
+  fa9_bar3_organic: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 organic shape, skin drawing
+  fa9_bar3: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 mesh, skin drawing
+  prod18_asis_organic: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 organic shape, skin drawing
+  prod18_asis: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 mesh, skin drawing
+  prod17_asis_organic: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 organic shape, skin drawing
+  prod17_asis: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 mesh, skin drawing
+  fa9_bar2_organic: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 organic shape, skin drawing
+  fa9_bar2: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 mesh, skin drawing
+  fa9_bar: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 mesh, skin drawing
+  fa9_bar_organic: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 organic shape, skin drawing
+  fa9_web_organic: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 organic shape, skin drawing
+  fa9_web: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 mesh, skin drawing
+  fa6_bar_organic: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 organic shape, skin drawing
+  fa6_bar: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 mesh, skin drawing
+  fa6_web_organic: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 organic shape, skin drawing
+  fa6_web: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 mesh, skin drawing
+  fa12_bar: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 mesh, skin drawing
+  fa12_bar_organic: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 organic shape, skin drawing
+  fa12_web_organic: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 organic shape, skin drawing
+  fa12_web: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 mesh, skin drawing
+  prod16_asis_organic: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 organic shape, skin drawing
+  prod16_asis: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 mesh, skin drawing
+  prod15_asis_organic: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 organic shape, skin drawing
+  prod15_asis: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 mesh, skin drawing
+  prod14_asis_organic: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 organic shape, skin drawing
+  prod14_asis: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 mesh, skin drawing
+  prod13_asis_organic: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 organic shape, skin drawing
+  prod13_asis: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 mesh, skin drawing
+  prod12_asis_organic: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 organic shape, skin drawing
+  prod12_asis: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 mesh, skin drawing
+  prod11_asis_organic: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 organic shape, skin drawing
+  prod11_asis: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 mesh, skin drawing
+  prod10_asis_organic: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 organic shape, skin drawing
+  prod10_asis: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 mesh, skin drawing
+  prod9_asis_organic: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 organic shape, skin drawing
+  prod9_asis: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 mesh, skin drawing
+  prod8_asis_organic: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 organic shape, skin drawing
+  prod8_asis: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 mesh, skin drawing
+  prod7_asis_organic: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 organic shape, skin drawing
+  prod7_asis: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 mesh, skin drawing
+  prod6_asis_organic: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 organic shape, skin drawing
+  prod6_asis: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 mesh, skin drawing
+  prod5_asis_organic: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 organic shape, skin drawing
+  prod5_asis: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 mesh, skin drawing
+  prod4_asis_organic: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 organic shape, skin drawing
+  prod4_asis: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 mesh, skin drawing
+  prod3_asis: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 mesh, skin drawing
+  prod3_asis_organic: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 organic shape, skin drawing
+  sf4_field_organic: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 organic shape, skin drawing
+  sf4_field: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 mesh, skin drawing
+  prod2_asis_organic: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 organic shape, skin drawing
+  prod2_asis: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 mesh, skin drawing
+  prod2_ribs_organic: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 organic shape, skin drawing
+  prod2_ribs: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 mesh, skin drawing
+  sf3_ribs_6.6kg_organic: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, safety factor 1.15, within 24 mm of the shell \xb7 5.5 kg \xb7 GCMMA \xb7 organic shape, skin drawing
+  sf3_ribs_6.6kg: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, safety factor 1.15, within 24 mm of the shell \xb7 5.5 kg \xb7 GCMMA \xb7 mesh, skin drawing
+  recB1_skeleton: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, safety factor 1.15, within 24 mm of the shell \xb7 5.5 kg \xb7 GCMMA \xb7 mesh, skin drawing
+  recB1_skeleton_organic: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, safety factor 1.15, within 24 mm of the shell \xb7 5.5 kg \xb7 GCMMA \xb7 organic shape, skin drawing
+  dom2_5.5kg_organic: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, safety factor 1.15, within 24 mm of the shell \xb7 5.5 kg \xb7 GCMMA \xb7 organic shape, skin drawing
+  dom2_5.5kg: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, safety factor 1.15, within 24 mm of the shell \xb7 5.5 kg \xb7 GCMMA \xb7 mesh, skin drawing
+  hp2_5.9kg: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 mesh, skin drawing
+  hp2_5.9kg_organic: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 organic shape, skin drawing
+  bore_iterated_5.5kg_organic: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 organic shape, skin drawing
+  bore_iterated_5.5kg: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 mesh, skin drawing
+  bore_free_5.4kg: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 mesh, skin drawing
+  bore_free_5.4kg_organic: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 organic shape, skin drawing
+  bore_ties_5.6kg_organic: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 organic shape, skin drawing
+  bore_ties_5.6kg: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 mesh, skin drawing
+  bore_web_5.6kg_organic: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 organic shape, skin drawing
+  bore_web_5.6kg: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 mesh, skin drawing
+  bore_spokes_5.6kg_organic: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 organic shape, skin drawing
+  bore_spokes_5.6kg: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 mesh, skin drawing
+  it4_refined_5.8kg_organic: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 organic shape, skin drawing
+  it4_refined_5.8kg: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 mesh, skin drawing
+  it3_features_5.9kg_organic: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 organic shape, skin drawing
+  it3_features_5.9kg: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 mesh, skin drawing
+  it2_core_5.7kg_organic: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 organic shape, skin drawing
+  it2_core_5.7kg: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 mesh, skin drawing
+  it1_leastmetal_5.3kg_organic: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 organic shape, skin drawing
+  it1_leastmetal_5.3kg: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 mesh, skin drawing
+  it1_free_5.5kg_organic: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, safety factor 1.15, within 24 mm of the shell \xb7 5.5 kg \xb7 GCMMA \xb7 organic shape, skin drawing
+  it1_free_5.5kg: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, safety factor 1.15, within 24 mm of the shell \xb7 5.5 kg \xb7 GCMMA \xb7 mesh, skin drawing
+  it1_leastmetal_plain_4.6kg_organic: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 organic shape, skin drawing
+  it1_leastmetal_plain_4.6kg: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 mesh, skin drawing
+  it1_leastmetal_4.6kg_organic: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 organic shape, skin drawing
+  it1_leastmetal_4.6kg: Run 3, band 24 mm \xb7 7.73 kg \xb7 OC \xb7 mesh, skin drawing
+  outcome_hfsdf_4mm_7.0kg_organic: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, within 24 mm of the shell \xb7 7 kg \xb7 GCMMA \xb7 organic shape, skin drawing
+  outcome_hfsdf_4mm_7.0kg: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, within 24 mm of the shell \xb7 7 kg \xb7 GCMMA \xb7 mesh, skin drawing
+  outcome_hf6_4mm_7.0kg_organic: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, within 24 mm of the shell \xb7 7 kg \xb7 GCMMA \xb7 organic shape, skin drawing
+  outcome_hf6_4mm_7.0kg: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, within 24 mm of the shell \xb7 7 kg \xb7 GCMMA \xb7 mesh, skin drawing
+  outcome_ribs12_4mm_7.5kg_organic: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, in plan members \u2264 8 mm wide, 12 mm gap, within 24 mm of the shell \xb7 7.5 kg \xb7 GCMMA \xb7 organic shape, skin drawing, members drawn clean
+  outcome_ribs12_4mm_7.5kg: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, in plan members \u2264 8 mm wide, 12 mm gap, within 24 mm of the shell \xb7 7.5 kg \xb7 GCMMA \xb7 mesh, skin drawing, members drawn clean
+  outcome_gap12_4mm_7.5kg_organic: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, in plan members \u2264 8 mm wide, 12 mm gap, within 24 mm of the shell \xb7 7.5 kg \xb7 GCMMA \xb7 organic shape, skin drawing
+  outcome_gap12_4mm_7.5kg: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, in plan members \u2264 8 mm wide, 12 mm gap, within 24 mm of the shell \xb7 7.5 kg \xb7 GCMMA \xb7 mesh, skin drawing
+  outcome_gap12_4mm_6.5kg_organic: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, in plan members \u2264 8 mm wide, 12 mm gap, within 24 mm of the shell \xb7 6.5 kg \xb7 GCMMA \xb7 organic shape, skin drawing
+  outcome_gap12_4mm_6.5kg: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, in plan members \u2264 8 mm wide, 12 mm gap, within 24 mm of the shell \xb7 6.5 kg \xb7 GCMMA \xb7 mesh, skin drawing
+  outcome_nomax24_4mm_6.5kg_organic: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, members \u2264 12 mm, within 24 mm of the shell \xb7 6.5 kg \xb7 GCMMA \xb7 organic shape, skin drawing
+  outcome_nomax24_4mm_6.5kg: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, members \u2264 12 mm, within 24 mm of the shell \xb7 6.5 kg \xb7 GCMMA \xb7 mesh, skin drawing
+  outcome_free24_4mm_6.5kg_organic: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, members \u2264 8 mm, within 24 mm of the shell \xb7 6.5 kg \xb7 GCMMA \xb7 organic shape, skin drawing
+  outcome_free24_4mm_6.5kg: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, members \u2264 8 mm, within 24 mm of the shell \xb7 6.5 kg \xb7 GCMMA \xb7 mesh, skin drawing
+  outcome_free24_4mm_7.3kg_organic: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, members \u2264 8 mm, within 24 mm of the shell \xb7 7.3 kg \xb7 GCMMA \xb7 organic shape, skin drawing
+  outcome_free24_4mm_7.3kg: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, members \u2264 8 mm, within 24 mm of the shell \xb7 7.3 kg \xb7 GCMMA \xb7 mesh, skin drawing
+  outcome_prodc24_4mm_7.0kg_organic: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, members \u2264 8 mm, within 24 mm of the shell, on the rib network, side fins \xb7 7 kg \xb7 GCMMA \xb7 ribbed body, before its cuts
+  outcome_prodc24_4mm_7.0kg: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, members \u2264 8 mm, within 24 mm of the shell, on the rib network, side fins \xb7 7 kg \xb7 GCMMA \xb7 ribbed CAD
+  outcome_prod24m_4mm_7.0kg_organic: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, members \u2264 8 mm, within 24 mm of the shell, on the rib network, side fins \xb7 7 kg \xb7 GCMMA \xb7 organic shape, skin drawing
+  outcome_prod24m_4mm_7.0kg: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, members \u2264 8 mm, within 24 mm of the shell, on the rib network, side fins \xb7 7 kg \xb7 GCMMA \xb7 mesh, skin drawing
+  outcome_prod24_4mm_7.0kg_organic: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, members \u2264 8 mm, within 24 mm of the shell, on the rib network, side fins \xb7 7 kg \xb7 GCMMA \xb7 ribbed body, before its cuts
+  outcome_prod24_4mm_7.0kg: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, members \u2264 8 mm, within 24 mm of the shell, on the rib network, side fins \xb7 7 kg \xb7 GCMMA \xb7 ribbed CAD
+  outcome_cnetw24_6.3kg_organic: Split, compliance, tilt and beds held, one run, peak drive, within 24 mm of the shell, on the rib network and a free run's lines, side fins \xb7 6.3 kg \xb7 GCMMA \xb7 ribbed body, before its cuts
+  outcome_cnetw24_6.3kg: Split, compliance, tilt and beds held, one run, peak drive, within 24 mm of the shell, on the rib network and a free run's lines, side fins \xb7 6.3 kg \xb7 GCMMA \xb7 ribbed CAD
+  outcome_cnet24_6.3kg_organic: Split, compliance, tilt and beds held, one run, peak drive, within 24 mm of the shell, on the rib network and a free run's lines, side fins \xb7 6.3 kg \xb7 GCMMA \xb7 ribbed body, before its cuts
+  outcome_cnet24_6.3kg: Split, compliance, tilt and beds held, one run, peak drive, within 24 mm of the shell, on the rib network and a free run's lines, side fins \xb7 6.3 kg \xb7 GCMMA \xb7 ribbed CAD
+  outcome_ribshf24_6.3kg_organic: Split, compliance, tilt and beds held, one run, peak drive, within 24 mm of the shell, on the rib network and a free run's lines, side fins \xb7 6.3 kg \xb7 GCMMA \xb7 organic shape, skin drawing
+  outcome_ribshf24_6.3kg: Split, compliance, tilt and beds held, one run, peak drive, within 24 mm of the shell, on the rib network and a free run's lines, side fins \xb7 6.3 kg \xb7 GCMMA \xb7 mesh, skin drawing
+  outcome_ribsclean24_6.3kg_organic: Split, compliance, tilt and beds held, one run, peak drive, within 24 mm of the shell, on the rib network and a free run's lines, side fins \xb7 6.3 kg \xb7 GCMMA \xb7 organic shape, skin drawing
+  outcome_ribsclean24_6.3kg: Split, compliance, tilt and beds held, one run, peak drive, within 24 mm of the shell, on the rib network and a free run's lines, side fins \xb7 6.3 kg \xb7 GCMMA \xb7 mesh, skin drawing
+  outcome_ribsfieldfins24_6.7kg_organic: Split, compliance, tilt and beds held, one run, peak drive, within 24 mm of the shell, on the rib network and a free run's lines, side fins \xb7 6.7 kg \xb7 GCMMA \xb7 organic shape, skin drawing
+  outcome_ribsfieldfins24_6.7kg: Split, compliance, tilt and beds held, one run, peak drive, within 24 mm of the shell, on the rib network and a free run's lines, side fins \xb7 6.7 kg \xb7 GCMMA \xb7 mesh, skin drawing
+  outcome_ribsfieldfins24_6.3kg_organic: Split, compliance, tilt and beds held, one run, peak drive, within 24 mm of the shell, on the rib network and a free run's lines, side fins \xb7 6.3 kg \xb7 GCMMA \xb7 organic shape, skin drawing
+  outcome_ribsfieldfins24_6.3kg: Split, compliance, tilt and beds held, one run, peak drive, within 24 mm of the shell, on the rib network and a free run's lines, side fins \xb7 6.3 kg \xb7 GCMMA \xb7 mesh, skin drawing
+  outcome_env24f_6.5kg_organic: Split, compliance, tilt and beds held, one run, peak drive, members \u2264 12 mm, within 24 mm of the shell \xb7 6.5 kg \xb7 GCMMA \xb7 organic shape, skin drawing
+  outcome_env24f_6.5kg: Split, compliance, tilt and beds held, one run, peak drive, members \u2264 12 mm, within 24 mm of the shell \xb7 6.5 kg \xb7 GCMMA \xb7 mesh, skin drawing
+  outcome_c_env24_6.5kg_organic: Split, compliance, tilt and beds held, one run, peak drive, members \u2264 12 mm, within 24 mm of the shell \xb7 6.5 kg \xb7 GCMMA \xb7 ribbed body, before its cuts
+  outcome_c_env24_6.5kg: Split, compliance, tilt and beds held, one run, peak drive, members \u2264 12 mm, within 24 mm of the shell \xb7 6.5 kg \xb7 GCMMA \xb7 ribbed CAD
+  outcome_ribsfieldfins24_6.5kg_organic: Split, compliance, tilt and beds held, one run, peak drive, within 24 mm of the shell, on the rib network and a free run's lines, side fins \xb7 6.5 kg \xb7 GCMMA \xb7 organic shape, skin drawing
+  outcome_ribsfieldfins24_6.5kg: Split, compliance, tilt and beds held, one run, peak drive, within 24 mm of the shell, on the rib network and a free run's lines, side fins \xb7 6.5 kg \xb7 GCMMA \xb7 mesh, skin drawing
+  outcome_ribsfieldfinsuni24_7.0kg_organic: Split, compliance, tilt and beds held, one run, peak drive, within 24 mm of the shell \xb7 7 kg \xb7 GCMMA \xb7 organic shape, skin drawing
+  outcome_ribsfieldfinsuni24_7.0kg: Split, compliance, tilt and beds held, one run, peak drive, within 24 mm of the shell \xb7 7 kg \xb7 GCMMA \xb7 mesh, skin drawing
+  outcome_ribsfieldfinsuni24_6.5kg_organic: Split, compliance, tilt and beds held, one run, peak drive, within 24 mm of the shell \xb7 6.5 kg \xb7 GCMMA \xb7 organic shape, skin drawing
+  outcome_ribsfieldfinsuni24_6.5kg: Split, compliance, tilt and beds held, one run, peak drive, within 24 mm of the shell \xb7 6.5 kg \xb7 GCMMA \xb7 mesh, skin drawing
+  outcome_ribsfieldfins20_4mm_7.0kg_organic: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, within 20 mm of the shell, on the rib network and a free run's lines, side fins \xb7 7 kg \xb7 GCMMA \xb7 organic shape, skin drawing
+  outcome_ribsfieldfins20_4mm_7.0kg: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, within 20 mm of the shell, on the rib network and a free run's lines, side fins \xb7 7 kg \xb7 GCMMA \xb7 mesh, skin drawing
+  outcome_ribsfieldfinsuni20_4mm_7.0kg_organic: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, within 20 mm of the shell \xb7 7 kg \xb7 GCMMA \xb7 organic shape, skin drawing
+  outcome_ribsfieldfinsuni20_4mm_7.0kg: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, within 20 mm of the shell \xb7 7 kg \xb7 GCMMA \xb7 mesh, skin drawing
+  outcome_ribsfieldfins20_4mm_6.0kg_organic: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, within 20 mm of the shell, on the rib network and a free run's lines, side fins \xb7 6 kg \xb7 GCMMA \xb7 organic shape, skin drawing
+  outcome_ribsfieldfins20_4mm_6.0kg: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, within 20 mm of the shell, on the rib network and a free run's lines, side fins \xb7 6 kg \xb7 GCMMA \xb7 mesh, skin drawing
+  outcome_ribsfield20_4mm_6.0kg: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, within 20 mm of the shell, on the rib network and a free run's lines \xb7 6 kg \xb7 GCMMA \xb7 mesh, skin drawing
+  outcome_ribsfield20_4mm_6.0kg_organic: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, within 20 mm of the shell, on the rib network and a free run's lines \xb7 6 kg \xb7 GCMMA \xb7 organic shape, skin drawing
+  outcome_env20_4mm_6.0kg_organic: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, members \u2264 8 mm, within 20 mm of the shell \xb7 6 kg \xb7 GCMMA \xb7 organic shape, skin drawing
+  outcome_env20_4mm_6.0kg: Split, compliance, tilt and beds held, one run, peak drive, 4 mm voxels, members \u2264 8 mm, within 20 mm of the shell \xb7 6 kg \xb7 GCMMA \xb7 mesh, skin drawing
+  outcome_env24_6.5kg_organic: Split, compliance, tilt and beds held, one run, peak drive, members \u2264 12 mm, within 24 mm of the shell \xb7 6.5 kg \xb7 GCMMA \xb7 organic shape, skin drawing
+  outcome_env24_6.5kg: Split, compliance, tilt and beds held, one run, peak drive, members \u2264 12 mm, within 24 mm of the shell \xb7 6.5 kg \xb7 GCMMA \xb7 mesh, skin drawing
+  outcome_env12_6.5kg_organic: Split, compliance, tilt and beds held, one run, peak drive, members \u2264 12 mm, within 12 mm of the shell \xb7 6.5 kg \xb7 GCMMA \xb7 organic shape, skin drawing
+  outcome_env12_6.5kg: Split, compliance, tilt and beds held, one run, peak drive, members \u2264 12 mm, within 12 mm of the shell \xb7 6.5 kg \xb7 GCMMA \xb7 mesh, skin drawing
+  outcome_env18_7.0kg_organic: Split, compliance, tilt and beds held, one run, peak drive, members \u2264 12 mm, within 18 mm of the shell \xb7 7 kg \xb7 GCMMA \xb7 organic shape, skin drawing
+  outcome_env18_7.0kg: Split, compliance, tilt and beds held, one run, peak drive, members \u2264 12 mm, within 18 mm of the shell \xb7 7 kg \xb7 GCMMA \xb7 mesh, skin drawing
+  outcome_env18_6.5kg_organic: Split, compliance, tilt and beds held, one run, peak drive, members \u2264 12 mm, within 18 mm of the shell \xb7 6.5 kg \xb7 GCMMA \xb7 organic shape, skin drawing
+  outcome_env18_6.5kg: Split, compliance, tilt and beds held, one run, peak drive, members \u2264 12 mm, within 18 mm of the shell \xb7 6.5 kg \xb7 GCMMA \xb7 mesh, skin drawing
+  outcome_env18_6.0kg_organic: Split, compliance, tilt and beds held, one run, peak drive, members \u2264 12 mm, within 18 mm of the shell \xb7 6 kg \xb7 GCMMA \xb7 organic shape, skin drawing
+  outcome_env18_6.0kg: Split, compliance, tilt and beds held, one run, peak drive, members \u2264 12 mm, within 18 mm of the shell \xb7 6 kg \xb7 GCMMA \xb7 mesh, skin drawing
+  outcome_band18_organic: Split, compliance, tilt and beds held, one run, peak drive, members \u2264 12 mm, within 18 mm of the shell \xb7 7.73 kg \xb7 GCMMA \xb7 organic shape, skin drawing
+  outcome_band18: Split, compliance, tilt and beds held, one run, peak drive, members \u2264 12 mm, within 18 mm of the shell \xb7 7.73 kg \xb7 GCMMA \xb7 mesh, skin drawing
+  outcome_v_7.0kg_organic: Split, compliance, tilt and beds held, one run, peak drive, members \u2264 12 mm \xb7 7 kg \xb7 GCMMA \xb7 organic shape, skin drawing
+  outcome_v_7.0kg: Split, compliance, tilt and beds held, one run, peak drive, members \u2264 12 mm \xb7 7 kg \xb7 GCMMA \xb7 mesh, skin drawing
+  outcome_v_7.4kg_organic: Split, compliance, tilt and beds held, one run, peak drive, members \u2264 12 mm \xb7 7.4 kg \xb7 GCMMA \xb7 organic shape, skin drawing
+  outcome_v_7.4kg: Split, compliance, tilt and beds held, one run, peak drive, members \u2264 12 mm \xb7 7.4 kg \xb7 GCMMA \xb7 mesh, skin drawing
+  outcome_c_6mm_seat_organic: Split, compliance, tilt and beds held, one run, peak drive, members \u2264 12 mm \xb7 7.73 kg \xb7 GCMMA \xb7 ribbed body, before its cuts
+  outcome_c_6mm_seat: Split, compliance, tilt and beds held, one run, peak drive, members \u2264 12 mm \xb7 7.73 kg \xb7 GCMMA \xb7 ribbed CAD, the intermediate -z seat strengthened
+  outcome_v_max9_organic: Split, compliance, tilt and beds held, one run, peak drive, members \u2264 9 mm \xb7 7.73 kg \xb7 GCMMA \xb7 organic shape, skin drawing
+  outcome_v_max9: Split, compliance, tilt and beds held, one run, peak drive, members \u2264 9 mm \xb7 7.73 kg \xb7 GCMMA \xb7 mesh, skin drawing
+  outcome_v_10mm_organic: Split, compliance, tilt and beds held, one run, peak drive, 10 mm voxels, members \u2264 12 mm \xb7 7.73 kg \xb7 GCMMA \xb7 organic shape, skin drawing
+  outcome_v_10mm: Split, compliance, tilt and beds held, one run, peak drive, 10 mm voxels, members \u2264 12 mm \xb7 7.73 kg \xb7 GCMMA \xb7 mesh, skin drawing
+  outcome_v_7.2kg_organic: Split, compliance, tilt and beds held, one run, peak drive, members \u2264 12 mm \xb7 7.2 kg \xb7 GCMMA \xb7 organic shape, skin drawing
+  outcome_v_7.2kg: Split, compliance, tilt and beds held, one run, peak drive, members \u2264 12 mm \xb7 7.2 kg \xb7 GCMMA \xb7 mesh, skin drawing
+  outcome_c_6mm_drive: Split, compliance, tilt and beds held, one run, peak drive, members \u2264 12 mm \xb7 7.73 kg \xb7 GCMMA \xb7 ribbed CAD
+  outcome_c_6mm_drive_organic: Split, compliance, tilt and beds held, one run, peak drive, members \u2264 12 mm \xb7 7.73 kg \xb7 GCMMA \xb7 ribbed body, before its cuts
+  outcome_b_6mm_drive: Split, compliance, tilt and beds held, one run, peak drive, members \u2264 12 mm \xb7 7.73 kg \xb7 GCMMA \xb7 mesh, skin drawing
+  outcome_b_6mm_drive_organic: Split, compliance, tilt and beds held, one run, peak drive, members \u2264 12 mm \xb7 7.73 kg \xb7 GCMMA \xb7 organic shape, skin drawing
+  outcome_skin_6mm_onerun: Split, compliance, tilt and beds held, one run, peak drive, members \u2264 12 mm \xb7 7.73 kg \xb7 GCMMA \xb7 mesh, skin drawing
+  outcome_skin_6mm_drive_organic: Split, compliance, tilt held, from a stiff run, peak drive, members \u2264 12 mm \xb7 7.73 kg \xb7 GCMMA \xb7 organic shape, skin drawing
+  outcome_skin_6mm_drive: Split, compliance, tilt held, from a stiff run, peak drive, members \u2264 12 mm \xb7 7.73 kg \xb7 GCMMA \xb7 CAD, skin drawing
+  outcome_skin_6mm_tilt_organic: Split robust, compliance, tilt held, from a stiff run, both cases, members \u2264 12 mm \xb7 7.2 kg \xb7 GCMMA \xb7 organic shape, skin drawing
+  outcome_skin_6mm_tilt: Split robust, compliance, tilt held, from a stiff run, both cases, members \u2264 12 mm \xb7 7.2 kg \xb7 GCMMA \xb7 CAD, skin drawing
+  contract_avl: contract_avl
+  contract_zf: contract_zf
+  contract_kalyani: contract_kalyani

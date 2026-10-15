@@ -1,0 +1,25 @@
+[13:19:45] topofree_mass_tilt_7.73kg_4mm_projected_band24_cup_bolts_spl...: drawn as a spline run, 1,268 of 9,587 columns holding metal, the outline blurred over 3 mm, the free edges rounded 3 mm
+[13:21:25] motor_side: by the mesh route in 5.9 s: 568,894 triangles, watertight True, 1001 cm3, 13 of 13 bolts' bosses held
+[13:22:26] cover: by the mesh route in 5.1 s: 407,494 triangles, watertight True, 736 cm3, 13 of 13 bolts' bosses held
+C:\Work\fastcae-sim\prototypes\first_loop\outcome_cad.py:409: PyVistaDeprecationWarning: This filter is deprecated. Use `select_interior_points` instead.
+  sel = pv.PolyData(pts).select_enclosed_points(surf, tolerance=1e-6, check_surface=False)  # as `model_vs_fe.inside_drawing`
+[13:22:27] the drawing holds 9,317 of the run's 9,820 metal cubes: 411 lost by the drawing (4.19 %), 34 in spaces it keeps clear (0.35 %), 58 loose in the run's own field, joined to nothing (0.59 %)
+[13:22:27] baseline2_lw8_smooth: 4.52 kg (motor side 2.60, cover 1.91); bolts joining the halves 13 of 13; drawn in 162 s
+nanobind: leaked 1 instances!
+ - leaked instance 000001AEC41AF528 of type "manifold3d.Mesh64"
+nanobind: leaked 1 types!
+ - leaked type "manifold3d.Mesh64"
+nanobind: leaked 14 functions!
+ - leaked function ""
+ - leaked function ""
+ - leaked function ""
+ - leaked function ""
+ - leaked function "__init__"
+ - leaked function ""
+ - leaked function ""
+ - leaked function ""
+ - leaked function ""
+ - leaked function "backside"
+ - ... skipped remainder
+nanobind: this is likely caused by a reference counting issue in the binding code.
+See https://nanobind.readthedocs.io/en/latest/refleaks.html

@@ -1,0 +1,15 @@
+[18:27:56] baseline2_lw8_spl_motor_side: a flat tet (shape 9.8e-08) at 7 mm triangles; coarsened again
+[18:27:58] baseline2_lw8_spl_motor_side: a flat tet (shape 6.3e-08) at 7.49 mm triangles; coarsened again
+[18:28:00] baseline2_lw8_spl_motor_side: TetGen refused the surface at 6.51 mm triangles (Internal TetGen error within `removevertexbyflips`.); coarsened again
+Traceback (most recent call last):
+  File "C:\Work\fastcae-sim\prototypes\first_loop\fe.py", line 1044, in <module>
+    judge(args[0] if args else "shell", float(args[1]) if len(args) > 1 else 6.0)
+  File "C:\Work\fastcae-sim\prototypes\first_loop\fe.py", line 704, in judge
+    nodes4, tets4 = mesh_tetgen(source, size, ready=info.get("fe_mesh") == "ready", quality=quality, surface=surface) if meshed else mesh_half(source, size)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Work\fastcae-sim\prototypes\first_loop\fe.py", line 253, in mesh_tetgen
+    nodes, tets = tetrahedralize_guarded(verts, faces, quality, regular)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Work\fastcae-sim\prototypes\first_loop\fe.py", line 223, in tetrahedralize_guarded
+    raise RuntimeError((out or "").strip().splitlines()[-1] if (out or "").strip() else f"TetGen crashed (code {p.returncode})")
+RuntimeError: The input surface mesh contain self-intersections.

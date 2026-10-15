@@ -1,0 +1,20 @@
+[15:59:34] the 4 mm shell protected: 15,219 cubes of the least walls frozen whole; the optimiser adds on top of it
+[15:59:34] the empty start with the shell fixed: the 4 mm shell, the sealing land and the bolts' bosses, the mounts (3.32 kg fixed); the walls' least metal about 2.51 kg, inside the shell
+[15:59:34] the protected interfaces: no bearing towers, the sealing land and the bolts' bosses (3,204), the mounts (1,536); 3.32 kg fixed in all
+[15:59:34] model [96, 102, 57] voxels of 4 mm, the cavity cup: 19,959 frozen (3.32 kg: skin 0 as a 0 mm wall and 3,141 round the seats whole, motor ring 0, mounts 1,536, the split flange 3,204 at 0.53 kg), 91,523 free; the halves bolts
+[15:59:35] voxels 4 mm: 111,482 elements (19,959 frozen, 91,523 free), 410,913 unknowns; the halves joined only at 0 of the layout's 13 bolts: 0 of the split's 1980 shared nodes kept
+[15:59:35] rigid couplings (FE's): 6 seats with their bearings' centres, 13 bolts each one rigid body, 3 mounts' holes held; 400,176 unknowns remain
+C:\Work\fastcae-sim\.venv\Lib\site-packages\numpy\_core\fromnumeric.py:3862: RuntimeWarning: Mean of empty slice
+  return _methods._mean(a, axis=axis, dtype=dtype,
+C:\Work\fastcae-sim\.venv\Lib\site-packages\numpy\_core\_methods.py:142: RuntimeWarning: invalid value encountered in scalar divide
+  ret = ret.dtype.type(ret / rcount)
+[15:59:35] the empty start: 0 of 9,587 columns are walls, each at least its least height (median nan mm, most 0.0 mm)
+[15:59:35] the height field: 9,587 columns, each a height from the split or its wall, smoothed over 4 mm in plan; at most 22 voxels high; 91,523 free voxels
+C:\Work\fastcae-sim\prototypes\first_loop\model_vs_fe.py:39: PyVistaDeprecationWarning: This filter is deprecated. Use `select_interior_points` instead.
+  sel = pv.PolyData(centres[mine]).select_enclosed_points(surf, tolerance=1e-6, check_surface=False)
+C:\Work\fastcae-sim\.venv\Lib\site-packages\cupy\_environment.py:286: UserWarning: CUDA path could not be detected. Set CUDA_PATH environment variable if CuPy fails to load.
+  warnings.warn(
+field at 0.5     metal   9,820 voxels; worst seat   35.2 µm, tilt 0.669 x; modes 16, 52, 62, 75, 81, 119, 146, 190, 200, 255 Hz
+drawing          metal  11,006 voxels; worst seat   33.3 µm, tilt 0.663 x; modes 646, 832, 874, 964, 1316, 1452, 1606, 1755, 2298, 2533 Hz
+drawing + field  metal  11,018 voxels; worst seat   33.3 µm, tilt 0.663 x; modes 146, 190, 200, 255, 268, 296, 646, 832, 874, 964 Hz
+FE                                      worst seat   34.4 µm, tilt 0.694 x; modes 678, 885, 956, 1021, 1296, 1378, 1528, 1844, 2411, 2637 Hz

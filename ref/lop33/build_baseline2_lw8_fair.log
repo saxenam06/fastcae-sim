@@ -1,0 +1,27 @@
+[14:15:19] topofree_mass_tilt_7.73kg_4mm_projected_band24_cup_bolts_spl...: drawn as a spline run, 1,268 of 9,587 columns holding metal, the outline blurred over 3 mm, the free edges rounded 3 mm
+[14:15:24] the members faired in plan: along each member 8 mm, every way 2 mm, within 2.5 mm of the columns' outline
+[14:16:33] motor_side: by the mesh route in 6.3 s: 554,520 triangles, watertight True, 968 cm3, 13 of 13 bolts' bosses held
+[14:17:34] cover: by the mesh route in 5.2 s: 408,648 triangles, watertight True, 737 cm3, 13 of 13 bolts' bosses held
+C:\Work\fastcae-sim\prototypes\first_loop\outcome_cad.py:409: PyVistaDeprecationWarning: This filter is deprecated. Use `select_interior_points` instead.
+  sel = pv.PolyData(pts).select_enclosed_points(surf, tolerance=1e-6, check_surface=False)  # as `model_vs_fe.inside_drawing`
+[14:17:35] the drawing holds 9,227 of the run's 9,820 metal cubes: 496 lost by the drawing (5.05 %), 39 in spaces it keeps clear (0.40 %), 58 loose in the run's own field, joined to nothing (0.59 %)
+[14:17:35] baseline2_lw8_fair: the body holds 2 of the layout's 3 mounts
+[14:17:35] baseline2_lw8_fair: 4.43 kg (motor side 2.52, cover 1.92); bolts joining the halves 13 of 13; drawn in 136 s
+nanobind: leaked 1 instances!
+ - leaked instance 000001925FC77648 of type "manifold3d.Mesh64"
+nanobind: leaked 1 types!
+ - leaked type "manifold3d.Mesh64"
+nanobind: leaked 14 functions!
+ - leaked function "has_normals"
+ - leaked function ""
+ - leaked function ""
+ - leaked function ""
+ - leaked function ""
+ - leaked function "__init__"
+ - leaked function "merge"
+ - leaked function ""
+ - leaked function ""
+ - leaked function ""
+ - ... skipped remainder
+nanobind: this is likely caused by a reference counting issue in the binding code.
+See https://nanobind.readthedocs.io/en/latest/refleaks.html

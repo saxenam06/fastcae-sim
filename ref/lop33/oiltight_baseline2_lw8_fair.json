@@ -1,0 +1,9 @@
+{
+ "design": "baseline2_lw8_fair",
+ "cell_mm": 2.0,
+ "tight": true,
+ "inside_cells": 405310,
+ "metal_cm3": 1681.928,
+ "opened": null,
+ "seconds": 1.8
+}

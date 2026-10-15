@@ -1,0 +1,4 @@
+[13:54:17] baseline2_lw8 (--height-field 4, --first-mode 500)
+baseline2_lw8: FAILED, the optimisation failed in 941 s; Optimisation 941 s
+done baseline2_lw8 (exit 0)
+[14:10:00] baseline2_lw8 done

@@ -1,0 +1,71 @@
+18:12:36 guarding 'baseline2_lw8_spl': floor 600 MB, 4 strikes, every 5 s
+{"t": "18:12:39", "available_mb": 6167, "gpu_mb": 0.0, "pids": [27872, 12048, 13904, 992]}
+{"t": "18:12:45", "available_mb": 5656, "gpu_mb": 0.0, "pids": [27872, 12048, 13904, 992]}
+{"t": "18:12:51", "available_mb": 5851, "gpu_mb": 0.0, "pids": [27872, 12048, 13904, 992]}
+{"t": "18:12:57", "available_mb": 5542, "gpu_mb": 0.0, "pids": [27872, 12048, 13904, 992]}
+18:13:03 no process holds the marker: done
+18:17:44 guarding 'baseline2_lw8_spl': floor 600 MB, 4 strikes, every 5 s
+{"t": "18:17:47", "available_mb": 6340, "gpu_mb": 0.0, "pids": [10064, 22908, 10028, 4132]}
+{"t": "18:17:52", "available_mb": 5877, "gpu_mb": 0.0, "pids": [10064, 22908, 10028, 4132]}
+{"t": "18:17:59", "available_mb": 5902, "gpu_mb": 0.0, "pids": [10064, 22908, 10028, 4132]}
+{"t": "18:18:04", "available_mb": 6613, "gpu_mb": 0.0, "pids": [10064, 22908, 10028]}
+18:18:10 no process holds the marker: done
+18:20:45 guarding 'baseline2_lw8_spl': floor 600 MB, 4 strikes, every 5 s
+{"t": "18:20:48", "available_mb": 6267, "gpu_mb": 0.0, "pids": [28576, 24492, 20656, 28592]}
+{"t": "18:20:54", "available_mb": 5702, "gpu_mb": 0.0, "pids": [28576, 24492, 20656, 28592]}
+{"t": "18:21:00", "available_mb": 5728, "gpu_mb": 0.0, "pids": [28576, 24492, 20656, 28592]}
+{"t": "18:21:06", "available_mb": 5460, "gpu_mb": 0.0, "pids": [28576, 24492, 20656, 28592]}
+18:21:12 no process holds the marker: done
+18:22:21 guarding 'baseline2_lw8_spl': floor 600 MB, 4 strikes, every 5 s
+{"t": "18:22:24", "available_mb": 6183, "gpu_mb": 0.0, "pids": [19092, 3288, 29572, 27640]}
+{"t": "18:22:30", "available_mb": 5665, "gpu_mb": 0.0, "pids": [19092, 3288, 29572, 27640]}
+{"t": "18:22:36", "available_mb": 5720, "gpu_mb": 0.0, "pids": [19092, 3288, 29572, 27640]}
+{"t": "18:22:42", "available_mb": 5413, "gpu_mb": 0.0, "pids": [19092, 3288, 29572, 27640]}
+{"t": "18:22:48", "available_mb": 6202, "gpu_mb": 0.0, "pids": [19092, 3288, 7020, 27772]}
+{"t": "18:22:54", "available_mb": 6004, "gpu_mb": 0.0, "pids": [19092, 3288, 7020, 27772]}
+{"t": "18:23:00", "available_mb": 5823, "gpu_mb": 0.0, "pids": [19092, 3288, 7020, 27772]}
+{"t": "18:23:06", "available_mb": 6121, "gpu_mb": 0.0, "pids": [19092, 3288, 7020, 27772]}
+{"t": "18:23:12", "available_mb": 6111, "gpu_mb": 0.0, "pids": [19092, 3288, 7020, 27772]}
+{"t": "18:23:18", "available_mb": 6096, "gpu_mb": 0.0, "pids": [19092, 3288, 7020, 27772]}
+{"t": "18:23:24", "available_mb": 5853, "gpu_mb": 0.0, "pids": [19092, 3288, 7020, 27772]}
+{"t": "18:23:30", "available_mb": 6085, "gpu_mb": 0.0, "pids": [19092, 3288, 7020, 27772]}
+{"t": "18:23:36", "available_mb": 6081, "gpu_mb": 0.0, "pids": [19092, 3288, 7020, 27772]}
+{"t": "18:23:42", "available_mb": 6018, "gpu_mb": 0.0, "pids": [19092, 3288, 24144, 19492]}
+{"t": "18:23:48", "available_mb": 5992, "gpu_mb": 0.0, "pids": [19092, 3288, 24144, 19492]}
+{"t": "18:23:54", "available_mb": 5936, "gpu_mb": 0.0, "pids": [19092, 3288, 24144, 19492]}
+{"t": "18:24:00", "available_mb": 5737, "gpu_mb": 0.0, "pids": [19092, 3288, 24144, 19492]}
+{"t": "18:24:06", "available_mb": 5945, "gpu_mb": 0.0, "pids": [19092, 3288, 24144, 19492]}
+{"t": "18:24:12", "available_mb": 5939, "gpu_mb": 0.0, "pids": [19092, 3288, 24144, 19492]}
+{"t": "18:24:18", "available_mb": 5843, "gpu_mb": 0.0, "pids": [19092, 3288, 24144, 19492]}
+{"t": "18:24:24", "available_mb": 5940, "gpu_mb": 0.0, "pids": [19092, 3288, 6420, 3696]}
+{"t": "18:24:30", "available_mb": 5854, "gpu_mb": 0.0, "pids": [19092, 3288, 6420, 3696]}
+{"t": "18:24:36", "available_mb": 5823, "gpu_mb": 0.0, "pids": [19092, 3288, 27504, 13832]}
+{"t": "18:24:42", "available_mb": 5808, "gpu_mb": 0.0, "pids": [19092, 3288, 8888, 1300]}
+{"t": "18:24:48", "available_mb": 5971, "gpu_mb": 0.0, "pids": [19092, 3288]}
+{"t": "18:24:54", "available_mb": 5681, "gpu_mb": 0.0, "pids": [26788, 23728]}
+18:24:59 no process holds the marker: done
+18:26:10 guarding 'baseline2_lw8_spl': floor 600 MB, 4 strikes, every 5 s
+{"t": "18:26:13", "available_mb": 6116, "gpu_mb": 0.0, "pids": [29244, 22656, 5996, 19304]}
+{"t": "18:26:19", "available_mb": 5644, "gpu_mb": 0.0, "pids": [29244, 22656, 5996, 19304]}
+{"t": "18:26:25", "available_mb": 5652, "gpu_mb": 0.0, "pids": [29244, 22656, 5996, 19304]}
+{"t": "18:26:31", "available_mb": 5523, "gpu_mb": 0.0, "pids": [29244, 22656, 5996, 19304]}
+18:26:36 no process holds the marker: done
+18:27:27 guarding 'baseline2_lw8_spl': floor 600 MB, 4 strikes, every 5 s
+{"t": "18:27:30", "available_mb": 6131, "gpu_mb": 0.0, "pids": [27184, 28972, 29572, 13832]}
+{"t": "18:27:36", "available_mb": 5683, "gpu_mb": 0.0, "pids": [27184, 28972, 29572, 13832]}
+{"t": "18:27:42", "available_mb": 5746, "gpu_mb": 0.0, "pids": [27184, 28972, 29572, 13832]}
+{"t": "18:27:48", "available_mb": 5551, "gpu_mb": 0.0, "pids": [27184, 28972, 29572, 13832]}
+{"t": "18:27:54", "available_mb": 6177, "gpu_mb": 0.0, "pids": [27184, 28972, 24496, 15296]}
+{"t": "18:28:00", "available_mb": 6066, "gpu_mb": 0.0, "pids": [27184, 28972, 24496, 15296]}
+{"t": "18:28:06", "available_mb": 5927, "gpu_mb": 0.0, "pids": [27184, 28972, 10712, 15988]}
+{"t": "18:28:11", "available_mb": 5938, "gpu_mb": 0.0, "pids": [27184, 28972, 10712, 15988]}
+{"t": "18:28:17", "available_mb": 5933, "gpu_mb": 0.0, "pids": [27184, 28972, 10712, 15988]}
+{"t": "18:28:23", "available_mb": 5842, "gpu_mb": 0.0, "pids": [27184, 28972, 10712, 15988]}
+{"t": "18:28:29", "available_mb": 5868, "gpu_mb": 0.0, "pids": [27184, 28972, 10712, 15988]}
+{"t": "18:28:35", "available_mb": 5868, "gpu_mb": 0.0, "pids": [27184, 28972, 10712, 15988]}
+{"t": "18:28:41", "available_mb": 5804, "gpu_mb": 0.0, "pids": [27184, 28972, 10712, 15988]}
+{"t": "18:28:47", "available_mb": 5905, "gpu_mb": 0.0, "pids": [27184, 28972, 2712, 28712]}
+{"t": "18:28:53", "available_mb": 5572, "gpu_mb": 0.0, "pids": [27184, 28972, 23020, 29124]}
+{"t": "18:28:59", "available_mb": 6158, "gpu_mb": 0.0, "pids": [27184, 28972]}
+{"t": "18:29:05", "available_mb": 5988, "gpu_mb": 0.0, "pids": [28468, 27656]}
+18:29:11 no process holds the marker: done

@@ -1,0 +1,27 @@
+{
+ "design": "baseline2_lw8",
+ "run": "topofree_mass_tilt_7.73kg_4mm_projected_band24_cup_bolts_split_contract_drive_baseline2_lw8_empty_shell_notowers_protect_modes12_fm500_hf4_single_p40_max16_flange_beds_lm8_lw8_sf1.5",
+ "h_mm": 4.0,
+ "halves": {
+  "motor_side": {
+   "placed_cubes": 6232,
+   "placed_kg": 1.077,
+   "thin_cubes": 213,
+   "thin_share": 0.0342,
+   "thin_kg": 0.037,
+   "thin_columns": 57,
+   "corner_contacts": 48,
+   "loose_cubes": 58
+  },
+  "cover": {
+   "placed_cubes": 3588,
+   "placed_kg": 0.62,
+   "thin_cubes": 91,
+   "thin_share": 0.0254,
+   "thin_kg": 0.016,
+   "thin_columns": 36,
+   "corner_contacts": 17,
+   "loose_cubes": 0
+  }
+ }
+}

@@ -1,0 +1,27 @@
+{
+ "design": "topofree_mass_tilt_7.73kg_4mm_projected_band24_cup_bolts_split_contract_drive_baseline2_lw8_empty_shell_notowers_protect_modes12_fm500_hf4_single_p40_max16_flange_beds_lm8_lw8_sf1.5_fit6x12",
+ "run": "topofree_mass_tilt_7.73kg_4mm_projected_band24_cup_bolts_split_contract_drive_baseline2_lw8_empty_shell_notowers_protect_modes12_fm500_hf4_single_p40_max16_flange_beds_lm8_lw8_sf1.5_fit6x12",
+ "h_mm": 4.0,
+ "halves": {
+  "motor_side": {
+   "placed_cubes": 5849,
+   "placed_kg": 1.011,
+   "thin_cubes": 277,
+   "thin_share": 0.0474,
+   "thin_kg": 0.048,
+   "thin_columns": 170,
+   "corner_contacts": 25,
+   "loose_cubes": 62
+  },
+  "cover": {
+   "placed_cubes": 3311,
+   "placed_kg": 0.572,
+   "thin_cubes": 166,
+   "thin_share": 0.0501,
+   "thin_kg": 0.029,
+   "thin_columns": 91,
+   "corner_contacts": 14,
+   "loose_cubes": 0
+  }
+ }
+}
