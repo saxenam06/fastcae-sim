@@ -60,7 +60,10 @@ def main() -> None:
     hf = fieldmod.HousingField(vox, groups, rm.c_local, rm.c_iso)
     free_kg = model["budget_kg"] - model["frozen_kg"]
     print(f"the field: {len(hf.groups)} groups, {hf.size:,} variables; the budget's remainder {free_kg:.2f} kg")
-    x = hf.start(0.6)
+    xmin, arms = fieldmod.arm_floor(hf, vox)
+    for a in arms:
+        print(f"{a['mount']}'s least arm: {a['columns']} columns to {np.round(a['to'], 1)}, {a['kg']:.3f} kg")
+    x = np.maximum(hf.start(0.6), xmin)
     if start:
         z = np.load(start)
         x = z["x"]
@@ -74,7 +77,7 @@ def main() -> None:
         print(f"the start's directions from its strains ({time.time() - t0:.0f} s)")
     extra = {"label": label, "voxel": voxel, "budget_kg": model["budget_kg"], "frozen_kg": model["frozen_kg"],
              "free_kg": free_kg, "groups": [g.name for g in hf.groups], "spacing": fieldmod.SPACING,
-             "knot": fieldmod.KNOT, "tall": fieldmod.toy.TALL, "rules": {
+             "knot": fieldmod.KNOT, "tall": fieldmod.toy.TALL, "arms": arms, "rules": {
                  "T_NEAR": fieldmod.rules.T_NEAR, "T_FAR": fieldmod.rules.T_FAR,
                  "END_REACH": fieldmod.rules.END_REACH, "LIMIT_T": fieldmod.rules.LIMIT_T,
                  "LIMIT_H": fieldmod.rules.LIMIT_H, "LIMIT_A": fieldmod.rules.LIMIT_A,
@@ -118,7 +121,7 @@ def main() -> None:
               f"their lines; the worst {names[worst]} {f[worst]:+.3f}; {len(row['violated'])} over; "
               f"{row['seconds']:.0f} s", flush=True)
         if opt is None:
-            opt = MMA(len(x), len(f), 0.0, 1.0)
+            opt = MMA(len(x), len(f), xmin, 1.0)
         x = opt.propose(x, mass / free_kg, dm / free_kg, f, df, move=MOVE)
         if (it + 1) % SAVE == 0:
             save(label, hf, x, history, extra)

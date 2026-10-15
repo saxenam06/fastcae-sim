@@ -35,6 +35,7 @@ KNOT = 16.0  # mm
 SPACING = 24.0  # mm: between the ribs' centres when drawn
 THETA_SMOOTH = 8.0  # mm: the start's directions smoothed over this
 ERSATZ = 1e-4
+ARM_MOST = 0.95  # an arm's floor at most this share of a column (`arm_floor`)
 
 
 def basis_1d(x, length, knot):
@@ -169,6 +170,79 @@ def solid_zone(vox) -> np.ndarray:
         z_lo, z_hi = (z_lo, max(z_hi, split)) if mt["z"][1] <= split else (min(z_lo, split), z_hi)
         zone |= (np.hypot(xyz[:, 0] - cx, xyz[:, 1] - cy) <= reach) & (xyz[:, 2] >= z_lo) & (xyz[:, 2] <= z_hi)
     return zone
+
+
+def zone_discs(vox) -> list[dict]:
+    """The solid zones' discs in plan, exactly (`solid_zone`'s): each bearing's boss and each mount's
+    corridor, with their half ("motor_side" or "cover")."""
+    m = vox.model
+    info, s = m["info"], m["info"]["settings"]
+    h, lo = float(m["h"]), np.asarray(m["lo"], float)
+    split = info["z"]["split"]
+    out = []
+    for b in info["bearings"]:
+        below = 0.5 * (b["z"][0] + b["z"][1]) < split
+        out.append({"half": "motor_side" if below else "cover", "centre": list(b["axis"]),
+                    "r": 0.625 * b["D"] + 5.0, "kind": "boss"})
+    fixed_xyz = lo + (vox.ijk[vox.frozen] + 0.5) * h
+    for mt in info["mounts"]:
+        cx, cy = mt["centre"]
+        d_fixed = np.hypot(fixed_xyz[:, 0] - cx, fixed_xyz[:, 1] - cy)
+        shell = d_fixed[d_fixed > s["mount_diameter"] / 2 + h]
+        reach = float(shell.min()) + 24.0 if len(shell) else 24.0
+        out.append({"half": "motor_side" if mt["z"][1] <= split else "cover", "centre": [cx, cy], "r": reach,
+                    "kind": "mount"})
+    return out
+
+
+def arm_floor(hf, vox) -> tuple[np.ndarray, list[dict]]:
+    """Each mount's least arm (16 October, a prototype rule for the engineer to agree): the solid
+    columns within the lug's diameter (and the plan filter's 6 mm) of the straight line from the lug
+    to the nearest fixed metal past it, held deep enough to reach the lug's far face. Without it the
+    optimiser joined mount-1 by 6 cubes (`t5`): one held mount carries the housing under the one load
+    case, and this run holds no modes (the baseline's modes are what joined its lugs). Returns the
+    design vector's lower bounds and, per mount, the arm's columns and least metal."""
+    m = vox.model
+    info, s = m["info"], m["info"]["settings"]
+    h, lo = float(m["h"]), np.asarray(m["lo"], float)
+    split = info["z"]["split"]
+    xmin = np.zeros(hf.size)
+    fixed_xyz = lo + (vox.ijk[vox.frozen] + 0.5) * h
+    n_cols = len(hf.col_len_mm)
+    col_xy = np.zeros((n_cols, 2))
+    col_half = np.zeros(n_cols, bool)  # True: the motor side
+    for grp in hf.groups:
+        col_xy[grp.cols] = grp.xy
+        col_half[grp.cols] = grp.half == "motor_side"
+    ijk = vox.ijk[vox.free_e]
+    first = hf.pos == 0
+    base = np.full(n_cols, -1, np.int64)
+    base[hf.col[first]] = ijk[first, 2]
+    zone_len = np.zeros(n_cols)
+    np.maximum.at(zone_len, hf.col[hf.in_zone], (hf.pos[hf.in_zone] + 1.0) * hf.a)
+    report = []
+    r_lug = s["mount_diameter"] / 2
+    for mt in info["mounts"]:
+        below = mt["z"][1] <= split
+        c = np.asarray(mt["centre"], float)
+        d = np.hypot(fixed_xyz[:, 0] - c[0], fixed_xyz[:, 1] - c[1])
+        beyond = (d > r_lug + h) & ((fixed_xyz[:, 2] < split) == below)
+        p = fixed_xyz[beyond][np.argmin(d[beyond]), :2]
+        seg = p - c
+        t = np.clip(((col_xy - c) @ seg) / max(seg @ seg, 1e-9), 0.0, 1.0)
+        off = np.hypot(*(col_xy - (c + t[:, None] * seg)).T)
+        on = np.isin(np.arange(n_cols), hf.zcols) & (off <= r_lug + 6.0) & (col_half == below)
+        face = lo[2] + h * (base + 1) if below else lo[2] + h * base
+        need = (face - mt["z"][0]) if below else (mt["z"][1] - face)
+        need = np.minimum(np.maximum(need, 0.0), zone_len)
+        cols = np.flatnonzero(on & (need > 0))
+        k = hf.zone_of_col[cols]
+        # under the upper bound: a variable with xmin = xmax gives MMA asymptotes no span (`h2`'s
+        # first try slid to nothing)
+        xmin[hf.n_rib + k] = np.minimum(ARM_MOST, need[cols] / hf.col_len_mm[cols])
+        kg = float((need[cols] * h * h).sum()) * vox.density
+        report.append({"mount": mt["name"], "to": p.tolist(), "columns": int(len(cols)), "kg": kg})
+    return xmin, report
 
 
 class HousingField:

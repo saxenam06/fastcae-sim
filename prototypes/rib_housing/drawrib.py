@@ -93,6 +93,7 @@ def columns_of(vox, hf, x) -> dict:
         "holding": int((np.stack([f["h"] for f in pc["fam"]]).max(axis=0) >= rules.H_LEAST).sum()),
         "columns": int(n_cols),
         "pc": pc,
+        "discs": fieldmod.zone_discs(vox),
     }
 
 
@@ -129,6 +130,17 @@ def _pieces(mask: np.ndarray, step: float) -> np.ndarray:
     return keep[lab]
 
 
+def _smoothed(z_end: np.ndarray, a: np.ndarray, step: float, smooth_mm: float, smooth_range: float) -> np.ndarray:
+    """A free end smoothed in plan within its member (and twice the smoothing past its outline),
+    steps taller than `smooth_range` kept: the product's bilateral filter and settings."""
+    from zenryx.domains.gearbox.housing.columns import bilateral
+
+    near = a > -2.0 * smooth_mm
+    if smooth_mm <= 0 or not near.any():
+        return z_end
+    return np.where(near, bilateral(z_end, near, smooth_mm / step, smooth_range), z_end)
+
+
 def rib_sdf(cols, half, f, xs, ys, zs, footprint, smooth_mm, smooth_range) -> np.ndarray:
     """The half's ribs and solid zones as a signed distance (mm, positive outside), on the drawing's
     grid: `columns.members_sdf`'s place and contract."""
@@ -147,6 +159,7 @@ def rib_sdf(cols, half, f, xs, ys, zs, footprint, smooth_mm, smooth_range) -> np
     zz = zs[side][None, None, :]
     out = np.full((len(xs), len(ys), len(zs)), np.inf, np.float32)
     part = np.full((len(xs), len(ys), int(side.sum())), np.inf, np.float32)
+    PX, PY = np.meshgrid(xs, ys, indexing="ij")
     CI, CJ = np.meshgrid((xs - lo[0]) / h - 0.5, (ys - lo[1]) / h - 0.5, indexing="ij")
     at = [CI, CJ]
     cell_i = np.clip(np.floor(CI + 0.5).astype(int), 0, n[0] - 1)
@@ -188,10 +201,12 @@ def rib_sdf(cols, half, f, xs, ys, zs, footprint, smooth_mm, smooth_range) -> np
                 continue
             e_end = o_base + hk
             z_end = (zsp - e_end) if lower else (zsp + e_end)
+            a_k = _signed(rib, step)
+            z_end = _smoothed(z_end, a_k, step, smooth_mm, smooth_range)
             gx_, gy_ = np.gradient(z_end, step, step)
             slope = np.sqrt(1.0 + gx_ * gx_ + gy_ * gy_)[:, :, None]
             zdist = ((z_end[:, :, None] - zz) if lower else (zz - z_end[:, :, None])) / slope
-            f_k = round_inter(-_signed(rib, step)[:, :, None], zdist, rnd)
+            f_k = round_inter(-a_k[:, :, None], zdist, rnd)
             if cols["run_of_group"][g] > 1:  # a run past another: from its own first cube
                 f_k = np.maximum(f_k, (zz - face[:, :, None]) if lower else (face[:, :, None] - zz))
             part = np.minimum(part, f_k.astype(np.float32))
@@ -199,22 +214,33 @@ def rib_sdf(cols, half, f, xs, ys, zs, footprint, smooth_mm, smooth_range) -> np
         zsel = sel[cols["zone"][sel]]
         solid_n = 0
         if len(zsel):
-            hs_c = grid(np.where(cols["zone"][sel], np.minimum(cols["hs"][sel], cols["zone_len"][sel]), np.nan))
-            holds = grid((cols["zone"][sel] & (cols["hs"][sel] >= max(rules.H_LEAST, 0.5 * h))).astype(float), 0.0)
-            zone_m = grid(cols["zone"][sel].astype(float), 0.0)
-            num = map_coordinates(gaussian_filter(holds, sig), at, order=1)
-            den = map_coordinates(gaussian_filter(np.maximum(zone_m, present), sig), at, order=1)
-            solid = (num / np.maximum(den, 1e-9) >= 0.5) & area
+            # a column holds solid from half a cube (the product's columns), its height within its zone
+            hs_eff = np.minimum(cols["hs"][sel], cols["zone_len"][sel])
+            held = cols["zone"][sel] & (hs_eff >= 0.5 * h)
+            hs_c = grid(np.where(held, hs_eff, np.nan))
+            # the outline: where the columns' heights, read cubic between the columns (the zone's
+            # other columns at none), reach half a cube: a smooth line, not the columns' steps
+            level = grid(np.where(cols["zone"][sel], hs_eff, 0.0), 0.0)
+            solid = (map_coordinates(level, at, order=3, mode="nearest") >= 0.5 * h) & area
             solid = fill_diagonals(solid[:, :, None])[:, :, 0]
             solid_n = int(solid.sum())
             if solid.any():
+                # the outline: the holding columns' within the zones' exact discs (a boss's circle)
+                a_zone = np.full(solid.shape, -1e6)
+                for dsc in cols["discs"]:
+                    if dsc["half"] == half:
+                        a_zone = np.maximum(a_zone, dsc["r"] - np.hypot(PX - dsc["centre"][0], PY - dsc["centre"][1]))
+                a_s = np.minimum(_signed(solid, step), a_zone)
                 hsf = map_coordinates(_carried(hs_c), at, order=1)
                 e_end = o_base + hsf
                 z_end = (zsp - e_end) if lower else (zsp + e_end)
+                z_end = _smoothed(z_end, a_s, step, smooth_mm, smooth_range)
                 gx_, gy_ = np.gradient(z_end, step, step)
                 slope = np.sqrt(1.0 + gx_ * gx_ + gy_ * gy_)[:, :, None]
                 zdist = ((z_end[:, :, None] - zz) if lower else (zz - z_end[:, :, None])) / slope
-                f_s = round_inter(-_signed(solid, step)[:, :, None], zdist, rnd)
+                f_s = round_inter(-a_s[:, :, None], zdist, rnd)
+                if cols["run_of_group"][g] > 1:
+                    f_s = np.maximum(f_s, (zz - face[:, :, None]) if lower else (face[:, :, None] - zz))
                 part = np.minimum(part, f_s.astype(np.float32))
         report.append(f"group {int(g)}: {len(sel):,} columns, rib area {ribs_g * step * step / 100:.0f} cm2, "
                       f"solid area {solid_n * step * step / 100:.0f} cm2")
