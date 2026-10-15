@@ -33,6 +33,9 @@ def test_a_run_from_the_button_to_its_outcome(tmp_path) -> None:
     assert before["last"] is None and before["changed"]["contract"] and before["running"] is None
     started = client.post("/api/runs", json={"design": "d1"})
     assert started.status_code == 202
+    assert {"stages_all", "stages", "log"} <= set(
+        started.json()
+    )  # what the Run panel reads at once
     s = wait_until(client, started.json()["id"])
     assert s["status"] == "done", s
     assert s["result"]["verdict"] == "passes every line" and s["result"]["design"] == "d1"

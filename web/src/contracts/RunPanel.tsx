@@ -161,8 +161,8 @@ export function RunPanel() {
       {shown ? (
         <div className="run-live">
           <ol className="run-stages">
-            {shown.stages_all.map((s) => {
-              const st = shown.stages.find((x) => x.stage === s);
+            {(shown.stages_all ?? []).map((s) => {
+              const st = (shown.stages ?? []).find((x) => x.stage === s);
               const state = !st ? "todo" : shown.stage === s ? "now" : "done";
               return (
                 <li key={s} data-state={state}>
@@ -176,7 +176,7 @@ export function RunPanel() {
           <div className="run-meta mono">
             {shown.design} · {minutes(shown.started)} so far
           </div>
-          {shown.log.length ? <pre className="run-log">{shown.log.slice(-8).join("\n")}</pre> : null}
+          {shown.log?.length ? <pre className="run-log">{shown.log.slice(-8).join("\n")}</pre> : null}
         </div>
       ) : null}
 

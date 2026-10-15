@@ -165,7 +165,7 @@ def create_app(
             live.update(state=state, engines=engines)
             save(state)
         threading.Thread(target=go, args=(state, req, engines), daemon=True).start()
-        return state
+        return {**state, "log": [], "stages_all": STAGES}  # the shape `GET /api/runs/{id}` answers
 
     @app.get("/api/runs")
     def runs() -> list[dict]:
