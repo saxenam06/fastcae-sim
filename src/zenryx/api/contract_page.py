@@ -422,6 +422,23 @@ def inputs(spec: HousingDesignSpec) -> list[dict[str, Any]]:
         note = (mfg.pull_directions[0].direction.provenance.note or "as given").split(" (")[0]
         pull["value"] = f"{len(mfg.pull_directions)} parts, {note}"
         process.append(pull)
+    # Where the halves are bolted: the process's joint rules, shown so the flange reads as an input.
+    joint = mfg.joint
+    if joint is not None:
+        at = "manufacturing.joint"
+        flange = _row("Split flange", joint.flange_thickness, spec, f"{at}.flange_thickness")
+        flange["value"] = f"{_text(joint.flange_thickness.value)} each half"
+        land = _row("Sealing land", joint.land_width, spec, f"{at}.land_width")
+        land["value"] = f"{_text(joint.land_width.value)} round the inside"
+        bolts = _row("Bolts", joint.boss_diameter, spec, f"{at}.boss_diameter")
+        hole, boss = _text(joint.hole_diameter.value), _text(joint.boss_diameter.value)
+        bolts["value"] = f"Ø{hole} holes in Ø{boss} bosses"
+        line = _row("Bolt line", joint.bolt_offset, spec, f"{at}.bolt_offset")
+        line["value"] = (
+            f"{_text(joint.bolt_offset.value)} outside the least wall, "
+            f"at most {_text(joint.max_pitch.value)} apart"
+        )
+        process += [flange, land, bolts, line]
 
     groups = [
         {"group": "Duty", "rows": duty},
@@ -706,7 +723,12 @@ def _loads_table(chain) -> dict[str, Any] | None:
     rows.append(
         {
             "label": "Motor's reaction on the housing",
-            "cells": [f"{_num(drive.motor_torque / 1000, 4)} N·m about the input's axis"],
+            "cells": [
+                f"{_num(drive.motor_torque / 1000, 4)} N·m about the input's axis"
+                if drive.motor_torque
+                else "none: the vehicle holds the motor, which drives the input through a "
+                "flexible coupling"
+            ],
         }
     )
     return {"columns": [], "rows": rows}

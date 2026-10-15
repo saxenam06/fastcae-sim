@@ -97,10 +97,13 @@ class BearingSpec(_Model):
 
 
 class ShaftEnd(_Model):
-    """One end of a shaft, by the shaft's name and its side along the shafts ("-z" or "+z")."""
+    """One end of a shaft, by the shaft's name and its side along the shafts ("-z" or "+z"). Where
+    the shaft leaves the housing, `room` is the diameter of what it joins beyond the end face (a
+    half-shaft's joint), which the housing keeps out of to the packaging space's end."""
 
     shaft: Name
     side: Entry
+    room: Entry | None = None
 
 
 class BearingPlace(_Model):
@@ -158,6 +161,9 @@ class ShaftLayout(_Model):
     gear_to_gear: Entry | None = None
     min_axial_clearance: Entry | None = None
     min_radial_clearance: Entry | None = None
+    # A seal's radial section, (outside Ø - bore) / 2: at a sealed end the shaft leaves through a
+    # bore of its least bore plus twice this, fitted from outside.
+    seal_section: Entry | None = None
     # On the shaft two stages share: the side ("-z" or "+z") its first-stage gear sits on.
     first_stage_side: Entry | None = None
     bearings: list[BearingPlace] = []
@@ -210,6 +216,11 @@ class Requirement(_Model):
     shaft_layout: ShaftLayout | None = None
     # The outside interfaces the vehicle and the motor give (the engineer, 9 Oct 02:16).
     mounts: list[MountPad] = []
+    # Who holds the motor's stator: "vehicle" (the motor drives the input shaft through a flexible
+    # coupling and the housing carries none of its torque; then no flange) or "housing" (it bolts
+    # to the housing at `motor_flange`, which then takes the motor's reaction torque). Unset, the
+    # flange's presence says it.
+    motor_held_by: Entry | None = None
     motor_flange: MotorFlange | None = None
     installation_space: InstallationSpace
 
@@ -225,6 +236,23 @@ class Requirement(_Model):
                 if missing:
                     raise ValueError(f"gear_train stage {stage.name!r} needs {', '.join(missing)}")
         return self
+
+    @model_validator(mode="after")
+    def _motor(self) -> Requirement:
+        held = None if self.motor_held_by is None else self.motor_held_by.value
+        if held not in (None, "vehicle", "housing"):
+            raise ValueError(f"motor_held_by is 'vehicle' or 'housing', not {held!r}")
+        if held == "housing" and self.motor_flange is None:
+            raise ValueError("a motor held by the housing needs its motor_flange")
+        if held == "vehicle" and self.motor_flange is not None:
+            raise ValueError("a motor held by the vehicle has no motor_flange on the housing")
+        return self
+
+    def motor_on_housing(self) -> bool:
+        """Whether the motor's stator bolts to the housing, so the housing takes its torque."""
+        if self.motor_held_by is not None:
+            return self.motor_held_by.value == "housing"
+        return self.motor_flange is not None
 
 
 class CylindricalSeat(_Model):
@@ -255,13 +283,21 @@ class SplitFace(_Model):
 
 
 class MountPad(_Model):
-    """A machined face that holds the housing in the vehicle."""
+    """A boss that holds the housing in the vehicle: the vehicle's bracket bolts to it. Its centre
+    is the middle of the boss on its bolt's axis, and its normal that axis, square to the boss's
+    machined faces at both ends; its size the boss's diameter and its length along the axis, and
+    the bolt's hole. `bracket_room` is the diameter the vehicle's bracket and bolt take beyond
+    both faces, as far as the boss is long (the engineer, 13 October: no higher)."""
 
     name: Name
     centre: Entry
     normal: Entry
     support: Literal["fixed", "elastic"]
     stiffness: Entry | None = None
+    diameter: Entry | None = None
+    length: Entry | None = None
+    hole_diameter: Entry | None = None
+    bracket_room: Entry | None = None
 
     @model_validator(mode="after")
     def _stiffness(self) -> MountPad:
@@ -358,6 +394,22 @@ class PullDirection(_Model):
     direction: Entry
 
 
+class JointRules(_Model):
+    """How a multi-part housing's parts are bolted where they meet: the process's rules, whatever
+    the joint's place (a design's choice). The parts meet on a flange `flange_thickness` deep on
+    each side of the joint: a sealing land `land_width` wide round the inside, and the bolts'
+    bosses on it. The bolts stand round the inside, their axes `bolt_offset` outside its least
+    wall, evenly at most `max_pitch` apart; each through a hole of `hole_diameter` in a boss of
+    `boss_diameter`."""
+
+    hole_diameter: Entry
+    boss_diameter: Entry
+    bolt_offset: Entry
+    max_pitch: Entry
+    flange_thickness: Entry
+    land_width: Entry
+
+
 class MaterialCard(_Model):
     name: str = Field(min_length=1)
     youngs_modulus: Entry
@@ -379,6 +431,7 @@ class ManufacturingProfile(_Model):
     max_wall: Entry | None = None
     machining_stock: Entry
     material: MaterialCard
+    joint: JointRules | None = None
 
     @model_validator(mode="after")
     def _casting_rules(self) -> ManufacturingProfile:

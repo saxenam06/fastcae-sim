@@ -1,16 +1,17 @@
-"""The volumes a completed gear train fixes, and the design space they leave for the housing
-(PLT-8, the contract's result; LOP-1 builds the housing in it).
+"""The fixed volumes, the shell and the spaces of `spaces`, drawn as exact solids (PLT-8, the
+contract's result; GBX-5). The design space keeps out of every fixed volume and the shell (the
+engineer, 10 October 13:47); `spaces` says what each is.
 
-- **The parts**, each a cylinder along its shaft: each gear (its tip Ø over its face width), each
-  shaft (its least bore, through its housing faces and out where it leaves), each bearing (a ring,
-  its outside and bore Ø over its width), the differential's case.
-- **The packaging space:** the convex hull, seen along the shafts, of every part's circle grown by
-  the installation space's clearance (A3), over the housing's length grown by the same.
-- **What the housing keeps clear of:** each gear and the carrier grown by the least radial
-  clearance to the wall (A19) and the least axial clearance (A18); each shaft; each bearing's own
-  room (its seat is housing).
-- **The design space:** the packaging space less what the housing keeps clear of: where housing
-  material may go.
+- **The fixed volumes**, solid: the gears, the shafts between their end faces, the bearing bores
+  (each bearing as a ring), the differential, the mounts' bosses, the bolts' bosses. Beside them,
+  see-through, the room they need where they reach outside: each shaft's exit (its seal's bore
+  and a half-shaft's joint) and the vehicle's bracket at each mount.
+- **The shell:** the inside (each part's room run to the split) grown by the least wall, less the
+  inside and the exits: the wall. **The split flange**, where the halves meet: the sealing land
+  round the inside, the flange's depth each side of the split (without joint rules, the split
+  plane alone, as a thin slab over the joint's outline).
+- **The packaging space**, and **the design space**: the packaging space less the shell's
+  outside, the exits, the mounts and their brackets' rooms, the bolts and the split flange.
 """
 
 from __future__ import annotations
@@ -21,13 +22,13 @@ import cadquery as cq
 
 from zenryx.contract.model import HousingDesignSpec
 from zenryx.domains.gearbox.chain import Chain
-from zenryx.domains.gearbox.forces import value_in
-from zenryx.geometry.solids import cylinder, fuse, hull_of_circles, prism, ring
+from zenryx.domains.gearbox.spaces import Cylinder, Hypothesis, Spaces, spaces
+from zenryx.geometry.solids import cylinder, fuse, prism, ring
 
 TOOL = "zenryx.domains.gearbox.volumes"
-VERSION = "0.1.0"
+VERSION = "0.2.0"
 
-OUTSIDE = 30.0  # how far a shaft is drawn beyond a housing face it leaves through, mm
+SPLIT_DEPTH = 0.5  # mm: without joint rules, the split plane drawn as a slab this thin
 
 
 @dataclass(frozen=True)
@@ -39,78 +40,71 @@ class Volume:
 
 @dataclass(frozen=True)
 class Space:
-    """The parts, the packaging space, what the housing keeps clear of, and the design space."""
+    """Every element as solids: the fixed volumes (`parts`, each tagged by its role), the rooms
+    they need outside (`reach`), the shell's wall, the split flange, and the two spaces."""
 
     parts: list[Volume]
+    reach: list[Volume]
+    wall: Volume
+    split: Volume
     packaging: Volume
-    keep_out: Volume
     design: Volume
+    spaces: Spaces
     outline: list[tuple[float, float]]
     z_range: tuple[float, float]
 
 
-def _mm(entry, default: float = 0.0) -> float:
-    return default if entry is None else value_in(entry, "mm")
+def solid(c: Cylinder) -> cq.Shape:
+    """A cylinder of `spaces` as a solid: a ring where it has an inner radius."""
+    if c.inner > 0:
+        return ring(c.centre, c.z0, c.z1, 2 * c.radius, 2 * c.inner)
+    return cylinder(c.centre, c.z0, c.z1, 2 * c.radius)
 
 
-def volumes(spec: HousingDesignSpec, chain: Chain) -> Space:
-    req = spec.requirement
-    gaps = req.shaft_layout
-    radial = _mm(gaps.min_radial_clearance)
-    axial = _mm(gaps.min_axial_clearance)
-    space = req.installation_space
-    clearance = _mm(space.clearance) if space.kind == "layout_envelope" else 0.0
-    sealed = {(e.shaft, e.side.value) for e in gaps.sealed_ends}
-    sections = {s.shaft: s for s in chain.sections}
+def whole(c: Cylinder) -> cq.Shape:
+    """A cylinder of `spaces` with any hole filled: the room it takes."""
+    return cylinder(c.centre, c.z0, c.z1, 2 * c.radius)
 
+
+def volumes(spec: HousingDesignSpec, chain: Chain, hypothesis: Hypothesis | None = None) -> Space:
+    sp = spaces(spec, chain, hypothesis)
     parts: list[Volume] = []
-    keep: list[cq.Shape] = []
-    circles: list[tuple[float, float, float]] = []
-    for stack in chain.layout.shafts:
-        (x, y), shaft = stack.axis, stack.shaft
-        bores = []
-        for p in stack.parts:
-            if p.kind == "gear":
-                parts.append(Volume(p.name, "gear", cylinder((x, y), p.z_min, p.z_max, p.diameter)))
-                keep.append(
-                    cylinder((x, y), p.z_min - axial, p.z_max + axial, p.diameter + 2 * radial)
-                )
-                circles.append((x, y, p.diameter / 2 + radial))
-            elif p.kind == "carrier":
-                parts.append(
-                    Volume(p.name, "carrier", cylinder((x, y), p.z_min, p.z_max, p.diameter))
-                )
-                keep.append(
-                    cylinder((x, y), p.z_min - axial, p.z_max + axial, p.diameter + 2 * radial)
-                )
-                circles.append((x, y, p.diameter / 2 + radial))
-            elif p.kind == "bearing":
-                side = p.name.rsplit(" ", 1)[-1]
-                choice = chain.bearings.get((shaft, side))
-                bore = choice.bearing.d if choice else 0.5 * p.diameter
-                bores.append(bore)
-                parts.append(
-                    Volume(p.name, "bearing", ring((x, y), p.z_min, p.z_max, p.diameter, bore))
-                )
-                keep.append(cylinder((x, y), p.z_min, p.z_max, p.diameter))
-                circles.append((x, y, p.diameter / 2))
-        d = min(bores) if bores else sections[shaft].diameter
-        z0 = stack.ends[0] - (OUTSIDE if (shaft, "-z") in sealed else 0.0)
-        z1 = stack.ends[1] + (OUTSIDE if (shaft, "+z") in sealed else 0.0)
-        parts.append(Volume(f"{shaft} shaft", "shaft", cylinder((x, y), z0, z1, d)))
-        keep.append(cylinder((x, y), z0 - 1.0, z1 + 1.0, d))
+    for role, members in (
+        ("gear", sp.gears),
+        ("shaft", sp.shafts),
+        ("bearing", sp.bearings),
+        ("carrier", sp.carriers),
+        ("mount", sp.mounts),
+        ("bolt", sp.bolts),
+    ):
+        parts += [Volume(c.name, role, solid(c)) for c in members]
+    reach = [Volume(c.name, "shaft", whole(c)) for c in sp.exits]
+    reach += [Volume(c.name, "mount", whole(c)) for c in sp.brackets]
 
-    outline = hull_of_circles([(cx, cy, r + clearance) for cx, cy, r in circles])
-    low = min(s.ends[0] for s in chain.layout.shafts) - clearance
-    high = max(s.ends[1] for s in chain.layout.shafts) + clearance
-    packaging = prism(outline, low, high)
-    keep_out = fuse(keep)
-    design = packaging.cut(keep_out).clean()
+    low, high = sp.z_range
+    packaging = prism(sp.outline, low, high)
+    outside = fuse([whole(c) for c in sp.shell])
+    inside = fuse([whole(c) for c in sp.inside])
+    wall = outside.cut(inside)
+    if sp.exits:
+        wall = wall.cut(fuse([whole(c) for c in sp.exits]))
+    wall = wall.intersect(packaging).clean()
+    if sp.flange:
+        land = fuse([whole(c) for c in sp.flange]).cut(fuse([whole(c) for c in sp.flange_inside]))
+        split = Volume("split flange", "split", land.clean())
+    else:
+        plane = prism(sp.joint_outline, sp.split_z - SPLIT_DEPTH / 2, sp.split_z + SPLIT_DEPTH / 2)
+        split = Volume("split plane", "split", plane)
+    keep = [outside] + [whole(c) for c in sp.keep_out]
+    design = packaging.cut(fuse(keep)).clean()
     return Space(
         parts=parts,
+        reach=reach,
+        wall=Volume("the shell's wall", "shell", wall),
+        split=split,
         packaging=Volume("packaging space", "packaging", packaging),
-        keep_out=Volume("kept clear", "keep_out", keep_out),
         design=Volume("design space", "design_space", design),
-        outline=outline,
-        z_range=(low, high),
+        spaces=sp,
+        outline=sp.outline,
+        z_range=sp.z_range,
     )

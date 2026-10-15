@@ -7,12 +7,13 @@ came from, so the viewer can colour, hide or show each solid on its own.
 
 from __future__ import annotations
 
-import math
-
 import cadquery as cq
 import numpy as np
 
-Point = tuple[float, float]
+from zenryx.geometry.plan import (  # noqa: F401 (hull_of_circles is used from here too)
+    Point,
+    hull_of_circles,
+)
 
 
 def cylinder(centre: Point, z0: float, z1: float, diameter: float) -> cq.Shape:
@@ -40,34 +41,6 @@ def ring(centre: Point, z0: float, z1: float, outer: float, inner: float) -> cq.
         .extrude(z1 - z0)
         .val()
     )
-
-
-def hull_of_circles(circles: list[tuple[float, float, float]], segments: int = 96) -> list[Point]:
-    """The convex hull of circles (x, y, r) as a polygon, anticlockwise: each circle sampled at
-    `segments` points, then Andrew's monotone chain."""
-    points = []
-    for x, y, r in circles:
-        for k in range(segments):
-            a = 2 * math.pi * k / segments
-            points.append((x + r * math.cos(a), y + r * math.sin(a)))
-    points = sorted(set((round(px, 6), round(py, 6)) for px, py in points))
-    if len(points) < 3:
-        raise ValueError("a hull needs at least three points")
-
-    def cross(o, a, b):
-        return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0])
-
-    lower: list[Point] = []
-    for p in points:
-        while len(lower) >= 2 and cross(lower[-2], lower[-1], p) <= 0:
-            lower.pop()
-        lower.append(p)
-    upper: list[Point] = []
-    for p in reversed(points):
-        while len(upper) >= 2 and cross(upper[-2], upper[-1], p) <= 0:
-            upper.pop()
-        upper.append(p)
-    return lower[:-1] + upper[:-1]
 
 
 def prism(outline: list[Point], z0: float, z1: float) -> cq.Shape:

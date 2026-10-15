@@ -634,10 +634,18 @@ def ev_reducer_posed():
                 "bearing_to_gear": asm(qty(12.7, "mm"), "A13"),
                 "behind_bearing": asm(qty(6.35, "mm"), "A14"),
                 "behind_bearing_sealed": asm(qty(11, "mm"), "A16"),
+                "seal_section": asm(qty(10, "mm"), "A16"),
+                # Where the output leaves, the half-shaft's joint beyond each end face (A27).
                 "sealed_ends": [
                     {"shaft": "input", "side": asm("-z", "A17")},
-                    {"shaft": "output", "side": asm("-z", "A17")},
-                    {"shaft": "output", "side": asm("+z", "A17")},
+                    *(
+                        {
+                            "shaft": "output",
+                            "side": asm(side, "A17"),
+                            "room": asm(qty(90, "mm"), "A27"),
+                        }
+                        for side in ("-z", "+z")
+                    ),
                 ],
                 "gear_to_gear": asm(qty(12.7, "mm"), "A15"),
                 "min_axial_clearance": asm(qty(3, "mm"), "A18"),
@@ -672,6 +680,28 @@ def ev_reducer_posed():
                     }
                 ],
             },
+            # The vehicle's hardpoints are not given: three mounts, assumed (A20).
+            "mounts": [
+                {
+                    "name": f"mount-{k}",
+                    "centre": asm(vec(x, y, -33.95, "mm"), "A20"),
+                    "normal": asm(vec(0, 0, 1, "1"), "A20"),
+                    "support": "fixed",
+                    "diameter": asm(qty(36, "mm"), "A20"),
+                    "length": asm(qty(30, "mm"), "A20"),
+                    "hole_diameter": asm(qty(11, "mm"), "A20"),
+                    "bracket_room": asm(qty(44, "mm"), "A20"),
+                }
+                for k, (x, y) in enumerate(((-170.2, -52.7), (176.4, 62.9), (35.1, 280.9)), 1)
+            ],
+            # No motor flange (the engineer, 10 Oct 13:21): the motor is held by the vehicle.
+            "motor_held_by": engineer(
+                "vehicle",
+                "the engineer",
+                "2026-10-10 13:21",
+                "the motor drives the input shaft through a flexible coupling; the housing "
+                "carries none of it and has no motor flange",
+            ),
             "installation_space": {
                 "kind": "layout_envelope",
                 "clearance": asm(qty(40, "mm"), "A3"),
@@ -710,6 +740,15 @@ def ev_reducer_posed():
                 "youngs_modulus": given(qty(69, "GPa"), "with the material"),
                 "poisson_ratio": given(qty(0.33, "1"), "with the material"),
                 "density": given(qty(2600, "kg/m3"), "with the material"),
+            },
+            # How the halves are bolted, wherever a design splits them (A26).
+            "joint": {
+                "hole_diameter": asm(qty(9, "mm"), "A26"),
+                "boss_diameter": asm(qty(20, "mm"), "A26"),
+                "bolt_offset": asm(qty(13, "mm"), "A26"),
+                "max_pitch": asm(qty(80, "mm"), "A26"),
+                "flange_thickness": asm(qty(8, "mm"), "A26"),
+                "land_width": asm(qty(10, "mm"), "A26"),
             },
         },
         "references": [
@@ -819,8 +858,10 @@ def ev_reducer_posed():
             ),
             assumption(
                 "A16",
-                "the space behind a bearing where its shaft leaves the housing",
-                "11 mm: an 8 mm radial shaft seal and 3 mm for its seat",
+                "the seal where a shaft leaves the housing",
+                "11 mm behind the bearing: an 8 mm radial shaft seal and 3 mm for its seat; the "
+                "seal's section 10 mm, so the shaft leaves through a bore of its own Ø + 20 mm "
+                "(45 × 65 × 8 on a 45 mm shaft), fitted from outside",
                 "seals of about 7-10 mm width for 30-50 mm shafts · makers' seal catalogues",
             ),
             assumption(
@@ -843,6 +884,18 @@ def ev_reducer_posed():
                 "8.25 mm",
                 "(1.1-1.2) × the wall thickness δ, at δ = 7.5 mm · Maciejczyk & Zdziennicki "
                 "Ch. 9, Fig. 9.1",
+            ),
+            assumption(
+                "A20",
+                "the mounts",
+                "three bosses for M10 bolts along the shafts, Ø36 × 30 mm with Ø11 holes, held "
+                "fixed, at (-170.2, -52.7), (176.4, 62.9) and (35.1, 280.9) mm, their middles at "
+                "z = -33.95 mm; the vehicle's bracket and bolt take Ø44 mm beyond both faces, as "
+                "far as the boss is long and no further",
+                "the vehicle's hardpoints are not given; at the package's far points on the motor "
+                "side, each lug 3 mm past the split flange's edge, so that its bracket and bolt "
+                "clear the housing; their room is kept clear for the boss's length beyond each "
+                "face, no higher (you)",
             ),
             assumption(
                 "A21",
@@ -871,6 +924,25 @@ def ev_reducer_posed():
                 "peak torques",
                 "a common gear steel (the engineer, 9 Oct 00:50); the core yield is the low end "
                 "of public datasheets, to source",
+            ),
+            assumption(
+                "A26",
+                "how the halves are bolted",
+                "a flange 8 mm deep on each side of the joint: a sealing land 10 mm wide round "
+                "the inside, and M8 bolts in Ø9 holes, each in a Ø20 boss on the land, their axes "
+                "13 mm outside the least wall, at most 80 mm apart round the inside",
+                "a sealed joint's bolts about 10 × their Ø apart, on a land for a formed-in-place "
+                "gasket's bead (its least width to confirm) · Henkel's guide to formed-in-place "
+                "gaskets; a 24 mm flange for M8 · Maciejczyk & Zdziennicki Table 9.1; the medium "
+                "clearance hole · ISO 273; 8 mm deep, two whole cubes of the optimiser's 4 mm grid "
+                "(the engineer, 13 Oct 18:42)",
+            ),
+            assumption(
+                "A27",
+                "the half-shafts' joints",
+                "Ø90 mm beyond each of the output's end faces",
+                "the inner joints are not given; the room the first loop kept, to source from a "
+                "joint maker's catalogue",
             ),
         ],
     }

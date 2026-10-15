@@ -93,11 +93,34 @@ def test_the_ev_reducer_carries_the_engineers_requirements():
         "A17",
         "A18",
         "A19",
+        "A20",
         "A21",
         "A22",
         "A23",
         "A24",
+        "A26",
+        "A27",
     ]
+    # The contract complete (the engineer, 10 Oct 12:49 and 13:21): the vehicle's three mounts,
+    # assumed; no motor flange, the vehicle holding the motor; the seals' section and the
+    # half-shafts' joints where the output leaves; the process's joint rules.
+    assert [m.name for m in req.mounts] == ["mount-1", "mount-2", "mount-3"]
+    assert {m.centre.provenance.assumption_id for m in req.mounts} == {"A20"}
+    assert req.motor_flange is None and req.motor_held_by.value == "vehicle"
+    assert req.motor_held_by.provenance.kind == "engineer"
+    assert not req.motor_on_housing()
+    assert req.shaft_layout.seal_section.value.to_canonical() == (10.0, "mm")
+    rooms = {(e.shaft, e.side.value): e.room for e in req.shaft_layout.sealed_ends}
+    assert rooms[("input", "-z")] is None
+    assert rooms[("output", "+z")].value.to_canonical() == (90.0, "mm")
+    joint = spec.manufacturing.joint
+    assert joint.max_pitch.value.to_canonical() == (80.0, "mm")
+    assert joint.hole_diameter.provenance.assumption_id == "A26"
+    # The split flange is the contract's (the engineer, 10 Oct 23:47): its depth and sealing land;
+    # 8 mm, two whole cubes of the optimiser's 4 mm grid (the engineer, 13 Oct 18:42).
+    assert joint.flange_thickness.value.to_canonical() == (8.0, "mm")
+    assert joint.land_width.value.to_canonical() == (10.0, "mm")
+    assert joint.land_width.provenance.assumption_id == "A26"
     # The input's sense of rotation sets the forces' directions (GBX-1); not given, so assumed.
     assert req.forward_rotation.provenance.assumption_id == "A21"
     # The layout's inputs are its gaps (the engineer, 9 Oct 00:06), assumed from Shigley's sketch.

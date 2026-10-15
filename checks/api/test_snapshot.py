@@ -126,6 +126,21 @@ def test_the_materials_properties_come_with_it(payload):
     assert material["detail"] == "E 69 GPa · ν 0.33 · 2,600 kg/m³"
 
 
+def test_the_split_flange_is_shown_as_an_input(payload):
+    """The flange where the halves meet is the contract's (the engineer, 10 Oct 23:47): its depth,
+    its sealing land and the bolts are listed with the process, each with its source."""
+    page = payload["contracts"][0]["page"]
+    process = next(g for g in page["inputs"] if g["group"] == "Process and material")
+    rows = {r["label"]: r for r in process["rows"]}
+    assert rows["Split flange"]["value"] == "8 mm each half"
+    assert rows["Sealing land"]["value"] == "10 mm round the inside"
+    assert rows["Bolts"]["value"] == "Ø9 mm holes in Ø20 mm bosses"
+    assert rows["Bolt line"]["value"] == "13 mm outside the least wall, at most 80 mm apart"
+    for label in ("Split flange", "Sealing land", "Bolts", "Bolt line"):
+        assert rows[label]["kind"] == "assumption", label
+        assert "A26" in rows[label]["title"], label
+
+
 def test_the_inputs_hold_only_what_is_given_or_assumed(every_example):
     for contract in every_example["contracts"]:
         for group in contract["page"]["inputs"]:

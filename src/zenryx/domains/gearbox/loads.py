@@ -13,10 +13,14 @@ supports; the torque about the shaft passes on to the next mesh or out of the ho
   catalogue), and the pair's two axial loads differ by the shaft's thrust.
 
 **What the housing feels:** each seat takes the opposite of its bearing's reaction on the shaft:
-its radial force, and its axial force where its bearing takes thrust. The motor's stator bolts to
-the housing and pushes back on it with the opposite of the motor's torque, about the input's
-axis. The wheels' torque leaves through the output and never reaches the housing. So the mounts
-hold the housing against the output's torque, i × T_in.
+its radial force, and its axial force where its bearing takes thrust. The wheels' torque leaves
+through the output and never reaches the housing. The motor's reaction depends on who holds it
+(`requirement.motor_held_by`):
+- held by the vehicle, the motor drives the input through a flexible coupling and the housing
+  carries none of its torque (the EV reducer's contract, the engineer, 10 October 13:21); the
+  mounts hold the housing against the output's torque less the input's, (i - 1) × T_in;
+- bolted to the housing at its flange, the stator pushes back on the housing with the opposite of
+  the motor's torque, about the input's axis, and the mounts hold i × T_in.
 
 The supports sit at the bearings' centres. A tapered bearing's effective load centre lies off its
 centre by its catalogue's offset; GBX-3 refines that once a bearing is selected.
@@ -55,7 +59,7 @@ class SeatLoad:
 @dataclass(frozen=True)
 class CaseLoads:
     """One load case on the housing: every seat's load, and the motor's reaction torque on the
-    housing (N·mm, signed about +z, at the input's axis)."""
+    housing (N·mm, signed about +z, at the input's axis; 0 when the vehicle holds the motor)."""
 
     name: str
     seats: tuple[SeatLoad, ...]
@@ -148,6 +152,7 @@ def seat_loads(
     y_factors = y_factors or {}
     supports = supports or {}
     planes = dict(layout.planes)
+    on_housing = spec.requirement.motor_on_housing()
     out = []
     for case in cases:
         on: dict[str, list[tuple[GearLoad, float]]] = {}
@@ -164,9 +169,8 @@ def seat_loads(
             }
             ys = {side: y_factors[(s, side)] for side in ("-z", "+z") if (s, side) in y_factors}
             seats += shaft_seats(s, on.get(s, []), (za, zb), roles, ys)
+        motor = -case.input_torque if on_housing else 0.0
         out.append(
-            CaseLoads(
-                case.name, tuple(seats), -case.input_torque, spec.requirement.stages[0].pinion_shaft
-            )
+            CaseLoads(case.name, tuple(seats), motor, spec.requirement.stages[0].pinion_shaft)
         )
     return out

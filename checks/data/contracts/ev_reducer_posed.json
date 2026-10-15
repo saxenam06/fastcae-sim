@@ -513,6 +513,18 @@
         "authority": "engineer_locked",
         "kind": "hard"
       },
+      "seal_section": {
+        "value": {
+          "value": 10,
+          "unit": "mm"
+        },
+        "provenance": {
+          "kind": "assumption",
+          "assumption_id": "A16"
+        },
+        "authority": "engineer_locked",
+        "kind": "hard"
+      },
       "sealed_ends": [
         {
           "shaft": "input",
@@ -536,6 +548,18 @@
             },
             "authority": "engineer_locked",
             "kind": "hard"
+          },
+          "room": {
+            "value": {
+              "value": 90,
+              "unit": "mm"
+            },
+            "provenance": {
+              "kind": "assumption",
+              "assumption_id": "A27"
+            },
+            "authority": "engineer_locked",
+            "kind": "hard"
           }
         },
         {
@@ -545,6 +569,18 @@
             "provenance": {
               "kind": "assumption",
               "assumption_id": "A17"
+            },
+            "authority": "engineer_locked",
+            "kind": "hard"
+          },
+          "room": {
+            "value": {
+              "value": 90,
+              "unit": "mm"
+            },
+            "provenance": {
+              "kind": "assumption",
+              "assumption_id": "A27"
             },
             "authority": "engineer_locked",
             "kind": "hard"
@@ -781,6 +817,271 @@
           }
         }
       ]
+    },
+    "mounts": [
+      {
+        "name": "mount-1",
+        "centre": {
+          "value": {
+            "values": [
+              -170.2,
+              -52.7,
+              -33.95
+            ],
+            "unit": "mm"
+          },
+          "provenance": {
+            "kind": "assumption",
+            "assumption_id": "A20"
+          },
+          "authority": "engineer_locked",
+          "kind": "hard"
+        },
+        "normal": {
+          "value": {
+            "values": [
+              0,
+              0,
+              1
+            ],
+            "unit": "1"
+          },
+          "provenance": {
+            "kind": "assumption",
+            "assumption_id": "A20"
+          },
+          "authority": "engineer_locked",
+          "kind": "hard"
+        },
+        "support": "fixed",
+        "diameter": {
+          "value": {
+            "value": 36,
+            "unit": "mm"
+          },
+          "provenance": {
+            "kind": "assumption",
+            "assumption_id": "A20"
+          },
+          "authority": "engineer_locked",
+          "kind": "hard"
+        },
+        "length": {
+          "value": {
+            "value": 30,
+            "unit": "mm"
+          },
+          "provenance": {
+            "kind": "assumption",
+            "assumption_id": "A20"
+          },
+          "authority": "engineer_locked",
+          "kind": "hard"
+        },
+        "hole_diameter": {
+          "value": {
+            "value": 11,
+            "unit": "mm"
+          },
+          "provenance": {
+            "kind": "assumption",
+            "assumption_id": "A20"
+          },
+          "authority": "engineer_locked",
+          "kind": "hard"
+        },
+        "bracket_room": {
+          "value": {
+            "value": 44,
+            "unit": "mm"
+          },
+          "provenance": {
+            "kind": "assumption",
+            "assumption_id": "A20"
+          },
+          "authority": "engineer_locked",
+          "kind": "hard"
+        }
+      },
+      {
+        "name": "mount-2",
+        "centre": {
+          "value": {
+            "values": [
+              176.4,
+              62.9,
+              -33.95
+            ],
+            "unit": "mm"
+          },
+          "provenance": {
+            "kind": "assumption",
+            "assumption_id": "A20"
+          },
+          "authority": "engineer_locked",
+          "kind": "hard"
+        },
+        "normal": {
+          "value": {
+            "values": [
+              0,
+              0,
+              1
+            ],
+            "unit": "1"
+          },
+          "provenance": {
+            "kind": "assumption",
+            "assumption_id": "A20"
+          },
+          "authority": "engineer_locked",
+          "kind": "hard"
+        },
+        "support": "fixed",
+        "diameter": {
+          "value": {
+            "value": 36,
+            "unit": "mm"
+          },
+          "provenance": {
+            "kind": "assumption",
+            "assumption_id": "A20"
+          },
+          "authority": "engineer_locked",
+          "kind": "hard"
+        },
+        "length": {
+          "value": {
+            "value": 30,
+            "unit": "mm"
+          },
+          "provenance": {
+            "kind": "assumption",
+            "assumption_id": "A20"
+          },
+          "authority": "engineer_locked",
+          "kind": "hard"
+        },
+        "hole_diameter": {
+          "value": {
+            "value": 11,
+            "unit": "mm"
+          },
+          "provenance": {
+            "kind": "assumption",
+            "assumption_id": "A20"
+          },
+          "authority": "engineer_locked",
+          "kind": "hard"
+        },
+        "bracket_room": {
+          "value": {
+            "value": 44,
+            "unit": "mm"
+          },
+          "provenance": {
+            "kind": "assumption",
+            "assumption_id": "A20"
+          },
+          "authority": "engineer_locked",
+          "kind": "hard"
+        }
+      },
+      {
+        "name": "mount-3",
+        "centre": {
+          "value": {
+            "values": [
+              35.1,
+              280.9,
+              -33.95
+            ],
+            "unit": "mm"
+          },
+          "provenance": {
+            "kind": "assumption",
+            "assumption_id": "A20"
+          },
+          "authority": "engineer_locked",
+          "kind": "hard"
+        },
+        "normal": {
+          "value": {
+            "values": [
+              0,
+              0,
+              1
+            ],
+            "unit": "1"
+          },
+          "provenance": {
+            "kind": "assumption",
+            "assumption_id": "A20"
+          },
+          "authority": "engineer_locked",
+          "kind": "hard"
+        },
+        "support": "fixed",
+        "diameter": {
+          "value": {
+            "value": 36,
+            "unit": "mm"
+          },
+          "provenance": {
+            "kind": "assumption",
+            "assumption_id": "A20"
+          },
+          "authority": "engineer_locked",
+          "kind": "hard"
+        },
+        "length": {
+          "value": {
+            "value": 30,
+            "unit": "mm"
+          },
+          "provenance": {
+            "kind": "assumption",
+            "assumption_id": "A20"
+          },
+          "authority": "engineer_locked",
+          "kind": "hard"
+        },
+        "hole_diameter": {
+          "value": {
+            "value": 11,
+            "unit": "mm"
+          },
+          "provenance": {
+            "kind": "assumption",
+            "assumption_id": "A20"
+          },
+          "authority": "engineer_locked",
+          "kind": "hard"
+        },
+        "bracket_room": {
+          "value": {
+            "value": 44,
+            "unit": "mm"
+          },
+          "provenance": {
+            "kind": "assumption",
+            "assumption_id": "A20"
+          },
+          "authority": "engineer_locked",
+          "kind": "hard"
+        }
+      }
+    ],
+    "motor_held_by": {
+      "value": "vehicle",
+      "provenance": {
+        "kind": "engineer",
+        "who": "the engineer",
+        "when": "2026-10-10 13:21",
+        "note": "the motor drives the input shaft through a flexible coupling; the housing carries none of it and has no motor flange"
+      },
+      "authority": "engineer_locked",
+      "kind": "hard"
     },
     "installation_space": {
       "kind": "layout_envelope",
@@ -1066,6 +1367,80 @@
         "authority": "engineer_locked",
         "kind": "hard"
       }
+    },
+    "joint": {
+      "hole_diameter": {
+        "value": {
+          "value": 9,
+          "unit": "mm"
+        },
+        "provenance": {
+          "kind": "assumption",
+          "assumption_id": "A26"
+        },
+        "authority": "engineer_locked",
+        "kind": "hard"
+      },
+      "boss_diameter": {
+        "value": {
+          "value": 20,
+          "unit": "mm"
+        },
+        "provenance": {
+          "kind": "assumption",
+          "assumption_id": "A26"
+        },
+        "authority": "engineer_locked",
+        "kind": "hard"
+      },
+      "bolt_offset": {
+        "value": {
+          "value": 13,
+          "unit": "mm"
+        },
+        "provenance": {
+          "kind": "assumption",
+          "assumption_id": "A26"
+        },
+        "authority": "engineer_locked",
+        "kind": "hard"
+      },
+      "max_pitch": {
+        "value": {
+          "value": 80,
+          "unit": "mm"
+        },
+        "provenance": {
+          "kind": "assumption",
+          "assumption_id": "A26"
+        },
+        "authority": "engineer_locked",
+        "kind": "hard"
+      },
+      "flange_thickness": {
+        "value": {
+          "value": 8,
+          "unit": "mm"
+        },
+        "provenance": {
+          "kind": "assumption",
+          "assumption_id": "A26"
+        },
+        "authority": "engineer_locked",
+        "kind": "hard"
+      },
+      "land_width": {
+        "value": {
+          "value": 10,
+          "unit": "mm"
+        },
+        "provenance": {
+          "kind": "assumption",
+          "assumption_id": "A26"
+        },
+        "authority": "engineer_locked",
+        "kind": "hard"
+      }
     }
   },
   "references": [
@@ -1178,8 +1553,8 @@
     },
     {
       "id": "A16",
-      "what": "the space behind a bearing where its shaft leaves the housing",
-      "value": "11 mm: an 8 mm radial shaft seal and 3 mm for its seat",
+      "what": "the seal where a shaft leaves the housing",
+      "value": "11 mm behind the bearing: an 8 mm radial shaft seal and 3 mm for its seat; the seal's section 10 mm, so the shaft leaves through a bore of its own Ø + 20 mm (45 × 65 × 8 on a 45 mm shaft), fitted from outside",
       "why": "seals of about 7-10 mm width for 30-50 mm shafts · makers' seal catalogues",
       "varied": true
     },
@@ -1202,6 +1577,13 @@
       "what": "the least clearance from a gear's tips to the housing wall",
       "value": "8.25 mm",
       "why": "(1.1-1.2) × the wall thickness δ, at δ = 7.5 mm · Maciejczyk & Zdziennicki Ch. 9, Fig. 9.1",
+      "varied": true
+    },
+    {
+      "id": "A20",
+      "what": "the mounts",
+      "value": "three bosses for M10 bolts along the shafts, Ø36 × 30 mm with Ø11 holes, held fixed, at (-170.2, -52.7), (176.4, 62.9) and (35.1, 280.9) mm, their middles at z = -33.95 mm; the vehicle's bracket and bolt take Ø44 mm beyond both faces, as far as the boss is long and no further",
+      "why": "the vehicle's hardpoints are not given; at the package's far points on the motor side, each lug 3 mm past the split flange's edge, so that its bracket and bolt clear the housing; their room is kept clear for the boss's length beyond each face, no higher (you)",
       "varied": true
     },
     {
@@ -1230,6 +1612,20 @@
       "what": "the shafts' steel",
       "value": "20MnCr5, case-hardened: core yield 590 MPa, E 210 GPa; design factor 2 on the peak torques",
       "why": "a common gear steel (the engineer, 9 Oct 00:50); the core yield is the low end of public datasheets, to source",
+      "varied": true
+    },
+    {
+      "id": "A26",
+      "what": "how the halves are bolted",
+      "value": "a flange 8 mm deep on each side of the joint: a sealing land 10 mm wide round the inside, and M8 bolts in Ø9 holes, each in a Ø20 boss on the land, their axes 13 mm outside the least wall, at most 80 mm apart round the inside",
+      "why": "a sealed joint's bolts about 10 × their Ø apart, on a land for a formed-in-place gasket's bead (its least width to confirm) · Henkel's guide to formed-in-place gaskets; a 24 mm flange for M8 · Maciejczyk & Zdziennicki Table 9.1; the medium clearance hole · ISO 273; 8 mm deep, two whole cubes of the optimiser's 4 mm grid (the engineer, 13 Oct 18:42)",
+      "varied": true
+    },
+    {
+      "id": "A27",
+      "what": "the half-shafts' joints",
+      "value": "Ø90 mm beyond each of the output's end faces",
+      "why": "the inner joints are not given; the room the first loop kept, to source from a joint maker's catalogue",
       "varied": true
     }
   ]

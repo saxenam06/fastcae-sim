@@ -118,6 +118,16 @@ _DIMENSIONS: dict[str, str] = {
     "stock": "mm",
     "bolt_hole_diameter": "mm",
     "bolt_pitch_circle": "mm",
+    "length": "mm",
+    "hole_diameter": "mm",
+    "bracket_room": "mm",
+    "room": "mm",
+    "seal_section": "mm",
+    "boss_diameter": "mm",
+    "bolt_offset": "mm",
+    "max_pitch": "mm",
+    "flange_thickness": "mm",
+    "land_width": "mm",
     "spigot_diameter": "mm",
     "bolt_circle": "mm",
     "force": "N",
@@ -372,6 +382,33 @@ def _check_power(spec: HousingDesignSpec) -> list[Refusal]:
     return out
 
 
+def _check_mounts(spec: HousingDesignSpec) -> list[Refusal]:
+    """The requirement's mounts: their names unique, their normals of length 1."""
+    out = []
+    seen: set[str] = set()
+    for i, mount in enumerate(spec.requirement.mounts):
+        if mount.name in seen:
+            out.append(
+                Refusal(
+                    rule="consistency.unique_names",
+                    entry=f"requirement.mounts[{i}].name",
+                    reason=f"the name {mount.name!r} is already used by another mount",
+                )
+            )
+        seen.add(mount.name)
+        if isinstance(mount.normal.value, Vector):
+            length = math.sqrt(sum(v * v for v in mount.normal.value.values))
+            if abs(length - 1.0) > UNIT_VECTOR_TOLERANCE:
+                out.append(
+                    Refusal(
+                        rule="consistency.unit_vector",
+                        entry=f"requirement.mounts[{i}].normal",
+                        reason=f"an axis or normal must have length 1, not {length:.6f}",
+                    )
+                )
+    return out
+
+
 def _check_interfaces(spec: HousingDesignSpec) -> list[Refusal]:
     out = []
     faces = spec.interfaces
@@ -592,6 +629,7 @@ def validate(spec: HousingDesignSpec) -> list[Refusal]:
     refusals += _check_stage(spec)
     refusals += _check_gear_train(spec)
     refusals += _check_power(spec)
+    refusals += _check_mounts(spec)
     refusals += _check_interfaces(spec)
     refusals += _check_references(spec)
     refusals += _check_tilt_limits(spec)

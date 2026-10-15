@@ -23,7 +23,7 @@ from zenryx.domains.gearbox.bearings import (
 from zenryx.domains.gearbox.chain import complete_chain
 from zenryx.domains.gearbox.forces import GearLoad
 from zenryx.domains.gearbox.loads import SeatLoad
-from zenryx.domains.gearbox.shafts import _moments_along, _slopes, _strength
+from zenryx.domains.gearbox.shafts import _moments_along, _slope_vectors, _slopes, _strength
 
 CONTRACT = Path(__file__).parents[1] / "data" / "contracts" / "ev_reducer_posed.json"
 
@@ -88,6 +88,22 @@ def test_the_slope_of_a_centrally_loaded_beam():
     slopes = _slopes(0.0, span, moments, ei)
     assert slopes[0] == pytest.approx(p * span**2 / (16 * ei), rel=2e-3)
     assert slopes[-1] == pytest.approx(p * span**2 / (16 * ei), rel=2e-3)
+    # As vectors: the shaft bows towards the load (+x), so at the -z support its axis leans
+    # towards +x going along +z, and at the +z support back towards -x.
+    lean = _slope_vectors(0.0, span, moments, ei)
+    assert lean[0][0] == pytest.approx(p * span**2 / (16 * ei), rel=2e-3)
+    assert lean[-1][0] == pytest.approx(-p * span**2 / (16 * ei), rel=2e-3)
+    assert lean[0][1] == pytest.approx(0.0, abs=1e-12)
+
+
+def test_the_chain_keeps_each_bearings_lean_per_case(chain):
+    """Every shaft's section carries, for every load case, the shaft's lean at both bearings, and
+    the worst lean's size is the worst slope the stiffening loop measured."""
+    for s in chain.sections:
+        assert set(s.lean_at_bearing) == {c.name for c in chain.forces}
+        for side in ("-z", "+z"):
+            worst = max(math.hypot(*v[side]) for v in s.lean_at_bearing.values())
+            assert worst == pytest.approx(s.slope_at_bearing[side], rel=1e-9)
 
 
 @pytest.fixture(scope="module")

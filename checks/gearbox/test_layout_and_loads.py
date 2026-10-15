@@ -168,19 +168,62 @@ def test_every_shaft_balances(spec, layout):
             assert (mx, my) == pytest.approx((0.0, 0.0), abs=1e-3)
 
 
-def test_the_housing_holds_the_output_torque_at_its_mounts(spec, layout):
-    """The seats' forces cancel; with the motor's reaction they twist the housing by -i·T_in about
-    z, which the mounts must hold."""
+def _twist(loads, layout) -> float:
+    """The torque about z that the seats and the motor put on the housing."""
+    twist = loads.motor_torque
+    for s in loads.seats:
+        x, y = layout.stack(s.shaft).axis
+        twist += x * s.force[1] - y * s.force[0]
+    return twist
+
+
+def test_the_housing_holds_the_output_torque_less_the_input_at_its_mounts(spec, layout):
+    """The product's contract: the vehicle holds the motor (the engineer, 10 Oct 13:21), so no
+    motor torque reaches the housing. The seats' forces cancel and twist the housing by
+    -(i - 1)·T_in about z, which the mounts must hold."""
+    assert not spec.requirement.motor_on_housing()
     cases = case_forces(spec)
     ratio = (51 / 25) * (81 / 23)
     for case, loads in zip(cases, seat_loads(spec, layout, cases), strict=True):
         total = [sum(s.force[k] for s in loads.seats) for k in range(3)]
         assert total == pytest.approx([0.0, 0.0, 0.0], abs=1e-6)
-        twist = loads.motor_torque
-        for s in loads.seats:
-            x, y = layout.stack(s.shaft).axis
-            twist += x * s.force[1] - y * s.force[0]
-        assert twist == pytest.approx(-ratio * case.input_torque, rel=1e-9)
+        assert loads.motor_torque == 0.0
+        assert _twist(loads, layout) == pytest.approx(-(ratio - 1) * case.input_torque, rel=1e-9)
+
+
+def test_a_flanged_motor_puts_its_reaction_on_the_housing(spec, layout):
+    """Bolted to the housing at a flange, the stator pushes back with -T_in about the input's
+    axis: the housing then twists by -i·T_in."""
+    from zenryx.contract.entry import Entry, Provenance
+    from zenryx.contract.model import MotorFlange
+    from zenryx.contract.units import Vector
+
+    def given(value):
+        who = Provenance(kind="engineer", who="a check", when="2026-10-10 13:55")
+        return Entry(value=value, provenance=who, authority="engineer_locked", kind="hard")
+
+    flange = MotorFlange(
+        name="motor",
+        centre=given(Vector(values=(0.0, 0.0, 0.0), unit="mm")),
+        axis=given(Vector(values=(0.0, 0.0, 1.0), unit="1")),
+        spigot_diameter=given(Quantity(value=126.0, unit="mm")),
+        bolt_count=given(6),
+        bolt_circle=given(Quantity(value=150.0, unit="mm")),
+    )
+    held = given("housing")
+    flanged = spec.model_copy(
+        update={
+            "requirement": spec.requirement.model_copy(
+                update={"motor_flange": flange, "motor_held_by": held}
+            )
+        }
+    )
+    assert flanged.requirement.motor_on_housing()
+    cases = case_forces(flanged)
+    ratio = (51 / 25) * (81 / 23)
+    for case, loads in zip(cases, seat_loads(flanged, layout, cases), strict=True):
+        assert loads.motor_torque == pytest.approx(-case.input_torque)
+        assert _twist(loads, layout) == pytest.approx(-ratio * case.input_torque, rel=1e-9)
 
 
 def test_the_tapered_pair_carries_its_induced_forces(spec, layout):

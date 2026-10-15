@@ -9,7 +9,8 @@ What goes in, every value stamped with this tool, its version and the posed cont
   support, the axis along z, its diameter the bearing's outside Ø, its width the bearing's, the
   shoulder on the side away from the gears, the machining stock, and the bearing and its type;
 - **interfaces.mount_pads** and **interfaces.motor_flanges:** the requirement's, as given;
-- **physics.load_cases:** each case's seat forces, and the motor's reaction torque on its flange;
+- **physics.load_cases:** each case's seat forces, and, where the motor bolts to the housing, its
+  reaction torque on the flange (a motor the vehicle holds puts none on the housing);
 - **physics.mesh_orders:** each mesh's teeth per revolution of its pinion's shaft.
 
 A contract the round cannot complete (a seat no catalogue bearing serves) is refused with why.

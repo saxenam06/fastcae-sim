@@ -47,6 +47,9 @@ class ShaftSection:
     diameter: float
     slope_at_bearing: dict[str, float]
     slope_at_gear: dict[str, float]
+    # Per load case, the shaft's lean (dx/dz, dy/dz) at each bearing against the chord between its
+    # bearings, at the diameter chosen: what the bearing's misalignment adds to the housing's.
+    lean_at_bearing: dict[str, dict[str, tuple[float, float]]]
 
 
 def _strength(n: float, sy: float, bending: float, torque: float) -> float:
@@ -92,8 +95,9 @@ def _moments_along(points, za: float, zb: float, seat_a, loads_on):
     return out
 
 
-def _slopes(za, zb, moments, ei):
-    """Slopes along a simply supported span from its moment diagram (two planes)."""
+def _slope_planes(za, zb, moments, ei):
+    """The integrals of each moment component over EI along a simply supported span, the constant
+    set so that the deflection returns to zero at the +z support."""
     n = len(moments)
     h = (zb - za) / (n - 1)
     out = []
@@ -108,7 +112,20 @@ def _slopes(za, zb, moments, ei):
         # y(zb) = theta_a·L + y_end = 0 sets the slope at the -z support.
         theta_a = -y[-1] / (zb - za)
         out.append([theta_a + t for t in theta])
-    return [math.hypot(a, b) for a, b in zip(out[0], out[1], strict=True)]
+    return out
+
+
+def _slope_vectors(za, zb, moments, ei) -> list[tuple[float, float]]:
+    """The shaft's lean (dx/dz, dy/dz) at each point, against the chord between its bearings: the
+    direction its deflected axis points. With the moments taken from the -z side as
+    `_moments_along` does, EI·x'' = -M_y and EI·y'' = +M_x, so the lean is (-∫M_y/EI, +∫M_x/EI)."""
+    planes = _slope_planes(za, zb, moments, ei)
+    return [(-my, mx) for mx, my in zip(planes[0], planes[1], strict=True)]
+
+
+def _slopes(za, zb, moments, ei):
+    """The slope's size along a simply supported span from its moment diagram (two planes)."""
+    return [math.hypot(a, b) for a, b in _slope_vectors(za, zb, moments, ei)]
 
 
 def sections(
@@ -187,6 +204,12 @@ def sections(
             if within or diameter > 200:
                 break
             diameter += 1
+        lean = {}
+        for (_named, loads_on, seat_a), case in zip(per_case, cases, strict=True):
+            vectors = _slope_vectors(
+                za, zb, _moments_along(points, za, zb, seat_a, loads_on), e * inertia
+            )
+            lean[case.name] = {"-z": vectors[0], "+z": vectors[-1]}
         out.append(
             ShaftSection(
                 shaft=s,
@@ -196,6 +219,7 @@ def sections(
                 diameter=float(diameter),
                 slope_at_bearing=worst_b,
                 slope_at_gear=worst_g,
+                lean_at_bearing=lean,
             )
         )
     return out
