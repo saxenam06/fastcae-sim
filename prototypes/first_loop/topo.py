@@ -2556,6 +2556,81 @@ def solve_model(model, budget_kg: float, iterations: int, objective: str, start=
         x = _uniform_start(vox, target, beta[0])
     else:
         x = np.full(vox.n_design, min(0.5, target / len(free_e)))
+    # (LOP-32, the engineer 15 October 16:10: "Reward. add rules") the members' fairing rules (`member_fair`), a stage from a
+    # converged run: on a temporary skeleton of the members, rebuilt every `every` iterations from the current heights, each
+    # measure's local worst case (a KS aggregate of its points over its limit) at most 0, the limits tightened from the
+    # start's own worst to their targets over `over` iterations. The topology frozen: a column farther than `band` cubes from
+    # the start's metal (in its half, level and family) holds nothing, so no member is born elsewhere and none is traded for
+    # three new ones
+    fair = model.get("fair")
+    fair_names, fair_st = (), {}
+    if fair:
+        if vox.height is None or vox.spline is not None or vox.height.get("parts") is not None or vox.features is not None:
+            raise ValueError("the fairing rules are the plain height field's (--height-field): not the spline map's, features' or parts'")
+        import member_fair as mf
+        from scipy import ndimage as ndi
+
+        fair_names = tuple(nm for nm, v_ in fair["targets"].items() if v_)
+        fair_cols = mf.column_info(model["kind"], model["n"], int(model["k_split"]), elem, free_e)
+        t_s, _ = vox.column_heights(x, beta[0])
+        band_c = float(fair.get("band") or 0.0)
+        if band_c > 0:
+            allowed = np.zeros(fair_cols["n_cols"], bool)
+            # in plan over the whole half, every column holding half a cube or more counted: frozen level by level and family by
+            # family from columns of a cube or more, the first try (`lw8_fair1`, 15 October 16:31) held out two one-cube columns
+            # joining mount-3's lug to its arm, and the beds read 1.35 x from the start
+            for hf_ in (0, 1):
+                idx = np.flatnonzero(fair_cols["half"] == hf_)
+                ij_ = fair_cols["ij"][idx]
+                met = t_s[idx] >= 0.5
+                if not met.any():
+                    continue
+                o_ = ij_.min(axis=0)
+                grid_ = np.zeros(tuple(ij_.max(axis=0) - o_ + 1), bool)
+                grid_[ij_[met, 0] - o_[0], ij_[met, 1] - o_[1]] = True
+                allowed[idx] = ndi.distance_transform_edt(~grid_)[ij_[:, 0] - o_[0], ij_[:, 1] - o_[1]] <= band_c
+            vox.height["M"] = (sp.diags(allowed.astype(float)) @ vox.height["M"]).tocsr()  # a column outside reads no height
+            say(f"the topology frozen: {int(allowed.sum()):,} of {len(allowed):,} columns, those within {band_c:g} cubes in plan of the "
+                "start's metal in their half, may hold metal")  # fmt: skip
+            t_s, _ = vox.column_heights(x, beta[0])
+        fair_st["frame"] = mf.Frame(fair_cols, t_s, model["lo"], h)
+        raw_ = fair_st["frame"].raw(t_s)
+        fair_st["start"] = {nm: 1.05 * float(np.abs(raw_[nm]).max()) if len(raw_[nm]) else 1.0 for nm in fair_names}
+        fair_st["it"] = first
+        fr_ = fair_st["frame"]
+        say(f"the fairing rules: {len(fr_.branches)} branches on the members' skeleton, {fr_.n_pts:,} points ({len(fr_.at):,} taken, "
+            "junctions, ends, stubs and webs masked); each measure's worst from the start's to its target over "
+            f"{int(fair['over'])} iterations, the skeleton rebuilt every {int(fair['every'])}: "
+            + ", ".join(f"{nm} {fair_st['start'][nm] / 1.05:.3f} -> {min(float(fair['targets'][nm]), fair_st['start'][nm]):.3f}"
+                        for nm in fair_names))  # fmt: skip
+
+    def fair_limits() -> dict:
+        frac = min(1.0, max(0.0, (fair_st["it"] - first) / max(1.0, float(fair["over"]))))
+        out_ = {}
+        for nm in fair_names:
+            l0 = max(fair_st["start"][nm], 1e-9)
+            out_[nm] = l0 * (min(float(fair["targets"][nm]), l0) / l0) ** frac
+        return out_
+
+    def fair_of(x_at):
+        """The fairing constraints at x: each measure's KS over its limit less 1, their derivatives by x (through the least
+        member's gate, the least width's opening and the plan filter), and each measure's worst point and limit."""
+        t_at, slope = vox.column_heights(x_at, beta[0])
+        _, jac = vox._t0(x_at, beta[0])
+        lims = fair_limits()
+        vals = fair_st["frame"].values(t_at, lims, float(fair.get("rho") or KS_RHO), fair_names)
+        hh_ = vox.height
+        g_, rows_, worst_ = [], [], {}
+        for nm in fair_names:
+            g_k, d_t, v_k = vals[nm]
+            d0 = d_t * slope
+            if jac is not None:
+                d0 = np.asarray(jac.T @ d0).ravel()
+            rows_.append(np.asarray(hh_["M"].T @ (d0 * hh_["L"])).ravel())
+            g_.append(g_k)
+            worst_[nm] = (float(v_k.max()) if len(v_k) else 0.0, float(lims[nm]))
+        return np.asarray(g_, float), np.vstack(rows_), worst_
+
     say(f"{objective} objective; {len(vox.held)} nodes held at the mounts; {len(vox.seats)} seats watched; budget {budget_kg:.3f} kg of free voxels")
     ramp = model.get("penalty_ramp") or 0
     # (LOP-30, 15 October 01:21; the engineer: "Yes" to 4 mm ribs) a spline run's densities are shares of real geometry
@@ -2613,7 +2688,10 @@ def solve_model(model, budget_kg: float, iterations: int, objective: str, start=
         if n_sizes and (robust or not pnorm):
             raise ValueError("the least width and gap as constraints (LOP-30) are held on one design of the p-norm and compliance loops")
         n_bend += n_sizes  # the least width and gap last
-        n_modes = 2 * len(mode_orders) + (FLOOR_MODES if mode_floor > 0 else 0) if mode_orders is not None else 0
+        if fair_names and (robust or not pnorm):
+            raise ValueError("the fairing rules (LOP-32) are held on one design of the p-norm and compliance loops")
+        n_bend += len(fair_names)  # (LOP-32) the fairing rules after them
+        n_modes =2 * len(mode_orders) + (FLOOR_MODES if mode_floor > 0 else 0) if mode_orders is not None else 0
         first_mode = 1 + (share_ball is not None) + (plan_fixed is not None) + (perim_pairs is not None) + n_tilt + n_beds + n_brk
         mode_rows = slice(first_mode, first_mode + n_modes)
         m = (1 + (share_ball is not None) + (plan_fixed is not None) + (perim_pairs is not None) + n_tilt + n_beds + n_brk + n_modes + n_bend) if pnorm else (len(vox.keys) if robust_p else len(etas) * len(vox.keys)) + 1
@@ -2660,6 +2738,11 @@ def solve_model(model, budget_kg: float, iterations: int, objective: str, start=
             t0 = time.time()
             penal = penalty_at(it)
             factors = 0
+            if fair_names:  # (LOP-32) the limits' schedule, and the skeleton rebuilt from the current heights every so often
+                fair_st["it"] = it
+                if it > first and (it - first) % int(fair["every"]) == 0:
+                    t_now, _ = vox.column_heights(x, beta[0])
+                    fair_st["frame"] = mf.Frame(fair_cols, t_now, model["lo"], h)
             if states is None or state_settings != (beta[0], penal):
                 # The problem changed (the start, a sharper projection, a higher penalty): the
                 # point's ratios and gradients afresh.
@@ -2741,9 +2824,12 @@ def solve_model(model, budget_kg: float, iterations: int, objective: str, start=
                 if sb_idx:  # (LOP-30, F3) the fields' bending
                     g_sb, dg_sb, _ = sbend_of(x)
                     g, dg = np.r_[g, g_sb], np.vstack([dg, dg_sb])
-                if n_sizes:  # (LOP-30) the least width and gap, last
+                if n_sizes:  # (LOP-30) the least width and gap
                     g_sz, dg_sz, _ = sizes_of(x)
                     g, dg = np.r_[g, g_sz], np.vstack([dg, dg_sz])
+                if fair_names:  # (LOP-32) the fairing rules, last
+                    g_f, dg_f, _ = fair_of(x)
+                    g, dg = np.r_[g, g_f], np.vstack([dg, dg_f])
             elif pnorm:
                 # The objective: the p-norm of every ratio in every realisation, scaled to 10 (the
                 # scale moves no optimum); each realisation's d_value is d(sum of ratio^p)/d dens,
@@ -2838,6 +2924,8 @@ def solve_model(model, budget_kg: float, iterations: int, objective: str, start=
                         g_new = np.r_[g_new, sbend_of(x_new)[0]]
                     if n_sizes:
                         g_new = np.r_[g_new, sizes_of(x_new)[0]]
+                    if fair_names:
+                        g_new = np.r_[g_new, fair_of(x_new)[0]]
                 else:
                     f0_new = 0.0
                     g_new = np.r_[scale * constraints(trials)[0], mass_new]
@@ -2882,6 +2970,7 @@ def solve_model(model, budget_kg: float, iterations: int, objective: str, start=
             out_now = outline_of(x)[2] if out_mm > 0 else None
             sb_now = sbend_of(x)[2] / sb_lim if sb_idx else None
             sz_now = sizes_of(x)[2] if n_sizes else None
+            fair_g, _, fair_now = fair_of(x) if fair_names else (None, None, None)
             brk_g, brk_now = brk_of(states[nom]["dens"]) if brk_rows is not None else (None, None)
             modes_g, modes_note = modes_of(states[nom])[0::2] if mode_orders is not None else (None, None)
             row = {"iteration": it, "objective": value, "change": change, "worst_ratio": worst[1], "greatest_share": share_now, "plan_share": plan_now,
@@ -2890,6 +2979,7 @@ def solve_model(model, budget_kg: float, iterations: int, objective: str, start=
                    "bracket_cm3": None if brk_now is None else [float(v_) for v_ in brk_now],
                    "modes_hz": None if mode_orders is None else [round(float(v_), 1) for v_ in states[nom]["modes_hz"]],
                    "mode_gaps": None if modes_g is None else [float(v_) for v_ in modes_g],
+                   "fair": None if fair_now is None else {nm: [round(w_, 5), round(l_, 5)] for nm, (w_, l_) in fair_now.items()},
                    "worst_seat": worst_seat, "beta": beta[0], "penalty": penal,
                    "grey_share": grey, "seconds": time.time() - t0, "mass_kg": float(free_now.sum()) * DENSITY * h**3,
                    "move": move, "ratios": named(ratios), "bound": z_bound, "active": active, "inner": inner,
@@ -2910,6 +3000,7 @@ def solve_model(model, budget_kg: float, iterations: int, objective: str, start=
                 + (f"the outline {out_now:.0f} mm (at most {out_mm:g}); " if out_mm > 0 else "")
                 + ("bending of its limits " + ", ".join(f"{v_:.2f}" for v_ in sb_now) + "; " if sb_idx else "")
                 + ("thin / narrow-gap share " + ", ".join(f"{v_:.4f}" for v_ in sz_now) + f" (at most {vox.spline['sizes']:g}); " if n_sizes else "")
+                + ("fairing (worst / limit) " + ", ".join(f"{nm} {w_:.3f}/{l_:.3f}" for nm, (w_, l_) in fair_now.items()) + "; " if fair_names else "")
                 + ("brackets " + ", ".join(f"{v_:.1f}/{lv * h**3 / 1000:.1f}" for v_, lv in zip(brk_now, brk_least, strict=True)) + " cm³; " if brk_rows is not None else "")
                 + ("modes " + ", ".join(f"{v_:.0f}" for v_ in states[nom]["modes_hz"][:10]) + " Hz, gaps "
                    + ", ".join(f"{v_:+.3f}" for v_ in modes_g) + f" (modes {clock.get('modes', 0.0):.1f} s); " if mode_orders is not None else "")
@@ -2934,7 +3025,8 @@ def solve_model(model, budget_kg: float, iterations: int, objective: str, start=
             spent = least or float(free_now.sum()) / target - 1.0 >= -MASS_SPENT  # the least-mass objective spends no budget
             held = (share_now is None or share_now <= greatest["alpha"] + 0.005) and (plan_now is None or plan_now <= plan_alpha + 0.005) and (
                 perim_now is None or perim_now <= 1.005 * float(perim["mm"])) and (bend_g is None or float(bend_g.max()) <= 0.01) and (
-                brk_g is None or float(brk_g.max()) <= 0.005) and (modes_g is None or float(modes_g.max()) <= 0.005)
+                brk_g is None or float(brk_g.max()) <= 0.005) and (modes_g is None or float(modes_g.max()) <= 0.005) and (
+                fair_g is None or float(fair_g.max()) <= 0.01)
             modes_ok = modes_g is None or float(modes_g.max()) <= 0.005  # (LOP-29) every mode limit held at this sharpness
             due = (since >= projection["every"] or (since >= 5 and (change < settle or flat_beta) and penal >= pen_most and modes_ok)) if settle else (projection and it % projection["every"] == 0)
             if projection and due and not sharpest:
@@ -2945,7 +3037,8 @@ def solve_model(model, budget_kg: float, iterations: int, objective: str, start=
                 if beta[0] > float(projection["beta_most"]) * 0.999:
                     beta[0] = float(projection["beta_most"])
                 since = 0
-            elif it > 10 and sharpest and penal >= pen_most and (change < 0.01 or (flat_stop and spent and held)):
+            elif it > 10 and sharpest and penal >= pen_most and (not fair_names or it - first >= int(fair["over"]) + 5) and (
+                    change < 0.01 or (flat_stop and spent and held)):  # fmt: skip
                 say(f"settled at iteration {it}: " + (f"no voxel moves more than {change:.3f}" if change < 0.01 else
                     f"the result within {100 * SETTLE_STOP:g} % of itself over the last {SETTLE_WINDOW} iterations at beta {beta[0]:g}"))  # fmt: skip
                 break
@@ -3021,9 +3114,17 @@ def solve_model(model, budget_kg: float, iterations: int, objective: str, start=
             + (f", the outline {binary['outline_mm']:.0f} mm" if perim_pairs is not None else "")
             + (", modes " + ", ".join(f"{v_:.0f}" for v_ in binary["modes_hz"][:10]) + " Hz, gaps " + ", ".join(f"{v_:+.3f}" for v_ in binary["mode_gaps"])
                if binary["mode_gaps"] is not None else ""))  # fmt: skip
+    fair_out = None
+    if fair_names:  # (LOP-32) the measures on the start's skeleton and on the end's, rebuilt
+        t_end, _ = vox.column_heights(x, beta[0])
+        frame_end = mf.Frame(fair_cols, t_end, model["lo"], h)
+        fair_out = {"targets": {nm: float(fair["targets"][nm]) for nm in fair_names}, "start": {nm: v_ / 1.05 for nm, v_ in fair_st["start"].items()},
+                    "end": mf.summary(frame_end, t_end), "settings": {k: fair[k] for k in ("every", "over", "band", "rho") if k in fair}}  # fmt: skip
+        say("the fairing rules at the end (worst, from the start's): " + ", ".join(
+            f"{nm} {fair_out['end'][nm]['max']:.3f} (p95 {fair_out['end'][nm]['p95']:.3f}) from {fair_out['start'][nm]:.3f}" for nm in fair_names))  # fmt: skip
     return {"phys": phys, "x": x, "free_e": free_e, "elem": elem, "frozen": frozen, "ijk": vox.ijk, "history": history, "n_dof": vox.n_dof,
             "ratios": named(ratios), "joint": vox.joint_note, "beta": beta[0], "realisations": realisations, "binary": binary,
-            "spline_cols": vox.spline_columns(x, beta[0]) if vox.spline is not None else None}  # fmt: skip
+            "spline_cols": vox.spline_columns(x, beta[0]) if vox.spline is not None else None, "fair": fair_out}  # fmt: skip
 
 
 def picture(model, result, path: Path, title: str):

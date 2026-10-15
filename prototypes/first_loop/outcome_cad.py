@@ -580,7 +580,8 @@ def voxel_cols_as_spline(run: str, sigma_mm: float, round_mm: float) -> dict:
             "t": np.where(metal, t, np.nan).astype(np.float32), "sub_ij": sub_ij.astype(np.int32), "sub_col": sub_col.astype(np.int32),
             "sub_phi": sub_phi.astype(np.float32), "sub_q": np.int32(q), "least": np.float32(0.0), "top_sharp": np.float32(2.0),
             "cap_sharp": np.float32(2.0), "pts_path": np.int8(1), "round_mm": np.float32(round_mm),
-            "least_island_mm2": np.float32(h * h), **({"plan_sdf": plan_sdf, "fair_tops": VOXEL_FAIR[0]} if plan_sdf is not None else {})}  # fmt: skip
+            "least_island_mm2": np.float32(h * h),
+            **({"plan_sdf": plan_sdf, **({"fair_tops": VOXEL_FAIR[0]} if VOXEL_FAIR_TOPS else {})} if plan_sdf is not None else {})}  # fmt: skip
 
 
 SPLINE_DRAW_RAMP = 1.0  # (LOP-30) mm of the outline field over which the drawing's plan density rises from 0 to 1
@@ -625,6 +626,10 @@ VOXEL_FILLET = float(os.environ.get("LOOP_VOXEL_FILLET", "4"))
 # LOOP_VOXEL_FAIR="<along mm>[:<every way mm>[:<out mm>[:<in mm>]]]" (2, 2.5, 1 by default): with LOOP_VOXEL_SMOOTH, the members' plan
 # outline faired (`voxel_fair.fair_group`) and read by the drawing as a distance; empty, the blurred outline as before
 VOXEL_FAIR = [float(v) for v in os.environ.get("LOOP_VOXEL_FAIR", "").split(":") if v.strip()]
+# (LOP-32, 15 October 16:40) LOOP_VOXEL_FAIR_TOPS=0: the outline faired, the tops not smoothed along their contours (`fair_tops`):
+# drawn with both, mount-1 parted from its arm twice (`baseline2_lw8_fair`, `final_lw8`); the fairing stage (`--fair`) now
+# straightens the tops in the optimiser itself
+VOXEL_FAIR_TOPS = os.environ.get("LOOP_VOXEL_FAIR_TOPS", "1") != "0"
 
 
 def spline_members_pts(spl: dict, half: str, f: dict, xs, ys, zs, footprint: np.ndarray | None = None) -> np.ndarray:
@@ -1579,7 +1584,8 @@ def build_mesh(run: str, stem: str) -> dict:
     voxel_note = None
     if spline is None and VOXEL_SMOOTH > 0:  # (LOP-30, 15 October) a height-field run drawn as a spline run (`voxel_cols_as_spline`)
         spline = voxel_cols_as_spline(run, VOXEL_SMOOTH, VOXEL_ROUND)
-        voxel_note = {"plan_sigma_mm": VOXEL_SMOOTH, "round_mm": VOXEL_ROUND, "fillet_mm": VOXEL_FILLET, "fair": VOXEL_FAIR or None}
+        voxel_note = {"plan_sigma_mm": VOXEL_SMOOTH, "round_mm": VOXEL_ROUND, "fillet_mm": VOXEL_FILLET, "fair": VOXEL_FAIR or None,
+                      "fair_tops": bool(VOXEL_FAIR and VOXEL_FAIR_TOPS)}  # fmt: skip
     if spline is not None and not (empty and EXACT_WALLS):
         raise ValueError("a spline run is drawn on the empty start with its walls exact (LOOP_EXACT_WALLS=1)")
     if spline is not None and run_rec.exists():  # (LOP-30) the section rule's fillet, from the run's own record

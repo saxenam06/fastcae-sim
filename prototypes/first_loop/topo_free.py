@@ -1146,7 +1146,7 @@ def main(budget: float = 7.73, h: float = 6.0, iterations: int = 200, band: floa
          first_margin: float = 0.0, least_width: float = 0.0, spline: str = "", least_gap: float = 0.0,
          outline: float = 0.0, section: str = "", top: bool = False, window: str = "", disc: bool = False, soft_dist: bool = False,
          spline_bend: str = "", lump_fixed: float = 0.0, sizes: float = 0.0, window_free: str = "mounts", penal_most: float = 0.0,
-         window_split: str = "", lump_floor: float = 0.0, gap_shell: bool = False) -> None:  # fmt: skip
+         window_split: str = "", lump_floor: float = 0.0, gap_shell: bool = False, fair: str = "") -> None:  # fmt: skip
     """Build the model, optimise it, save the field (`<stem>.npz`: the densities `phys` and the
     design variables `x`), its record (`<stem>.json`) and its picture (`<stem>.png`). Every
     `CHECKPOINT_EVERY` iterations the field so far goes to `<stem>_checkpoint.npz`; `resume`
@@ -1402,6 +1402,19 @@ def main(budget: float = 7.73, h: float = 6.0, iterations: int = 200, band: floa
                 "filled by a 4 mm rib half as stiff, wherever the rib sits on the grid")  # fmt: skip
     elif least_gap > 0 or outline > 0 or section or top or window or disc or soft_dist or spline_bend:
         raise ValueError("--least-gap, --outline, --section, --top, --window, --disc, --soft-dist and --spline-bend are the spline map's (--spline)")
+    if fair:  # (LOP-32, the engineer 15 October 16:10: "Reward. add rules") the members' fairing rules (`member_fair`), a stage
+        # from a converged run (--start): '<top bend 1/mm>:<top slope>:<width change>' targets (0 leaves one out); the skeleton
+        # rebuilt every LOOP_FAIR_EVERY iterations, the limits tightened over LOOP_FAIR_OVER, the topology frozen beyond
+        # LOOP_FAIR_BAND cubes of the start's metal
+        if not height_field or spline:
+            raise ValueError("--fair is the plain height field's (--height-field, no --spline)")
+        if not start_from and not resume:
+            raise ValueError("--fair is a stage from a converged run: give --start <its stem>")
+        tb, ts, tw = (float(v) for v in (fair.split(":") + ["0", "0", "0"])[:3])
+        model["fair"] = {"targets": {"top_bend": tb, "top_slope": ts, "width_change": tw},
+                         "every": int(os.environ.get("LOOP_FAIR_EVERY", "6")), "over": int(os.environ.get("LOOP_FAIR_OVER", "30")),
+                         "band": float(os.environ.get("LOOP_FAIR_BAND", "2")), "rho": topo.KS_RHO}  # fmt: skip
+        tag = f"{tag}_fair{100 * tb:g}x{10 * ts:g}x{10 * tw:g}"
     if model.get("modes") and topo.LOOSE_STIFF < 1.0:  # LOP-29 (the engineer, 14 October 15:37): `topo.LOOSE_STIFF`
         say(f"metal joined to nothing: {topo.LOOSE_MASS:g} of its mass and {topo.LOOSE_STIFF:g} of its stiffness (it carries "
             "nothing, and hanging on near-empty cubes it leaves the single factor nearly singular)")  # fmt: skip
@@ -1496,7 +1509,8 @@ def main(budget: float = 7.73, h: float = 6.0, iterations: int = 200, band: floa
               "cases": list(model.get("cases") or ("peak drive", "peak reverse")),
               "fast": os.environ.get("LOOP_FAST", "0") != "0",
               "history": result["history"], "ratios": result["ratios"], "realisations": result.get("realisations"),
-              "binary": result.get("binary"), "unknowns": result["n_dof"], "seconds": time.time() - t0}  # fmt: skip
+              "binary": result.get("binary"), "unknowns": result["n_dof"], "seconds": time.time() - t0,
+              "fair": result.get("fair")}  # fmt: skip
     (OUT / f"{stem}.json").write_text(json.dumps(record, indent=1), encoding="utf-8")
     if parts_spec is not None:  # the optimised parts, in mm: what the drawing draws (`implicit_draw.parts_body`, LOOP_PARTS)
         import parts as parts_mod
@@ -1643,6 +1657,11 @@ if __name__ == "__main__":
     ap.add_argument("--gap-shell", action="store_true",
                     help="(LOP-30, with --spline --least-gap --sizes) the least gap read against the shell too: no slot narrower "
                          "between a member and the half's fixed metal (G)")  # fmt: skip
+    ap.add_argument("--fair", default="",
+                    help="(LOP-32, with --height-field and --start) the members' fairing stage, '<top bend 1/mm>:<top slope>:<width "
+                         "change>' targets (e.g. 0.06:1.0:0.3; 0 leaves one out): on a temporary skeleton of the members, each "
+                         "measure's local worst held under a limit tightened from the start's to its target (`member_fair`), the "
+                         "topology frozen")  # fmt: skip
     a = ap.parse_args()
     if a.fast:
         os.environ["LOOP_FAST"] = "1"  # read at each call by topo.Voxels.analyse and mma.MMA
@@ -1651,4 +1670,4 @@ if __name__ == "__main__":
          a.plan_gap, a.plan_width, a.height_field, a.safety, a.space, a.safety_beds, a.height_features, a.height_volumes, a.parts, a.perimeter, a.empty,
          a.bending, a.brackets, a.protect, a.modes, a.shell_fixed, a.towers, a.first_mode, a.first_margin, a.least_width, a.spline,
          a.least_gap, a.outline, a.section, a.top, a.window, a.disc, a.soft_dist, a.spline_bend, a.lump_fixed, a.sizes, a.window_free,
-         a.penal_most, a.window_split, a.lump_floor, a.gap_shell)  # fmt: skip
+         a.penal_most, a.window_split, a.lump_floor, a.gap_shell, a.fair)  # fmt: skip
