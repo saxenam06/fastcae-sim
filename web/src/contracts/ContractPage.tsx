@@ -19,6 +19,7 @@ import { shortTitle, STAGES } from "../app/product";
 import { Dot } from "../panel/bits";
 import type { Calculation, ContractView, InputGroup, Snapshot, StepInput, StepTable } from "../records/types";
 import { Method, Section, Source, Value } from "../panel/page";
+import { RunPanel } from "./RunPanel";
 import { Volumes } from "./Volumes";
 
 export function ContractPage({ contract, snap }: { contract: ContractView; snap: Snapshot }) {
@@ -30,6 +31,10 @@ export function ContractPage({ contract, snap }: { contract: ContractView; snap:
     <div className="stage-scroll cp-scroll">
       <div className="cp-page">
         <Head contract={contract} rules={snap.rules.length} />
+
+        <Section title="Run" aside="the final workflow on this contract: optimisation, drawing, FE, the grade">
+          <RunPanel />
+        </Section>
 
         <Section title="Inputs" aside={`your requirements · ${inputs.length} values, ${assumed} assumed`}>
           <div className="cp-groups">

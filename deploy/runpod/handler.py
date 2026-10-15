@@ -9,15 +9,19 @@ names (ignored files are kept). The Python environment is the image's (`/opt/ven
 
 Input (`job["input"]`):
     {"ref": "product/end-to-end",           # a branch, tag or commit on GitHub (default: the branch)
-     "mode": "final" | "script",           # default "final"
+     "mode": "final" | "optimise" | "script",   # default "final"
      # mode "final": prototypes/first_loop/run_final.py with these
      "recipe": "src/zenryx/workflow/recipes/final.json", "run": "<stem>", "design": "<name>", "force": false,
+     # mode "optimise": the optimisation alone (the laptop runs the rest; `zenryx.workflow.remote`), the layout record
+     # `data/first_loop/contract.json` uploaded to the volume first
+     "design": "<name>", "budget": 7.73, "voxel": 4, "args": ["--max-member", "16", ...],
      # mode "script": one script under prototypes/first_loop/ (.py or .sh) with its arguments
      "script": "model_vs_fe.py", "args": ["baseline2_lw8_smooth"],
      "env": {"LOOP_...": "..."}}           # extra LOOP_/GUARD_ settings for this job only (a check, never the baseline)
 
 Output: the exit code, the log's tail, `final_state.json` (mode "final"), the GPU's peak memory and the files written
-under `data/first_loop/` and `web/src/records/` during the job (to fetch with `sync.sh pull`).
+under `data/first_loop/` and `web/src/records/` during the job (to fetch with `sync.sh pull`). Mode "optimise" adds the
+run's stem, its settling note and `files`: the run's own files in `data/first_loop/`, which the laptop downloads.
 
 One job at a time: set the endpoint's max workers to 1 (the checkout and `data/` are shared); a lock file on the volume
 refuses a second job beside a first."""
@@ -134,9 +138,16 @@ def start_display() -> dict:
     return {"DISPLAY": ":99"}
 
 
-def command(inp: dict) -> list[str]:
+def command(inp: dict, job_id: str = "") -> list[str]:
     py = str(VENV / "bin" / "python")
     mode = inp.get("mode", "final")
+    if mode == "optimise":
+        spec = WORK / "data" / "first_loop" / f"stage_{job_id}.json"
+        keys = ("design", "budget", "voxel", "args")
+        if any(k not in inp for k in keys):
+            raise RuntimeError(f"mode optimise needs {keys}")
+        spec.write_text(json.dumps({k: inp[k] for k in keys}), encoding="utf-8")
+        return [py, "-u", "prototypes/first_loop/stage_cli.py", "optimise", str(spec)]
     if mode == "final":
         cmd = [py, "-u", "prototypes/first_loop/run_final.py"]
         if inp.get("recipe"):
@@ -155,7 +166,7 @@ def command(inp: dict) -> list[str]:
             raise RuntimeError(f"no script prototypes/first_loop/{name}")
         args = [str(a) for a in inp.get("args", [])]
         return (["bash", str(path)] if path.suffix == ".sh" else [py, "-u", str(path)]) + args
-    raise RuntimeError(f"unknown mode {mode!r}: 'final' or 'script'")
+    raise RuntimeError(f"unknown mode {mode!r}: 'final', 'optimise' or 'script'")
 
 
 def handler(job: dict) -> dict:
@@ -180,7 +191,8 @@ def handler(job: dict) -> dict:
         env.update({"LOOP_PY": str(VENV / "bin" / "python"), "PYTHONPATH": str(WORK / "src"), "PYTHONUNBUFFERED": "1", "MPLBACKEND": "Agg"})
         env.update(start_display())
         env.update({k: str(v) for k, v in inp.get("env", {}).items()})
-        cmd = command(inp)
+        out_dir.mkdir(parents=True, exist_ok=True)
+        cmd = command(inp, job["id"])
         roots = [out_dir, WORK / "web" / "src" / "records"]
         before = snapshot(roots)
         log = out_dir / f"runpod_{job['id']}.log"
@@ -195,7 +207,10 @@ def handler(job: dict) -> dict:
         after = snapshot(roots)
         written = sorted(p for p, m in after.items() if before.get(p) != m)
         state = out_dir / "final_state.json"
+        stage = next((json.loads(ln.split(" ", 1)[1]) for ln in log.read_text(encoding="utf-8", errors="replace").splitlines()
+                      if ln.startswith("STAGE_RESULT ")), {})  # fmt: skip
         return {
+            **stage,
             "exit": proc.returncode,
             "commit": commit,
             "command": cmd,

@@ -10,6 +10,7 @@ import "./styles/volumes.css";
 import "./styles/section.css";
 import "./styles/process.css";
 import "./styles/agent.css";
+import "./styles/run.css";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { App } from "./app/App";

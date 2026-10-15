@@ -17,7 +17,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 sys.path.insert(0, str(HERE))
-from hostenv import python_exe  # noqa: E402
+from hostenv import kill_tree, python_exe  # noqa: E402
 
 LOOP = "prototypes/first_loop"
 
@@ -27,10 +27,30 @@ class PrototypeEngines:
         self.out, self.py, self.use_guard, self.root = out, py or python_exe(), guard, root
         self._guard: subprocess.Popen | None = None
         self._marker = ""
+        self._running: list[subprocess.Popen] = []  # the stage's processes, for `cancel`
+        self.cancelled = False
+
+    def _start(self, args: list[str], env: Mapping[str, str], fh) -> subprocess.Popen:
+        if self.cancelled:
+            raise RuntimeError("cancelled")
+        proc = subprocess.Popen([self.py, *args], cwd=self.root, env=dict(env), stdout=fh, stderr=subprocess.STDOUT)
+        self._running.append(proc)
+        return proc
+
+    def _wait(self, proc: subprocess.Popen) -> int:
+        code = proc.wait()
+        self._running.remove(proc)
+        return code
 
     def _run(self, args: list[str], env: Mapping[str, str], log: Path) -> int:
         with log.open("w", encoding="utf-8") as fh:
-            return subprocess.call([self.py, *args], cwd=self.root, env=dict(env), stdout=fh, stderr=subprocess.STDOUT)
+            return self._wait(self._start(args, env, fh))
+
+    def cancel(self) -> None:
+        """Ends the stage running (each process by its tree) and refuses any stage after it (the API's cancel)."""
+        self.cancelled = True
+        for proc in list(self._running):
+            kill_tree(proc.pid)
 
     def _start_guard(self, design: str, env: Mapping[str, str]) -> None:
         if not self.use_guard or self._guard is not None:
@@ -77,11 +97,10 @@ class PrototypeEngines:
     def judge(self, design: str, env: Mapping[str, str], fe_log: Path, cast_log: Path) -> tuple[int, int]:
         """FE and castability at once (the GPU's and the CPU's), or one after the other with LOOP_CAST_AFTER=1."""
         with fe_log.open("w", encoding="utf-8") as f1, cast_log.open("w", encoding="utf-8") as f2:
-            fe = subprocess.Popen([self.py, f"{LOOP}/fe.py", design, "8.0"], cwd=self.root, env=dict(env), stdout=f1, stderr=subprocess.STDOUT)
-            if env.get("LOOP_CAST_AFTER", "0") != "0":
-                fe.wait()
-            cast = subprocess.Popen([self.py, f"{LOOP}/castable.py", design], cwd=self.root, env=dict(env), stdout=f2, stderr=subprocess.STDOUT)
-            return fe.wait(), cast.wait()
+            fe = self._start([f"{LOOP}/fe.py", design, "8.0"], env, f1)
+            fe_code = self._wait(fe) if env.get("LOOP_CAST_AFTER", "0") != "0" else None
+            cast = self._start([f"{LOOP}/castable.py", design], env, f2)
+            return (self._wait(fe) if fe_code is None else fe_code), self._wait(cast)
 
     def records(self, design: str, run: str, env: Mapping[str, str], out: Path) -> None:
         for name, args in (("view", ["view_export.py", design]), ("look", ["look.py", design]),
