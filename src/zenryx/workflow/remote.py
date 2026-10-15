@@ -11,7 +11,8 @@ goes to the RunPod endpoint by its two APIs alone:
    and FE carry on from them.
 
 Settings come from the environment, or a `.env` file at the repository's root (never in git):
-- `ZENRYX_OPTIMISE_ON`: `runpod` (the default) or `local`;
+- `ZENRYX_OPTIMISE_ON`: `local` (the default; the engineer, 15 October: "I don't want any runpod run
+  for the time being") or `runpod`;
 - `RUNPOD_API_KEY`, `RUNPOD_ENDPOINT_ID`: the job API;
 - `RUNPOD_VOLUME_ID`, `RUNPOD_DATACENTER`, and `RUNPOD_S3_KEY`/`RUNPOD_S3_SECRET` (or AWS_*): the
   network volume's storage API;
@@ -66,7 +67,7 @@ class Settings:
     def load(cls, env: Mapping[str, str] | None = None) -> Settings:
         e = {**read_env_file(), **(os.environ if env is None else env)}
         return cls(
-            optimise_on=e.get("ZENRYX_OPTIMISE_ON", "runpod").lower(),
+            optimise_on=e.get("ZENRYX_OPTIMISE_ON", "local").lower(),
             api_key=e.get("RUNPOD_API_KEY", ""),
             endpoint=e.get("RUNPOD_ENDPOINT_ID", ""),
             volume=e.get("RUNPOD_VOLUME_ID", ""),
@@ -179,7 +180,7 @@ class RemoteOptimise:
         if missing:
             raise RuntimeError(
                 "the optimisation on RunPod needs " + ", ".join(missing) + " (in .env); "
-                "or set ZENRYX_OPTIMISE_ON=local"
+                "or leave ZENRYX_OPTIMISE_ON unset (local)"
             )
         self.local, self.s, self.out = local, settings, out
         self.jobs = Jobs(settings.api_key, settings.endpoint)
@@ -249,7 +250,7 @@ class RemoteOptimise:
 
 
 def engines_for(local: Engines, out: Path, settings: Settings | None = None) -> Engines:
-    """The engines the workflow runs with: the optimisation on RunPod unless set to local."""
+    """The engines the workflow runs with: every stage local unless `ZENRYX_OPTIMISE_ON=runpod`."""
     s = settings or Settings.load()
     if s.optimise_on == "local":
         return local

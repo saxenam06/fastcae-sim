@@ -113,7 +113,10 @@ def test_the_setting_and_what_it_needs(tmp_path) -> None:
         remote.engines_for(local, tmp_path, remote.Settings.load({"ZENRYX_OPTIMISE_ON": "local"}))
         is local
     )
+    assert (
+        remote.engines_for(local, tmp_path, remote.Settings.load({"HOME": "/x"})) is local
+    )  # local by default
     with pytest.raises(RuntimeError, match="RUNPOD_API_KEY"):
-        remote.engines_for(local, tmp_path, remote.Settings.load({"HOME": "/x"}))
+        remote.engines_for(local, tmp_path, remote.Settings.load({"ZENRYX_OPTIMISE_ON": "runpod"}))
     with pytest.raises(ValueError):
         remote.engines_for(local, tmp_path, remote.Settings.load({"ZENRYX_OPTIMISE_ON": "moon"}))

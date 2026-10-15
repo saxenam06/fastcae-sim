@@ -130,7 +130,7 @@ def run_final(
 
 def engines(out: Path = OUT, recipe_path: Path = FINAL, root: Path = ROOT) -> flows.Engines:
     """The engines a run takes: every stage here (`engines.LocalEngines`), the optimisation on
-    RunPod unless the environment or `.env` says `ZENRYX_OPTIMISE_ON=local`
+    this machine too unless the environment or `.env` says `ZENRYX_OPTIMISE_ON=runpod`
     (`remote.engines_for`)."""
     from zenryx.workflow.remote import engines_for
 

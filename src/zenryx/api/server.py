@@ -203,8 +203,8 @@ def serve(
 
 def main() -> None:
     """`python -m zenryx.api.server`: the API the Run button calls, on port 8030, its runs' stages
-    `zenryx.workflow.run.engines` (the optimisation on RunPod unless `.env` says
-    `ZENRYX_OPTIMISE_ON=local`). A server: start it only on the engineer's word."""
+    `zenryx.workflow.run.engines` (every stage here; the optimisation on RunPod only if `.env` says
+    `ZENRYX_OPTIMISE_ON=runpod`). A server: start it only on the engineer's word."""
     serve(lambda out: workflow.engines(out))
 
 
