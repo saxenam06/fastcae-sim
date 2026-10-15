@@ -1,6 +1,6 @@
 # Status: the board
 
-**Moving to a cloud session (15 October): start at [the handover](features/loop/2026-10-15-handover-cloud.md).** The final workflow is wired end to end (LOP-31: `prototypes/first_loop/recipes/final.json`, `run_final.py`); the design on the Designs tab is `baseline2_lw8` drawn smooth, its stiffness against the cube drawing the first thing open.
+**Moving to a cloud session (15 October): start at [the handover](features/loop/2026-10-15-handover-cloud.md).** The final workflow is wired end to end (LOP-31: `src/zenryx/workflow/recipes/final.json`, `run_final.py`); the design on the Designs tab is `baseline2_lw8` drawn smooth, its stiffness against the cube drawing the first thing open.
 
 **Updated:** 2026-10-15 15:01 by Claude. Committed on `product/end-to-end` through 15 October (`c5cde98` docs, `42ec2c5` UI, `b322b53` product code, `3b08850` the workflow, then the wiring); not pushed until the engineer says.
 - **Now, 14 October: LOP-29, the modes in the optimiser** ([the night's record](features/loop/2026-10-14-record-night.md)).

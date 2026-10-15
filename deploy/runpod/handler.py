@@ -11,7 +11,7 @@ Input (`job["input"]`):
     {"ref": "product/end-to-end",           # a branch, tag or commit on GitHub (default: the branch)
      "mode": "final" | "script",           # default "final"
      # mode "final": prototypes/first_loop/run_final.py with these
-     "recipe": "prototypes/first_loop/recipes/final.json", "run": "<stem>", "design": "<name>", "force": false,
+     "recipe": "src/zenryx/workflow/recipes/final.json", "run": "<stem>", "design": "<name>", "force": false,
      # mode "script": one script under prototypes/first_loop/ (.py or .sh) with its arguments
      "script": "model_vs_fe.py", "args": ["baseline2_lw8_smooth"],
      "env": {"LOOP_...": "..."}}           # extra LOOP_/GUARD_ settings for this job only (a check, never the baseline)

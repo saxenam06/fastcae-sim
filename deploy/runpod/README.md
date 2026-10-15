@@ -61,6 +61,7 @@ laptop / cloud session                       RunPod
 
 ```
 python deploy/runpod/submit.py health                                   # the endpoint answers
+bash   deploy/runpod/sync.sh push 'grammar4.json'                       # the generator's drawing settings the layout reads (laptop-only, not in git)
 python deploy/runpod/submit.py script contract_layout.py                # the layout from the contract, onto the volume (CPU, ~1 min)
 python deploy/runpod/submit.py script fast_factor_check.py 4            # the GPU path's own check, on the worker's card
 bash   deploy/runpod/sync.sh push '*baseline2_lw8*'                     # an earlier run, to redraw it there

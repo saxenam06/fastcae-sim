@@ -26,7 +26,7 @@ how to run it, what a cloud session can and cannot do, the engineer's working ru
 
 ## 2. The final workflow
 
-- **The recipe:** `prototypes/first_loop/recipes/final.json`, versioned: the optimiser's arguments (the agreed baseline of
+- **The recipe:** `src/zenryx/workflow/recipes/final.json` (moved there by LOP-33; the workflow itself is `zenryx.workflow`), versioned: the optimiser's arguments (the agreed baseline of
   `fm500_run.sh` with `--least-width 8`) and the drawing's settings (`LOOP_VOXEL_SMOOTH=3`, `LOOP_DRAW_SMOOTH=6`,
   `LOOP_DRAW_SMOOTH_RANGE=15`, `LOOP_DRAW_FINE=1`: `baseline2_lw8_smooth`'s drawing; the fairing is out until mount-1 holds,
   section 5). A change of setting is a change of this file, with a new version and the engineer's word (rule 3 below).
@@ -97,7 +97,7 @@ how to run it, what a cloud session can and cannot do, the engineer's working ru
    (`voxel_fair.fair_tops`, always on with `LOOP_VOXEL_FAIR`) raising the arm's deep end at the lug, or Taubin's passes
    thinning the neck. Bisect on the laptop: draw with each part alone (give `fair_tops` its own switch), then
    `lug_probe.py <run> <design> mount-1` and `lost_cubes.py`. Until then the recipe leaves the fairing out.
-3. **Wiring, step 2:** move the final workflow's stable parts from `prototypes/` into `src/zenryx` (the optimiser, the
+3. **Wiring, step 2** (LOP-33, under way: the workflow, its gates, its state and the grade are in `src/zenryx/workflow` with parity checks; the heavy stages next): move the final workflow's stable parts from `prototypes/` into `src/zenryx` (the optimiser, the
    drawing, FE, the grade), each with a check that it gives the prototype's result; then an API call and a button on the
    UI that runs it, and a mark on the Designs tab when the contract changed since the last run.
 4. **Housekeeping:** the loop page's Now cell has grown into a log (280 KB); rewrite it to the current state, the history

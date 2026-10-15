@@ -1,12 +1,13 @@
 """The final workflow's recipe (LOP-31): one versioned file of the agreed settings, which
-`run_final.py` runs. Read as data, so nothing here imports the prototypes."""
+`zenryx.workflow` runs (LOP-33). Read as data, so nothing here imports the prototypes."""
 
 import json
 from pathlib import Path
 
+from zenryx.workflow.recipe import FINAL, load_recipe
+
 ROOT = Path(__file__).resolve().parents[2]
 LOOP = ROOT / "prototypes" / "first_loop"
-RECIPE = LOOP / "recipes" / "final.json"
 KNOWN = {
     "recipe",
     "version",
@@ -21,15 +22,16 @@ KNOWN = {
 
 
 def recipe() -> dict:
-    return json.loads(RECIPE.read_text(encoding="utf-8"))
+    return json.loads(FINAL.read_text(encoding="utf-8"))
 
 
 def test_its_keys_are_the_known_ones() -> None:
     assert set(recipe()) == KNOWN
 
 
-def test_it_names_a_contract_that_exists() -> None:
-    assert (ROOT / recipe()["contract"]).exists()
+def test_it_loads_and_names_a_contract_that_exists() -> None:
+    r, sha = load_recipe(FINAL, ROOT)
+    assert (ROOT / r.contract).exists() and len(sha) == 16
 
 
 def test_its_environment_holds_only_the_loops_settings() -> None:
@@ -45,13 +47,23 @@ def test_its_optimiser_arguments_are_words() -> None:
     assert "--least-width" in args
 
 
-def test_the_scripts_it_runs_exist() -> None:
+def test_the_scripts_its_engines_run_exist() -> None:
     for name in (
         "run_final.py",
-        "campaign_run.sh",
-        "propose.py",
+        "engines.py",
+        "memory_guard.py",
         "contract_layout.py",
         "setup_export.py",
+        "topo_free.py",
+        "outcome_cad.py",
+        "oiltight.py",
+        "fe.py",
+        "castable.py",
+        "view_export.py",
+        "look.py",
+        "topo_export.py",
+        "names.py",
+        "process_export.py",
     ):
         assert (LOOP / name).exists(), name
 
