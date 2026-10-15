@@ -21,7 +21,8 @@ how to run it, what a cloud session can and cannot do, the engineer's working ru
 - **The final workflow is wired end to end (LOP-31):** one recipe and one command (section 2). Proved on the laptop at 15:03-15:14: `run_final.py --run <baseline2_lw8's run>` rebuilt the layout from the contract (identical to the one the run was optimised on), drew and judged `final_1015_1503` (the same numbers as `baseline2_lw8_smooth`), wrote the Designs tab's records and `final_state.json`; called again, it said "up to date".
 - **Committed on `product/end-to-end`:** `c5cde98` docs, `42ec2c5` UI, `b322b53` product code and checks, `3b08850` the
   workflow, and the wiring's commit after them. The engineer pushes it (or says to) before the cloud session starts: a cloud
-  session sees only what is on GitHub.
+  session sees only what is on GitHub. **Open the cloud session on the branch `product/end-to-end`**, not `main`: `main`
+  (8 October) is 39 commits behind; per CLAUDE.md every PBI goes on `product/end-to-end` until the workflow runs end to end.
 
 ## 2. The final workflow
 
