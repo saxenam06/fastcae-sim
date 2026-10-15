@@ -74,6 +74,13 @@ bash   deploy/runpod/sync.sh pull '*rp_parity*'                         # its fi
 GPU, its **peak memory** and the files it wrote. `--env LOOP_X=v` sets a setting for one job only (a check, never the
 baseline: a setting changes through the recipe).
 
+### From the laptop, seen on the laptop's UI
+
+Submit from the laptop, pull the results, and the laptop's Designs tab shows them beside its own designs: `sync.sh pull`
+copies the design's files (`data/first_loop/` and `web/src/records/`), never the summaries made from a whole machine's
+designs (`grades.json`, the UI's `_index.json`, `final_state.json`), and rebuilds those on the laptop (`grade.py`,
+`names.py`). Refresh the page; restart `npm run dev` if a new design does not show.
+
 ### Only the optimisation on RunPod
 
 A finer voxel costs memory only in the optimiser (`topo_free.py`): the drawing is on a fixed 1 mm grid, and FE's mesh is

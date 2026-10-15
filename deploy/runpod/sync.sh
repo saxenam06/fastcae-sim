@@ -6,6 +6,12 @@
 #   bash deploy/runpod/sync.sh push [pattern]   # the laptop's data/first_loop/ to the volume (an earlier run to redraw)
 #
 # pattern: a glob of file names to move (default: everything), e.g. '*final_1015_1503*' or '*baseline2_lw8*'.
+#
+# The summaries made from every design on a machine are never copied, so the laptop's own designs stay listed: the
+# grades (`grades.json`, from every fe_*.json), the UI's lists (`_index.json`, from every record) and the last final
+# run's state (`final_state.json`). After a pull they are rebuilt on the laptop from what it now holds (`grade.py`,
+# `names.py`), so the pulled designs join the laptop's on the Designs tab; refresh the page (or restart `npm run dev`).
+#
 # Needs, in the environment (never in git):
 #   RUNPOD_VOLUME_ID    the network volume's id (the S3 bucket)
 #   RUNPOD_DATACENTER   its datacenter, e.g. EU-RO-1 (the S3 endpoint is https://s3api-<datacenter>.runpod.io)
@@ -16,12 +22,17 @@ what="${1:?pull or push}"
 pattern="${2:-*}"
 : "${RUNPOD_VOLUME_ID:?set RUNPOD_VOLUME_ID}" "${RUNPOD_DATACENTER:?set RUNPOD_DATACENTER}"
 dc="$(echo "$RUNPOD_DATACENTER" | tr '[:upper:]' '[:lower:]')"
-s3=(aws s3 sync --region "$RUNPOD_DATACENTER" --endpoint-url "https://s3api-$dc.runpod.io" --exclude '*' --include "$pattern")
+s3=(aws s3 sync --region "$RUNPOD_DATACENTER" --endpoint-url "https://s3api-$dc.runpod.io"
+    --exclude '*' --include "$pattern" --exclude '*_index.json' --exclude 'grades.json' --exclude 'final_state.json')
 base="s3://$RUNPOD_VOLUME_ID/fastcae-sim"
+PY="${LOOP_PY:-.venv/Scripts/python.exe}"
+[ -x "$PY" ] || PY=.venv/bin/python
 case "$what" in
   pull)
     "${s3[@]}" "$base/data/first_loop" data/first_loop
     "${s3[@]}" "$base/web/src/records" web/src/records
+    "$PY" prototypes/first_loop/grade.py > data/first_loop/grade_after_pull.log 2>&1 || echo "grade.py failed: data/first_loop/grade_after_pull.log"
+    "$PY" prototypes/first_loop/names.py
     ;;
   push)
     "${s3[@]}" data/first_loop "$base/data/first_loop"
