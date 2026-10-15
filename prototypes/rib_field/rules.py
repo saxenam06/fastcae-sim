@@ -54,7 +54,9 @@ FLUSH = 3.0  # mm under a hard point's top
 LIMIT_T = 0.03  # mm of thickness a mm along a rib, root mean square
 LIMIT_H = 0.5  # mm of height a mm along a rib, near the worst (p-norm)
 LIMIT_A = 0.02  # the mean obliqueness of the ribs near a hard point or the edge
-R_BEND = 40.0  # mm: the tightest a rib line bends, near the worst (p-norm)
+R_BEND = 30.0  # mm: the tightest a rib line bends, near the worst (p-norm `P_BEND`), away from the anchors
+P_BEND = 4.0  # (16 October: at p 8 over every point the start's convergence at the bosses ruled it
+# infeasible and the optimiser emptied the ribs, toy run f4)
 P_NORM = 8.0
 ARRIVE_SHARP = 8.0  # the obliqueness penalty's softplus sharpness
 
@@ -162,6 +164,8 @@ def _pnorm(values: np.ndarray, weights: np.ndarray, p: float):
     av = np.abs(values) + 1e-30
     s = float((weights * av**p).sum())
     w = float(weights.sum()) + 1e-30
+    if s <= 1e-300:  # nothing weighed (a group wholly within reach of its anchors)
+        return 0.0, np.zeros_like(values), np.zeros_like(weights)
     m = (s / w) ** (1.0 / p)
     dv = m / s * weights * av ** (p - 1) * np.sign(values)
     dw = (m / p) * (av**p / s - 1.0 / w)
@@ -185,20 +189,28 @@ def transport(fld, x: np.ndarray) -> dict:
         t = tcap * a
         tx_, ty_ = tg[:, 0] * a + tcap * ax, tg[:, 1] * a + tcap * ay
         d = tx * tx_ + ty * ty_  # the thickness's slope along the rib
+        # the end rule reads the rib's share of its local cap: a rib keeps it along its run, so it
+        # tapers with the cap from a thick root (16 October: read on the thickness itself, the cap's
+        # taper broke the rule wherever a rib ran from a boss, and the toy's f5 placed half its budget)
+        ds = T_FAR * (tx * ax + ty * ay)
         r, rx, ry = B @ xh, Bx @ xh, By @ xh
         c, c1, c2 = smin2(fld.hcap, toy.TALL * t, toy.SMIN)
         c1, c2 = c1 * toy.TALL, c2 * toy.TALL**2  # by t
         tr = tx * rx + ty * ry
         e = c * tr + r * c1 * d  # the height's slope along the rib
-        fams.append(dict(tx=tx, ty=ty, sl_r=sl_r, sl_h=sl_h, a=a, tx_=tx_, ty_=ty_, d=d, r=r,
+        fams.append(dict(tx=tx, ty=ty, sl_r=sl_r, sl_h=sl_h, a=a, ax=ax, ay=ay, ds=ds, tx_=tx_, ty_=ty_, d=d, r=r,
                          rx=rx, ry=ry, c=c, c1=c1, c2=c2, tr=tr, e=e))
 
-    def back(gd_list, ge_list, ga_list=None):
+    def back(gd_list, ge_list, ga_list=None, gs_list=None):
         """The gradient by x of a function with these derivatives by each family's d, e (and a,
         the thickness share), and by theta."""
         g = np.zeros_like(x)
         gth = np.zeros(len(w))
-        for f, gd, ge, ga in zip(fams, gd_list, ge_list, ga_list or [None] * len(fams), strict=True):
+        for f, gd, ge, ga, gs in zip(fams, gd_list, ge_list, ga_list or [None] * len(fams),
+                                     gs_list or [None] * len(fams), strict=True):
+            if gs is not None:  # the share's slope: T_FAR (tx ax + ty ay)
+                g[f["sl_r"]] += T_FAR * (Bx.T @ (f["tx"] * gs) + By.T @ (f["ty"] * gs))
+                gth += gs * T_FAR * (-f["ty"] * f["ax"] + f["tx"] * f["ay"])
             tx, ty, sl_r, sl_h = f["tx"], f["ty"], f["sl_r"], f["sl_h"]
             m_coef = tx * tg[:, 0] + ty * tg[:, 1]
             # d = m_coef a + tcap (tx ax + ty ay): linear in the thickness's variables
@@ -225,10 +237,11 @@ def transport(fld, x: np.ndarray) -> dict:
     out = {}
     total_w = float(w.sum()) * fld.families + 1e-30
     # "T": the thickness constant along the ribs away from the anchors (root mean square)
-    sd = sum(float((w * f["d"] ** 2).sum()) for f in fams)
+    sd = sum(float((w * f["ds"] ** 2).sum()) for f in fams)
     rms = np.sqrt(sd / total_w)
     scale = 1.0 / (2.0 * max(rms, 1e-12) * total_w * LIMIT_T)
-    g, gth = back([2 * w * f["d"] * scale for f in fams], [np.zeros_like(w) for _ in fams])
+    g, gth = back([np.zeros_like(w) for _ in fams], [np.zeros_like(w) for _ in fams], None,
+                  [2 * w * f["ds"] * scale for f in fams])
     out["T"] = (rms / LIMIT_T - 1.0, finish(g, gth), rms)
     if not fld.fastcae:
         # the height constant along the ribs too (root mean square), as before the fastcae rules
@@ -269,8 +282,8 @@ def transport(fld, x: np.ndarray) -> dict:
     thx = fld.theta0_grad[:, 0] + np.pi * (Bx @ y)
     thy = fld.theta0_grad[:, 1] + np.pi * (By @ y)
     kap = np.concatenate([f["tx"] * thx + f["ty"] * thy for f in fams])
-    wts = np.concatenate([f["a"] + 1e-3 for f in fams])
-    m, dv, dw = _pnorm(kap, wts, P_NORM)
+    wts = np.concatenate([w * (f["a"] + 1e-3) for f in fams])  # away from the anchors
+    m, dv, dw = _pnorm(kap, wts, P_BEND)
     lim = 1.0 / R_BEND
     g = np.zeros_like(x)
     gth = np.zeros(len(w))
@@ -278,7 +291,7 @@ def transport(fld, x: np.ndarray) -> dict:
     gthy = np.zeros(len(w))
     for i, f in enumerate(fams):
         dvi, dwi = dv[i * k_ : (i + 1) * k_] / lim, dw[i * k_ : (i + 1) * k_] / lim
-        g[f["sl_r"]] += B.T @ dwi
+        g[f["sl_r"]] += B.T @ (dwi * w)
         gth += dvi * (-f["ty"] * thx + f["tx"] * thy)
         gthx += dvi * f["tx"]
         gthy += dvi * f["ty"]
