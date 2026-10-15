@@ -1,16 +1,12 @@
 """Every graded line of the contract against a design's FE result (LOP-33; from the prototype's
 `prototypes/first_loop/grade.py`, which now calls this).
 
-For each FE result (`fe_<stem>.json`):
-- each seat's tilt against its bearing type's limit less the model margin (the contract's limits).
-  The tilt graded is the seat's against its shaft's line through its two seats' centres, the
-  shaft's own lean at the bearing added (the load tool's): the bearing's misalignment. The seat's
-  own rotation, which a rigid turn of the whole housing would also show, and the housing's share
-  without the shaft's lean are reported beside it;
+For each FE result (`fe_<stem>.json`), in peak drive alone (the engineer's one load case):
+- each seat's misalignment against its bearing type's limit less the model margin (the contract's
+  limits): the seat's tilt against its shaft's line through its two seats' centres, the shaft's own
+  lean at the bearing added (the load tool's);
 - the worst seat's displacement against the reference housing's worst bearing bed;
-- in peak drive alone (`GRADED_CASES`, the engineer's one load case);
-- the modes against the gear orders (FE's clashes);
-- the first mode against `FIRST_MODE_HZ`;
+- the modes against the gear orders (FE's clashes), and the first mode against `FIRST_MODE_HZ`;
 - the mass against the reference housing's.
 A design passes only if every line passes.
 """
@@ -27,12 +23,12 @@ from zenryx.contract.validate import load_and_validate
 from zenryx.domains.gearbox.chain import complete_chain
 from zenryx.domains.gearbox.forces import value_in
 
-# The design to beat: the reference housing's mass (kg) and worst bearing-bed displacement (µm) by
-# case, from the contract's published references (`check_references` holds them to it).
-REFERENCE = {"mass_kg": 7.732, "peak drive": 52.2, "peak reverse": 138.0}
+# The design to beat: the reference housing's mass (kg) and worst bearing-bed displacement in peak
+# drive (µm), from the contract's published references (`check_references` holds them to it).
+REFERENCE = {"mass_kg": 7.732, "peak drive": 52.2}
 FIRST_MODE_HZ = 500.0  # (LOP-29) the housing's first mode at least this (the engineer, 14 October)
-# Peak drive alone (the engineer, 10 October 14:54 and 11 October 00:46). FE may solve more.
-GRADED_CASES = ("peak drive",)
+CASE = "peak drive"  # the one load case graded (the engineer, 10 and 11 October)
+GRADED_CASES = (CASE,)
 MISALIGNMENT = "misalignment (worst seat against its line)"
 
 
@@ -72,40 +68,38 @@ def shaft_tilt_mrad(out: dict, shaft: str, seat: dict, shaft_lean=(0.0, 0.0)) ->
 
 def grade(fe: dict, lines: Lines) -> dict:
     """One design's grade from its FE result."""
-    row: dict = {"stem": fe["stem"], "mass_kg": fe["mass_kg"], "lines": {}}
-    worst_ratio, worst_own, worst_housing = 0.0, 0.0, 0.0
-    for case, out in fe["cases"].items():
-        if case not in GRADED_CASES:
-            continue
-        for seat, v in out["seats"].items():
-            shaft, side = seat.split()
-            line = lines.tilt_line[(shaft, side)]
-            lean = lines.leans[shaft].get(case, {}).get(side, (0.0, 0.0))
-            worst_ratio = max(worst_ratio, shaft_tilt_mrad(out, shaft, v, lean) / line)
-            worst_housing = max(worst_housing, shaft_tilt_mrad(out, shaft, v) / line)
-            worst_own = max(worst_own, v["tilt_mrad"] / line)
-        disp = max(1000 * v["displacement_mm"] for v in out["seats"].values())
-        row["lines"][f"displacement, {case}"] = {
-            "value_um": disp,
-            "to_beat_um": REFERENCE[case],
-            "pass": disp <= REFERENCE[case],
-        }
-    row["lines"][MISALIGNMENT] = {"ratio": worst_ratio, "pass": worst_ratio <= 1.0}
-    row["housing_only_ratio"] = worst_housing
-    row["seat_own_tilt_ratio"] = worst_own
+    out = fe["cases"][CASE]
+    worst = 0.0
+    for seat, v in out["seats"].items():
+        shaft, side = seat.split()
+        lean = lines.leans[shaft].get(CASE, {}).get(side, (0.0, 0.0))
+        worst = max(worst, shaft_tilt_mrad(out, shaft, v, lean) / lines.tilt_line[(shaft, side)])
+    disp = max(1000 * v["displacement_mm"] for v in out["seats"].values())
     clashes = fe.get("order_clashes", [])
-    row["lines"]["orders"] = {"clashes": clashes, "pass": not clashes}
-    row["lines"]["mass"] = {
-        "kg": fe["mass_kg"],
-        "to_beat_kg": REFERENCE["mass_kg"],
-        "pass": fe["mass_kg"] <= REFERENCE["mass_kg"],
-    }
-    row["first_mode_hz"] = (fe.get("modes_hz") or [None])[0]
-    first = row["first_mode_hz"]
-    row["lines"]["first mode"] = {
-        "hz": first,
-        "at_least_hz": FIRST_MODE_HZ,
-        "pass": first is not None and first >= FIRST_MODE_HZ,
+    first = (fe.get("modes_hz") or [None])[0]
+    row = {
+        "stem": fe["stem"],
+        "mass_kg": fe["mass_kg"],
+        "lines": {
+            f"displacement, {CASE}": {
+                "value_um": disp,
+                "to_beat_um": REFERENCE[CASE],
+                "pass": disp <= REFERENCE[CASE],
+            },
+            MISALIGNMENT: {"ratio": worst, "pass": worst <= 1.0},
+            "orders": {"clashes": clashes, "pass": not clashes},
+            "mass": {
+                "kg": fe["mass_kg"],
+                "to_beat_kg": REFERENCE["mass_kg"],
+                "pass": fe["mass_kg"] <= REFERENCE["mass_kg"],
+            },
+            "first mode": {
+                "hz": first,
+                "at_least_hz": FIRST_MODE_HZ,
+                "pass": first is not None and first >= FIRST_MODE_HZ,
+            },
+        },
+        "first_mode_hz": first,
     }
     row["pass"] = all(v["pass"] for v in row["lines"].values())
     return row
@@ -137,17 +131,14 @@ def table(grades: list[dict], stale: list[str] = ()) -> str:
     """The grades as a table, one design a row (and the FE results not graded)."""
     rows = [f"{s}: its FE result is older than its build; not graded" for s in stale]
     rows.append(
-        f"{'design':22s} {'kg':>6s} {'drive µm':>9s} {'rev µm':>8s} {'own':>6s} {'housing':>7s} "
-        f"{'+shaft':>6s} {'mode1':>6s}  orders  verdict"
+        f"{'design':22s} {'kg':>6s} {'drive µm':>9s} {'tilt':>6s} {'mode1':>6s}  orders  verdict"
     )
     for g in grades:
-        d = g["lines"]["displacement, peak drive"]["value_um"]
-        r = g["lines"].get("displacement, peak reverse", {}).get("value_um", float("nan"))
+        d = g["lines"][f"displacement, {CASE}"]["value_um"]
         t = g["lines"][MISALIGNMENT]["ratio"]
         o = "clash" if g["lines"]["orders"]["clashes"] else "clear"
         rows.append(
-            f"{g['stem']:22s} {g['mass_kg']:6.2f} {d:9.0f} {r:8.0f} "
-            f"{g['seat_own_tilt_ratio']:6.2f} {g['housing_only_ratio']:7.2f} {t:6.2f} "
+            f"{g['stem']:22s} {g['mass_kg']:6.2f} {d:9.0f} {t:6.2f} "
             f"{g['first_mode_hz'] or 0:6.0f}  {o:6s}  {'PASS' if g['pass'] else 'fail'}"
         )
     return "\n".join(rows) + "\n"
@@ -160,10 +151,9 @@ def check_references(spec: HousingDesignSpec) -> list[str]:
         if r.quantity == "housing mass":
             found["mass_kg"] = float(r.value.split()[0])
         if r.quantity.startswith("bearing-bed displacement"):
-            for part in r.value.replace(" mm", "").split(";"):
-                name, values = part.strip().split(" ", 1)
-                case = {"forward": "peak drive", "reverse": "peak reverse"}[name]
-                found[case] = 1000 * max(float(v) for v in values.split(","))
+            forward = r.value.replace(" mm", "").split(";")[0].strip()
+            assert forward.startswith("forward ")
+            found[CASE] = 1000 * max(float(v) for v in forward.split(" ", 1)[1].split(","))
     return [
         f"{k}: {REFERENCE[k]} here, {found.get(k)} in the contract"
         for k in REFERENCE

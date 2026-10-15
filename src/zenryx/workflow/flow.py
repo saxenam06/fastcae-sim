@@ -1,17 +1,17 @@
 """One design's flow, from its optimisation to its judged design and the Designs tab's records
-(LOP-33; the final workflow's route of `prototypes/first_loop/propose.py`, flows B and E).
+(LOP-33; the final recipe's route of `prototypes/first_loop/propose.py`: the empty start, flow E).
 
 The stages, in order:
-1. the optimisation (or an existing run reused);
+1. the optimisation (or an existing run of the final recipe reused, to draw it again);
 2. the gate: a run whose metal-or-air check misses its own lines by more than `FEASIBLE` stops
    the flow, nothing invested after it;
-3. the drawing (the mesh route), then the oil-tight gate for an empty start;
+3. the drawing, then the oil-tight gate;
 4. the gate: a drawing that holds fewer mounts than the layout is not judged;
 5. FE beside castability;
 6. the grade (`zenryx.workflow.grade`), when FE ran;
 7. the Designs tab's records and the pictures.
 Each stage's time, outcome and note go into the flow's record, `flow_<design>.json`, the format the
-Designs tab's process view reads (`process_export.py`).
+Designs tab's process view reads.
 
 The heavy stages are an `Engines`; the files between them (a run's record `<run>.json`, a drawing's
 `<design>.json`, the gate's `oiltight_<design>.json`) are the stages' contract.
@@ -29,19 +29,18 @@ from zenryx.workflow import grade as grading
 
 FEASIBLE = 1.10  # the most a run's metal-or-air check may read of its own lines and be drawn
 
-FLOW_B = {
-    "id": "B",
-    "name": "The mesh route",
-    "words": "The optimisation in one run; the drawing's booleans on watertight meshes "
-    "(manifold3d); FE's tets straight from them (TetGen); castability beside FE",
-}
-FLOW_E = {  # LOP-27 (the engineer, 12 October 20:22: "Do an empty start"); a run with `--empty`
+FLOW = {  # LOP-27 (the engineer, 12 October 20:22: "Do an empty start")
     "id": "E",
     "name": "The empty start",
     "words": "No fixed shell: the walls, bosses, ribs and brackets one field the optimiser sizes, "
     "oil-tight by each column's least height; drawn as one body from that field, exact only where "
     "machined; the oil-tight gate beside the drawing; FE, castability, the grade as flow B",
 }
+OPTIMISE = "stiffness, every bearing's tilt and bed held; one run, GCMMA with MMA's dual"
+HELD = (
+    "nothing fixed but the seats' rings, the mounts and the bolts' bosses; the walls the "
+    "optimiser's, oil-tight by each column's least height"
+)
 
 
 class Engines(Protocol):
@@ -96,32 +95,17 @@ def _line(log: Path, marker: str) -> str:
     return hit.split("] ", 1)[1] if "] " in hit else ""
 
 
-def draw_method(empty: bool, env: Mapping[str, str]) -> str:
-    """The drawing's method in words, from the settings it ran with."""
-    if empty:
-        method = (
-            "the whole housing by marching cubes from its one field (no exact shell); the inside, "
-            "bores, exits and holes cut exact: manifold3d's booleans"
-        )
-    else:
-        method = "the members by marching cubes; the exact shell, the cuts: manifold3d's booleans"
-    if empty and env.get("LOOP_EXACT_WALLS", "0") != "0":
-        method += (
-            "; the least walls drawn from the exact inside, smooth, in the same field as the "
-            "optimiser's metal"
-        )
-    if env.get("LOOP_KEEP_CUBES", "1") != "0":
-        method += (
-            "; every metal cube the optimiser placed kept whole, each checked inside the drawing "
-            "before FE"
-        )
-    faithful = float((env.get("LOOP_FAITHFUL", "0") or "0").split(":")[0])
-    if faithful > 0:
-        method += (
-            f"; smoothed faithfully (Ježek et al. 2025): the distance at the {faithful:g} mm "
-            "voxels' centres interpolated by Gaussians, the volume kept"
-        )
-    return method
+def draw_method(env: Mapping[str, str]) -> str:
+    """The drawing in words, from the recipe's settings it ran with."""
+    return (
+        "each column's metal from the run's field, its outline blurred over "
+        f"{env.get('LOOP_VOXEL_SMOOTH', '?')} mm, its free end smoothed over "
+        f"{env.get('LOOP_DRAW_SMOOTH', '?')} mm keeping steps over "
+        f"{env.get('LOOP_DRAW_SMOOTH_RANGE', '?')} mm, free edges rounded and roots filleted, on a "
+        f"{env.get('LOOP_DRAW_FINE', '?')} mm grid; the least walls and the protected interfaces "
+        "exact in the same field; the inside, bores, exits and holes cut exact: "
+        "manifold3d's booleans"
+    )
 
 
 def propose(
@@ -135,15 +119,19 @@ def propose(
     contract: Path,
     env: Mapping[str, str],
     run: str = "",
+    on_stage: Callable[[str], None] | None = None,
 ) -> dict:
-    """One design's flow; its record (also written to `out/flow_<design>.json`)."""
-    d, t_all, steps, flow = design, time.time(), [], FLOW_B
+    """One design's flow; its record (also written to `out/flow_<design>.json`).
+
+    `on_stage` is told each stage's name as it starts (the API's progress)."""
+    d, t_all, steps = design, time.time(), []
+    started = on_stage or (lambda _stage: None)
 
     def finish(failed: str) -> dict:
         grades = {g["stem"]: g for g in json.loads(_read_text(out / "grades.json") or "[]")}
         record = {
             "design": d,
-            "flow": flow,
+            "flow": FLOW,
             "steps": steps,
             "seconds": round(time.time() - t_all, 1),
             "failed": failed or None,
@@ -151,10 +139,12 @@ def propose(
         }
         (out / f"flow_{d}.json").write_text(json.dumps(record, indent=1), encoding="utf-8")
         if (out / f"{d}.json").exists():
+            started("records")
             engines.process(d, env, out / f"process_{d}.log")
         return record
 
     if not run:
+        started("optimise")
         log = out / f"optimise_{d}.log"
         seconds, (code, run, settled) = _timed(
             lambda: engines.optimise(d, budget, voxel, args, env, log)
@@ -163,8 +153,7 @@ def propose(
             {
                 "id": "optimise",
                 "label": "Optimisation",
-                "method": "stiffness, every bearing's tilt and bed held; "
-                "one run, GCMMA with MMA's dual",
+                "method": OPTIMISE,
                 "seconds": seconds,
                 "ok": code == 0 and bool(run),
                 "outputs": [run],
@@ -191,33 +180,25 @@ def propose(
             {
                 "id": "optimise",
                 "label": "Optimisation",
-                "method": "an existing run, reused: stiffness, every bearing's tilt and bed held; "
-                "one run, GCMMA with MMA's dual",
+                "method": f"an existing run, reused: {OPTIMISE}",
                 "seconds": round(float(rec.get("seconds") or 0), 1),
-                "ok": True,
+                "ok": bool(rec.get("empty")),
                 "outputs": [run],
                 "note": "reused",
             }
         )
-    empty = bool(rec.get("empty"))
-    if empty:
-        flow = FLOW_E
-    held = (
-        "nothing fixed but the seats' rings, the mounts and the bolts' bosses; the walls the "
-        "optimiser's, oil-tight by each column's least height"
-        if empty
-        else "the contract's wall, flange, bosses and mounts held fixed"
-    )
+        if not rec.get("empty"):
+            return finish(f"{run} is not an empty start: not a run of the final recipe")
     frozen, budget_kg = rec.get("frozen_kg", 0), rec.get("budget_kg", 0)
     note = f"{frozen:.2f} kg fixed, {budget_kg - frozen:.2f} kg to place"
-    if empty and rec.get("least_kg"):
+    if rec.get("least_kg"):
         note += f", the walls' least {rec['least_kg']:.2f} kg of it"
     steps.insert(
         0,
         {
             "id": "setup",
             "label": "Set-up",
-            "method": f"{rec.get('voxel_mm', 6):g} mm voxels; {held}",
+            "method": f"{rec.get('voxel_mm', 6):g} mm voxels; {HELD}",
             "seconds": 0.0,
             "ok": True,
             "note": note,
@@ -225,26 +206,25 @@ def propose(
         },
     )
 
+    started("draw")
     seconds, code = _timed(lambda: engines.draw(run, d, env, out / f"build_{d}.log"))
     steps.append(
         {
             "id": "draw",
             "label": "Drawing",
-            "method": draw_method(empty, env),
+            "method": draw_method(env),
             "seconds": seconds,
             "ok": code == 0,
             "outputs": [f"{d}_motor_side.stl", f"{d}_cover.stl"],
         }
     )
-    if empty and code == 0:
-        engines.oiltight(d, env, out / f"oiltight_{d}.log")
-        gate = _read(out / f"oiltight_{d}.json")
-        if gate:
-            steps[-1]["note"] = (
-                "oil-tight" if gate["tight"] else f"LEAKS at {gate['leak_at_mm']} mm"
-            )
     if code:
         return finish("the drawing failed")
+    started("oiltight")
+    engines.oiltight(d, env, out / f"oiltight_{d}.log")
+    gate = _read(out / f"oiltight_{d}.json")
+    if gate:
+        steps[-1]["note"] = "oil-tight" if gate["tight"] else f"LEAKS at {gate['leak_at_mm']} mm"
     drawn = _read(out / f"{d}.json")
     layout_mounts = drawn.get("mounts_layout")
     if layout_mounts is not None and len(drawn.get("mounts") or []) < len(layout_mounts):
@@ -253,8 +233,9 @@ def propose(
         kept = {m["name"] for m in drawn.get("mounts") or []}
         lost = ", ".join(sorted({m["name"] for m in layout_mounts} - kept))
         steps[-1].update(ok=False, note=f"the drawing lost {lost}: not judged")
-        return finish(f"the drawing lost {lost} (try LOOP_MEMBER_LEVEL=0.4)")
+        return finish(f"the drawing lost {lost}")
 
+    started("judge")
     fe_log, cast_log = out / f"fe_{d}.log", out / f"castable_{d}.log"
     both, (fe_code, cast_code) = _timed(lambda: engines.judge(d, env, fe_log, cast_log))
     steps.append(
@@ -288,6 +269,7 @@ def propose(
             (out / f"grade_{d}.log").write_text(grading.table(grades, stale), encoding="utf-8")
             return 0
 
+        started("grade")
         seconds, code = _timed(graded)
         steps.append(
             {
@@ -298,6 +280,7 @@ def propose(
                 "ok": code == 0,
             }
         )
+    started("records")
     engines.records(d, run, env, out)
     return finish("")
 

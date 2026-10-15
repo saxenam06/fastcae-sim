@@ -31,12 +31,10 @@ def test_a_rigid_turn_of_the_housing_is_no_misalignment(lines) -> None:
     turned = g.grade(fe_result("a", seed=3, rigid_turn=2e-3), lines)
     m = g.MISALIGNMENT
     assert math.isclose(turned["lines"][m]["ratio"], still["lines"][m]["ratio"], rel_tol=1e-9)
-    assert turned["seat_own_tilt_ratio"] > 3 * still["seat_own_tilt_ratio"]
 
 
 def test_the_shafts_lean_is_added(lines) -> None:
-    row = g.grade(fe_result("a", seed=1, scale=0.0), lines)
-    assert row["housing_only_ratio"] == 0.0
+    row = g.grade(fe_result("a", seed=1, scale=0.0), lines)  # the housing does not move
     assert row["lines"][g.MISALIGNMENT]["ratio"] > 0.0  # the shafts' own bending alone
 
 

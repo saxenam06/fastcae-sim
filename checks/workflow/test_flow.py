@@ -75,7 +75,7 @@ def propose(tmp_path, engines, run_stem=""):
         engines=engines,
         out=tmp_path,
         contract=CONTRACT,
-        env={"LOOP_EXACT_WALLS": "1"},
+        env={"LOOP_VOXEL_SMOOTH": "3"},
         run=run_stem,
     )
 
@@ -95,7 +95,7 @@ def test_the_whole_flow_in_order(tmp_path) -> None:
     assert rec["flow"]["id"] == "E" and rec["failed"] is None
     assert rec["grade"]["stem"] == "d1" and rec["grade"]["pass"]
     assert rec["steps"][2]["note"] == "oil-tight"
-    assert "least walls drawn from the exact inside" in rec["steps"][2]["method"]
+    assert "blurred over 3 mm" in rec["steps"][2]["method"]
     assert rec["steps"][3]["note"] == "FE in all 42 s"
     assert json.loads((tmp_path / "flow_d1.json").read_text()) == rec
     assert (tmp_path / "grade_d1.log").read_text().strip()
@@ -116,11 +116,34 @@ def test_a_run_missing_its_lines_is_not_drawn(tmp_path) -> None:
 
 def test_a_reused_run_skips_the_gate_and_the_optimiser(tmp_path) -> None:
     e = FakeEngines(tmp_path, missed=1.2)
-    write(tmp_path, "old_run.json", {"binary": {"worst": 1.5}, "seconds": 600, "voxel_mm": 4})
+    old = {"binary": {"worst": 1.5}, "seconds": 600, "voxel_mm": 4, "empty": True}
+    write(tmp_path, "old_run.json", old)
     rec = propose(tmp_path, e, run_stem="old_run")
     assert "optimise" not in e.calls and rec["failed"] is None
     assert rec["steps"][1]["note"] == "reused" and rec["steps"][1]["seconds"] == 600
-    assert rec["flow"]["id"] == "B" and "oiltight" not in e.calls
+
+
+def test_a_reused_run_not_of_the_final_recipe_is_refused(tmp_path) -> None:
+    e = FakeEngines(tmp_path)
+    write(tmp_path, "old_run.json", {"seconds": 600, "voxel_mm": 6})
+    rec = propose(tmp_path, e, run_stem="old_run")
+    assert e.calls == [] and "not an empty start" in rec["failed"]
+
+
+def test_the_stages_are_told_as_they_start(tmp_path) -> None:
+    seen = []
+    flow.propose(
+        "d1",
+        budget=7.73,
+        voxel=4,
+        args=[],
+        engines=FakeEngines(tmp_path),
+        out=tmp_path,
+        contract=CONTRACT,
+        env={},
+        on_stage=seen.append,
+    )
+    assert seen == ["optimise", "draw", "oiltight", "judge", "grade", "records", "records"]
 
 
 def test_a_drawing_that_loses_a_mount_is_not_judged(tmp_path) -> None:

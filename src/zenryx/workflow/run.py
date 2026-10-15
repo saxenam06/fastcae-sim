@@ -9,7 +9,7 @@ from __future__ import annotations
 import datetime
 import json
 import os
-from collections.abc import Mapping
+from collections.abc import Callable, Mapping
 from pathlib import Path
 
 from zenryx.workflow import flow as flows
@@ -26,7 +26,7 @@ def stages(recipe_run: str, layout: bool) -> list[str]:
     named.append(f"the optimisation {recipe_run} reused" if recipe_run else "the optimisation")
     return named + [
         "the drawing",
-        "the oil-tight gate (an empty start)",
+        "the oil-tight gate",
         "FE beside castability",
         "the grade",
         "the Designs tab's records",
@@ -66,6 +66,7 @@ def run_final(
     dry_run: bool = False,
     env: Mapping[str, str] | None = None,
     now: datetime.datetime | None = None,
+    on_stage: Callable[[str], None] | None = None,
 ) -> dict:
     """Run the workflow if the contract or the recipe changed (or `force`, or `run` to redraw).
 
@@ -84,6 +85,8 @@ def run_final(
         return {"dry_run": stages(run, layout)}
     full_env = {**(os.environ if env is None else env), **recipe.env}
     out.mkdir(parents=True, exist_ok=True)
+    if layout and on_stage:
+        on_stage("layout")
     if layout and engines.layout(full_env, out / "final_layout.log"):
         raise RuntimeError(f"the layout failed: {out / 'final_layout.log'}")
     now = now or datetime.datetime.now()
@@ -98,6 +101,7 @@ def run_final(
         contract=contract,
         env=full_env,
         run=run,
+        on_stage=on_stage,
     )
     run_stem = next(
         (

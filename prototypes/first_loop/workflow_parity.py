@@ -66,7 +66,7 @@ elif name == "grade":
     from zenryx.workflow.grade import grade_all
     grade_all(OUT, Path(CONTRACT))
 """
-CASES = [{}, {"empty": False}, {"missed": 1.3}, {"mounts": 2}, {"fail": "fe"}, {"fail": "draw"}, {"fail": "optimise"},
+CASES = [{}, {"missed": 1.3}, {"mounts": 2}, {"fail": "fe"}, {"fail": "draw"}, {"fail": "optimise"},
          {"tight": False}, {"reuse": True}, {"reuse": True, "missed": 1.5}]  # fmt: skip
 
 
@@ -86,7 +86,10 @@ def grades() -> str:
             exec(compile(code, "grade.py@" + BEFORE, "exec"), {"__name__": "__main__", "__file__": str(HERE / "grade.py")})
         old = json.loads((Path(a) / "grades.json").read_text())
         new, _ = grade_all(Path(b), CONTRACT)
-    assert old == new and len(new) == 40, "the grades differ"
+    # the moved grade keeps the graded lines, the first mode and the verdict (the two printed-only ratios and the
+    # reverse case's target are gone: nothing reads them)
+    kept = [{k: g[k] for k in ("stem", "mass_kg", "lines", "first_mode_hz", "pass")} for g in old]
+    assert kept == new and len(new) == 40, "the grades differ"
     return f"the grade: {len(new)} designs, identical ({sum(r['pass'] for r in new)} pass)"
 
 
@@ -112,6 +115,16 @@ def tree(case: dict, tmp: Path, py: Path) -> Path:
 def strip(rec: dict) -> dict:
     rec = json.loads(json.dumps(rec))
     rec.pop("seconds")
+    rec.pop("flow")  # propose.py named a run that failed before its drawing flow B; the final recipe's is always E
+    # the drawing's words now say what the final drawing does (from the recipe's settings), and a lost mount no longer
+    # suggests an option outside the recipe; the steps, outcomes and notes are compared
+    for s in rec["steps"]:
+        if s["id"] == "draw":
+            s.pop("method")
+    if rec.get("failed"):
+        rec["failed"] = rec["failed"].replace(" (try LOOP_MEMBER_LEVEL=0.4)", "")
+    if rec.get("grade"):
+        rec["grade"] = {k: rec["grade"][k] for k in ("stem", "mass_kg", "lines", "first_mode_hz", "pass")}
     for s in rec["steps"]:
         if s.get("seconds") is not None and s.get("note") != "reused":
             s["seconds"] = "t"
@@ -133,6 +146,7 @@ def flows() -> str:
             new = flow.propose("d1", budget=7.73, voxel=4, args=["--least-width", "8"], engines=engines, out=b / "data" / "first_loop",
                                contract=CONTRACT, env=env, run=run)  # fmt: skip
             assert strip(old) == strip(new), f"the flow records differ in case {case}"
+            assert new["flow"]["id"] == "E"
             if not run and not case.get("fail"):  # the optimiser was called with the same arguments
                 argv_old = json.loads((a / "data" / "first_loop" / "run_d1.json").read_text())["argv"]
                 argv_new = json.loads((b / "data" / "first_loop" / "run_d1.json").read_text())["argv"]
