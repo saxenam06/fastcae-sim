@@ -1,0 +1,5 @@
+# The image needs only the lock and the handler; the code comes from the checkout on the volume.
+*
+!pyproject.toml
+!uv.lock
+!deploy/runpod/handler.py

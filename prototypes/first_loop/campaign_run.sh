@@ -6,7 +6,8 @@
 # Run: bash prototypes/first_loop/campaign_run.sh <design> <propose.py's arguments after the design...>
 set -u
 cd "$(dirname "$0")/../.."
-PY=.venv/Scripts/python.exe
+PY="${LOOP_PY:-.venv/Scripts/python.exe}"  # LOOP_PY on a Linux GPU worker (PLT-12)
+[ -x "$PY" ] || PY=.venv/bin/python
 OUTD=data/first_loop
 D="$1"
 shift

@@ -30,7 +30,10 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 OUT = ROOT / "data" / "first_loop"
-PY = str(ROOT / ".venv" / "Scripts" / "python.exe")
+sys.path.insert(0, str(HERE))
+from hostenv import python_exe  # noqa: E402
+
+PY = python_exe()  # the venv's python, on the laptop or a Linux GPU worker (PLT-12)
 FEASIBLE = 1.10  # the most a run's metal-or-air check may read of its own lines (tilt and beds) and still be drawn
 
 FLOW_D = {

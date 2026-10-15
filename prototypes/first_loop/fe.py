@@ -42,6 +42,7 @@ sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from fastcae_fe import REFINE_MOST, REFINE_TOL, quadratic, release, stiffness  # noqa: E402
+from hostenv import kill_tree, python_exe  # noqa: E402
 
 from zenryx.contract.validate import load_and_validate  # noqa: E402
 from zenryx.domains.gearbox.chain import complete_chain  # noqa: E402
@@ -182,12 +183,14 @@ SURFACE_LADDER = tuple(dict.fromkeys((SURFACE_ASKED, round(1.07 * SURFACE_ASKED,
 KEEP_TRIES = 3  # (15 October) coarsenings at one size, each keeping fine the places TetGen named (`mesh_tetgen`)
 FLAT_TET = 1e-6  # a tet's shape (`tet_shape`: 1 regular, 0 flat) under which the single factor breaks down (CLAUDE.md)
 COARSER = (9.0, 11.0)  # mm: the surfaces tried, at the last of `QUALITY_LADDER`, when its tets still pass `MESHED_MOST`
-CEILING_DOF = 2_180_000  # the 8 GB card's single-precision factor holds about this many unknowns (CLAUDE.md)
+# the 8 GB card's single-precision factor holds about this many unknowns (CLAUDE.md); a larger card (a RunPod worker,
+# PLT-12) is given its own by `LOOP_CEILING_DOF`, measured there first: the default stays the laptop's
+CEILING_DOF = int(os.environ.get("LOOP_CEILING_DOF", 2_180_000))
 TET_RATIO, TET_DIHEDRAL = 2.0, 12.0  # TetGen's quality: radius-edge ratio at most, dihedral angle at least (degrees)
 QUALITY_LADDER = ((TET_RATIO, TET_DIHEDRAL), (3.0, 10.0), (4.0, 8.0))  # tried in turn while the tets pass `MESHED_MOST` (`judge`)
 # unknowns a mesh made by TetGen may have: the assembly's host memory, not the factor, set it (2.04 M asked
 # 12.5 GB of a 16 GB laptop and failed, 11 October 04:54; 1.61 M ran)
-MESHED_MOST = 2_180_000
+MESHED_MOST = int(os.environ.get("LOOP_MESHED_MOST", 2_180_000))  # a worker with more host memory: `LOOP_MESHED_MOST` (PLT-12)
 
 
 TETGEN_SECONDS = 240  # s: a TetGen call past this is taken as refused
@@ -248,7 +251,7 @@ def tetgen_skipped(verts: np.ndarray, faces: np.ndarray) -> np.ndarray:
     with tempfile.TemporaryDirectory(prefix="tgd_") as tmp:
         src, dst = Path(tmp) / "in.npz", Path(tmp) / "skipped.npy"
         np.savez(src, v=np.asarray(verts, float), f=np.asarray(faces, np.int64))
-        py = Path(__file__).resolve().parents[2] / ".venv" / "Scripts" / "python.exe"
+        py = python_exe()
         try:
             subprocess.run([str(py), "-c", _TETGEN_DETECT, str(src), str(dst), tmp], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
                            timeout=TETGEN_SECONDS)  # fmt: skip
@@ -267,12 +270,12 @@ def tetrahedralize_guarded(verts: np.ndarray, faces: np.ndarray, quality: tuple[
     with tempfile.TemporaryDirectory(prefix="tg_") as tmp:
         src, dst = Path(tmp) / "in.npz", Path(tmp) / "out.npz"
         np.savez(src, v=np.asarray(verts, float), f=np.asarray(faces, np.int64), q0=quality[0], q1=quality[1], vol=regular)
-        py = Path(__file__).resolve().parents[2] / ".venv" / "Scripts" / "python.exe"
+        py = python_exe()
         p = subprocess.Popen([str(py), "-c", _TETGEN_CHILD, str(src), str(dst)], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
         try:
             out, _ = p.communicate(timeout=TETGEN_SECONDS)
         except subprocess.TimeoutExpired:
-            subprocess.call(["taskkill", "/F", "/T", "/PID", str(p.pid)], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+            kill_tree(p.pid)
             raise RuntimeError(f"TetGen ran past {TETGEN_SECONDS} s") from None
         if p.returncode != 0 or not dst.exists():
             msg = (out or "").strip().splitlines()[-1] if (out or "").strip() else f"TetGen crashed (code {p.returncode})"

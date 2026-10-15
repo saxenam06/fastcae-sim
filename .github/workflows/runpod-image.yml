@@ -1,0 +1,39 @@
+# PLT-12: build the RunPod worker's image and push it to GitHub's container registry, when its inputs change.
+# The code is not in the image (each job checks out its ref on the volume), so only uv.lock, pyproject.toml and
+# deploy/runpod/ trigger a build. Tags: the commit's short sha (pin the endpoint to it) and `latest`.
+name: runpod-image
+
+on:
+  push:
+    branches: [product/end-to-end, main]
+    paths: [uv.lock, pyproject.toml, "deploy/runpod/**", ".github/workflows/runpod-image.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Free the runner's disk (the image holds CUDA's libraries, CadQuery and VTK)
+        run: sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL && df -h /
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: The image's name (the registry wants lower case)
+        id: name
+        run: echo "image=ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/zenryx-worker" >> "$GITHUB_OUTPUT"
+      - uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: deploy/runpod/Dockerfile
+          push: true
+          tags: |
+            ${{ steps.name.outputs.image }}:${{ github.sha }}
+            ${{ steps.name.outputs.image }}:latest
