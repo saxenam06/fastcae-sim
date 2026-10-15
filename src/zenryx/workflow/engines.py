@@ -71,6 +71,8 @@ class LocalEngines:
     def _start(self, args: list[str], env: Mapping[str, str], fh) -> subprocess.Popen:
         if self.cancelled:
             raise RuntimeError("cancelled")
+        # the log in UTF-8: in the console's code page "±" came out as "�"
+        env = {**env, "PYTHONIOENCODING": "utf-8"}
         proc = subprocess.Popen(args, cwd=ROOT, env=dict(env), stdout=fh, stderr=subprocess.STDOUT)
         self._running.append(proc)
         return proc

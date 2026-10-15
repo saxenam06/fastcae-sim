@@ -116,6 +116,9 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--budget", type=float, default=0.0)
     ap.add_argument("--voxel", type=float, default=0.0)
     a = ap.parse_args(argv)
+    from zenryx.host import full_speed
+
+    full_speed()  # a stage is windowless background work: never on the efficiency cores
     a.out.mkdir(parents=True, exist_ok=True)
     try:
         result = {"exit": 0, **STAGES[a.stage](a, rest)}

@@ -1,8 +1,8 @@
 """What differs between the engineer's Windows laptop and a Linux worker (moved from
-`prototypes/first_loop/hostenv.py`: `kill_tree`, `available_mb`; LOP-33): ending a process with its
-children (on Windows a venv's python.exe is a launcher with a child, so ending the launcher alone
-leaves it), and the memory a run may still take (in a container, its cgroup's limit, not the
-host's)."""
+`prototypes/first_loop/hostenv.py`: `kill_tree`, `available_mb`, and `topo_free.full_speed`;
+LOP-33): ending a process with its children (on Windows a venv's python.exe is a launcher with a
+child, so ending the launcher alone leaves it), and the memory a run may still take (in a container,
+its cgroup's limit, not the host's)."""
 
 from __future__ import annotations
 
@@ -65,6 +65,43 @@ def available_mb() -> float:
         pass
     cg = _cgroup_free_mb()
     return min(avail, cg) if cg is not None else avail
+
+
+def full_speed() -> bool:
+    """Ask Windows to run this process at full speed, as a foreground program runs, never held to
+    the efficiency cores and their low clock as windowless background work: a stage the API starts
+    is such a process, and the first run from the Run button took 2.5 times the reference's time an
+    iteration (15 October 23:20). Whether it was granted; nothing off Windows. After
+    fastcae-v1:src/fastcae/runner/__init__.py's `full_speed`: power throttling of execution speed
+    turned off for this process."""
+    if not WINDOWS:
+        return False
+    import ctypes
+    from ctypes import wintypes
+
+    class _Throttling(ctypes.Structure):
+        _fields_ = [
+            ("Version", wintypes.ULONG),
+            ("ControlMask", wintypes.ULONG),
+            ("StateMask", wintypes.ULONG),
+        ]
+
+    kernel = ctypes.WinDLL("kernel32", use_last_error=True)
+    kernel.GetCurrentProcess.restype = wintypes.HANDLE
+    kernel.SetProcessInformation.argtypes = [
+        wintypes.HANDLE,
+        ctypes.c_int,
+        ctypes.c_void_p,
+        wintypes.DWORD,
+    ]
+    kernel.SetProcessInformation.restype = wintypes.BOOL
+    state = _Throttling(1, 0x1, 0x0)  # version 1; execution speed under our control, not throttled
+    power_throttling = 4  # PROCESS_INFORMATION_CLASS.ProcessPowerThrottling
+    return bool(
+        kernel.SetProcessInformation(
+            kernel.GetCurrentProcess(), power_throttling, ctypes.byref(state), ctypes.sizeof(state)
+        )
+    )
 
 
 def _children(pid: int) -> list[int]:
