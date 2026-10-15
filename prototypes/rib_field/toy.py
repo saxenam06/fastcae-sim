@@ -89,6 +89,26 @@ def bspline_1d(x: np.ndarray, length: float, knot: float) -> np.ndarray:
     return out
 
 
+def bspline_1d_deriv(x: np.ndarray, length: float, knot: float) -> np.ndarray:
+    """(len(x), n): the derivatives by x of `bspline_1d`'s basis."""
+    n = int(np.ceil(length / knot)) + 3
+    centres = (np.arange(n) - 1) * knot
+    u = (x[:, None] - centres[None, :]) / knot
+    a = np.abs(u)
+    du = np.where(a < 1, (-12 * u + 9 * u * a) / 6, np.where(a < 2, -np.sign(u) * (2 - a) ** 2 / 2, 0.0))
+    return du / knot
+
+
+def bspline_2d_grad(x: np.ndarray, y: np.ndarray, knot: float) -> tuple[sp.csr_matrix, sp.csr_matrix]:
+    """The derivatives by x and by y of `bspline_2d`'s basis at the points."""
+    bx, by = bspline_1d(x, LX, knot), bspline_1d(y, LY, knot)
+    dx, dy = bspline_1d_deriv(x, LX, knot), bspline_1d_deriv(y, LY, knot)
+    return (
+        sp.csr_matrix(np.einsum("pi,pj->pij", dx, by).reshape(len(x), -1)),
+        sp.csr_matrix(np.einsum("pi,pj->pij", bx, dy).reshape(len(x), -1)),
+    )
+
+
 def bspline_2d(x: np.ndarray, y: np.ndarray, knot: float) -> sp.csr_matrix:
     """(len(x), nx ny): the tensor-product basis at the points (x, y)."""
     bx, by = bspline_1d(x, LX, knot), bspline_1d(y, LY, knot)
@@ -231,7 +251,20 @@ class Field:
         self.B = bspline_2d(s.cols_xy[:, 0], s.cols_xy[:, 1], knot)
         self.n = self.B.shape[1]
         self.families = families
-        self.rho_most = T_MOST / SPACING
+        self.Bx, self.By = bspline_2d_grad(s.cols_xy[:, 0], s.cols_xy[:, 1], knot)
+        self.by_place = "--by-place" in sys.argv
+        self.ruled = "--ends" in sys.argv
+        if self.by_place:
+            import rules
+
+            self.tcap, self.tcap_grad = rules.thickness_cap(s.cols_xy)
+        else:
+            self.tcap, self.tcap_grad = np.full(s.n_cols, T_MOST), np.zeros((s.n_cols, 2))
+        self.rho_most = self.tcap / SPACING  # per column
+        if self.ruled:
+            import rules
+
+            self.w_end = rules.end_weight(s.cols_xy)
         self.theta = np.zeros(s.n_cols)
         self.v = np.zeros((s.n_cols, 2))  # the doubled-angle direction, smoothed
         self.d = s.kind == 2
@@ -301,9 +334,9 @@ class Field:
             e_th = -np.einsum("epq,epq->e", en, f["dcrib"])
             via_rho = g + rho * dg * f["dh_drho"][col]
             via_r = rho * dg * f["cap"][col]
-            dc += [self.rho_most * (bt @ np.bincount(col, e_rib * via_rho, nc)),
+            dc += [bt @ (self.rho_most * np.bincount(col, e_rib * via_rho, nc)),
                    bt @ np.bincount(col, e_rib * via_r, nc)]
-            dm += [self.rho_most * (bt @ np.bincount(col, via_rho, nc)) * a3 * s.density,
+            dm += [(bt @ (self.rho_most * np.bincount(col, via_rho, nc))) * a3 * s.density,
                    (bt @ np.bincount(col, via_r, nc)) * a3 * s.density]
             dc_dth += np.bincount(col, e_th * g * rho, nc)
         if self.turns:
@@ -497,12 +530,19 @@ def run_field(
             f"{np.degrees(turned['most']):.1f} deg (median {np.degrees(turned['median']):.2f}, "
             f"{100 * turned['share_over_5']:.0f} % over 5)"
         )
+        f, df = [m / BUDGET_KG - 1.0], [gr["dm"] / BUDGET_KG]
+        if fld.ruled:
+            import rules
+
+            ru = rules.transport(fld, x)
+            for key in ("T", "H"):
+                f.append(ru[key][0])
+                df.append(ru[key][1])
+            history[-1]["slope_rms"] = {"thickness": ru["T"][2], "height": ru["H"][2]}
+            say(f"    the slopes along the ribs: thickness {ru['T'][2]:.4f}, height {ru['H'][2]:.4f} mm a mm")
         if opt is None:
-            opt, c0 = MMA(len(x), 1, 0.0, 1.0), r["compliance"]
-        x = opt.propose(
-            x, r["compliance"] / c0, gr["dc"] / c0, [m / BUDGET_KG - 1.0], [gr["dm"] / BUDGET_KG],
-            move=move,
-        )
+            opt, c0 = MMA(len(x), len(f), 0.0, 1.0), r["compliance"]
+        x = opt.propose(x, r["compliance"] / c0, gr["dc"] / c0, f, df, move=move)
     return fld, x, history
 
 
@@ -563,6 +603,8 @@ def main() -> None:
         families=families,
         spacing=SPACING,
         t_most=T_MOST,
+        by_place=fld.by_place,
+        ruled=fld.ruled,
         voxel=a,
         theta=fld.theta,
         v=fld.v,

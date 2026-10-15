@@ -117,7 +117,7 @@ def stripes(theta: np.ndarray, active: np.ndarray, spacing: float, step: float) 
     return phase, amp
 
 
-def draw_field(run: dict, a: float = toy.A, step: float = FINE) -> dict:
+def draw_field(run: dict, a: float = toy.A, step: float = FINE, gate: bool = False) -> dict:
     """The field's ribs as a height map (mm above the wall's underside), with its parts."""
     px, py = fine_grid(step)
     reg = regions(px, py)
@@ -130,23 +130,103 @@ def draw_field(run: dict, a: float = toy.A, step: float = FINE) -> dict:
     basis = toy.bspline_2d(px.ravel(), py.ravel(), toy.KNOT)
     n = basis.shape[1]
     x = run["x"]
+    spacing = float(run.get("spacing", toy.SPACING))
+    if bool(run.get("by_place", False)):
+        import rules
+
+        tcap = rules.thickness_cap(np.stack([px.ravel(), py.ravel()], axis=1))[0]
+    else:
+        tcap = np.full(px.size, float(run.get("t_most", toy.T_MOST)))
     active = plate & ~reg["solid"]
-    z = np.where(plate, toy.WALL, 0.0)
     out = {"theta": theta, "px": px, "py": py, "regions": reg, "step": step}
+    ribs = np.zeros(px.shape, bool)
+    ztop = np.zeros(px.shape)
     for k in range(int(run.get("families", 1))):
         xr, xh = x[2 * k * n : (2 * k + 1) * n], x[(2 * k + 1) * n : (2 * k + 2) * n]
-        rho = (toy.T_MOST / toy.SPACING) * (basis @ xr)
-        cap, _ = toy.smin(toy.BAND, toy.TALL * toy.SPACING * rho)
+        rho = (tcap / spacing) * (basis @ xr)
+        cap, _ = toy.smin(toy.BAND, toy.TALL * spacing * rho)
         h = ((basis @ xh) * cap).reshape(px.shape)
         rho = rho.reshape(px.shape)
-        phase, amp = stripes(theta + k * np.pi / 2, plate, toy.SPACING, step)
+        phase, amp = stripes(theta + k * np.pi / 2, plate, spacing, step)
         rib = (np.cos(phase) >= np.cos(np.pi * np.clip(rho, 0, 1))) & active
-        rib &= (rho * toy.SPACING >= T_LEAST) & (h >= H_LEAST)
-        z = np.where(rib, np.maximum(z, toy.WALL + h), z)
+        rib &= (rho * spacing >= T_LEAST) & (h >= H_LEAST)
+        ribs |= rib
+        ztop = np.where(rib, np.maximum(ztop, h), ztop)
         out.update({f"rib{k}": rib, f"rho{k}": rho, f"h{k}": h, f"phase{k}": phase, f"amp{k}": amp})
+    out["census_before"] = census(ribs, reg, step)
+    if gate:
+        ribs, out["gate"] = gated(ribs, reg, step)
+        out["census"] = census(ribs, reg, step)
+    else:
+        out["census"] = out["census_before"]
+    z = np.where(plate, toy.WALL, 0.0)
+    z = np.where(ribs, toy.WALL + ztop, z)
     z = np.where(reg["solid"], toy.WALL + toy.BAND, z)
     out["z"] = z
+    out["ribs"] = ribs
     return out
+
+
+L_LEAST = 20.0  # mm: a shorter rib is not drawn (the drawing's gate)
+TOUCH = 1.5  # mm: a rib this near a hard point or the plate's edge is held by it
+FREE_END = 3.0  # mm: a rib's end farther than this from a hard point, the edge or another rib is free
+
+
+def anchors(reg: dict, step: float) -> np.ndarray:
+    """What a rib may end on: the hard points (bosses, bolts, lug) grown by `TOUCH`, and the plate's
+    edge band."""
+    from scipy.ndimage import binary_dilation
+
+    k = max(1, int(round(TOUCH / step)))
+    held = binary_dilation(reg["solid"], iterations=k)
+    held[:k, :] = held[-k:, :] = True
+    held[:, :k] = held[:, -k:] = True
+    return held
+
+
+def gated(ribs: np.ndarray, reg: dict, step: float) -> tuple[np.ndarray, dict]:
+    """The drawing's gate: each connected piece of rib kept only if it touches a hard point or the
+    edge, and is at least `L_LEAST` long (its extent along its own main axis)."""
+    from scipy.ndimage import label
+
+    held = anchors(reg, step)
+    lab, count = label(ribs, structure=np.ones((3, 3)))
+    keep = np.zeros(count + 1, bool)
+    dropped = {"loose": 0, "short": 0, "area_mm2": 0.0}
+    for i in range(1, count + 1):
+        ij = np.argwhere(lab == i).astype(float) * step
+        touches = bool(held[lab == i].any())
+        if len(ij) > 2:
+            c = ij - ij.mean(axis=0)
+            axis = np.linalg.svd(c, full_matrices=False)[2][0]
+            length = float(np.ptp(c @ axis)) + step
+        else:
+            length = step
+        if not touches:
+            dropped["loose"] += 1
+        elif length < L_LEAST:
+            dropped["short"] += 1
+        else:
+            keep[i] = True
+            continue
+        dropped["area_mm2"] += len(ij) * step * step
+    return keep[lab], dropped
+
+
+def census(ribs: np.ndarray, reg: dict, step: float) -> dict:
+    """The drawn ribs' free ends (their skeleton's end points farther than `FREE_END` from a hard
+    point or the edge) and their length."""
+    from scipy.ndimage import convolve, distance_transform_edt
+    from skimage.morphology import skeletonize
+
+    sk = skeletonize(ribs)
+    nb = convolve(sk.astype(int), np.ones((3, 3), int), mode="constant") - 1
+    ends = sk & (nb == 1)
+    far = distance_transform_edt(~anchors(reg, step)) * step > FREE_END
+    length_m = float(sk.sum()) * step / 1000.0
+    free = int((ends & far).sum())
+    return {"free_ends": free, "rib_length_m": round(length_m, 3),
+            "free_ends_per_m": round(free / max(length_m, 1e-9), 1)}
 
 
 def draw_columns(run: dict, a: float = toy.A, step: float = FINE) -> dict:

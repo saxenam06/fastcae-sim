@@ -41,6 +41,7 @@ def main() -> None:
     worst = 0.0
     # the field, at a random state with random directions
     fld = toy.Field(s)
+    fld.turns = False  # the directions checked one column at a time below
     fld.theta = rng.uniform(0, np.pi, s.n_cols)
     x = np.r_[rng.uniform(0.2, 0.8, fld.n), rng.uniform(0.2, 0.8, fld.n)]
     c, cc = fld.stiffness(x)
@@ -82,6 +83,35 @@ def main() -> None:
 
     picks = list(np.argsort(-np.abs(g["dc"]))[:4])
     worst = max(worst, check("columns compliance", comp_c, xc, g["dc"], picks, 1e-6))
+    if "--rules" in sys.argv:  # thickness by place and the end rules (`rules.py`)
+        import rules
+
+        fr = toy.Field(s, families=2)
+        assert fr.by_place and fr.ruled, "run with --by-place --ends"
+        fr.theta0 = rng.uniform(0, np.pi, s.n_cols)
+        xr_ = rng.uniform(0.2, 0.8, len(fr.start()))
+        c, cc = fr.stiffness(xr_)
+        r = toy.solve(s, c)
+        g = fr.gradients(cc, r["energy"])
+
+        def comp_r(xx):
+            return toy.solve(s, fr.stiffness(xx)[0])["compliance"]
+
+        picks = list(np.argsort(-np.abs(g["dc"]))[:3])
+        worst = max(worst, check("by place: compliance", comp_r, xr_, g["dc"], picks, 1e-6))
+        for key in ("T", "H"):
+            fr.set_theta(xr_)
+            gk = rules.transport(fr, xr_)[key][1]
+
+            def con(xx, key=key):
+                fr.set_theta(xx)
+                return rules.transport(fr, xx)[key][0]
+
+            n2 = 2 * fr.n
+            picks = [int(np.argmax(np.abs(gk[:n2]))), int(n2 + np.argmax(np.abs(gk[n2 : 2 * n2]))),
+                     int(4 * fr.n + np.argmax(np.abs(gk[4 * fr.n :]))),
+                     int(fr.n + np.argmax(np.abs(gk[fr.n : n2])))]
+            worst = max(worst, check(f"end rule {key}", con, xr_, gk, picks, 1e-6))
     print(f"worst relative difference {worst:.2e}")
 
 

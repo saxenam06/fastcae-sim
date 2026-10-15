@@ -89,7 +89,11 @@ def main() -> None:
     run = dict(np.load(toy.OUT / f"{label}_{kind}.npz"))
     a = float(run["voxel"])
     t0 = time.time()
-    d = draw.draw_field(run, a, fine) if kind == "field" else draw.draw_columns(run, a, fine)
+    if kind == "field":
+        d = draw.draw_field(run, a, fine, gate="--gate" in sys.argv)
+        print(f"ribs as drawn: {d['census_before']}; kept: {d['census']}; gate: {d.get('gate')}")
+    else:
+        d = draw.draw_columns(run, a, fine)
     np.savez_compressed(
         toy.OUT / f"{label}_{kind}_drawn.npz",
         **{k: v for k, v in d.items() if isinstance(v, np.ndarray)},
@@ -107,6 +111,9 @@ def main() -> None:
     res["drawn_placed_kg"] = float(
         ((d["z"] - toy.WALL) * (plate & ~solid)).sum() * fine * fine * density
     )
+    for key in ("census", "census_before", "gate"):
+        if key in d:
+            res[key] = d[key]
     (toy.OUT / f"{label}_{kind}_fe.json").write_text(json.dumps(res, indent=1), encoding="utf-8")
     print(json.dumps({k: res[k] for k in ("compliance", "tilt_mrad", "mass_kg", "placed_kg")}))
 
