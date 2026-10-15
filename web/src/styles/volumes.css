@@ -1,4 +1,5 @@
-/* The contract's result: the volumes and the design space (PLT-8). */
+/* The contract's result: the volumes and the design space (PLT-8); a design in 3D (PLT-9, the
+   dv- classes at the end). */
 
 .vol {
   display: grid;
@@ -33,6 +34,10 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+  /* as tall as the stage, its own scroll when the layers' chips are more (the optimiser's set-up) */
+  max-height: 520px;
+  box-sizing: border-box;
+  overflow-y: auto;
 }
 
 .vol-chips {
@@ -81,6 +86,89 @@
   color: var(--muted);
 }
 
+.vol-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-top: 10px;
+  border-top: 1px solid var(--hairline);
+}
+
+.vol-group[data-first="true"] {
+  padding-top: 0;
+  border-top: none;
+}
+
+.vol-group-head {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.vol-group-head:hover .vol-group-title {
+  color: var(--blue);
+}
+
+.vol-mode .segmented {
+  display: flex;
+}
+
+.vol-mode .segmented button {
+  flex: 1;
+  cursor: pointer;
+}
+
+.vol-rows {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 12px;
+}
+
+.vol-row {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr);
+  gap: 6px;
+}
+
+.vol-row dt {
+  color: var(--muted);
+}
+
+.vol-row dd {
+  margin: 0;
+  color: var(--ink);
+}
+
+.vol-group-title {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.vol-group-sub {
+  font-size: 12px;
+  color: var(--faint);
+}
+
+.vol-opacity {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) 38px;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
 .vol-actions {
   display: flex;
   gap: 6px;
@@ -112,4 +200,227 @@
 
 .vol-empty {
   padding: 24px;
+}
+
+/* A design in 3D (PLT-9): every part its colour, a toggle and an opacity slider. */
+
+.dv {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.dv-pick {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.dv-pick-b {
+  padding: 5px 12px;
+  border: 1px solid var(--hairline);
+  background: var(--sheet);
+  color: var(--ink);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.dv-pick-b[data-on="true"] {
+  border-color: var(--blue);
+  background: var(--blue-wash);
+  color: var(--blue);
+}
+
+/* The optimisation designs side by side (LOP-20): budget, drawn mass, FE's verdicts; a row opens its design */
+.dv-compare {
+  overflow-x: auto;
+  border: 1px solid var(--hairline);
+}
+
+.dv-compare tbody tr {
+  cursor: pointer;
+}
+
+.dv-compare tbody th {
+  white-space: normal;
+  min-width: 220px;
+  max-width: 380px;
+}
+
+.dv-compare tbody tr[data-on="true"] th,
+.dv-compare tbody tr[data-on="true"] td {
+  background: var(--blue-wash);
+}
+
+.dv-compare td[data-mark="pass"] {
+  color: var(--measured);
+}
+
+.dv-compare td[data-mark="fail"] {
+  color: var(--conflict);
+}
+
+.dv-compare tr.dv-compare-ref {
+  cursor: default;
+}
+
+.dv-compare .dv-unit {
+  text-transform: none; /* uppercase turned µm into MM */
+}
+
+.dv-compare tr.dv-compare-ref th,
+.dv-compare tr.dv-compare-ref td {
+  color: var(--muted);
+}
+
+/* The Designs page's two kinds (the engineer, 10 October 12:20): drawn from an optimisation, or the generator's */
+.dv-kinds {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.dv-kind {
+  padding: 7px 14px;
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.dv-kind[data-on="true"] {
+  color: var(--ink);
+  border-bottom-color: var(--blue);
+}
+
+.dv-kind-n {
+  margin-left: 4px;
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--faint);
+}
+
+.dv-vol {
+  grid-template-columns: minmax(0, 1fr) 340px;
+}
+
+.dv-stage {
+  height: 640px;
+}
+
+.dv-side {
+  max-height: 640px;
+  overflow-y: auto;
+}
+
+.dv-parts {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dv-group-h {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  margin-bottom: 2px;
+}
+
+.dv-row {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr) 90px 36px;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+}
+
+.dv-row[data-on="false"] {
+  color: var(--faint);
+}
+
+.dv-row[data-on="false"] .vol-swatch {
+  opacity: 0.25;
+}
+
+.dv-toggle {
+  padding: 2px;
+  border: 1px solid var(--hairline);
+  background: var(--sheet);
+  cursor: pointer;
+  line-height: 0;
+}
+
+.dv-toggle .vol-swatch {
+  display: block;
+}
+
+.dv-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dv-row input[type="range"] {
+  width: 90px;
+}
+
+.dv-pct {
+  font-size: 11px;
+  color: var(--muted);
+  text-align: right;
+}
+
+.dv-facts {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 12px;
+  border-top: 1px solid var(--hairline);
+  padding-top: 8px;
+}
+
+.dv-fact {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.dv-recipe summary {
+  cursor: pointer;
+  color: var(--blue);
+  margin: 4px 0;
+}
+
+/* An optimisation run's facts and its objective's history. */
+.ov-title {
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.dv-fact[data-warn="true"] {
+  color: var(--conflict);
+  background: var(--conflict-wash);
+}
+
+.ov-chart {
+  width: 100%;
+  height: auto;
+  margin: 6px 0 2px;
+}
+
+.ov-line {
+  fill: none;
+  stroke: var(--blue);
+  stroke-width: 1.4;
+}
+
+.ov-line-worst {
+  stroke: var(--running);
+  stroke-dasharray: 4 3;
 }

@@ -6,8 +6,11 @@
  * calls the tools, sees the result, and decides the next step, until a stop rule fires. Each step
  * is a row, and each row becomes a decision record (C) in Data.
  *
- * Nothing runs yet: the agent (AGT-1) is not built, and the contract must be frozen first. So the
- * form is shown with its choices made, and the steps table shows the shape of a row in words.
+ * Since 11 October (LOP-24) the page shows the campaigns run so far, each move with what it saw, what
+ * it decided and why, its design space and its results (`Agent.tsx`, from `../records/campaigns/`);
+ * the first was run by Claude acting as the runtime agent. The product's own form stays as the rail's
+ * last entry ("New campaign"): the agent (AGT-1) is not built, and the contract must be frozen
+ * first, so the form is shown with its choices made, and the steps table the shape of a row.
  * The first version (a page per view, a rail of campaigns) is archived in
  * `archive/web/campaigns-v1/`.
  */
@@ -17,6 +20,7 @@ import type { Tab, TabProps } from "../app/tab";
 import { Dot } from "../panel/bits";
 import { Badge, PageHead, Section, Source, Value } from "../panel/page";
 import { ARM, ARM_ORDER, STOP, STOP_ORDER } from "../words/campaign";
+import { AgentCard, AgentRail, AgentStage, CAMPAIGNS } from "./Agent";
 
 /** The parts of one step, in the order a row reads; the template row says what each will hold. */
 const COLUMNS: { head: string; holds: string }[] = [
@@ -29,7 +33,7 @@ const COLUMNS: { head: string; holds: string }[] = [
   { head: "Next", holds: "the next step, or stop" },
 ];
 
-function Stage({ snap, go }: TabProps) {
+function NewCampaign({ snap, go }: TabProps) {
   const contract = snap.contracts[0];
   if (!contract) return <div className="stage-scroll" />;
   const campaigns = snap.records.campaigns.filter((c) => c.contract === contract.id);
@@ -144,4 +148,10 @@ function cap(text: string): string {
   return text.charAt(0).toUpperCase() + text.slice(1);
 }
 
-export const campaignsTab: Tab = { Stage, cardName: "" };
+function Stage(props: TabProps) {
+  return props.route.id === "new" || !CAMPAIGNS.length ? <NewCampaign {...props} /> : <AgentStage {...props} />;
+}
+
+export const campaignsTab: Tab = CAMPAIGNS.length
+  ? { Rail: AgentRail, Stage, Card: AgentCard, cardName: "The move" }
+  : { Stage, cardName: "" };

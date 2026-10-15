@@ -1,6 +1,12 @@
 // Copied from fastcae-v1:ui/src/render/renderer.ts (fastcae's tag) for zenryx's Contract page
-// (PLT-8). One change: Mesh and VoxelCells come from ./mesh (copied from fastcae-v1's
-// ui/src/api/client.ts) instead of fastcae's API client. Nothing else differs.
+// (PLT-8). Two changes:
+// 1. Mesh and VoxelCells come from ./mesh (copied from fastcae-v1's ui/src/api/client.ts)
+//    instead of fastcae's API client.
+// 2. `u_hatchCut`: a section hatches what it cuts only in the opaque passes. A see-through
+//    layer shows its far inside faces through every hole, and hatched they read as solid
+//    everywhere: the design space's cut looked full through the gears (the engineer, 10 October
+//    13:25).
+// Nothing else differs.
 
 /**
  * WebGL2 renderer for a face-tagged CAD tessellation.
@@ -81,6 +87,9 @@ uniform vec3 u_tint;
 // dot(p, normal) > offset, is not drawn.
 uniform vec4 u_clip;
 uniform int u_clipOn;
+// 1 in an opaque pass, where a face seen from behind through the cut is the solid cut; 0 in a
+// see-through one (zenryx's change 2).
+uniform int u_hatchCut;
 
 out vec4 fragColour;
 
@@ -114,7 +123,7 @@ void main() {
   // Where the plane cuts a solid its own inside shows through the cut - the only place a face of
   // a closed, outward surface is ever seen from behind - and drawn flat and hatched it reads as
   // the solid cut, not as the far wall of a hollow.
-  if (u_clipOn == 1 && dot(normal, viewDirection) < 0.0) {
+  if (u_hatchCut == 1 && u_clipOn == 1 && dot(normal, viewDirection) < 0.0) {
     vec3 solid = u_tinted == 1 ? u_tint : STEEL;
     fragColour = vec4(pow(hatched(solid), vec3(0.4545)), u_alpha);
     return;
@@ -303,6 +312,8 @@ uniform int u_heat;
 uniform vec2 u_range;
 uniform vec4 u_clip;
 uniform int u_clipOn;
+// 1 for an opaque layer, 0 for a see-through one (zenryx's change 2).
+uniform int u_hatchCut;
 
 out vec4 fragColour;
 
@@ -325,7 +336,7 @@ void main() {
   vec3 normal = normalize(v_normal);
   vec3 viewDirection = normalize(u_eye - v_worldPosition);
   // A cell face points out of the cells, so one seen from behind is the inside, through a cut.
-  bool cut = u_clipOn == 1 && dot(normal, viewDirection) < 0.0;
+  bool cut = u_hatchCut == 1 && u_clipOn == 1 && dot(normal, viewDirection) < 0.0;
   if (dot(normal, viewDirection) < 0.0) normal = -normal;
 
   vec3 base = u_tint;
@@ -671,6 +682,8 @@ export class Renderer {
     this.applyClip(this.program);
     gl.uniform1f(alpha, 1.0);
     gl.uniform1i(tinted, 0);
+    const hatchCut = gl.getUniformLocation(this.program, "u_hatchCut");
+    gl.uniform1i(hatchCut, 1);
     if (this.showSurface) {
       gl.bindVertexArray(this.vao);
       gl.drawElements(gl.TRIANGLES, this.shownCount, gl.UNSIGNED_INT, 0);
@@ -686,6 +699,7 @@ export class Renderer {
       gl.uniform3fv(at("u_origin"), this.voxelOrigin);
       gl.uniform3fv(at("u_tint"), this.voxelTint);
       gl.uniform1f(at("u_alpha"), this.voxelAlpha);
+      gl.uniform1i(at("u_hatchCut"), this.voxelAlpha >= 0.999 ? 1 : 0);
       gl.uniform1i(at("u_heat"), 0);
       this.applyClip(this.voxelProgram);
       gl.bindVertexArray(this.voxelVao);
@@ -723,6 +737,7 @@ export class Renderer {
       gl.polygonOffset(-1.0, -1.0);
       gl.uniform1f(alpha, this.overlayAlpha);
       gl.uniform1i(tinted, 1);
+      gl.uniform1i(hatchCut, seeThrough ? 0 : 1);
       gl.uniform3fv(gl.getUniformLocation(this.program, "u_tint"), this.overlayTint);
       gl.bindVertexArray(this.overlayVao);
       gl.drawElements(gl.TRIANGLES, this.overlayIndexCount, gl.UNSIGNED_INT, 0);
@@ -742,6 +757,7 @@ export class Renderer {
       gl.enable(gl.POLYGON_OFFSET_FILL);
       gl.polygonOffset(-1.0, -1.0);
       gl.uniform1i(tinted, 1);
+      gl.uniform1i(hatchCut, 0);
       // Twice, as lines are: faint where the part hides it - a volume inside the part is still
       // seen - and clear where it does not.
       for (const [depthTest, share] of [
@@ -762,6 +778,7 @@ export class Renderer {
       gl.polygonOffset(0.0, 0.0);
       gl.depthMask(true);
       gl.disable(gl.BLEND);
+      gl.uniform1i(hatchCut, 1);
     }
 
     // Lines last, twice: faint where the part hides them - a line behind a wall is still found -
@@ -981,6 +998,7 @@ export class Renderer {
       gl.uniform3fv(at("u_origin"), cells.origin);
       gl.uniform3fv(at("u_tint"), linear(tint));
       gl.uniform1f(at("u_alpha"), alpha);
+      gl.uniform1i(at("u_hatchCut"), alpha >= 0.999 ? 1 : 0);
       gl.uniform1i(at("u_heat"), values ? 1 : 0);
       const [lo, hi] = range ?? [1e-6, 1];
       gl.uniform2f(at("u_range"), Math.log(Math.max(lo, 1e-30)), Math.log(Math.max(hi, 1e-30)));

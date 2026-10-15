@@ -1,6 +1,7 @@
 /* From fastcae-v1:ui/src/styles/shell.css: the shell, the bar, the stage, sections, metrics, chips, the
    folded pane, the segmented control, the later card and the crash screen. Dropped: the upload screen,
-   the fields, callouts, the agent bar, the hover card and the section control. Rules unchanged. */
+   the fields, callouts, the agent bar, the hover card and the section control. Rules unchanged;
+   added at the end, zenryx's own: the phone layout. */
 
 .shell {
   display: grid;
@@ -688,4 +689,62 @@ input.num:focus {
   font-size: 12px;
   line-height: 1.45;
   white-space: pre-wrap;
+}
+
+/* Phone width (zenryx's own, not fastcae's): the three columns stacked, the rail, then the stage,
+   then the card, and the page scrolling as one. The splitters' widths (the shell's inline style)
+   give way; the bar keeps the mark, the names and the tabs, the tabs scrolling sideways. */
+@media (max-width: 760px) {
+  .shell[data-open="true"] {
+    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-rows: auto auto auto auto auto auto;
+    grid-template-areas:
+      "topbar"
+      "agent"
+      "index"
+      "stage"
+      "inspector"
+      "title";
+    height: auto;
+    min-height: 100%;
+    align-content: start;
+  }
+  .stage-body {
+    flex: none;
+  }
+  /* `zenryx.css` pins a stage's scroll to its body (absolute, inset 0); here it flows */
+  .shell .stage-body > .stage-scroll,
+  .stage-scroll {
+    position: static;
+    height: auto;
+    overflow: visible;
+  }
+  .rail {
+    border-right: 0;
+    border-bottom: 1px solid var(--hairline);
+  }
+  .rail-scroll {
+    height: auto;
+    max-height: 50vh;
+  }
+  .card-pane {
+    border-left: 0;
+    border-top: 1px solid var(--hairline);
+  }
+  .splitter {
+    display: none;
+  }
+  .topbar {
+    flex-wrap: wrap;
+    row-gap: 2px;
+    padding: 6px 16px 0;
+  }
+  .topbar .lockup em,
+  .topbar .divider {
+    display: none;
+  }
+  .topbar .main-tabs {
+    width: 100%;
+    overflow-x: auto;
+  }
 }

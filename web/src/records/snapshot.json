@@ -107,7 +107,7 @@
    "verdict_rule_version": "v0.1",
    "objective": "least_mass",
    "stress": "recorded",
-   "hash": "sha256:eaea5438f722efa4605856f75421a7216c8ca3789a073b598ab394e018268457",
+   "hash": "sha256:50c392518e5ee8b33d0b3677da192791302689e7fda47fdc2f4bb63052c64fdd",
    "frozen_hash": null,
    "refusals": [],
    "freeze": {
@@ -749,6 +749,21 @@
      "bounds": null
     },
     {
+     "path": "requirement.shaft_layout.sealed_ends[1].room",
+     "layer": "requirement",
+     "group": "bearings",
+     "label": "room",
+     "value": "90 mm",
+     "canonical": "90 mm",
+     "provenance": {
+      "kind": "assumption",
+      "assumption_id": "A27"
+     },
+     "authority": "engineer_locked",
+     "kind": "hard",
+     "bounds": null
+    },
+    {
      "path": "requirement.shaft_layout.sealed_ends[2].side",
      "layer": "requirement",
      "group": "bearings",
@@ -758,6 +773,21 @@
      "provenance": {
       "kind": "assumption",
       "assumption_id": "A17"
+     },
+     "authority": "engineer_locked",
+     "kind": "hard",
+     "bounds": null
+    },
+    {
+     "path": "requirement.shaft_layout.sealed_ends[2].room",
+     "layer": "requirement",
+     "group": "bearings",
+     "label": "room",
+     "value": "90 mm",
+     "canonical": "90 mm",
+     "provenance": {
+      "kind": "assumption",
+      "assumption_id": "A27"
      },
      "authority": "engineer_locked",
      "kind": "hard",
@@ -803,6 +833,21 @@
      "provenance": {
       "kind": "assumption",
       "assumption_id": "A19"
+     },
+     "authority": "engineer_locked",
+     "kind": "hard",
+     "bounds": null
+    },
+    {
+     "path": "requirement.shaft_layout.seal_section",
+     "layer": "requirement",
+     "group": "bearings",
+     "label": "seal section",
+     "value": "10 mm",
+     "canonical": "10 mm",
+     "provenance": {
+      "kind": "assumption",
+      "assumption_id": "A16"
      },
      "authority": "engineer_locked",
      "kind": "hard",
@@ -1058,6 +1103,293 @@
      "provenance": {
       "kind": "assumption",
       "assumption_id": "A23"
+     },
+     "authority": "engineer_locked",
+     "kind": "hard",
+     "bounds": null
+    },
+    {
+     "path": "requirement.mounts[0].centre",
+     "layer": "requirement",
+     "group": "mounts",
+     "label": "centre · mount-1",
+     "value": "(-170.2, -52.7, -33.95) mm",
+     "canonical": "(-170.2, -52.7, -33.95) mm",
+     "provenance": {
+      "kind": "assumption",
+      "assumption_id": "A20"
+     },
+     "authority": "engineer_locked",
+     "kind": "hard",
+     "bounds": null
+    },
+    {
+     "path": "requirement.mounts[0].normal",
+     "layer": "requirement",
+     "group": "mounts",
+     "label": "normal · mount-1",
+     "value": "(0, 0, 1)",
+     "canonical": "(0, 0, 1)",
+     "provenance": {
+      "kind": "assumption",
+      "assumption_id": "A20"
+     },
+     "authority": "engineer_locked",
+     "kind": "hard",
+     "bounds": null
+    },
+    {
+     "path": "requirement.mounts[0].diameter",
+     "layer": "requirement",
+     "group": "mounts",
+     "label": "diameter · mount-1",
+     "value": "36 mm",
+     "canonical": "36 mm",
+     "provenance": {
+      "kind": "assumption",
+      "assumption_id": "A20"
+     },
+     "authority": "engineer_locked",
+     "kind": "hard",
+     "bounds": null
+    },
+    {
+     "path": "requirement.mounts[0].length",
+     "layer": "requirement",
+     "group": "mounts",
+     "label": "length · mount-1",
+     "value": "30 mm",
+     "canonical": "30 mm",
+     "provenance": {
+      "kind": "assumption",
+      "assumption_id": "A20"
+     },
+     "authority": "engineer_locked",
+     "kind": "hard",
+     "bounds": null
+    },
+    {
+     "path": "requirement.mounts[0].hole_diameter",
+     "layer": "requirement",
+     "group": "mounts",
+     "label": "hole diameter · mount-1",
+     "value": "11 mm",
+     "canonical": "11 mm",
+     "provenance": {
+      "kind": "assumption",
+      "assumption_id": "A20"
+     },
+     "authority": "engineer_locked",
+     "kind": "hard",
+     "bounds": null
+    },
+    {
+     "path": "requirement.mounts[0].bracket_room",
+     "layer": "requirement",
+     "group": "mounts",
+     "label": "bracket room · mount-1",
+     "value": "44 mm",
+     "canonical": "44 mm",
+     "provenance": {
+      "kind": "assumption",
+      "assumption_id": "A20"
+     },
+     "authority": "engineer_locked",
+     "kind": "hard",
+     "bounds": null
+    },
+    {
+     "path": "requirement.mounts[1].centre",
+     "layer": "requirement",
+     "group": "mounts",
+     "label": "centre · mount-2",
+     "value": "(176.4, 62.9, -33.95) mm",
+     "canonical": "(176.4, 62.9, -33.95) mm",
+     "provenance": {
+      "kind": "assumption",
+      "assumption_id": "A20"
+     },
+     "authority": "engineer_locked",
+     "kind": "hard",
+     "bounds": null
+    },
+    {
+     "path": "requirement.mounts[1].normal",
+     "layer": "requirement",
+     "group": "mounts",
+     "label": "normal · mount-2",
+     "value": "(0, 0, 1)",
+     "canonical": "(0, 0, 1)",
+     "provenance": {
+      "kind": "assumption",
+      "assumption_id": "A20"
+     },
+     "authority": "engineer_locked",
+     "kind": "hard",
+     "bounds": null
+    },
+    {
+     "path": "requirement.mounts[1].diameter",
+     "layer": "requirement",
+     "group": "mounts",
+     "label": "diameter · mount-2",
+     "value": "36 mm",
+     "canonical": "36 mm",
+     "provenance": {
+      "kind": "assumption",
+      "assumption_id": "A20"
+     },
+     "authority": "engineer_locked",
+     "kind": "hard",
+     "bounds": null
+    },
+    {
+     "path": "requirement.mounts[1].length",
+     "layer": "requirement",
+     "group": "mounts",
+     "label": "length · mount-2",
+     "value": "30 mm",
+     "canonical": "30 mm",
+     "provenance": {
+      "kind": "assumption",
+      "assumption_id": "A20"
+     },
+     "authority": "engineer_locked",
+     "kind": "hard",
+     "bounds": null
+    },
+    {
+     "path": "requirement.mounts[1].hole_diameter",
+     "layer": "requirement",
+     "group": "mounts",
+     "label": "hole diameter · mount-2",
+     "value": "11 mm",
+     "canonical": "11 mm",
+     "provenance": {
+      "kind": "assumption",
+      "assumption_id": "A20"
+     },
+     "authority": "engineer_locked",
+     "kind": "hard",
+     "bounds": null
+    },
+    {
+     "path": "requirement.mounts[1].bracket_room",
+     "layer": "requirement",
+     "group": "mounts",
+     "label": "bracket room · mount-2",
+     "value": "44 mm",
+     "canonical": "44 mm",
+     "provenance": {
+      "kind": "assumption",
+      "assumption_id": "A20"
+     },
+     "authority": "engineer_locked",
+     "kind": "hard",
+     "bounds": null
+    },
+    {
+     "path": "requirement.mounts[2].centre",
+     "layer": "requirement",
+     "group": "mounts",
+     "label": "centre · mount-3",
+     "value": "(35.1, 280.9, -33.95) mm",
+     "canonical": "(35.1, 280.9, -33.95) mm",
+     "provenance": {
+      "kind": "assumption",
+      "assumption_id": "A20"
+     },
+     "authority": "engineer_locked",
+     "kind": "hard",
+     "bounds": null
+    },
+    {
+     "path": "requirement.mounts[2].normal",
+     "layer": "requirement",
+     "group": "mounts",
+     "label": "normal · mount-3",
+     "value": "(0, 0, 1)",
+     "canonical": "(0, 0, 1)",
+     "provenance": {
+      "kind": "assumption",
+      "assumption_id": "A20"
+     },
+     "authority": "engineer_locked",
+     "kind": "hard",
+     "bounds": null
+    },
+    {
+     "path": "requirement.mounts[2].diameter",
+     "layer": "requirement",
+     "group": "mounts",
+     "label": "diameter · mount-3",
+     "value": "36 mm",
+     "canonical": "36 mm",
+     "provenance": {
+      "kind": "assumption",
+      "assumption_id": "A20"
+     },
+     "authority": "engineer_locked",
+     "kind": "hard",
+     "bounds": null
+    },
+    {
+     "path": "requirement.mounts[2].length",
+     "layer": "requirement",
+     "group": "mounts",
+     "label": "length · mount-3",
+     "value": "30 mm",
+     "canonical": "30 mm",
+     "provenance": {
+      "kind": "assumption",
+      "assumption_id": "A20"
+     },
+     "authority": "engineer_locked",
+     "kind": "hard",
+     "bounds": null
+    },
+    {
+     "path": "requirement.mounts[2].hole_diameter",
+     "layer": "requirement",
+     "group": "mounts",
+     "label": "hole diameter · mount-3",
+     "value": "11 mm",
+     "canonical": "11 mm",
+     "provenance": {
+      "kind": "assumption",
+      "assumption_id": "A20"
+     },
+     "authority": "engineer_locked",
+     "kind": "hard",
+     "bounds": null
+    },
+    {
+     "path": "requirement.mounts[2].bracket_room",
+     "layer": "requirement",
+     "group": "mounts",
+     "label": "bracket room · mount-3",
+     "value": "44 mm",
+     "canonical": "44 mm",
+     "provenance": {
+      "kind": "assumption",
+      "assumption_id": "A20"
+     },
+     "authority": "engineer_locked",
+     "kind": "hard",
+     "bounds": null
+    },
+    {
+     "path": "requirement.motor_held_by",
+     "layer": "requirement",
+     "group": "motor held by",
+     "label": "motor held by",
+     "value": "vehicle",
+     "canonical": null,
+     "provenance": {
+      "kind": "engineer",
+      "who": "the engineer",
+      "when": "2026-10-10 13:21",
+      "note": "the motor drives the input shaft through a flexible coupling; the housing carries none of it and has no motor flange"
      },
      "authority": "engineer_locked",
      "kind": "hard",
@@ -1366,6 +1698,96 @@
      "authority": "engineer_locked",
      "kind": "hard",
      "bounds": null
+    },
+    {
+     "path": "manufacturing.joint.hole_diameter",
+     "layer": "manufacturing",
+     "group": "joint",
+     "label": "hole diameter",
+     "value": "9 mm",
+     "canonical": "9 mm",
+     "provenance": {
+      "kind": "assumption",
+      "assumption_id": "A26"
+     },
+     "authority": "engineer_locked",
+     "kind": "hard",
+     "bounds": null
+    },
+    {
+     "path": "manufacturing.joint.boss_diameter",
+     "layer": "manufacturing",
+     "group": "joint",
+     "label": "boss diameter",
+     "value": "20 mm",
+     "canonical": "20 mm",
+     "provenance": {
+      "kind": "assumption",
+      "assumption_id": "A26"
+     },
+     "authority": "engineer_locked",
+     "kind": "hard",
+     "bounds": null
+    },
+    {
+     "path": "manufacturing.joint.bolt_offset",
+     "layer": "manufacturing",
+     "group": "joint",
+     "label": "bolt offset",
+     "value": "13 mm",
+     "canonical": "13 mm",
+     "provenance": {
+      "kind": "assumption",
+      "assumption_id": "A26"
+     },
+     "authority": "engineer_locked",
+     "kind": "hard",
+     "bounds": null
+    },
+    {
+     "path": "manufacturing.joint.max_pitch",
+     "layer": "manufacturing",
+     "group": "joint",
+     "label": "max pitch",
+     "value": "80 mm",
+     "canonical": "80 mm",
+     "provenance": {
+      "kind": "assumption",
+      "assumption_id": "A26"
+     },
+     "authority": "engineer_locked",
+     "kind": "hard",
+     "bounds": null
+    },
+    {
+     "path": "manufacturing.joint.flange_thickness",
+     "layer": "manufacturing",
+     "group": "joint",
+     "label": "flange thickness",
+     "value": "8 mm",
+     "canonical": "8 mm",
+     "provenance": {
+      "kind": "assumption",
+      "assumption_id": "A26"
+     },
+     "authority": "engineer_locked",
+     "kind": "hard",
+     "bounds": null
+    },
+    {
+     "path": "manufacturing.joint.land_width",
+     "layer": "manufacturing",
+     "group": "joint",
+     "label": "land width",
+     "value": "10 mm",
+     "canonical": "10 mm",
+     "provenance": {
+      "kind": "assumption",
+      "assumption_id": "A26"
+     },
+     "authority": "engineer_locked",
+     "kind": "hard",
+     "bounds": null
     }
    ],
    "items": [
@@ -1512,8 +1934,8 @@
     },
     {
      "id": "A16",
-     "what": "the space behind a bearing where its shaft leaves the housing",
-     "value": "11 mm: an 8 mm radial shaft seal and 3 mm for its seat",
+     "what": "the seal where a shaft leaves the housing",
+     "value": "11 mm behind the bearing: an 8 mm radial shaft seal and 3 mm for its seat; the seal's section 10 mm, so the shaft leaves through a bore of its own Ø + 20 mm (45 × 65 × 8 on a 45 mm shaft), fitted from outside",
      "why": "seals of about 7-10 mm width for 30-50 mm shafts · makers' seal catalogues",
      "varied": true
     },
@@ -1536,6 +1958,13 @@
      "what": "the least clearance from a gear's tips to the housing wall",
      "value": "8.25 mm",
      "why": "(1.1-1.2) × the wall thickness δ, at δ = 7.5 mm · Maciejczyk & Zdziennicki Ch. 9, Fig. 9.1",
+     "varied": true
+    },
+    {
+     "id": "A20",
+     "what": "the mounts",
+     "value": "three bosses for M10 bolts along the shafts, Ø36 × 30 mm with Ø11 holes, held fixed, at (-170.2, -52.7), (176.4, 62.9) and (35.1, 280.9) mm, their middles at z = -33.95 mm; the vehicle's bracket and bolt take Ø44 mm beyond both faces, as far as the boss is long and no further",
+     "why": "the vehicle's hardpoints are not given; at the package's far points on the motor side, each lug 3 mm past the split flange's edge, so that its bracket and bolt clear the housing; their room is kept clear for the boss's length beyond each face, no higher (you)",
      "varied": true
     },
     {
@@ -1564,6 +1993,20 @@
      "what": "the shafts' steel",
      "value": "20MnCr5, case-hardened: core yield 590 MPa, E 210 GPa; design factor 2 on the peak torques",
      "why": "a common gear steel (the engineer, 9 Oct 00:50); the core yield is the low end of public datasheets, to source",
+     "varied": true
+    },
+    {
+     "id": "A26",
+     "what": "how the halves are bolted",
+     "value": "a flange 8 mm deep on each side of the joint: a sealing land 10 mm wide round the inside, and M8 bolts in Ø9 holes, each in a Ø20 boss on the land, their axes 13 mm outside the least wall, at most 80 mm apart round the inside",
+     "why": "a sealed joint's bolts about 10 × their Ø apart, on a land for a formed-in-place gasket's bead (its least width to confirm) · Henkel's guide to formed-in-place gaskets; a 24 mm flange for M8 · Maciejczyk & Zdziennicki Table 9.1; the medium clearance hole · ISO 273; 8 mm deep, two whole cubes of the optimiser's 4 mm grid (the engineer, 13 Oct 18:42)",
+     "varied": true
+    },
+    {
+     "id": "A27",
+     "what": "the half-shafts' joints",
+     "value": "Ø90 mm beyond each of the output's end faces",
+     "why": "the inner joints are not given; the room the first loop kept, to source from a joint maker's catalogue",
      "varied": true
     }
    ],
@@ -1869,7 +2312,7 @@
         "path": "requirement.shaft_layout.behind_bearing_sealed",
         "source": "assumed",
         "kind": "assumption",
-        "title": "A16: the space behind a bearing where its shaft leaves the housing, 11 mm: an 8 mm radial shaft seal and 3 mm for its seat. seals of about 7-10 mm width for 30-50 mm shafts · makers' seal catalogues"
+        "title": "A16: the seal where a shaft leaves the housing, 11 mm behind the bearing: an 8 mm radial shaft seal and 3 mm for its seat; the seal's section 10 mm, so the shaft leaves through a bore of its own Ø + 20 mm (45 × 65 × 8 on a 45 mm shaft), fitted from outside. seals of about 7-10 mm width for 30-50 mm shafts · makers' seal catalogues"
        },
        {
         "label": "Shaft ends that leave the housing",
@@ -1961,6 +2404,38 @@
         "source": "you",
         "kind": "engineer",
         "title": "the engineer, 2026-10-09 02:12: along the shafts: the halves split across them"
+       },
+       {
+        "label": "Split flange",
+        "value": "8 mm each half",
+        "path": "manufacturing.joint.flange_thickness",
+        "source": "assumed",
+        "kind": "assumption",
+        "title": "A26: how the halves are bolted, a flange 8 mm deep on each side of the joint: a sealing land 10 mm wide round the inside, and M8 bolts in Ø9 holes, each in a Ø20 boss on the land, their axes 13 mm outside the least wall, at most 80 mm apart round the inside. a sealed joint's bolts about 10 × their Ø apart, on a land for a formed-in-place gasket's bead (its least width to confirm) · Henkel's guide to formed-in-place gaskets; a 24 mm flange for M8 · Maciejczyk & Zdziennicki Table 9.1; the medium clearance hole · ISO 273; 8 mm deep, two whole cubes of the optimiser's 4 mm grid (the engineer, 13 Oct 18:42)"
+       },
+       {
+        "label": "Sealing land",
+        "value": "10 mm round the inside",
+        "path": "manufacturing.joint.land_width",
+        "source": "assumed",
+        "kind": "assumption",
+        "title": "A26: how the halves are bolted, a flange 8 mm deep on each side of the joint: a sealing land 10 mm wide round the inside, and M8 bolts in Ø9 holes, each in a Ø20 boss on the land, their axes 13 mm outside the least wall, at most 80 mm apart round the inside. a sealed joint's bolts about 10 × their Ø apart, on a land for a formed-in-place gasket's bead (its least width to confirm) · Henkel's guide to formed-in-place gaskets; a 24 mm flange for M8 · Maciejczyk & Zdziennicki Table 9.1; the medium clearance hole · ISO 273; 8 mm deep, two whole cubes of the optimiser's 4 mm grid (the engineer, 13 Oct 18:42)"
+       },
+       {
+        "label": "Bolts",
+        "value": "Ø9 mm holes in Ø20 mm bosses",
+        "path": "manufacturing.joint.boss_diameter",
+        "source": "assumed",
+        "kind": "assumption",
+        "title": "A26: how the halves are bolted, a flange 8 mm deep on each side of the joint: a sealing land 10 mm wide round the inside, and M8 bolts in Ø9 holes, each in a Ø20 boss on the land, their axes 13 mm outside the least wall, at most 80 mm apart round the inside. a sealed joint's bolts about 10 × their Ø apart, on a land for a formed-in-place gasket's bead (its least width to confirm) · Henkel's guide to formed-in-place gaskets; a 24 mm flange for M8 · Maciejczyk & Zdziennicki Table 9.1; the medium clearance hole · ISO 273; 8 mm deep, two whole cubes of the optimiser's 4 mm grid (the engineer, 13 Oct 18:42)"
+       },
+       {
+        "label": "Bolt line",
+        "value": "13 mm outside the least wall, at most 80 mm apart",
+        "path": "manufacturing.joint.bolt_offset",
+        "source": "assumed",
+        "kind": "assumption",
+        "title": "A26: how the halves are bolted, a flange 8 mm deep on each side of the joint: a sealing land 10 mm wide round the inside, and M8 bolts in Ø9 holes, each in a Ø20 boss on the land, their axes 13 mm outside the least wall, at most 80 mm apart round the inside. a sealed joint's bolts about 10 × their Ø apart, on a land for a formed-in-place gasket's bead (its least width to confirm) · Henkel's guide to formed-in-place gaskets; a 24 mm flange for M8 · Maciejczyk & Zdziennicki Table 9.1; the medium clearance hole · ISO 273; 8 mm deep, two whole cubes of the optimiser's 4 mm grid (the engineer, 13 Oct 18:42)"
        }
       ]
      }
@@ -2393,7 +2868,7 @@
         {
          "label": "Motor's reaction on the housing",
          "cells": [
-          "-150 N·m about the input's axis"
+          "none: the vehicle holds the motor, which drives the input through a flexible coupling"
          ]
         }
        ]
@@ -2686,7 +3161,7 @@
      }
     ]
    },
-   "json": "{\n  \"schema_version\": \"0.1\",\n  \"stage\": \"posed\",\n  \"task\": {\n    \"id\": \"ev-reducer-l1\",\n    \"title\": \"EV two-stage reducer: an L1 housing, sand cast\",\n    \"family\": \"single-speed two-stage helical reducer with integrated differential\",\n    \"level\": \"L1\",\n    \"priorities\": [],\n    \"budget_fe_proofs\": 16,\n    \"budget_hours\": 4.0\n  },\n  \"requirement\": {\n    \"style\": \"gear_train\",\n    \"torques\": [\n      {\n        \"shaft\": \"input\",\n        \"kind\": \"peak\",\n        \"direction\": \"drive\",\n        \"torque\": {\n          \"value\": {\n            \"value\": 150,\n            \"unit\": \"N·m\"\n          },\n          \"provenance\": {\n            \"kind\": \"engineer\",\n            \"who\": \"the engineer\",\n            \"when\": \"2026-10-08 19:37\",\n            \"note\": \"the peak transfer\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        }\n      },\n      {\n        \"shaft\": \"input\",\n        \"kind\": \"peak\",\n        \"direction\": \"reverse\",\n        \"torque\": {\n          \"value\": {\n            \"value\": 150,\n            \"unit\": \"N·m\"\n          },\n          \"provenance\": {\n            \"kind\": \"engineer\",\n            \"who\": \"the engineer\",\n            \"when\": \"2026-10-08 19:37\",\n            \"note\": \"the backward case, at 2,000 rpm\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        }\n      },\n      {\n        \"shaft\": \"input\",\n        \"kind\": \"peak\",\n        \"direction\": \"regeneration\",\n        \"torque\": {\n          \"value\": {\n            \"value\": 150,\n            \"unit\": \"N·m\"\n          },\n          \"provenance\": {\n            \"kind\": \"assumption\",\n            \"assumption_id\": \"A2\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        }\n      }\n    ],\n    \"speeds\": [\n      {\n        \"shaft\": \"input\",\n        \"kind\": \"rated\",\n        \"speed\": {\n          \"value\": {\n            \"value\": 6000,\n            \"unit\": \"rpm\"\n          },\n          \"provenance\": {\n            \"kind\": \"engineer\",\n            \"who\": \"the engineer\",\n            \"when\": \"2026-10-08 19:37\",\n            \"note\": \"highway cruise, 110 km/h on a 245/45 R19 tyre, 2,208.85 mm round\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        }\n      },\n      {\n        \"shaft\": \"input\",\n        \"kind\": \"maximum\",\n        \"speed\": {\n          \"value\": {\n            \"value\": 8673,\n            \"unit\": \"rpm\"\n          },\n          \"provenance\": {\n            \"kind\": \"engineer\",\n            \"who\": \"the engineer\",\n            \"when\": \"2026-10-08 19:37\",\n            \"note\": \"a 160 km/h top speed on a 245/45 R19 tyre, 2,208.85 mm round\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        }\n      }\n    ],\n    \"input_output_offset\": {\n      \"value\": {\n        \"value\": 165,\n        \"unit\": \"mm\"\n      },\n      \"provenance\": {\n        \"kind\": \"engineer\",\n        \"who\": \"the engineer\",\n        \"when\": \"2026-10-09 02:12\",\n        \"note\": \"the first packaging\"\n      },\n      \"authority\": \"engineer_locked\",\n      \"kind\": \"hard\"\n    },\n    \"forward_rotation\": {\n      \"value\": \"+z\",\n      \"provenance\": {\n        \"kind\": \"assumption\",\n        \"assumption_id\": \"A21\"\n      },\n      \"authority\": \"engineer_locked\",\n      \"kind\": \"hard\"\n    },\n    \"service_life\": {\n      \"value\": {\n        \"value\": 944,\n        \"unit\": \"h\"\n      },\n      \"provenance\": {\n        \"kind\": \"assumption\",\n        \"assumption_id\": \"A4\"\n      },\n      \"authority\": \"engineer_locked\",\n      \"kind\": \"hard\"\n    },\n    \"gear_material\": {\n      \"value\": \"SS 2511\",\n      \"provenance\": {\n        \"kind\": \"engineer\",\n        \"who\": \"the engineer\",\n        \"when\": \"2026-10-08 19:37\",\n        \"note\": \"the requirement\"\n      },\n      \"authority\": \"engineer_locked\",\n      \"kind\": \"hard\"\n    },\n    \"gear_quality\": {\n      \"value\": \"N6\",\n      \"provenance\": {\n        \"kind\": \"assumption\",\n        \"assumption_id\": \"A5\"\n      },\n      \"authority\": \"engineer_locked\",\n      \"kind\": \"hard\"\n    },\n    \"shaft_material\": {\n      \"name\": \"20MnCr5, case-hardened\",\n      \"yield_strength\": {\n        \"value\": {\n          \"value\": 590,\n          \"unit\": \"MPa\"\n        },\n        \"provenance\": {\n          \"kind\": \"assumption\",\n          \"assumption_id\": \"A24\"\n        },\n        \"authority\": \"engineer_locked\",\n        \"kind\": \"hard\"\n      },\n      \"youngs_modulus\": {\n        \"value\": {\n          \"value\": 210,\n          \"unit\": \"GPa\"\n        },\n        \"provenance\": {\n          \"kind\": \"assumption\",\n          \"assumption_id\": \"A24\"\n        },\n        \"authority\": \"engineer_locked\",\n        \"kind\": \"hard\"\n      },\n      \"design_factor\": {\n        \"value\": {\n          \"value\": 2,\n          \"unit\": \"1\"\n        },\n        \"provenance\": {\n          \"kind\": \"assumption\",\n          \"assumption_id\": \"A24\"\n        },\n        \"authority\": \"engineer_locked\",\n        \"kind\": \"hard\"\n      }\n    },\n    \"stages\": [\n      {\n        \"name\": \"s1\",\n        \"pinion_shaft\": \"input\",\n        \"gear_shaft\": \"intermediate\",\n        \"z_pinion\": {\n          \"value\": 25,\n          \"provenance\": {\n            \"kind\": \"engineer\",\n            \"who\": \"the engineer\",\n            \"when\": \"2026-10-08 19:37\",\n            \"note\": \"the requirement\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        },\n        \"z_gear\": {\n          \"value\": 51,\n          \"provenance\": {\n            \"kind\": \"engineer\",\n            \"who\": \"the engineer\",\n            \"when\": \"2026-10-08 19:37\",\n            \"note\": \"the requirement\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        },\n        \"normal_module\": {\n          \"value\": {\n            \"value\": 1.85,\n            \"unit\": \"mm\"\n          },\n          \"provenance\": {\n            \"kind\": \"engineer\",\n            \"who\": \"the engineer\",\n            \"when\": \"2026-10-08 19:37\",\n            \"note\": \"the requirement\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        },\n        \"pressure_angle\": {\n          \"value\": {\n            \"value\": 18,\n            \"unit\": \"deg\"\n          },\n          \"provenance\": {\n            \"kind\": \"engineer\",\n            \"who\": \"the engineer\",\n            \"when\": \"2026-10-08 19:37\",\n            \"note\": \"the requirement\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        },\n        \"helix_angle\": {\n          \"value\": {\n            \"value\": 30,\n            \"unit\": \"deg\"\n          },\n          \"provenance\": {\n            \"kind\": \"engineer\",\n            \"who\": \"the engineer\",\n            \"when\": \"2026-10-08 23:23\",\n            \"note\": \"30 deg on both stages\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        },\n        \"helix_hand_pinion\": {\n          \"value\": \"left\",\n          \"provenance\": {\n            \"kind\": \"engineer\",\n            \"who\": \"the engineer\",\n            \"when\": \"2026-10-08 19:37\",\n            \"note\": \"the gear is right-handed\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        },\n        \"face_width_pinion\": {\n          \"value\": {\n            \"value\": 16.5,\n            \"unit\": \"mm\"\n          },\n          \"provenance\": {\n            \"kind\": \"engineer\",\n            \"who\": \"the engineer\",\n            \"when\": \"2026-10-08 19:37\",\n            \"note\": \"active face width\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        },\n        \"face_width_gear\": {\n          \"value\": {\n            \"value\": 15.5,\n            \"unit\": \"mm\"\n          },\n          \"provenance\": {\n            \"kind\": \"engineer\",\n            \"who\": \"the engineer\",\n            \"when\": \"2026-10-08 19:37\",\n            \"note\": \"active face width\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        },\n        \"profile_shift_pinion\": {\n          \"value\": {\n            \"value\": 0.43672,\n            \"unit\": \"1\"\n          },\n          \"provenance\": {\n            \"kind\": \"engineer\",\n            \"who\": \"the engineer\",\n            \"when\": \"2026-10-08 19:37\",\n            \"note\": \"the requirement\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        },\n        \"profile_shift_gear\": {\n          \"value\": {\n            \"value\": 0.57199922,\n            \"unit\": \"1\"\n          },\n          \"provenance\": {\n            \"kind\": \"engineer\",\n            \"who\": \"the engineer\",\n            \"when\": \"2026-10-08 19:37\",\n            \"note\": \"the requirement\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        }\n      },\n      {\n        \"name\": \"s2\",\n        \"pinion_shaft\": \"intermediate\",\n        \"gear_shaft\": \"output\",\n        \"z_pinion\": {\n          \"value\": 23,\n          \"provenance\": {\n            \"kind\": \"engineer\",\n            \"who\": \"the engineer\",\n            \"when\": \"2026-10-08 19:37\",\n            \"note\": \"the requirement\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        },\n        \"z_gear\": {\n          \"value\": 81,\n          \"provenance\": {\n            \"kind\": \"engineer\",\n            \"who\": \"the engineer\",\n            \"when\": \"2026-10-08 19:37\",\n            \"note\": \"the requirement\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        },\n        \"normal_module\": {\n          \"value\": {\n            \"value\": 2.05,\n            \"unit\": \"mm\"\n          },\n          \"provenance\": {\n            \"kind\": \"engineer\",\n            \"who\": \"the engineer\",\n            \"when\": \"2026-10-08 19:37\",\n            \"note\": \"the requirement\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        },\n        \"pressure_angle\": {\n          \"value\": {\n            \"value\": 18,\n            \"unit\": \"deg\"\n          },\n          \"provenance\": {\n            \"kind\": \"engineer\",\n            \"who\": \"the engineer\",\n            \"when\": \"2026-10-08 19:37\",\n            \"note\": \"the requirement\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        },\n        \"helix_angle\": {\n          \"value\": {\n            \"value\": 30,\n            \"unit\": \"deg\"\n          },\n          \"provenance\": {\n            \"kind\": \"engineer\",\n            \"who\": \"the engineer\",\n            \"when\": \"2026-10-08 23:23\",\n            \"note\": \"30 deg on both stages\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        },\n        \"helix_hand_pinion\": {\n          \"value\": \"left\",\n          \"provenance\": {\n            \"kind\": \"engineer\",\n            \"who\": \"the engineer\",\n            \"when\": \"2026-10-08 19:37\",\n            \"note\": \"the gear is right-handed\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        },\n        \"face_width_pinion\": {\n          \"value\": {\n            \"value\": 25.625,\n            \"unit\": \"mm\"\n          },\n          \"provenance\": {\n            \"kind\": \"engineer\",\n            \"who\": \"the engineer\",\n            \"when\": \"2026-10-08 19:37\",\n            \"note\": \"active face width\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        },\n        \"face_width_gear\": {\n          \"value\": {\n            \"value\": 22.25,\n            \"unit\": \"mm\"\n          },\n          \"provenance\": {\n            \"kind\": \"engineer\",\n            \"who\": \"the engineer\",\n            \"when\": \"2026-10-08 19:37\",\n            \"note\": \"active face width\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        },\n        \"profile_shift_pinion\": {\n          \"value\": {\n            \"value\": 0.431143,\n            \"unit\": \"1\"\n          },\n          \"provenance\": {\n            \"kind\": \"engineer\",\n            \"who\": \"the engineer\",\n            \"when\": \"2026-10-08 19:37\",\n            \"note\": \"the requirement\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        },\n        \"profile_shift_gear\": {\n          \"value\": {\n            \"value\": 0.56857692,\n            \"unit\": \"1\"\n          },\n          \"provenance\": {\n            \"kind\": \"engineer\",\n            \"who\": \"the engineer\",\n            \"when\": \"2026-10-08 19:37\",\n            \"note\": \"the requirement\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        }\n      }\n    ],\n    \"bearings\": [],\n    \"shaft_layout\": {\n      \"bearing_to_gear\": {\n        \"value\": {\n          \"value\": 12.7,\n          \"unit\": \"mm\"\n        },\n        \"provenance\": {\n          \"kind\": \"assumption\",\n          \"assumption_id\": \"A13\"\n        },\n        \"authority\": \"engineer_locked\",\n        \"kind\": \"hard\"\n      },\n      \"behind_bearing\": {\n        \"value\": {\n          \"value\": 6.35,\n          \"unit\": \"mm\"\n        },\n        \"provenance\": {\n          \"kind\": \"assumption\",\n          \"assumption_id\": \"A14\"\n        },\n        \"authority\": \"engineer_locked\",\n        \"kind\": \"hard\"\n      },\n      \"behind_bearing_sealed\": {\n        \"value\": {\n          \"value\": 11,\n          \"unit\": \"mm\"\n        },\n        \"provenance\": {\n          \"kind\": \"assumption\",\n          \"assumption_id\": \"A16\"\n        },\n        \"authority\": \"engineer_locked\",\n        \"kind\": \"hard\"\n      },\n      \"sealed_ends\": [\n        {\n          \"shaft\": \"input\",\n          \"side\": {\n            \"value\": \"-z\",\n            \"provenance\": {\n              \"kind\": \"assumption\",\n              \"assumption_id\": \"A17\"\n            },\n            \"authority\": \"engineer_locked\",\n            \"kind\": \"hard\"\n          }\n        },\n        {\n          \"shaft\": \"output\",\n          \"side\": {\n            \"value\": \"-z\",\n            \"provenance\": {\n              \"kind\": \"assumption\",\n              \"assumption_id\": \"A17\"\n            },\n            \"authority\": \"engineer_locked\",\n            \"kind\": \"hard\"\n          }\n        },\n        {\n          \"shaft\": \"output\",\n          \"side\": {\n            \"value\": \"+z\",\n            \"provenance\": {\n              \"kind\": \"assumption\",\n              \"assumption_id\": \"A17\"\n            },\n            \"authority\": \"engineer_locked\",\n            \"kind\": \"hard\"\n          }\n        }\n      ],\n      \"gear_to_gear\": {\n        \"value\": {\n          \"value\": 12.7,\n          \"unit\": \"mm\"\n        },\n        \"provenance\": {\n          \"kind\": \"assumption\",\n          \"assumption_id\": \"A15\"\n        },\n        \"authority\": \"engineer_locked\",\n        \"kind\": \"hard\"\n      },\n      \"min_axial_clearance\": {\n        \"value\": {\n          \"value\": 3,\n          \"unit\": \"mm\"\n        },\n        \"provenance\": {\n          \"kind\": \"assumption\",\n          \"assumption_id\": \"A18\"\n        },\n        \"authority\": \"engineer_locked\",\n        \"kind\": \"hard\"\n      },\n      \"min_radial_clearance\": {\n        \"value\": {\n          \"value\": 8.25,\n          \"unit\": \"mm\"\n        },\n        \"provenance\": {\n          \"kind\": \"assumption\",\n          \"assumption_id\": \"A19\"\n        },\n        \"authority\": \"engineer_locked\",\n        \"kind\": \"hard\"\n      },\n      \"first_stage_side\": {\n        \"value\": \"-z\",\n        \"provenance\": {\n          \"kind\": \"assumption\",\n          \"assumption_id\": \"A22\"\n        },\n        \"authority\": \"engineer_locked\",\n        \"kind\": \"hard\"\n      },\n      \"bearings\": [\n        {\n          \"shaft\": \"input\",\n          \"side\": {\n            \"value\": \"-z\",\n            \"provenance\": {\n              \"kind\": \"assumption\",\n              \"assumption_id\": \"A8\"\n            },\n            \"authority\": \"engineer_locked\",\n            \"kind\": \"hard\"\n          },\n          \"type\": \"deep_groove_ball\",\n          \"axial\": {\n            \"value\": \"locating\",\n            \"provenance\": {\n              \"kind\": \"assumption\",\n              \"assumption_id\": \"A8\"\n            },\n            \"authority\": \"engineer_locked\",\n            \"kind\": \"hard\"\n          }\n        },\n        {\n          \"shaft\": \"input\",\n          \"side\": {\n            \"value\": \"+z\",\n            \"provenance\": {\n              \"kind\": \"assumption\",\n              \"assumption_id\": \"A8\"\n            },\n            \"authority\": \"engineer_locked\",\n            \"kind\": \"hard\"\n          },\n          \"type\": \"cylindrical_roller\",\n          \"axial\": {\n            \"value\": \"floating\",\n            \"provenance\": {\n              \"kind\": \"assumption\",\n              \"assumption_id\": \"A8\"\n            },\n            \"authority\": \"engineer_locked\",\n            \"kind\": \"hard\"\n          }\n        },\n        {\n          \"shaft\": \"intermediate\",\n          \"side\": {\n            \"value\": \"-z\",\n            \"provenance\": {\n              \"kind\": \"assumption\",\n              \"assumption_id\": \"A8\"\n            },\n            \"authority\": \"engineer_locked\",\n            \"kind\": \"hard\"\n          },\n          \"type\": \"tapered_roller\",\n          \"axial\": {\n            \"value\": \"own_side\",\n            \"provenance\": {\n              \"kind\": \"assumption\",\n              \"assumption_id\": \"A8\"\n            },\n            \"authority\": \"engineer_locked\",\n            \"kind\": \"hard\"\n          }\n        },\n        {\n          \"shaft\": \"intermediate\",\n          \"side\": {\n            \"value\": \"+z\",\n            \"provenance\": {\n              \"kind\": \"assumption\",\n              \"assumption_id\": \"A8\"\n            },\n            \"authority\": \"engineer_locked\",\n            \"kind\": \"hard\"\n          },\n          \"type\": \"tapered_roller\",\n          \"axial\": {\n            \"value\": \"own_side\",\n            \"provenance\": {\n              \"kind\": \"assumption\",\n              \"assumption_id\": \"A8\"\n            },\n            \"authority\": \"engineer_locked\",\n            \"kind\": \"hard\"\n          }\n        },\n        {\n          \"shaft\": \"output\",\n          \"side\": {\n            \"value\": \"-z\",\n            \"provenance\": {\n              \"kind\": \"assumption\",\n              \"assumption_id\": \"A8\"\n            },\n            \"authority\": \"engineer_locked\",\n            \"kind\": \"hard\"\n          },\n          \"type\": \"deep_groove_ball\",\n          \"axial\": {\n            \"value\": \"own_side\",\n            \"provenance\": {\n              \"kind\": \"assumption\",\n              \"assumption_id\": \"A8\"\n            },\n            \"authority\": \"engineer_locked\",\n            \"kind\": \"hard\"\n          }\n        },\n        {\n          \"shaft\": \"output\",\n          \"side\": {\n            \"value\": \"+z\",\n            \"provenance\": {\n              \"kind\": \"assumption\",\n              \"assumption_id\": \"A8\"\n            },\n            \"authority\": \"engineer_locked\",\n            \"kind\": \"hard\"\n          },\n          \"type\": \"deep_groove_ball\",\n          \"axial\": {\n            \"value\": \"own_side\",\n            \"provenance\": {\n              \"kind\": \"assumption\",\n              \"assumption_id\": \"A8\"\n            },\n            \"authority\": \"engineer_locked\",\n            \"kind\": \"hard\"\n          }\n        }\n      ],\n      \"carriers\": [\n        {\n          \"name\": \"differential\",\n          \"shaft\": \"output\",\n          \"bearing_spacing\": {\n            \"value\": {\n              \"value\": 96,\n              \"unit\": \"mm\"\n            },\n            \"provenance\": {\n              \"kind\": \"assumption\",\n              \"assumption_id\": \"A23\"\n            },\n            \"authority\": \"engineer_locked\",\n            \"kind\": \"hard\"\n          },\n          \"diameter\": {\n            \"value\": {\n              \"value\": 105,\n              \"unit\": \"mm\"\n            },\n            \"provenance\": {\n              \"kind\": \"assumption\",\n              \"assumption_id\": \"A23\"\n            },\n            \"authority\": \"engineer_locked\",\n            \"kind\": \"hard\"\n          },\n          \"gear_beside\": {\n            \"value\": \"+z\",\n            \"provenance\": {\n              \"kind\": \"assumption\",\n              \"assumption_id\": \"A23\"\n            },\n            \"authority\": \"engineer_locked\",\n            \"kind\": \"hard\"\n          },\n          \"hub_diameter\": {\n            \"value\": {\n              \"value\": 45,\n              \"unit\": \"mm\"\n            },\n            \"provenance\": {\n              \"kind\": \"assumption\",\n              \"assumption_id\": \"A23\"\n            },\n            \"authority\": \"engineer_locked\",\n            \"kind\": \"hard\"\n          }\n        }\n      ]\n    },\n    \"installation_space\": {\n      \"kind\": \"layout_envelope\",\n      \"clearance\": {\n        \"value\": {\n          \"value\": 40,\n          \"unit\": \"mm\"\n        },\n        \"provenance\": {\n          \"kind\": \"assumption\",\n          \"assumption_id\": \"A3\"\n        },\n        \"authority\": \"engineer_locked\",\n        \"kind\": \"hard\"\n      }\n    }\n  },\n  \"limits\": {\n    \"verdict_rule_version\": \"v0.1\",\n    \"mesh_misalignment_share\": {\n      \"value\": {\n        \"value\": 50,\n        \"unit\": \"%\"\n      },\n      \"provenance\": {\n        \"kind\": \"assumption\",\n        \"assumption_id\": \"A6\"\n      },\n      \"authority\": \"engineer_locked\",\n      \"kind\": \"hard\"\n    },\n    \"centre_distance_share\": {\n      \"value\": {\n        \"value\": 50,\n        \"unit\": \"%\"\n      },\n      \"provenance\": {\n        \"kind\": \"assumption\",\n        \"assumption_id\": \"A6\"\n      },\n      \"authority\": \"engineer_locked\",\n      \"kind\": \"hard\"\n    },\n    \"ovalisation_share\": {\n      \"value\": {\n        \"value\": 50,\n        \"unit\": \"%\"\n      },\n      \"provenance\": {\n        \"kind\": \"assumption\",\n        \"assumption_id\": \"A6\"\n      },\n      \"authority\": \"engineer_locked\",\n      \"kind\": \"hard\"\n    },\n    \"bearing_tilt\": [\n      {\n        \"bearing_type\": \"tapered_roller\",\n        \"limit\": {\n          \"value\": {\n            \"value\": 0.5,\n            \"unit\": \"mrad\"\n          },\n          \"provenance\": {\n            \"kind\": \"standard\",\n            \"citation\": \"Shigley, Mechanical Engineering Design, Table 7-2 (rough guideline)\",\n            \"note\": \"lower end of 0.5-1.2 mrad\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        }\n      },\n      {\n        \"bearing_type\": \"cylindrical_roller\",\n        \"limit\": {\n          \"value\": {\n            \"value\": 0.8,\n            \"unit\": \"mrad\"\n          },\n          \"provenance\": {\n            \"kind\": \"standard\",\n            \"citation\": \"Shigley, Mechanical Engineering Design, Table 7-2 (rough guideline)\",\n            \"note\": \"lower end of 0.8-1.2 mrad\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        }\n      },\n      {\n        \"bearing_type\": \"deep_groove_ball\",\n        \"limit\": {\n          \"value\": {\n            \"value\": 1.0,\n            \"unit\": \"mrad\"\n          },\n          \"provenance\": {\n            \"kind\": \"standard\",\n            \"citation\": \"Shigley, Mechanical Engineering Design, Table 7-2 (rough guideline)\",\n            \"note\": \"lower end of 1-3 mrad\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        }\n      }\n    ],\n    \"order_separation\": {\n      \"value\": {\n        \"value\": 3,\n        \"unit\": \"%\"\n      },\n      \"provenance\": {\n        \"kind\": \"published\",\n        \"citation\": \"Marano et al. 2021, Gear Technology Jan-Feb 2021 (orders at least 3 % apart)\"\n      },\n      \"authority\": \"engineer_locked\",\n      \"kind\": \"hard\"\n    },\n    \"order_check_at\": {\n      \"value\": \"rated\",\n      \"provenance\": {\n        \"kind\": \"engineer\",\n        \"who\": \"the engineer\",\n        \"when\": \"2026-10-09 01:06\",\n        \"note\": \"one check speed: the cruise\"\n      },\n      \"authority\": \"engineer_locked\",\n      \"kind\": \"hard\"\n    },\n    \"model_margin\": {\n      \"value\": {\n        \"value\": 25,\n        \"unit\": \"%\"\n      },\n      \"provenance\": {\n        \"kind\": \"engineer\",\n        \"who\": \"the engineer\",\n        \"when\": \"2026-10-09 01:06\",\n        \"note\": \"kept for now; tied to the model's level later\"\n      },\n      \"authority\": \"engineer_locked\",\n      \"kind\": \"hard\"\n    },\n    \"objective\": \"least_mass\",\n    \"stress\": \"recorded\"\n  },\n  \"manufacturing\": {\n    \"process\": \"sand_casting\",\n    \"pull_directions\": [\n      {\n        \"part\": \"motor-side\",\n        \"direction\": {\n          \"value\": {\n            \"values\": [\n              0,\n              0,\n              -1\n            ],\n            \"unit\": \"1\"\n          },\n          \"provenance\": {\n            \"kind\": \"engineer\",\n            \"who\": \"the engineer\",\n            \"when\": \"2026-10-09 02:12\",\n            \"note\": \"along the shafts: the halves split across them\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        }\n      },\n      {\n        \"part\": \"cover\",\n        \"direction\": {\n          \"value\": {\n            \"values\": [\n              0,\n              0,\n              1\n            ],\n            \"unit\": \"1\"\n          },\n          \"provenance\": {\n            \"kind\": \"engineer\",\n            \"who\": \"the engineer\",\n            \"when\": \"2026-10-09 02:12\",\n            \"note\": \"along the shafts: the halves split across them\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        }\n      }\n    ],\n    \"draft_inside\": {\n      \"value\": {\n        \"value\": 0,\n        \"unit\": \"deg\"\n      },\n      \"provenance\": {\n        \"kind\": \"assumption\",\n        \"assumption_id\": \"A11\"\n      },\n      \"authority\": \"engineer_locked\",\n      \"kind\": \"hard\"\n    },\n    \"draft_outside\": {\n      \"value\": {\n        \"value\": 0,\n        \"unit\": \"deg\"\n      },\n      \"provenance\": {\n        \"kind\": \"assumption\",\n        \"assumption_id\": \"A11\"\n      },\n      \"authority\": \"engineer_locked\",\n      \"kind\": \"hard\"\n    },\n    \"min_wall\": {\n      \"value\": {\n        \"value\": 4,\n        \"unit\": \"mm\"\n      },\n      \"provenance\": {\n        \"kind\": \"engineer\",\n        \"who\": \"the engineer\",\n        \"when\": \"2026-10-07 11:41\",\n        \"note\": \"plan D7 (least member): 4 mm, set by the FE budget on the 8 GB card\"\n      },\n      \"authority\": \"engineer_locked\",\n      \"kind\": \"hard\"\n    },\n    \"machining_stock\": {\n      \"value\": {\n        \"value\": 1.5,\n        \"unit\": \"mm\"\n      },\n      \"provenance\": {\n        \"kind\": \"assumption\",\n        \"assumption_id\": \"A12\"\n      },\n      \"authority\": \"engineer_locked\",\n      \"kind\": \"hard\"\n    },\n    \"material\": {\n      \"name\": \"EN AC-42100 T6 (AlSi7Mg0.3), sand cast\",\n      \"youngs_modulus\": {\n        \"value\": {\n          \"value\": 69,\n          \"unit\": \"GPa\"\n        },\n        \"provenance\": {\n          \"kind\": \"engineer\",\n          \"who\": \"the engineer\",\n          \"when\": \"2026-10-08 19:37\",\n          \"note\": \"with the material\"\n        },\n        \"authority\": \"engineer_locked\",\n        \"kind\": \"hard\"\n      },\n      \"poisson_ratio\": {\n        \"value\": {\n          \"value\": 0.33,\n          \"unit\": \"1\"\n        },\n        \"provenance\": {\n          \"kind\": \"engineer\",\n          \"who\": \"the engineer\",\n          \"when\": \"2026-10-08 19:37\",\n          \"note\": \"with the material\"\n        },\n        \"authority\": \"engineer_locked\",\n        \"kind\": \"hard\"\n      },\n      \"density\": {\n        \"value\": {\n          \"value\": 2600,\n          \"unit\": \"kg/m3\"\n        },\n        \"provenance\": {\n          \"kind\": \"engineer\",\n          \"who\": \"the engineer\",\n          \"when\": \"2026-10-08 19:37\",\n          \"note\": \"with the material\"\n        },\n        \"authority\": \"engineer_locked\",\n        \"kind\": \"hard\"\n      }\n    }\n  },\n  \"references\": [\n    {\n      \"source\": \"the example's reference housing\",\n      \"quantity\": \"housing mass\",\n      \"value\": \"7.732 kg\",\n      \"conditions\": \"three sand-cast parts in EN AC-42100 T6; from the CAD at 2.6 g/cm³\",\n      \"confidence\": \"published\"\n    },\n    {\n      \"source\": \"the example's reference housing\",\n      \"quantity\": \"free modes of the initial design\",\n      \"value\": \"first elastic mode 1127 Hz; mode 13 at 2851 Hz; mode 16 at 3159 Hz\",\n      \"conditions\": \"free-free, with the three parts tied, so it reads high\",\n      \"confidence\": \"published\"\n    },\n    {\n      \"source\": \"the example's reference housing\",\n      \"quantity\": \"bearing-bed displacement, slots 1-6\",\n      \"value\": \"forward 0.0384, 0.0079, 0.0349, 0.0085, 0.0111, 0.0522 mm; reverse 0.1076, 0.1236, 0.0672, 0.110, 0.0219, 0.1380 mm\",\n      \"conditions\": \"peak bearing forces combined (forward at 6,000 rpm, reverse at 2,000 rpm); mounts fixed; the flange carries 150 N·m\",\n      \"confidence\": \"published\"\n    },\n    {\n      \"source\": \"the example's reference housing\",\n      \"quantity\": \"stress\",\n      \"value\": \"below 230 MPa, the alloy's yield, but for one singular element\",\n      \"conditions\": \"the forward and reverse peak cases\",\n      \"confidence\": \"published\"\n    }\n  ],\n  \"assumptions\": [\n    {\n      \"id\": \"A2\",\n      \"what\": \"regeneration torque\",\n      \"value\": \"150 N·m at the input, as drive\",\n      \"why\": \"no regeneration case given; taken equal to the drive\",\n      \"varied\": true\n    },\n    {\n      \"id\": \"A3\",\n      \"what\": \"installation space\",\n      \"value\": \"the layout's envelope plus 40 mm\",\n      \"why\": \"no package given; room beyond the tip clearance for the wall, a split flange (24 mm for M8 · Maciejczyk & Zdziennicki Table 9.1) and ribs\",\n      \"varied\": true\n    },\n    {\n      \"id\": \"A4\",\n      \"what\": \"service life\",\n      \"value\": \"944 h\",\n      \"why\": \"a passenger-EV reducer's life · Hofstetter et al. 2018\",\n      \"varied\": false\n    },\n    {\n      \"id\": \"A5\",\n      \"what\": \"gear quality\",\n      \"value\": \"N6 (JGMA)\",\n      \"why\": \"no grade given\",\n      \"varied\": false\n    },\n    {\n      \"id\": \"A6\",\n      \"what\": \"the housing's share\",\n      \"value\": \"half of each tolerance\",\n      \"why\": \"no public source gives a share\",\n      \"varied\": true\n    },\n    {\n      \"id\": \"A8\",\n      \"what\": \"the bearings\",\n      \"value\": \"input: ball (-z, locating) + cylindrical roller (+z, floating) · intermediate: tapered pair · output: ball pair (each bearing of a pair takes the thrust towards its own end)\",\n      \"why\": \"a passenger-EV reducer's arrangement · Hofstetter et al. 2018; the sizes from the loads by L10 life\",\n      \"varied\": false\n    },\n    {\n      \"id\": \"A11\",\n      \"what\": \"draft\",\n      \"value\": \"0 deg inside and outside\",\n      \"why\": \"printed sand moulds need no pattern draft; to confirm against a public rule\",\n      \"varied\": false\n    },\n    {\n      \"id\": \"A12\",\n      \"what\": \"machining stock\",\n      \"value\": \"1.5 mm\",\n      \"why\": \"a usual sand-casting allowance; ISO 8062 grades it\",\n      \"varied\": false\n    },\n    {\n      \"id\": \"A13\",\n      \"what\": \"the gap between a bearing and the gear beside it\",\n      \"value\": \"12.7 mm (½ in)\",\n      \"why\": \"room for a shoulder, a retaining ring and a bearing puller · Shigley Ch. 18, Fig. 18-2\",\n      \"varied\": true\n    },\n    {\n      \"id\": \"A14\",\n      \"what\": \"the space behind each bearing\",\n      \"value\": \"6.35 mm (¼ in)\",\n      \"why\": \"the wall behind a bearing in a closed bore · Shigley Ch. 18, Fig. 18-2\",\n      \"varied\": true\n    },\n    {\n      \"id\": \"A15\",\n      \"what\": \"the gap between two gears on one shaft (the intermediate's)\",\n      \"value\": \"12.7 mm, as the bearing-to-gear gap\",\n      \"why\": \"no source yet\",\n      \"varied\": true\n    },\n    {\n      \"id\": \"A16\",\n      \"what\": \"the space behind a bearing where its shaft leaves the housing\",\n      \"value\": \"11 mm: an 8 mm radial shaft seal and 3 mm for its seat\",\n      \"why\": \"seals of about 7-10 mm width for 30-50 mm shafts · makers' seal catalogues\",\n      \"varied\": true\n    },\n    {\n      \"id\": \"A17\",\n      \"what\": \"the shaft ends that leave the housing\",\n      \"value\": \"the input's motor side (-z); the output's two sides\",\n      \"why\": \"the motor drives the input from the motor side; the differential sends a half-shaft out of each side\",\n      \"varied\": true\n    },\n    {\n      \"id\": \"A18\",\n      \"what\": \"the least clearance along the shafts between parts on different shafts that overlap seen along the shafts\",\n      \"value\": \"3 mm\",\n      \"why\": \"no source yet\",\n      \"varied\": true\n    },\n    {\n      \"id\": \"A19\",\n      \"what\": \"the least clearance from a gear's tips to the housing wall\",\n      \"value\": \"8.25 mm\",\n      \"why\": \"(1.1-1.2) × the wall thickness δ, at δ = 7.5 mm · Maciejczyk & Zdziennicki Ch. 9, Fig. 9.1\",\n      \"varied\": true\n    },\n    {\n      \"id\": \"A21\",\n      \"what\": \"the input's rotation in forward drive\",\n      \"value\": \"+z: anticlockwise seen from the cover side (+z)\",\n      \"why\": \"not given; it sets the forces' directions, not their sizes\",\n      \"varied\": true\n    },\n    {\n      \"id\": \"A22\",\n      \"what\": \"the side the first stage meshes on\",\n      \"value\": \"-z, the motor side; the second stage towards the cover\",\n      \"why\": \"not given; the input shaft stays short beside the motor\",\n      \"varied\": true\n    },\n    {\n      \"id\": \"A23\",\n      \"what\": \"the differential\",\n      \"value\": \"a bevel unit: bearings 96 mm apart centre to centre, case Ø105 mm, hubs Ø45 mm, the output gear beside its +z bearing\",\n      \"why\": \"a 2,100 N·m class unit for about 1,080 N·m here · Schaeffler Symposium 2010, Figs. 13-14 (the case Ø read off a figure; the hubs' Ø not given)\",\n      \"varied\": true\n    },\n    {\n      \"id\": \"A24\",\n      \"what\": \"the shafts' steel\",\n      \"value\": \"20MnCr5, case-hardened: core yield 590 MPa, E 210 GPa; design factor 2 on the peak torques\",\n      \"why\": \"a common gear steel (the engineer, 9 Oct 00:50); the core yield is the low end of public datasheets, to source\",\n      \"varied\": true\n    }\n  ]\n}"
+   "json": "{\n  \"schema_version\": \"0.1\",\n  \"stage\": \"posed\",\n  \"task\": {\n    \"id\": \"ev-reducer-l1\",\n    \"title\": \"EV two-stage reducer: an L1 housing, sand cast\",\n    \"family\": \"single-speed two-stage helical reducer with integrated differential\",\n    \"level\": \"L1\",\n    \"priorities\": [],\n    \"budget_fe_proofs\": 16,\n    \"budget_hours\": 4.0\n  },\n  \"requirement\": {\n    \"style\": \"gear_train\",\n    \"torques\": [\n      {\n        \"shaft\": \"input\",\n        \"kind\": \"peak\",\n        \"direction\": \"drive\",\n        \"torque\": {\n          \"value\": {\n            \"value\": 150,\n            \"unit\": \"N·m\"\n          },\n          \"provenance\": {\n            \"kind\": \"engineer\",\n            \"who\": \"the engineer\",\n            \"when\": \"2026-10-08 19:37\",\n            \"note\": \"the peak transfer\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        }\n      },\n      {\n        \"shaft\": \"input\",\n        \"kind\": \"peak\",\n        \"direction\": \"reverse\",\n        \"torque\": {\n          \"value\": {\n            \"value\": 150,\n            \"unit\": \"N·m\"\n          },\n          \"provenance\": {\n            \"kind\": \"engineer\",\n            \"who\": \"the engineer\",\n            \"when\": \"2026-10-08 19:37\",\n            \"note\": \"the backward case, at 2,000 rpm\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        }\n      },\n      {\n        \"shaft\": \"input\",\n        \"kind\": \"peak\",\n        \"direction\": \"regeneration\",\n        \"torque\": {\n          \"value\": {\n            \"value\": 150,\n            \"unit\": \"N·m\"\n          },\n          \"provenance\": {\n            \"kind\": \"assumption\",\n            \"assumption_id\": \"A2\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        }\n      }\n    ],\n    \"speeds\": [\n      {\n        \"shaft\": \"input\",\n        \"kind\": \"rated\",\n        \"speed\": {\n          \"value\": {\n            \"value\": 6000,\n            \"unit\": \"rpm\"\n          },\n          \"provenance\": {\n            \"kind\": \"engineer\",\n            \"who\": \"the engineer\",\n            \"when\": \"2026-10-08 19:37\",\n            \"note\": \"highway cruise, 110 km/h on a 245/45 R19 tyre, 2,208.85 mm round\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        }\n      },\n      {\n        \"shaft\": \"input\",\n        \"kind\": \"maximum\",\n        \"speed\": {\n          \"value\": {\n            \"value\": 8673,\n            \"unit\": \"rpm\"\n          },\n          \"provenance\": {\n            \"kind\": \"engineer\",\n            \"who\": \"the engineer\",\n            \"when\": \"2026-10-08 19:37\",\n            \"note\": \"a 160 km/h top speed on a 245/45 R19 tyre, 2,208.85 mm round\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        }\n      }\n    ],\n    \"input_output_offset\": {\n      \"value\": {\n        \"value\": 165,\n        \"unit\": \"mm\"\n      },\n      \"provenance\": {\n        \"kind\": \"engineer\",\n        \"who\": \"the engineer\",\n        \"when\": \"2026-10-09 02:12\",\n        \"note\": \"the first packaging\"\n      },\n      \"authority\": \"engineer_locked\",\n      \"kind\": \"hard\"\n    },\n    \"forward_rotation\": {\n      \"value\": \"+z\",\n      \"provenance\": {\n        \"kind\": \"assumption\",\n        \"assumption_id\": \"A21\"\n      },\n      \"authority\": \"engineer_locked\",\n      \"kind\": \"hard\"\n    },\n    \"service_life\": {\n      \"value\": {\n        \"value\": 944,\n        \"unit\": \"h\"\n      },\n      \"provenance\": {\n        \"kind\": \"assumption\",\n        \"assumption_id\": \"A4\"\n      },\n      \"authority\": \"engineer_locked\",\n      \"kind\": \"hard\"\n    },\n    \"gear_material\": {\n      \"value\": \"SS 2511\",\n      \"provenance\": {\n        \"kind\": \"engineer\",\n        \"who\": \"the engineer\",\n        \"when\": \"2026-10-08 19:37\",\n        \"note\": \"the requirement\"\n      },\n      \"authority\": \"engineer_locked\",\n      \"kind\": \"hard\"\n    },\n    \"gear_quality\": {\n      \"value\": \"N6\",\n      \"provenance\": {\n        \"kind\": \"assumption\",\n        \"assumption_id\": \"A5\"\n      },\n      \"authority\": \"engineer_locked\",\n      \"kind\": \"hard\"\n    },\n    \"shaft_material\": {\n      \"name\": \"20MnCr5, case-hardened\",\n      \"yield_strength\": {\n        \"value\": {\n          \"value\": 590,\n          \"unit\": \"MPa\"\n        },\n        \"provenance\": {\n          \"kind\": \"assumption\",\n          \"assumption_id\": \"A24\"\n        },\n        \"authority\": \"engineer_locked\",\n        \"kind\": \"hard\"\n      },\n      \"youngs_modulus\": {\n        \"value\": {\n          \"value\": 210,\n          \"unit\": \"GPa\"\n        },\n        \"provenance\": {\n          \"kind\": \"assumption\",\n          \"assumption_id\": \"A24\"\n        },\n        \"authority\": \"engineer_locked\",\n        \"kind\": \"hard\"\n      },\n      \"design_factor\": {\n        \"value\": {\n          \"value\": 2,\n          \"unit\": \"1\"\n        },\n        \"provenance\": {\n          \"kind\": \"assumption\",\n          \"assumption_id\": \"A24\"\n        },\n        \"authority\": \"engineer_locked\",\n        \"kind\": \"hard\"\n      }\n    },\n    \"stages\": [\n      {\n        \"name\": \"s1\",\n        \"pinion_shaft\": \"input\",\n        \"gear_shaft\": \"intermediate\",\n        \"z_pinion\": {\n          \"value\": 25,\n          \"provenance\": {\n            \"kind\": \"engineer\",\n            \"who\": \"the engineer\",\n            \"when\": \"2026-10-08 19:37\",\n            \"note\": \"the requirement\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        },\n        \"z_gear\": {\n          \"value\": 51,\n          \"provenance\": {\n            \"kind\": \"engineer\",\n            \"who\": \"the engineer\",\n            \"when\": \"2026-10-08 19:37\",\n            \"note\": \"the requirement\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        },\n        \"normal_module\": {\n          \"value\": {\n            \"value\": 1.85,\n            \"unit\": \"mm\"\n          },\n          \"provenance\": {\n            \"kind\": \"engineer\",\n            \"who\": \"the engineer\",\n            \"when\": \"2026-10-08 19:37\",\n            \"note\": \"the requirement\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        },\n        \"pressure_angle\": {\n          \"value\": {\n            \"value\": 18,\n            \"unit\": \"deg\"\n          },\n          \"provenance\": {\n            \"kind\": \"engineer\",\n            \"who\": \"the engineer\",\n            \"when\": \"2026-10-08 19:37\",\n            \"note\": \"the requirement\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        },\n        \"helix_angle\": {\n          \"value\": {\n            \"value\": 30,\n            \"unit\": \"deg\"\n          },\n          \"provenance\": {\n            \"kind\": \"engineer\",\n            \"who\": \"the engineer\",\n            \"when\": \"2026-10-08 23:23\",\n            \"note\": \"30 deg on both stages\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        },\n        \"helix_hand_pinion\": {\n          \"value\": \"left\",\n          \"provenance\": {\n            \"kind\": \"engineer\",\n            \"who\": \"the engineer\",\n            \"when\": \"2026-10-08 19:37\",\n            \"note\": \"the gear is right-handed\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        },\n        \"face_width_pinion\": {\n          \"value\": {\n            \"value\": 16.5,\n            \"unit\": \"mm\"\n          },\n          \"provenance\": {\n            \"kind\": \"engineer\",\n            \"who\": \"the engineer\",\n            \"when\": \"2026-10-08 19:37\",\n            \"note\": \"active face width\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        },\n        \"face_width_gear\": {\n          \"value\": {\n            \"value\": 15.5,\n            \"unit\": \"mm\"\n          },\n          \"provenance\": {\n            \"kind\": \"engineer\",\n            \"who\": \"the engineer\",\n            \"when\": \"2026-10-08 19:37\",\n            \"note\": \"active face width\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        },\n        \"profile_shift_pinion\": {\n          \"value\": {\n            \"value\": 0.43672,\n            \"unit\": \"1\"\n          },\n          \"provenance\": {\n            \"kind\": \"engineer\",\n            \"who\": \"the engineer\",\n            \"when\": \"2026-10-08 19:37\",\n            \"note\": \"the requirement\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        },\n        \"profile_shift_gear\": {\n          \"value\": {\n            \"value\": 0.57199922,\n            \"unit\": \"1\"\n          },\n          \"provenance\": {\n            \"kind\": \"engineer\",\n            \"who\": \"the engineer\",\n            \"when\": \"2026-10-08 19:37\",\n            \"note\": \"the requirement\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        }\n      },\n      {\n        \"name\": \"s2\",\n        \"pinion_shaft\": \"intermediate\",\n        \"gear_shaft\": \"output\",\n        \"z_pinion\": {\n          \"value\": 23,\n          \"provenance\": {\n            \"kind\": \"engineer\",\n            \"who\": \"the engineer\",\n            \"when\": \"2026-10-08 19:37\",\n            \"note\": \"the requirement\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        },\n        \"z_gear\": {\n          \"value\": 81,\n          \"provenance\": {\n            \"kind\": \"engineer\",\n            \"who\": \"the engineer\",\n            \"when\": \"2026-10-08 19:37\",\n            \"note\": \"the requirement\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        },\n        \"normal_module\": {\n          \"value\": {\n            \"value\": 2.05,\n            \"unit\": \"mm\"\n          },\n          \"provenance\": {\n            \"kind\": \"engineer\",\n            \"who\": \"the engineer\",\n            \"when\": \"2026-10-08 19:37\",\n            \"note\": \"the requirement\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        },\n        \"pressure_angle\": {\n          \"value\": {\n            \"value\": 18,\n            \"unit\": \"deg\"\n          },\n          \"provenance\": {\n            \"kind\": \"engineer\",\n            \"who\": \"the engineer\",\n            \"when\": \"2026-10-08 19:37\",\n            \"note\": \"the requirement\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        },\n        \"helix_angle\": {\n          \"value\": {\n            \"value\": 30,\n            \"unit\": \"deg\"\n          },\n          \"provenance\": {\n            \"kind\": \"engineer\",\n            \"who\": \"the engineer\",\n            \"when\": \"2026-10-08 23:23\",\n            \"note\": \"30 deg on both stages\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        },\n        \"helix_hand_pinion\": {\n          \"value\": \"left\",\n          \"provenance\": {\n            \"kind\": \"engineer\",\n            \"who\": \"the engineer\",\n            \"when\": \"2026-10-08 19:37\",\n            \"note\": \"the gear is right-handed\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        },\n        \"face_width_pinion\": {\n          \"value\": {\n            \"value\": 25.625,\n            \"unit\": \"mm\"\n          },\n          \"provenance\": {\n            \"kind\": \"engineer\",\n            \"who\": \"the engineer\",\n            \"when\": \"2026-10-08 19:37\",\n            \"note\": \"active face width\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        },\n        \"face_width_gear\": {\n          \"value\": {\n            \"value\": 22.25,\n            \"unit\": \"mm\"\n          },\n          \"provenance\": {\n            \"kind\": \"engineer\",\n            \"who\": \"the engineer\",\n            \"when\": \"2026-10-08 19:37\",\n            \"note\": \"active face width\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        },\n        \"profile_shift_pinion\": {\n          \"value\": {\n            \"value\": 0.431143,\n            \"unit\": \"1\"\n          },\n          \"provenance\": {\n            \"kind\": \"engineer\",\n            \"who\": \"the engineer\",\n            \"when\": \"2026-10-08 19:37\",\n            \"note\": \"the requirement\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        },\n        \"profile_shift_gear\": {\n          \"value\": {\n            \"value\": 0.56857692,\n            \"unit\": \"1\"\n          },\n          \"provenance\": {\n            \"kind\": \"engineer\",\n            \"who\": \"the engineer\",\n            \"when\": \"2026-10-08 19:37\",\n            \"note\": \"the requirement\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        }\n      }\n    ],\n    \"bearings\": [],\n    \"shaft_layout\": {\n      \"bearing_to_gear\": {\n        \"value\": {\n          \"value\": 12.7,\n          \"unit\": \"mm\"\n        },\n        \"provenance\": {\n          \"kind\": \"assumption\",\n          \"assumption_id\": \"A13\"\n        },\n        \"authority\": \"engineer_locked\",\n        \"kind\": \"hard\"\n      },\n      \"behind_bearing\": {\n        \"value\": {\n          \"value\": 6.35,\n          \"unit\": \"mm\"\n        },\n        \"provenance\": {\n          \"kind\": \"assumption\",\n          \"assumption_id\": \"A14\"\n        },\n        \"authority\": \"engineer_locked\",\n        \"kind\": \"hard\"\n      },\n      \"behind_bearing_sealed\": {\n        \"value\": {\n          \"value\": 11,\n          \"unit\": \"mm\"\n        },\n        \"provenance\": {\n          \"kind\": \"assumption\",\n          \"assumption_id\": \"A16\"\n        },\n        \"authority\": \"engineer_locked\",\n        \"kind\": \"hard\"\n      },\n      \"seal_section\": {\n        \"value\": {\n          \"value\": 10,\n          \"unit\": \"mm\"\n        },\n        \"provenance\": {\n          \"kind\": \"assumption\",\n          \"assumption_id\": \"A16\"\n        },\n        \"authority\": \"engineer_locked\",\n        \"kind\": \"hard\"\n      },\n      \"sealed_ends\": [\n        {\n          \"shaft\": \"input\",\n          \"side\": {\n            \"value\": \"-z\",\n            \"provenance\": {\n              \"kind\": \"assumption\",\n              \"assumption_id\": \"A17\"\n            },\n            \"authority\": \"engineer_locked\",\n            \"kind\": \"hard\"\n          }\n        },\n        {\n          \"shaft\": \"output\",\n          \"side\": {\n            \"value\": \"-z\",\n            \"provenance\": {\n              \"kind\": \"assumption\",\n              \"assumption_id\": \"A17\"\n            },\n            \"authority\": \"engineer_locked\",\n            \"kind\": \"hard\"\n          },\n          \"room\": {\n            \"value\": {\n              \"value\": 90,\n              \"unit\": \"mm\"\n            },\n            \"provenance\": {\n              \"kind\": \"assumption\",\n              \"assumption_id\": \"A27\"\n            },\n            \"authority\": \"engineer_locked\",\n            \"kind\": \"hard\"\n          }\n        },\n        {\n          \"shaft\": \"output\",\n          \"side\": {\n            \"value\": \"+z\",\n            \"provenance\": {\n              \"kind\": \"assumption\",\n              \"assumption_id\": \"A17\"\n            },\n            \"authority\": \"engineer_locked\",\n            \"kind\": \"hard\"\n          },\n          \"room\": {\n            \"value\": {\n              \"value\": 90,\n              \"unit\": \"mm\"\n            },\n            \"provenance\": {\n              \"kind\": \"assumption\",\n              \"assumption_id\": \"A27\"\n            },\n            \"authority\": \"engineer_locked\",\n            \"kind\": \"hard\"\n          }\n        }\n      ],\n      \"gear_to_gear\": {\n        \"value\": {\n          \"value\": 12.7,\n          \"unit\": \"mm\"\n        },\n        \"provenance\": {\n          \"kind\": \"assumption\",\n          \"assumption_id\": \"A15\"\n        },\n        \"authority\": \"engineer_locked\",\n        \"kind\": \"hard\"\n      },\n      \"min_axial_clearance\": {\n        \"value\": {\n          \"value\": 3,\n          \"unit\": \"mm\"\n        },\n        \"provenance\": {\n          \"kind\": \"assumption\",\n          \"assumption_id\": \"A18\"\n        },\n        \"authority\": \"engineer_locked\",\n        \"kind\": \"hard\"\n      },\n      \"min_radial_clearance\": {\n        \"value\": {\n          \"value\": 8.25,\n          \"unit\": \"mm\"\n        },\n        \"provenance\": {\n          \"kind\": \"assumption\",\n          \"assumption_id\": \"A19\"\n        },\n        \"authority\": \"engineer_locked\",\n        \"kind\": \"hard\"\n      },\n      \"first_stage_side\": {\n        \"value\": \"-z\",\n        \"provenance\": {\n          \"kind\": \"assumption\",\n          \"assumption_id\": \"A22\"\n        },\n        \"authority\": \"engineer_locked\",\n        \"kind\": \"hard\"\n      },\n      \"bearings\": [\n        {\n          \"shaft\": \"input\",\n          \"side\": {\n            \"value\": \"-z\",\n            \"provenance\": {\n              \"kind\": \"assumption\",\n              \"assumption_id\": \"A8\"\n            },\n            \"authority\": \"engineer_locked\",\n            \"kind\": \"hard\"\n          },\n          \"type\": \"deep_groove_ball\",\n          \"axial\": {\n            \"value\": \"locating\",\n            \"provenance\": {\n              \"kind\": \"assumption\",\n              \"assumption_id\": \"A8\"\n            },\n            \"authority\": \"engineer_locked\",\n            \"kind\": \"hard\"\n          }\n        },\n        {\n          \"shaft\": \"input\",\n          \"side\": {\n            \"value\": \"+z\",\n            \"provenance\": {\n              \"kind\": \"assumption\",\n              \"assumption_id\": \"A8\"\n            },\n            \"authority\": \"engineer_locked\",\n            \"kind\": \"hard\"\n          },\n          \"type\": \"cylindrical_roller\",\n          \"axial\": {\n            \"value\": \"floating\",\n            \"provenance\": {\n              \"kind\": \"assumption\",\n              \"assumption_id\": \"A8\"\n            },\n            \"authority\": \"engineer_locked\",\n            \"kind\": \"hard\"\n          }\n        },\n        {\n          \"shaft\": \"intermediate\",\n          \"side\": {\n            \"value\": \"-z\",\n            \"provenance\": {\n              \"kind\": \"assumption\",\n              \"assumption_id\": \"A8\"\n            },\n            \"authority\": \"engineer_locked\",\n            \"kind\": \"hard\"\n          },\n          \"type\": \"tapered_roller\",\n          \"axial\": {\n            \"value\": \"own_side\",\n            \"provenance\": {\n              \"kind\": \"assumption\",\n              \"assumption_id\": \"A8\"\n            },\n            \"authority\": \"engineer_locked\",\n            \"kind\": \"hard\"\n          }\n        },\n        {\n          \"shaft\": \"intermediate\",\n          \"side\": {\n            \"value\": \"+z\",\n            \"provenance\": {\n              \"kind\": \"assumption\",\n              \"assumption_id\": \"A8\"\n            },\n            \"authority\": \"engineer_locked\",\n            \"kind\": \"hard\"\n          },\n          \"type\": \"tapered_roller\",\n          \"axial\": {\n            \"value\": \"own_side\",\n            \"provenance\": {\n              \"kind\": \"assumption\",\n              \"assumption_id\": \"A8\"\n            },\n            \"authority\": \"engineer_locked\",\n            \"kind\": \"hard\"\n          }\n        },\n        {\n          \"shaft\": \"output\",\n          \"side\": {\n            \"value\": \"-z\",\n            \"provenance\": {\n              \"kind\": \"assumption\",\n              \"assumption_id\": \"A8\"\n            },\n            \"authority\": \"engineer_locked\",\n            \"kind\": \"hard\"\n          },\n          \"type\": \"deep_groove_ball\",\n          \"axial\": {\n            \"value\": \"own_side\",\n            \"provenance\": {\n              \"kind\": \"assumption\",\n              \"assumption_id\": \"A8\"\n            },\n            \"authority\": \"engineer_locked\",\n            \"kind\": \"hard\"\n          }\n        },\n        {\n          \"shaft\": \"output\",\n          \"side\": {\n            \"value\": \"+z\",\n            \"provenance\": {\n              \"kind\": \"assumption\",\n              \"assumption_id\": \"A8\"\n            },\n            \"authority\": \"engineer_locked\",\n            \"kind\": \"hard\"\n          },\n          \"type\": \"deep_groove_ball\",\n          \"axial\": {\n            \"value\": \"own_side\",\n            \"provenance\": {\n              \"kind\": \"assumption\",\n              \"assumption_id\": \"A8\"\n            },\n            \"authority\": \"engineer_locked\",\n            \"kind\": \"hard\"\n          }\n        }\n      ],\n      \"carriers\": [\n        {\n          \"name\": \"differential\",\n          \"shaft\": \"output\",\n          \"bearing_spacing\": {\n            \"value\": {\n              \"value\": 96,\n              \"unit\": \"mm\"\n            },\n            \"provenance\": {\n              \"kind\": \"assumption\",\n              \"assumption_id\": \"A23\"\n            },\n            \"authority\": \"engineer_locked\",\n            \"kind\": \"hard\"\n          },\n          \"diameter\": {\n            \"value\": {\n              \"value\": 105,\n              \"unit\": \"mm\"\n            },\n            \"provenance\": {\n              \"kind\": \"assumption\",\n              \"assumption_id\": \"A23\"\n            },\n            \"authority\": \"engineer_locked\",\n            \"kind\": \"hard\"\n          },\n          \"gear_beside\": {\n            \"value\": \"+z\",\n            \"provenance\": {\n              \"kind\": \"assumption\",\n              \"assumption_id\": \"A23\"\n            },\n            \"authority\": \"engineer_locked\",\n            \"kind\": \"hard\"\n          },\n          \"hub_diameter\": {\n            \"value\": {\n              \"value\": 45,\n              \"unit\": \"mm\"\n            },\n            \"provenance\": {\n              \"kind\": \"assumption\",\n              \"assumption_id\": \"A23\"\n            },\n            \"authority\": \"engineer_locked\",\n            \"kind\": \"hard\"\n          }\n        }\n      ]\n    },\n    \"mounts\": [\n      {\n        \"name\": \"mount-1\",\n        \"centre\": {\n          \"value\": {\n            \"values\": [\n              -170.2,\n              -52.7,\n              -33.95\n            ],\n            \"unit\": \"mm\"\n          },\n          \"provenance\": {\n            \"kind\": \"assumption\",\n            \"assumption_id\": \"A20\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        },\n        \"normal\": {\n          \"value\": {\n            \"values\": [\n              0,\n              0,\n              1\n            ],\n            \"unit\": \"1\"\n          },\n          \"provenance\": {\n            \"kind\": \"assumption\",\n            \"assumption_id\": \"A20\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        },\n        \"support\": \"fixed\",\n        \"diameter\": {\n          \"value\": {\n            \"value\": 36,\n            \"unit\": \"mm\"\n          },\n          \"provenance\": {\n            \"kind\": \"assumption\",\n            \"assumption_id\": \"A20\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        },\n        \"length\": {\n          \"value\": {\n            \"value\": 30,\n            \"unit\": \"mm\"\n          },\n          \"provenance\": {\n            \"kind\": \"assumption\",\n            \"assumption_id\": \"A20\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        },\n        \"hole_diameter\": {\n          \"value\": {\n            \"value\": 11,\n            \"unit\": \"mm\"\n          },\n          \"provenance\": {\n            \"kind\": \"assumption\",\n            \"assumption_id\": \"A20\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        },\n        \"bracket_room\": {\n          \"value\": {\n            \"value\": 44,\n            \"unit\": \"mm\"\n          },\n          \"provenance\": {\n            \"kind\": \"assumption\",\n            \"assumption_id\": \"A20\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        }\n      },\n      {\n        \"name\": \"mount-2\",\n        \"centre\": {\n          \"value\": {\n            \"values\": [\n              176.4,\n              62.9,\n              -33.95\n            ],\n            \"unit\": \"mm\"\n          },\n          \"provenance\": {\n            \"kind\": \"assumption\",\n            \"assumption_id\": \"A20\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        },\n        \"normal\": {\n          \"value\": {\n            \"values\": [\n              0,\n              0,\n              1\n            ],\n            \"unit\": \"1\"\n          },\n          \"provenance\": {\n            \"kind\": \"assumption\",\n            \"assumption_id\": \"A20\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        },\n        \"support\": \"fixed\",\n        \"diameter\": {\n          \"value\": {\n            \"value\": 36,\n            \"unit\": \"mm\"\n          },\n          \"provenance\": {\n            \"kind\": \"assumption\",\n            \"assumption_id\": \"A20\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        },\n        \"length\": {\n          \"value\": {\n            \"value\": 30,\n            \"unit\": \"mm\"\n          },\n          \"provenance\": {\n            \"kind\": \"assumption\",\n            \"assumption_id\": \"A20\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        },\n        \"hole_diameter\": {\n          \"value\": {\n            \"value\": 11,\n            \"unit\": \"mm\"\n          },\n          \"provenance\": {\n            \"kind\": \"assumption\",\n            \"assumption_id\": \"A20\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        },\n        \"bracket_room\": {\n          \"value\": {\n            \"value\": 44,\n            \"unit\": \"mm\"\n          },\n          \"provenance\": {\n            \"kind\": \"assumption\",\n            \"assumption_id\": \"A20\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        }\n      },\n      {\n        \"name\": \"mount-3\",\n        \"centre\": {\n          \"value\": {\n            \"values\": [\n              35.1,\n              280.9,\n              -33.95\n            ],\n            \"unit\": \"mm\"\n          },\n          \"provenance\": {\n            \"kind\": \"assumption\",\n            \"assumption_id\": \"A20\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        },\n        \"normal\": {\n          \"value\": {\n            \"values\": [\n              0,\n              0,\n              1\n            ],\n            \"unit\": \"1\"\n          },\n          \"provenance\": {\n            \"kind\": \"assumption\",\n            \"assumption_id\": \"A20\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        },\n        \"support\": \"fixed\",\n        \"diameter\": {\n          \"value\": {\n            \"value\": 36,\n            \"unit\": \"mm\"\n          },\n          \"provenance\": {\n            \"kind\": \"assumption\",\n            \"assumption_id\": \"A20\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        },\n        \"length\": {\n          \"value\": {\n            \"value\": 30,\n            \"unit\": \"mm\"\n          },\n          \"provenance\": {\n            \"kind\": \"assumption\",\n            \"assumption_id\": \"A20\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        },\n        \"hole_diameter\": {\n          \"value\": {\n            \"value\": 11,\n            \"unit\": \"mm\"\n          },\n          \"provenance\": {\n            \"kind\": \"assumption\",\n            \"assumption_id\": \"A20\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        },\n        \"bracket_room\": {\n          \"value\": {\n            \"value\": 44,\n            \"unit\": \"mm\"\n          },\n          \"provenance\": {\n            \"kind\": \"assumption\",\n            \"assumption_id\": \"A20\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        }\n      }\n    ],\n    \"motor_held_by\": {\n      \"value\": \"vehicle\",\n      \"provenance\": {\n        \"kind\": \"engineer\",\n        \"who\": \"the engineer\",\n        \"when\": \"2026-10-10 13:21\",\n        \"note\": \"the motor drives the input shaft through a flexible coupling; the housing carries none of it and has no motor flange\"\n      },\n      \"authority\": \"engineer_locked\",\n      \"kind\": \"hard\"\n    },\n    \"installation_space\": {\n      \"kind\": \"layout_envelope\",\n      \"clearance\": {\n        \"value\": {\n          \"value\": 40,\n          \"unit\": \"mm\"\n        },\n        \"provenance\": {\n          \"kind\": \"assumption\",\n          \"assumption_id\": \"A3\"\n        },\n        \"authority\": \"engineer_locked\",\n        \"kind\": \"hard\"\n      }\n    }\n  },\n  \"limits\": {\n    \"verdict_rule_version\": \"v0.1\",\n    \"mesh_misalignment_share\": {\n      \"value\": {\n        \"value\": 50,\n        \"unit\": \"%\"\n      },\n      \"provenance\": {\n        \"kind\": \"assumption\",\n        \"assumption_id\": \"A6\"\n      },\n      \"authority\": \"engineer_locked\",\n      \"kind\": \"hard\"\n    },\n    \"centre_distance_share\": {\n      \"value\": {\n        \"value\": 50,\n        \"unit\": \"%\"\n      },\n      \"provenance\": {\n        \"kind\": \"assumption\",\n        \"assumption_id\": \"A6\"\n      },\n      \"authority\": \"engineer_locked\",\n      \"kind\": \"hard\"\n    },\n    \"ovalisation_share\": {\n      \"value\": {\n        \"value\": 50,\n        \"unit\": \"%\"\n      },\n      \"provenance\": {\n        \"kind\": \"assumption\",\n        \"assumption_id\": \"A6\"\n      },\n      \"authority\": \"engineer_locked\",\n      \"kind\": \"hard\"\n    },\n    \"bearing_tilt\": [\n      {\n        \"bearing_type\": \"tapered_roller\",\n        \"limit\": {\n          \"value\": {\n            \"value\": 0.5,\n            \"unit\": \"mrad\"\n          },\n          \"provenance\": {\n            \"kind\": \"standard\",\n            \"citation\": \"Shigley, Mechanical Engineering Design, Table 7-2 (rough guideline)\",\n            \"note\": \"lower end of 0.5-1.2 mrad\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        }\n      },\n      {\n        \"bearing_type\": \"cylindrical_roller\",\n        \"limit\": {\n          \"value\": {\n            \"value\": 0.8,\n            \"unit\": \"mrad\"\n          },\n          \"provenance\": {\n            \"kind\": \"standard\",\n            \"citation\": \"Shigley, Mechanical Engineering Design, Table 7-2 (rough guideline)\",\n            \"note\": \"lower end of 0.8-1.2 mrad\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        }\n      },\n      {\n        \"bearing_type\": \"deep_groove_ball\",\n        \"limit\": {\n          \"value\": {\n            \"value\": 1.0,\n            \"unit\": \"mrad\"\n          },\n          \"provenance\": {\n            \"kind\": \"standard\",\n            \"citation\": \"Shigley, Mechanical Engineering Design, Table 7-2 (rough guideline)\",\n            \"note\": \"lower end of 1-3 mrad\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        }\n      }\n    ],\n    \"order_separation\": {\n      \"value\": {\n        \"value\": 3,\n        \"unit\": \"%\"\n      },\n      \"provenance\": {\n        \"kind\": \"published\",\n        \"citation\": \"Marano et al. 2021, Gear Technology Jan-Feb 2021 (orders at least 3 % apart)\"\n      },\n      \"authority\": \"engineer_locked\",\n      \"kind\": \"hard\"\n    },\n    \"order_check_at\": {\n      \"value\": \"rated\",\n      \"provenance\": {\n        \"kind\": \"engineer\",\n        \"who\": \"the engineer\",\n        \"when\": \"2026-10-09 01:06\",\n        \"note\": \"one check speed: the cruise\"\n      },\n      \"authority\": \"engineer_locked\",\n      \"kind\": \"hard\"\n    },\n    \"model_margin\": {\n      \"value\": {\n        \"value\": 25,\n        \"unit\": \"%\"\n      },\n      \"provenance\": {\n        \"kind\": \"engineer\",\n        \"who\": \"the engineer\",\n        \"when\": \"2026-10-09 01:06\",\n        \"note\": \"kept for now; tied to the model's level later\"\n      },\n      \"authority\": \"engineer_locked\",\n      \"kind\": \"hard\"\n    },\n    \"objective\": \"least_mass\",\n    \"stress\": \"recorded\"\n  },\n  \"manufacturing\": {\n    \"process\": \"sand_casting\",\n    \"pull_directions\": [\n      {\n        \"part\": \"motor-side\",\n        \"direction\": {\n          \"value\": {\n            \"values\": [\n              0,\n              0,\n              -1\n            ],\n            \"unit\": \"1\"\n          },\n          \"provenance\": {\n            \"kind\": \"engineer\",\n            \"who\": \"the engineer\",\n            \"when\": \"2026-10-09 02:12\",\n            \"note\": \"along the shafts: the halves split across them\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        }\n      },\n      {\n        \"part\": \"cover\",\n        \"direction\": {\n          \"value\": {\n            \"values\": [\n              0,\n              0,\n              1\n            ],\n            \"unit\": \"1\"\n          },\n          \"provenance\": {\n            \"kind\": \"engineer\",\n            \"who\": \"the engineer\",\n            \"when\": \"2026-10-09 02:12\",\n            \"note\": \"along the shafts: the halves split across them\"\n          },\n          \"authority\": \"engineer_locked\",\n          \"kind\": \"hard\"\n        }\n      }\n    ],\n    \"draft_inside\": {\n      \"value\": {\n        \"value\": 0,\n        \"unit\": \"deg\"\n      },\n      \"provenance\": {\n        \"kind\": \"assumption\",\n        \"assumption_id\": \"A11\"\n      },\n      \"authority\": \"engineer_locked\",\n      \"kind\": \"hard\"\n    },\n    \"draft_outside\": {\n      \"value\": {\n        \"value\": 0,\n        \"unit\": \"deg\"\n      },\n      \"provenance\": {\n        \"kind\": \"assumption\",\n        \"assumption_id\": \"A11\"\n      },\n      \"authority\": \"engineer_locked\",\n      \"kind\": \"hard\"\n    },\n    \"min_wall\": {\n      \"value\": {\n        \"value\": 4,\n        \"unit\": \"mm\"\n      },\n      \"provenance\": {\n        \"kind\": \"engineer\",\n        \"who\": \"the engineer\",\n        \"when\": \"2026-10-07 11:41\",\n        \"note\": \"plan D7 (least member): 4 mm, set by the FE budget on the 8 GB card\"\n      },\n      \"authority\": \"engineer_locked\",\n      \"kind\": \"hard\"\n    },\n    \"machining_stock\": {\n      \"value\": {\n        \"value\": 1.5,\n        \"unit\": \"mm\"\n      },\n      \"provenance\": {\n        \"kind\": \"assumption\",\n        \"assumption_id\": \"A12\"\n      },\n      \"authority\": \"engineer_locked\",\n      \"kind\": \"hard\"\n    },\n    \"material\": {\n      \"name\": \"EN AC-42100 T6 (AlSi7Mg0.3), sand cast\",\n      \"youngs_modulus\": {\n        \"value\": {\n          \"value\": 69,\n          \"unit\": \"GPa\"\n        },\n        \"provenance\": {\n          \"kind\": \"engineer\",\n          \"who\": \"the engineer\",\n          \"when\": \"2026-10-08 19:37\",\n          \"note\": \"with the material\"\n        },\n        \"authority\": \"engineer_locked\",\n        \"kind\": \"hard\"\n      },\n      \"poisson_ratio\": {\n        \"value\": {\n          \"value\": 0.33,\n          \"unit\": \"1\"\n        },\n        \"provenance\": {\n          \"kind\": \"engineer\",\n          \"who\": \"the engineer\",\n          \"when\": \"2026-10-08 19:37\",\n          \"note\": \"with the material\"\n        },\n        \"authority\": \"engineer_locked\",\n        \"kind\": \"hard\"\n      },\n      \"density\": {\n        \"value\": {\n          \"value\": 2600,\n          \"unit\": \"kg/m3\"\n        },\n        \"provenance\": {\n          \"kind\": \"engineer\",\n          \"who\": \"the engineer\",\n          \"when\": \"2026-10-08 19:37\",\n          \"note\": \"with the material\"\n        },\n        \"authority\": \"engineer_locked\",\n        \"kind\": \"hard\"\n      }\n    },\n    \"joint\": {\n      \"hole_diameter\": {\n        \"value\": {\n          \"value\": 9,\n          \"unit\": \"mm\"\n        },\n        \"provenance\": {\n          \"kind\": \"assumption\",\n          \"assumption_id\": \"A26\"\n        },\n        \"authority\": \"engineer_locked\",\n        \"kind\": \"hard\"\n      },\n      \"boss_diameter\": {\n        \"value\": {\n          \"value\": 20,\n          \"unit\": \"mm\"\n        },\n        \"provenance\": {\n          \"kind\": \"assumption\",\n          \"assumption_id\": \"A26\"\n        },\n        \"authority\": \"engineer_locked\",\n        \"kind\": \"hard\"\n      },\n      \"bolt_offset\": {\n        \"value\": {\n          \"value\": 13,\n          \"unit\": \"mm\"\n        },\n        \"provenance\": {\n          \"kind\": \"assumption\",\n          \"assumption_id\": \"A26\"\n        },\n        \"authority\": \"engineer_locked\",\n        \"kind\": \"hard\"\n      },\n      \"max_pitch\": {\n        \"value\": {\n          \"value\": 80,\n          \"unit\": \"mm\"\n        },\n        \"provenance\": {\n          \"kind\": \"assumption\",\n          \"assumption_id\": \"A26\"\n        },\n        \"authority\": \"engineer_locked\",\n        \"kind\": \"hard\"\n      },\n      \"flange_thickness\": {\n        \"value\": {\n          \"value\": 8,\n          \"unit\": \"mm\"\n        },\n        \"provenance\": {\n          \"kind\": \"assumption\",\n          \"assumption_id\": \"A26\"\n        },\n        \"authority\": \"engineer_locked\",\n        \"kind\": \"hard\"\n      },\n      \"land_width\": {\n        \"value\": {\n          \"value\": 10,\n          \"unit\": \"mm\"\n        },\n        \"provenance\": {\n          \"kind\": \"assumption\",\n          \"assumption_id\": \"A26\"\n        },\n        \"authority\": \"engineer_locked\",\n        \"kind\": \"hard\"\n      }\n    }\n  },\n  \"references\": [\n    {\n      \"source\": \"the example's reference housing\",\n      \"quantity\": \"housing mass\",\n      \"value\": \"7.732 kg\",\n      \"conditions\": \"three sand-cast parts in EN AC-42100 T6; from the CAD at 2.6 g/cm³\",\n      \"confidence\": \"published\"\n    },\n    {\n      \"source\": \"the example's reference housing\",\n      \"quantity\": \"free modes of the initial design\",\n      \"value\": \"first elastic mode 1127 Hz; mode 13 at 2851 Hz; mode 16 at 3159 Hz\",\n      \"conditions\": \"free-free, with the three parts tied, so it reads high\",\n      \"confidence\": \"published\"\n    },\n    {\n      \"source\": \"the example's reference housing\",\n      \"quantity\": \"bearing-bed displacement, slots 1-6\",\n      \"value\": \"forward 0.0384, 0.0079, 0.0349, 0.0085, 0.0111, 0.0522 mm; reverse 0.1076, 0.1236, 0.0672, 0.110, 0.0219, 0.1380 mm\",\n      \"conditions\": \"peak bearing forces combined (forward at 6,000 rpm, reverse at 2,000 rpm); mounts fixed; the flange carries 150 N·m\",\n      \"confidence\": \"published\"\n    },\n    {\n      \"source\": \"the example's reference housing\",\n      \"quantity\": \"stress\",\n      \"value\": \"below 230 MPa, the alloy's yield, but for one singular element\",\n      \"conditions\": \"the forward and reverse peak cases\",\n      \"confidence\": \"published\"\n    }\n  ],\n  \"assumptions\": [\n    {\n      \"id\": \"A2\",\n      \"what\": \"regeneration torque\",\n      \"value\": \"150 N·m at the input, as drive\",\n      \"why\": \"no regeneration case given; taken equal to the drive\",\n      \"varied\": true\n    },\n    {\n      \"id\": \"A3\",\n      \"what\": \"installation space\",\n      \"value\": \"the layout's envelope plus 40 mm\",\n      \"why\": \"no package given; room beyond the tip clearance for the wall, a split flange (24 mm for M8 · Maciejczyk & Zdziennicki Table 9.1) and ribs\",\n      \"varied\": true\n    },\n    {\n      \"id\": \"A4\",\n      \"what\": \"service life\",\n      \"value\": \"944 h\",\n      \"why\": \"a passenger-EV reducer's life · Hofstetter et al. 2018\",\n      \"varied\": false\n    },\n    {\n      \"id\": \"A5\",\n      \"what\": \"gear quality\",\n      \"value\": \"N6 (JGMA)\",\n      \"why\": \"no grade given\",\n      \"varied\": false\n    },\n    {\n      \"id\": \"A6\",\n      \"what\": \"the housing's share\",\n      \"value\": \"half of each tolerance\",\n      \"why\": \"no public source gives a share\",\n      \"varied\": true\n    },\n    {\n      \"id\": \"A8\",\n      \"what\": \"the bearings\",\n      \"value\": \"input: ball (-z, locating) + cylindrical roller (+z, floating) · intermediate: tapered pair · output: ball pair (each bearing of a pair takes the thrust towards its own end)\",\n      \"why\": \"a passenger-EV reducer's arrangement · Hofstetter et al. 2018; the sizes from the loads by L10 life\",\n      \"varied\": false\n    },\n    {\n      \"id\": \"A11\",\n      \"what\": \"draft\",\n      \"value\": \"0 deg inside and outside\",\n      \"why\": \"printed sand moulds need no pattern draft; to confirm against a public rule\",\n      \"varied\": false\n    },\n    {\n      \"id\": \"A12\",\n      \"what\": \"machining stock\",\n      \"value\": \"1.5 mm\",\n      \"why\": \"a usual sand-casting allowance; ISO 8062 grades it\",\n      \"varied\": false\n    },\n    {\n      \"id\": \"A13\",\n      \"what\": \"the gap between a bearing and the gear beside it\",\n      \"value\": \"12.7 mm (½ in)\",\n      \"why\": \"room for a shoulder, a retaining ring and a bearing puller · Shigley Ch. 18, Fig. 18-2\",\n      \"varied\": true\n    },\n    {\n      \"id\": \"A14\",\n      \"what\": \"the space behind each bearing\",\n      \"value\": \"6.35 mm (¼ in)\",\n      \"why\": \"the wall behind a bearing in a closed bore · Shigley Ch. 18, Fig. 18-2\",\n      \"varied\": true\n    },\n    {\n      \"id\": \"A15\",\n      \"what\": \"the gap between two gears on one shaft (the intermediate's)\",\n      \"value\": \"12.7 mm, as the bearing-to-gear gap\",\n      \"why\": \"no source yet\",\n      \"varied\": true\n    },\n    {\n      \"id\": \"A16\",\n      \"what\": \"the seal where a shaft leaves the housing\",\n      \"value\": \"11 mm behind the bearing: an 8 mm radial shaft seal and 3 mm for its seat; the seal's section 10 mm, so the shaft leaves through a bore of its own Ø + 20 mm (45 × 65 × 8 on a 45 mm shaft), fitted from outside\",\n      \"why\": \"seals of about 7-10 mm width for 30-50 mm shafts · makers' seal catalogues\",\n      \"varied\": true\n    },\n    {\n      \"id\": \"A17\",\n      \"what\": \"the shaft ends that leave the housing\",\n      \"value\": \"the input's motor side (-z); the output's two sides\",\n      \"why\": \"the motor drives the input from the motor side; the differential sends a half-shaft out of each side\",\n      \"varied\": true\n    },\n    {\n      \"id\": \"A18\",\n      \"what\": \"the least clearance along the shafts between parts on different shafts that overlap seen along the shafts\",\n      \"value\": \"3 mm\",\n      \"why\": \"no source yet\",\n      \"varied\": true\n    },\n    {\n      \"id\": \"A19\",\n      \"what\": \"the least clearance from a gear's tips to the housing wall\",\n      \"value\": \"8.25 mm\",\n      \"why\": \"(1.1-1.2) × the wall thickness δ, at δ = 7.5 mm · Maciejczyk & Zdziennicki Ch. 9, Fig. 9.1\",\n      \"varied\": true\n    },\n    {\n      \"id\": \"A20\",\n      \"what\": \"the mounts\",\n      \"value\": \"three bosses for M10 bolts along the shafts, Ø36 × 30 mm with Ø11 holes, held fixed, at (-170.2, -52.7), (176.4, 62.9) and (35.1, 280.9) mm, their middles at z = -33.95 mm; the vehicle's bracket and bolt take Ø44 mm beyond both faces, as far as the boss is long and no further\",\n      \"why\": \"the vehicle's hardpoints are not given; at the package's far points on the motor side, each lug 3 mm past the split flange's edge, so that its bracket and bolt clear the housing; their room is kept clear for the boss's length beyond each face, no higher (you)\",\n      \"varied\": true\n    },\n    {\n      \"id\": \"A21\",\n      \"what\": \"the input's rotation in forward drive\",\n      \"value\": \"+z: anticlockwise seen from the cover side (+z)\",\n      \"why\": \"not given; it sets the forces' directions, not their sizes\",\n      \"varied\": true\n    },\n    {\n      \"id\": \"A22\",\n      \"what\": \"the side the first stage meshes on\",\n      \"value\": \"-z, the motor side; the second stage towards the cover\",\n      \"why\": \"not given; the input shaft stays short beside the motor\",\n      \"varied\": true\n    },\n    {\n      \"id\": \"A23\",\n      \"what\": \"the differential\",\n      \"value\": \"a bevel unit: bearings 96 mm apart centre to centre, case Ø105 mm, hubs Ø45 mm, the output gear beside its +z bearing\",\n      \"why\": \"a 2,100 N·m class unit for about 1,080 N·m here · Schaeffler Symposium 2010, Figs. 13-14 (the case Ø read off a figure; the hubs' Ø not given)\",\n      \"varied\": true\n    },\n    {\n      \"id\": \"A24\",\n      \"what\": \"the shafts' steel\",\n      \"value\": \"20MnCr5, case-hardened: core yield 590 MPa, E 210 GPa; design factor 2 on the peak torques\",\n      \"why\": \"a common gear steel (the engineer, 9 Oct 00:50); the core yield is the low end of public datasheets, to source\",\n      \"varied\": true\n    },\n    {\n      \"id\": \"A26\",\n      \"what\": \"how the halves are bolted\",\n      \"value\": \"a flange 8 mm deep on each side of the joint: a sealing land 10 mm wide round the inside, and M8 bolts in Ø9 holes, each in a Ø20 boss on the land, their axes 13 mm outside the least wall, at most 80 mm apart round the inside\",\n      \"why\": \"a sealed joint's bolts about 10 × their Ø apart, on a land for a formed-in-place gasket's bead (its least width to confirm) · Henkel's guide to formed-in-place gaskets; a 24 mm flange for M8 · Maciejczyk & Zdziennicki Table 9.1; the medium clearance hole · ISO 273; 8 mm deep, two whole cubes of the optimiser's 4 mm grid (the engineer, 13 Oct 18:42)\",\n      \"varied\": true\n    },\n    {\n      \"id\": \"A27\",\n      \"what\": \"the half-shafts' joints\",\n      \"value\": \"Ø90 mm beyond each of the output's end faces\",\n      \"why\": \"the inner joints are not given; the room the first loop kept, to source from a joint maker's catalogue\",\n      \"varied\": true\n    }\n  ]\n}"
   }
  ],
  "records": {
@@ -2700,5 +3175,5 @@
   "snapshot_tasks": [],
   "preference_pairs": []
  },
- "hash": "sha256:db96c73d46dcecacc10035606e93fdee8a743454b2c92a0fdbb4122710de22de"
+ "hash": "sha256:35f2b2918882494d73bd0b9fab766c90cd45d58816b7bca7c34e203fee131f5d"
 }

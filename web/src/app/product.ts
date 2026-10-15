@@ -73,7 +73,10 @@ export const VIEWS: ViewSpec[] = [
     label: "Designs",
     summary: "Every housing a campaign makes: its stages, its grade, its rung, against the design to beat",
     ready: false,
-    pages: [{ id: "designs", label: "Designs", summary: "Every design and its grade" }],
+    pages: [
+      { id: "designs", label: "Designs", summary: "Every design, grouped by the flow that made it, and its process step by step" },
+      { id: "optimisation", label: "Optimisation", summary: "Topology optimisation runs in 3D: what was frozen, what was placed" },
+    ],
   },
   {
     id: "data",

@@ -34,6 +34,15 @@ archive/
 /assets/
 /results/
 /data/
+# The Designs page's 3D views, exported from data/ by prototypes/first_loop/view_export.py
+# and topo_export.py (several MB each, rebuilt by running them)
+/web/src/records/designs/
+/web/src/records/optimisations/
+# Each design's process, step by step, and FE's surface and fields (process_export.py, LOP-21)
+/web/src/records/process/
+/web/src/records/campaigns/
+# The Contract page's layers of what the optimiser is given (prototypes/first_loop/setup_export.py)
+/web/src/records/setup.json
 
 # OS noise
 Thumbs.db

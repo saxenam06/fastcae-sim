@@ -1,0 +1,139 @@
+/* The cut-section control (render/Section.tsx): copied from fastcae-v1:ui/src/styles/shell.css,
+   its .section-* rules unchanged. fastcae's general .segmented, .dim and .num rules are copied too,
+   scoped to the panel, so they style nothing else here. The engineer, 10 October 12:49. */
+
+/* The section control: bottom right of every 3D canvas - a button until a section is on, then the
+   plane itself. One section for all the views, so it looks the same on each. */
+.section-toggle {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  z-index: 5;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  font-size: 11.5px;
+  background: var(--sheet);
+  border: 1px solid var(--hairline);
+  cursor: pointer;
+}
+
+.section-toggle:hover {
+  border-color: var(--blue);
+  color: var(--blue);
+}
+
+.section-panel {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  z-index: 5;
+  width: 256px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding: 8px 10px 9px;
+  font-size: 11.5px;
+  background: var(--sheet);
+  border: 1px solid var(--hairline);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+.section-panel header {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.section-panel header .icon {
+  margin-left: auto;
+  border: none;
+  background: none;
+  padding: 0 2px;
+  font-size: 15px;
+  line-height: 1;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.section-panel .segmented button {
+  padding: 3px 8px;
+  font-size: 11px;
+}
+
+.section-row {
+  display: grid;
+  grid-template-columns: 30px 1fr 40px;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+}
+
+.section-row input[type="range"] {
+  width: 100%;
+  margin: 0;
+}
+
+.section-row .num {
+  text-align: right;
+  color: var(--ink);
+}
+
+.section-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.section-actions button {
+  font-size: 11px;
+  padding: 3px 10px;
+}
+
+/* fastcae's general rules, scoped to the panel */
+.section-panel .segmented {
+  display: inline-flex;
+  border: 1px solid var(--hairline);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.section-panel .segmented button {
+  border: none;
+  border-right: 1px solid var(--hairline);
+  border-radius: 0;
+  background: var(--sheet);
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.section-panel .segmented button:last-child {
+  border-right: none;
+}
+
+.section-panel .segmented button[data-active="true"] {
+  background: var(--blue-wash);
+  color: var(--blue);
+  font-weight: 500;
+}
+
+.section-panel .dim {
+  color: var(--muted);
+}
+
+.section-panel .num {
+  font-variant-numeric: tabular-nums;
+}
+
+.section-actions button {
+  border: 1px solid var(--hairline);
+  background: var(--sheet);
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.section-actions button[data-active="true"] {
+  border-color: var(--blue);
+  background: var(--blue-wash);
+  color: var(--blue);
+}
