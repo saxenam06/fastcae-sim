@@ -137,6 +137,16 @@ def draw_field(run: dict, a: float = toy.A, step: float = FINE, gate: bool = Fal
         tcap = rules.thickness_cap(np.stack([px.ravel(), py.ravel()], axis=1))[0]
     else:
         tcap = np.full(px.size, float(run.get("t_most", toy.T_MOST)))
+    fastcae = bool(run.get("fastcae", False))
+    tall = float(run.get("tall", toy.TALL))
+    if fastcae:
+        import rules
+
+        assert abs(float(run["h_bolt"]) - toy.H_BOLT) < 1e-9, "draw with --fastcae (the bolts' height)"
+        hcap = rules.height_cap(np.stack([px.ravel(), py.ravel()], axis=1))
+        t_least, h_least = rules.T_LEAST, rules.H_LEAST
+    else:
+        hcap, t_least, h_least = toy.BAND, T_LEAST, H_LEAST
     active = plate & ~reg["solid"]
     out = {"theta": theta, "px": px, "py": py, "regions": reg, "step": step}
     ribs = np.zeros(px.shape, bool)
@@ -144,12 +154,13 @@ def draw_field(run: dict, a: float = toy.A, step: float = FINE, gate: bool = Fal
     for k in range(int(run.get("families", 1))):
         xr, xh = x[2 * k * n : (2 * k + 1) * n], x[(2 * k + 1) * n : (2 * k + 2) * n]
         rho = (tcap / spacing) * (basis @ xr)
-        cap, _ = toy.smin(toy.BAND, toy.TALL * spacing * rho)
+        cap, _ = toy.smin(hcap, tall * spacing * rho)
         h = ((basis @ xh) * cap).reshape(px.shape)
         rho = rho.reshape(px.shape)
         phase, amp = stripes(theta + k * np.pi / 2, plate, spacing, step)
         rib = (np.cos(phase) >= np.cos(np.pi * np.clip(rho, 0, 1))) & active
-        rib &= (rho * spacing >= T_LEAST) & (h >= H_LEAST)
+        rib &= (rho * spacing >= t_least) & (h >= h_least)
+        out[f"drawn{k}"] = (rho * spacing >= t_least) & (h >= h_least) & active
         ribs |= rib
         ztop = np.where(rib, np.maximum(ztop, h), ztop)
         out.update({f"rib{k}": rib, f"rho{k}": rho, f"h{k}": h, f"phase{k}": phase, f"amp{k}": amp})
@@ -161,10 +172,17 @@ def draw_field(run: dict, a: float = toy.A, step: float = FINE, gate: bool = Fal
         out["census"] = out["census_before"]
     z = np.where(plate, toy.WALL, 0.0)
     z = np.where(ribs, toy.WALL + ztop, z)
-    z = np.where(reg["solid"], toy.WALL + toy.BAND, z)
+    z = solids_top(z, reg)
     out["z"] = z
     out["ribs"] = ribs
+    out["spacing"] = spacing
     return out
+
+
+def solids_top(z: np.ndarray, reg: dict) -> np.ndarray:
+    """The fixed parts' tops on a height map: the boss and the lug the band's, a bolt's boss its own."""
+    z = np.where(reg["boss"] | reg["lug"], toy.WALL + toy.BAND, z)
+    return np.where(reg["bolt"], toy.WALL + toy.H_BOLT, z)
 
 
 L_LEAST = 20.0  # mm: a shorter rib is not drawn (the drawing's gate)
@@ -241,7 +259,7 @@ def draw_columns(run: dict, a: float = toy.A, step: float = FINE) -> dict:
     j = np.clip((py / a).astype(int), 0, ny - 1)
     h = hg[i, j]
     z = np.where(plate, toy.WALL + h, 0.0)
-    z = np.where(reg["solid"], toy.WALL + toy.BAND, z)
+    z = solids_top(z, reg)
     return {"z": z, "h": h, "px": px, "py": py, "regions": reg, "step": step}
 
 
@@ -260,3 +278,81 @@ def mass_kg(z: np.ndarray, step: float = FINE) -> float:
     """The height map's metal over the wall and the fixed parts' share is left in: the whole."""
     _, _, density = toy.material()
     return float(z.sum() * step * step * density)
+
+
+DRAFT_DEG = 1.0  # fastcae's draft_deg: each rib face leans in toward its top
+R_TOP = 2.0  # mm: a rib's top edges rounded (fastcae's fillet_edge_mm, scaled)
+R_ROOT = 3.0  # mm: a rib's roots filleted on the wall and the hard points (fillet_root_mm, scaled)
+
+
+def _smin(a, b, k):
+    """A polynomial smooth minimum (Quilez): min(a, b) rounded over k."""
+    h = np.clip(0.5 + 0.5 * (b - a) / k, 0.0, 1.0)
+    return b * (1 - h) + a * h - k * h * (1 - h)
+
+
+def _smax(a, b, k):
+    return -_smin(-a, -b, k)
+
+
+def implicit(d: dict, step: float):
+    """The field's drawing as a smooth solid: f > 0 inside, on a grid of `step` mm; the wall, the
+    fixed parts, and each family's ribs (half as thick as drawn at the wall less the draft's lean
+    above it, to the rib's own height) with their top edges rounded (`R_TOP`) and their roots
+    filleted (`R_ROOT`). The ribs' side faces come from the stripes' phase: a point lies
+    |phase| spacing / 2 pi from its rib's middle. Returns (f, the grid's lower corner)."""
+    px, py, reg = d["px"], d["py"], d["regions"]
+    s = d["spacing"]
+    top = toy.WALL + toy.BAND
+    nz = int(np.ceil(top / step)) + 1
+    z = ((np.arange(nz) + 0.5) * step)[None, None, :]
+    big = 1e3
+    r_bore = np.hypot(px - toy.BORE[0], py - toy.BORE[1])
+    plate = np.minimum.reduce([px, toy.LX - px, py, toy.LY - py, r_bore - toy.R_BORE])[..., None]
+    floor = np.minimum(z, 1e9)
+    wall = np.minimum(np.minimum(plate, toy.WALL - z), floor)
+    hard = np.minimum.reduce(
+        [toy.R_BOSS - r_bore, r_bore - toy.R_BORE, np.full_like(px, big)]
+    )[..., None]
+    hard = np.minimum(np.minimum(hard, top - z), floor)
+    lug = (toy.R_LUG - np.hypot(px - toy.LUG[0], py - toy.LUG[1]))[..., None]
+    hard = np.maximum(hard, np.minimum(np.minimum(lug, top - z), floor))
+    for b in toy.BOLTS:
+        rb = (toy.R_BOLT - np.hypot(px - b[0], py - b[1]))[..., None]
+        hard = np.maximum(hard, np.minimum(np.minimum(rb, toy.WALL + toy.H_BOLT - z), floor))
+    from scipy.ndimage import binary_dilation
+
+    kept = binary_dilation(d["ribs"], iterations=max(1, int(round(R_ROOT / step))))
+    lean = np.tan(np.radians(DRAFT_DEG))
+    ribs = np.full(px.shape + (nz,), -big)
+    k = 0
+    while f"phase{k}" in d:
+        valid = (d[f"drawn{k}"] & kept)[..., None]
+        half = (d[f"rho{k}"] * s / 2.0)[..., None] - np.maximum(z - toy.WALL, 0.0) * lean
+        side = half - (np.abs(d[f"phase{k}"]) * s / (2 * np.pi))[..., None]
+        cap = (toy.WALL + d[f"h{k}"])[..., None] - z
+        rib = _smin(side, cap, R_TOP)
+        rib = np.minimum(np.minimum(rib, plate), floor)
+        ribs = np.maximum(ribs, np.where(valid, rib, -big))
+        k += 1
+    body = _smax(wall, ribs, R_ROOT)
+    body = _smax(body, hard, R_ROOT)
+    return body, np.zeros(3)
+
+
+def mesh_implicit(f: np.ndarray, step: float):
+    """The smooth solid's surface (marching cubes at 0, the grid padded with air), its largest
+    watertight piece."""
+    import trimesh
+    from skimage.measure import marching_cubes
+
+    field = np.pad(f.astype(float), 2, constant_values=-1.0)
+    verts, faces, _, _ = marching_cubes(field, level=0.0, spacing=(step, step, step))
+    verts += -2 * step + 0.5 * step
+    tm = trimesh.Trimesh(verts, faces[:, ::-1], process=True)
+    pieces = tm.split(only_watertight=True)
+    tm = max(pieces, key=lambda m: m.volume) if len(pieces) else tm
+    if tm.volume < 0:
+        tm.invert()
+    return tm
+

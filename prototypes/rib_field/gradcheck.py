@@ -88,7 +88,10 @@ def main() -> None:
 
         fr = toy.Field(s, families=2)
         assert fr.by_place and fr.ruled, "run with --by-place --ends"
-        fr.theta0 = rng.uniform(0, np.pi, s.n_cols)
+        # a smooth start (the bend rule reads its gradient) with some random turn on top
+        cx_, cy_ = s.cols_xy[:, 0] / toy.LX, s.cols_xy[:, 1] / toy.LY
+        fr.theta0 = np.mod(1.3 * cx_ + 0.7 * np.sin(3 * cy_), np.pi)
+        fr.theta0_grad = rules.theta_gradient(fr.theta0, s.cols_ij, s.grid.a)
         xr_ = rng.uniform(0.2, 0.8, len(fr.start()))
         c, cc = fr.stiffness(xr_)
         r = toy.solve(s, c)
@@ -99,7 +102,8 @@ def main() -> None:
 
         picks = list(np.argsort(-np.abs(g["dc"]))[:3])
         worst = max(worst, check("by place: compliance", comp_r, xr_, g["dc"], picks, 1e-6))
-        for key in ("T", "H"):
+        fr.set_theta(xr_)
+        for key in rules.transport(fr, xr_):
             fr.set_theta(xr_)
             gk = rules.transport(fr, xr_)[key][1]
 

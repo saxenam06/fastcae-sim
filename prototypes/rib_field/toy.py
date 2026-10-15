@@ -49,6 +49,8 @@ R_BORE, R_BOSS = 26.0, 36.0
 Z_LOAD = 16.0  # mm above the wall's underside: the bearing's centre
 BOLTS = [(10, 80), (10, 150), (100, 150), (190, 150), (190, 80), (190, 10), (100, 10)]
 R_BOLT = 7.0
+FASTCAE = "--fastcae" in sys.argv  # fastcae's rules (`rules.py`), with their set-up
+H_BOLT = 12.0 if FASTCAE else BAND  # mm above the wall: the bolts' bosses (a flange's height)
 LUG = (26.0, 26.0)
 R_LUG = 10.0
 CASES = {"drive": (3000.0, 2000.0, 1500.0), "reverse": (-2000.0, 3000.0, 1500.0)}
@@ -56,7 +58,7 @@ BUDGET_KG = 0.25  # the ribs' metal (or the columns')
 
 SPACING = float(os.environ.get("RIB_SPACING", 24.0))  # mm: between the ribs' centres when drawn
 T_MOST = float(os.environ.get("RIB_T_MOST", 7.0))  # mm: the thickest rib
-TALL = 4.0  # a rib stands at most this many times its thickness
+TALL = 5.0 if FASTCAE else 4.0  # a rib stands at most this many times its thickness (fastcae: 5)
 KNOT = 16.0  # mm: the B-splines' knots
 SMIN = 1.0  # 1/mm: the smooth minimum's sharpness (under-reads by at most ln 2 / SMIN)
 THETA_SMOOTH = 8.0  # mm: the directions smoothed over this
@@ -157,6 +159,8 @@ def build(a: float = A) -> Setup:
     for b in BOLTS:
         bolt |= np.hypot(cx - b[0], cy - b[1]) < R_BOLT
     lug = np.hypot(cx - LUG[0], cy - LUG[1]) < R_LUG
+    hole = hole | (bolt & (cz > WALL + H_BOLT))
+    bolt = bolt & ~hole
     active = np.flatnonzero(~hole)
     wall = grid.k < nw
     solid = boss | bolt | lug
@@ -181,7 +185,9 @@ def build(a: float = A) -> Setup:
     seat = np.flatnonzero(on & (d_node < R_BORE + 0.75 * a))
     groups = [{"nodes": seat, "ref": (BORE[0], BORE[1], Z_LOAD), "name": "the bearing's seat"}]
     for k_, b in enumerate(BOLTS):
-        ids = np.unique(grid.nodes_of[np.flatnonzero(np.hypot(cx - b[0], cy - b[1]) < R_BOLT)])
+        ids = np.unique(
+            grid.nodes_of[np.flatnonzero((np.hypot(cx - b[0], cy - b[1]) < R_BOLT) & (cz < WALL + H_BOLT))]
+        )
         groups.append({"nodes": ids, "fixed": True, "name": f"bolt {k_ + 1}"})
     ids = np.unique(grid.nodes_of[np.flatnonzero(lug)])
     groups.append({"nodes": ids, "fixed": True, "name": "the lug"})
@@ -252,8 +258,16 @@ class Field:
         self.n = self.B.shape[1]
         self.families = families
         self.Bx, self.By = bspline_2d_grad(s.cols_xy[:, 0], s.cols_xy[:, 1], knot)
-        self.by_place = "--by-place" in sys.argv
-        self.ruled = "--ends" in sys.argv
+        self.fastcae = FASTCAE
+        self.by_place = "--by-place" in sys.argv or FASTCAE
+        self.ruled = "--ends" in sys.argv or FASTCAE
+        self.hcap = np.full(s.n_cols, BAND)
+        self.theta0_grad = np.zeros((s.n_cols, 2))
+        if FASTCAE:
+            import rules
+
+            self.hcap = rules.height_cap(s.cols_xy)
+            self.normal = rules.anchor_normal(s.cols_xy)
         if self.by_place:
             import rules
 
@@ -286,7 +300,7 @@ class Field:
             xh = x[(2 * k + 1) * self.n : (2 * k + 2) * self.n]
             rho = self.rho_most * (self.B @ xr)
             r = self.B @ xh
-            cap, dcap = smin(BAND, TALL * SPACING * rho)
+            cap, dcap = smin(self.hcap, TALL * SPACING * rho)
             out.append(
                 {"rho": rho, "r": r, "h": r * cap, "cap": cap, "dh_drho": r * dcap * TALL * SPACING}
             )
@@ -497,6 +511,10 @@ def run_field(
             c, cc = fld.stiffness(x)
             turned = fld.align(solve(s, c)["energy"], cc, first=True)
             fld.theta0 = fld.theta.copy()
+            if fld.fastcae:
+                import rules
+
+                fld.theta0_grad = rules.theta_gradient(fld.theta0, s.cols_ij, s.grid.a)
         before = fld.theta.copy()
         c, cc = fld.stiffness(x)
         r = solve(s, c)
@@ -535,11 +553,11 @@ def run_field(
             import rules
 
             ru = rules.transport(fld, x)
-            for key in ("T", "H"):
+            for key in ru:
                 f.append(ru[key][0])
                 df.append(ru[key][1])
-            history[-1]["slope_rms"] = {"thickness": ru["T"][2], "height": ru["H"][2]}
-            say(f"    the slopes along the ribs: thickness {ru['T'][2]:.4f}, height {ru['H'][2]:.4f} mm a mm")
+            history[-1]["rules"] = {key: ru[key][2] for key in ru}
+            say("    the rules: " + ", ".join(f"{key} {ru[key][2]:.4f} ({ru[key][0]:+.3f})" for key in ru))
         if opt is None:
             opt, c0 = MMA(len(x), len(f), 0.0, 1.0), r["compliance"]
         x = opt.propose(x, r["compliance"] / c0, gr["dc"] / c0, f, df, move=move)
@@ -605,6 +623,9 @@ def main() -> None:
         t_most=T_MOST,
         by_place=fld.by_place,
         ruled=fld.ruled,
+        fastcae=fld.fastcae,
+        tall=TALL,
+        h_bolt=H_BOLT,
         voxel=a,
         theta=fld.theta,
         v=fld.v,

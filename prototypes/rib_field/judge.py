@@ -99,7 +99,11 @@ def main() -> None:
         **{k: v for k, v in d.items() if isinstance(v, np.ndarray)},
     )
     print(f"drawn in {time.time() - t0:.0f} s")
-    tm = draw.mesh(d["z"], fine)
+    if kind == "field" and "--smooth" in sys.argv:
+        f, _ = draw.implicit(d, fine)  # drafted, rounded tops, root fillets
+        tm = draw.mesh_implicit(f, fine)
+    else:
+        tm = draw.mesh(d["z"], fine)
     tm.export(toy.OUT / f"{label}_{kind}.stl")
     _, _, density = toy.material()
     res = judge_mesh(tm, toy.OUT / f"{label}_{kind}.stl")
