@@ -401,6 +401,78 @@ It is one more reason the member grammar is needed (section 5 of the plan is to 
 
 ---
 
+## D14. What a design is delivered as (11 October 2026)
+
+**The engineer, 14:13:** "how about we change the product direction that it won't deliver the editable CAD... just provide creative designs, plausible designs, realistic designs... and once the innovation is unleashed then human gets an editable CAD build from the selected design". **And at 14:38:** "We have skipped the CAD build but not the quality of design that we can get and good looking designs without constraining creativity and innovation."
+
+**Decided:**
+- Each design is delivered as an FE-proven, castable mesh with its evidence: the grade, castability, mass, pictures and settings. It is not delivered as editable CAD.
+- Editable CAD is built later, only for a design the engineer selects.
+- The design's quality and looks are kept. The optimisation stays free, with no patterns (13:07). How metal may stand (the casting rules, the members' plan rule) and how each member is drawn are the tools for clean, attractive designs.
+
+**Evidence:**
+- Every exact-CAD reading of a free field failed somewhere: 58-73 % of the metal kept, slivers, refused booleans ([CAD from a free optimisation](2026-10-11-cad-from-a-free-optimisation.md)).
+- The mesh route built every field, and FE judged it in minutes.
+- The three outside proposals reviewed at 14:02-14:16 agreed.
+- Generative design is used the same way: the tool proposes, and a designer rebuilds the chosen design.
+
+**Consequences:**
+- D5 (CadQuery) stays, for the exact shell and the hand-over.
+- The relief route (flow D) becomes the hand-over's helper for a selected design, not part of the loop.
+- An evidence pack and a clarity score become part of every design.
+
+---
+
+## D15. Designs come from a chain of optimisations (11 October 2026)
+
+**The engineer, 18:00:** "someone should really recreate the identified features/pattern again and fuse with existing CAD and add fillets and then deliver... otherwise it looks like someone has spilled a thick paint on the housing". **And at 18:24:** "it should be agentic which should chain multiple optimizations to iteratively derive the design... ultimately the designs should come from optimization only but as per the patterns and features of the production manufacturable CADs"; a designer reading the result afterwards loses performance, an agent can add the constraints inside the loop.
+
+**Decided:**
+- A design comes from a chain of optimisations, never from a reading made after one. The first runs free; the agent reads its patterns and a concept (how each mount is carried, how each bore is held); each next optimisation places and sizes production's features inside that concept, and each step adds manufacturing-grade features and rules.
+- The first optimisation stays free (13:07, revised): patterns enter only as the agent reads them from it.
+- Each optimisation is fast, so that a concept is tried in minutes.
+
+**Evidence:** every reading after an optimisation lost performance when measured (flow C's ribs: tilt 1.20 × against the organic drawing's 0.70 ×; clean ribs: beds 84.5 µm against 42.4; exact readings kept 58-73 % of the metal); production's styles placed without an optimiser were 1.7-2.2 × too soft at the beds; production's network placed by the optimiser passed every line (`outcome_ribsfieldfins24_6.7kg`: 7.27 kg, 37.6 µm, 0.77 ×).
+
+**Consequences:**
+- The method, for review: [the chained optimisation](2026-10-11-chained-optimisation.md) (LOP-24).
+- D14 may be revised: the chain's last step is exact CAD by construction, so every design could be delivered as exact CAD. That is the engineer's to decide.
+
+---
+
+## D16. The design space is fixed in every iteration (12 October 2026)
+
+**The engineer, 19:30:** "I don't want iterate changes in the design space → that will remain fixed in all the iterations… and that will be between the shell and the packaging space".
+
+**Decided:**
+- One design space for a whole campaign: the room between the shell's outer face and the packaging space, less what the contract keeps clear. This is the contract's own definition of what the optimiser is given ("the packaging less all of the above"). The shell is fixed with it.
+- No iteration redraws the design space from a run's metal: no masks, regions, strips or held-empty volumes.
+
+**Revises:** D15's chain, in that its iterations no longer narrow the design space ([the chained optimisation](2026-10-11-chained-optimisation.md) §4c and §4e), and the agent's role in [the plan of 11 October](2026-10-11-the-plan-agents-and-structural-design.md) (choosing where the next design space goes).
+
+**Open:**
+- What an iteration may change instead: the engineer's next instruction.
+- Whether the 24 mm height envelope (11 October 13:21) stays inside the space.
+
+**Evidence (Claude's, from the trials; the engineer gave the rule without a reason):** two days of iterated spaces (11-12 October) left the designs organic inside them, whether each space was traced from the last run's metal, drawn as regions round the hard points, or cut into sections ([the chained optimisation](2026-10-11-chained-optimisation.md) §4c-§4e; the loop's [record of the night of 12 October](../loop/2026-10-12-record-night.md)).
+
+## D17. Patterns from a library, every parameter from the optimiser (13 October 2026)
+
+**The engineer, 17:45:** "I am ok to keep a pattern library -> but the dimensions orientations, placement, thickness, height its parameters etc should be derived from optimization and not guessed by you... I am ok to have a workflow where you do a free optimization and then identify patterns and then choose a relevant pattern from library and let the optimize size it, decide the number of members it needs and its parameters etc.. but I am not ok agent choosing some nice guess of parameters values that just happened to work.." Also: modes far from the gear orders may be kept in the optimisation; keep margins; and a good result (straight brackets) must be a result, not an ask: when the optimiser is asked for that result's performance, does it deliver the straight bracket?
+
+**Decided:**
+- A library of production patterns is allowed (spokes, gusseted lugs, bridges, collars, ribs).
+- The flow: a free optimisation first; the agent identifies the patterns in it and picks the relevant family from the library; the optimiser sizes it: the number of members, their placement, orientation, thickness, height and every other parameter.
+- The agent never sets a pattern's parameter values. A fixed pattern whose values the agent chose is not a result.
+- The modes may enter the optimisation (held clear of the gear orders), with margins on every line.
+- A result found by hand becomes a test: asked for its performance, can the optimiser deliver it?
+
+**Revises:** the overnight campaign's last designs (LOP-28, `final14`-`final18`): their cover spokes (every 30°, 6 x 12 mm) and gusseted lugs (two 8 mm webs, 25 mm apart at the wall) were fixed with values the agent chose. They stand as a reference of what is reachable (`final16`: the modes 12-14 % from the orders), not as a result.
+
+**Evidence:** `final16`'s brackets lifted every mode and cleared both orders by 12 % and more, but their form and sizes were a guess checked after; a runtime agent guessing so on any other geometry would need luck (the engineer, 10:07 and 17:09).
+
+---
+
 ## The decisions at a glance
 
 | # | Decided (7 October) | The deciding evidence |
@@ -418,3 +490,7 @@ It is one more reason the member grammar is needed (section 5 of the plan is to 
 | D11 | Defer | Not needed before P4 |
 | D12 | Show after P1, or earlier for a deadline | Honest claims; a clean repository first |
 | D13 | Extend the cube model; dl4to as a check | One judge; adjoints and derivatives exist |
+| D14 (11 October) | Designs delivered as FE-proven meshes with their evidence; editable CAD only for a selected design, later; quality and looks kept, the optimisation free | Every exact reading of a free field failed somewhere; the mesh route builds every field |
+| D15 (11 October) | Designs come from a chain of optimisations: free first, then optimisations constrained to production's features as the agent reads them, concept by concept | Readings after an optimisation always lost performance; production's network placed by the optimiser passed |
+| D16 (12 October) | The design space is fixed in every iteration: between the shell and the packaging space, never redrawn from a run's metal | The engineer's rule (19:30); iterated spaces left the designs organic inside them |
+| D17 (13 October) | Patterns from a library, every parameter (count, placement, orientation, thickness, height) from the optimiser after a free run; the agent picks the family only; modes may be in the optimisation; margins kept | The engineer's rule (17:45); the overnight's lugs and spokes were the agent's guessed values |

@@ -1,0 +1,266 @@
+<title>From Field to Housing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..100,500..800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one reading column (~68ch) with full-width comparison tables and figure rows that stack on phones. */
+:root {
+  --bg: #f4f6f7;          /* cool foundry-floor white */
+  --sheet: #ffffff;
+  --ink: #1b2228;
+  --muted: #5b6670;
+  --rule: #d5dbe0;
+  --accent: #2f5d86;      /* drawing-ink blue */
+  --accent-wash: #e3edf6;
+  --gap: #a3541c;         /* what is missing: a cast-iron rust */
+  --gap-wash: #f6e9df;
+  --good: #2c7a4b;
+  --bad: #a33a32;
+  --display: "Archivo", "Arial Narrow", system-ui, sans-serif;
+  --body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "Consolas", monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12171b; --sheet: #1a2127; --ink: #e5eaee; --muted: #9aa6b0; --rule: #2e3840;
+    --accent: #8db8de; --accent-wash: #1d2c3a; --gap: #e09a63; --gap-wash: #33241a;
+    --good: #6fc497; --bad: #ec8a80; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #12171b; --sheet: #1a2127; --ink: #e5eaee; --muted: #9aa6b0; --rule: #2e3840;
+  --accent: #8db8de; --accent-wash: #1d2c3a; --gap: #e09a63; --gap-wash: #33241a;
+  --good: #6fc497; --bad: #ec8a80; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.6; margin: 0; }
+.page { max-width: 1060px; margin: 0 auto; padding-inline: 20px; padding-block: 40px 72px; display: flex; flex-direction: column; gap: 52px; }
+.read { max-width: 68ch; }
+h1, h2, h3 { font-family: var(--display); font-stretch: 85%; line-height: 1.15; text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(2rem, 5vw, 3rem); font-weight: 800; letter-spacing: -0.01em; }
+h2 { font-size: 1.6rem; font-weight: 700; }
+h3 { font-size: 1.12rem; font-weight: 700; }
+p { margin: 0; }
+.eyebrow { font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+.lede { font-size: 1.15rem; color: var(--muted); max-width: 62ch; }
+header { display: flex; flex-direction: column; gap: 14px; border-bottom: 2px solid var(--ink); padding-bottom: 28px; }
+section { display: flex; flex-direction: column; gap: 18px; }
+.stack { display: flex; flex-direction: column; gap: 12px; }
+ol.steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 14px; counter-reset: step; }
+ol.steps > li { counter-increment: step; display: grid; grid-template-columns: 2.4rem minmax(0, 1fr); gap: 4px 14px; }
+ol.steps > li::before { content: counter(step); font-family: var(--display); font-weight: 800; font-size: 1.4rem; color: var(--accent); line-height: 1.3; }
+ol.steps > li > div { min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+ol.steps strong { font-weight: 600; }
+ul.plain { margin: 0; padding-left: 1.2rem; display: flex; flex-direction: column; gap: 6px; }
+.note { font-size: 0.92rem; color: var(--muted); }
+.figs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+@media (max-width: 800px) { .figs { grid-template-columns: minmax(0, 1fr); } }
+figure { margin: 0; background: var(--sheet); border: 1px solid var(--rule); display: flex; flex-direction: column; }
+figure img { display: block; width: 100%; height: auto; }
+figcaption { padding: 10px 12px; font-size: 0.88rem; color: var(--muted); border-top: 1px solid var(--rule); }
+figcaption b { color: var(--ink); font-weight: 600; }
+.wide { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; min-width: 760px; background: var(--sheet); font-size: 0.94rem; }
+th, td { text-align: left; vertical-align: top; padding: 10px 12px; border-bottom: 1px solid var(--rule); }
+th { font-family: var(--mono); font-size: 0.74rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); font-weight: 500; background: var(--bg); }
+td.num { font-family: var(--mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.ok { color: var(--good); font-weight: 600; }
+.no { color: var(--bad); font-weight: 600; }
+td.missing { background: var(--gap-wash); }
+td.missing b { color: var(--gap); }
+.pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; align-items: start; }
+@media (max-width: 760px) { .pair { grid-template-columns: minmax(0, 1fr); } }
+.panel { background: var(--sheet); border: 1px solid var(--rule); padding: 18px 20px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.panel.theirs { border-top: 3px solid var(--accent); }
+.callout { background: var(--accent-wash); padding: 16px 20px; border-left: 3px solid var(--accent); }
+.callout.gap { background: var(--gap-wash); border-left-color: var(--gap); }
+.tag { font-family: var(--mono); font-size: 0.78rem; padding: 1px 7px; border: 1px solid var(--rule); border-radius: 3px; white-space: nowrap; }
+footer { font-size: 0.85rem; color: var(--muted); border-top: 1px solid var(--rule); padding-top: 18px; }
+</style>
+
+<div class="page">
+
+<header>
+  <div class="eyebrow">zenryx · the first loop · 10 October 2026</div>
+  <h1>From field to housing</h1>
+  <p class="lede">How published housing designs turn a topology result into a believable housing, how ours does it today, step by step, what we got, and what we are missing.</p>
+</header>
+
+<section class="read">
+  <div class="eyebrow">The short answer</div>
+  <h2>We go straight from the field to a surface. They put a designer's reading in between.</h2>
+  <div class="stack">
+    <p>In the published designs the optimiser shows <b>bars</b>, like bones, from each bearing to the feet. A designer then builds the housing from those bars: a thin, smooth skin, with the bars laid on it as ribs, and windows where nothing is needed.</p>
+    <p>Our set-up starts from a closed 4 mm box and fills every strut down to the split, so bars hardly appear. Then our drawing smooths the whole field into one surface. The result is stiff (its bearing beds move half as much as the reference housing's), but it comes out as one thick, lumpy body that does not look like a housing. Finer voxels did not change that.</p>
+  </div>
+</section>
+
+<section>
+  <div class="eyebrow">What the two pictures show</div>
+  <h2>Their approach, step by step</h2>
+  <div class="pair">
+    <div class="panel theirs">
+      <h3>Picture 1: SEW's six steps</h3>
+      <p class="note">An industrial gearbox housing, from optimisation to final design.</p>
+      <ul class="plain">
+        <li><b>1. Initial shape:</b> the optimiser's result, organic struts and webs between the bearing bores and the feet.</li>
+        <li><b>2. Outer surface limit:</b> a designer draws a smooth outer skin round the struts.</li>
+        <li><b>3. Plane cut:</b> the skin is cut flat where it must be flat.</li>
+        <li><b>4. Surface offset:</b> the skin is offset inwards to a thin, even wall.</li>
+        <li><b>5. New surface:</b> a new skin is wrapped over the strut network, so the struts now show as ribs.</li>
+        <li><b>6. Final design:</b> a fair skin, ribs that follow the load paths, windows where no metal is needed, flat machined flanges, clean feet.</li>
+      </ul>
+    </div>
+    <div class="panel theirs">
+      <h3>Picture 2: a mass-percentage study</h3>
+      <p class="note">The same housing optimised again and again, each time with a different share of the space's mass, from 5 % up to 40 %.</p>
+      <ul class="plain">
+        <li><b>At 5-10 %:</b> a few bars, a truss from the bearing housings to the feet. The load paths are plain to see.</li>
+        <li><b>In between:</b> the bars thicken and branch.</li>
+        <li><b>At 30-40 %:</b> they merge into a webbed shell with holes, close to a housing.</li>
+        <li>Nothing is forced to be a closed box. Only the interfaces are kept.</li>
+      </ul>
+    </div>
+  </div>
+  <ol class="steps read">
+    <li><div><strong>Keep only the interfaces.</strong><span>The bearing housings, the flanges and the feet. The rest of the space is free.</span></div></li>
+    <li><div><strong>Let the optimiser show the load paths.</strong><span>Little metal gives bars; more metal gives a webbed shell. A sweep of mass budgets shows how the paths grow.</span></div></li>
+    <li><div><strong>Read the result like a designer.</strong><span>Draw an outer limit surface, cut it flat where needed, offset it to a thin wall, wrap it over the bars so they become ribs, and open windows.</span></div></li>
+    <li><div><strong>Finish it.</strong><span>Fair surfaces, an even wall, one fillet size, flat faces where things bolt on. That is why it looks real, even where it might not be easy to cast.</span></div></li>
+  </ol>
+</section>
+
+<section>
+  <div class="eyebrow">What we do</div>
+  <h2>Our approach today, step by step</h2>
+  <ol class="steps read">
+    <li><div><strong>The contract.</strong><span>Your gear train, its bearings, the three mounts and the two-part sand casting, split across the shafts. No motor flange: the vehicle holds the motor. The optimiser sees one load case, peak drive. The judge at the end checks peak drive and peak reverse.</span></div></li>
+    <li><div><strong>What the optimiser is given.</strong><span>The inside is kept as air: the room round every gear, shaft and bearing, run out to the split, so that each half is a cup. <b>A 4 mm skin of metal is frozen all round it.</b> The mounts and the bolt bosses are frozen metal too. Everything else in the packaging space is free.</span></div></li>
+    <li><div><strong>The mould rule.</strong><span>Each stick of voxels along the shafts is filled from the split out to its last metal, so the shape can come out of a two-part mould. A strut in mid-air becomes a solid curtain down to the split.</span></div></li>
+    <li><div><strong>The optimiser.</strong><span>Make the housing as stiff as it can be under the bearing forces, with the mounts held (least compliance), using 7.73 kg of metal in all, the reference housing's mass. Robust: it must also work when every member is a little thinner or a little thicker, so it cannot lean on half-filled voxels. One run raises the sharpness until every voxel is metal or air. <span class="tag">10 mm: 2 min</span> <span class="tag">6 mm: 15 min</span></span></div></li>
+    <li><div><strong>The organic shape.</strong><span>The inside is filled for now and the interfaces made solid. Then the whole lot is blurred lightly, its surface traced (marching cubes), smoothed, re-meshed into even triangles and sewn into a solid. <b>The whole field at once.</b> <span class="tag">under 1 min</span></span></div></li>
+    <li><div><strong>The CAD.</strong><span>The exact interfaces are cut into that solid: the inside, the bearing bores, the seals, the mount and bolt holes. A bolt is kept only where the body holds its boss. <span class="tag">3-4 min</span></span></div></li>
+    <li><div><strong>The judge.</strong><span>Castability (the mould's pull, the least wall), then FE on a TET10 mesh of the CAD, then the grade: bearing tilt, how far the bearing beds move, the first modes against the gear-mesh frequencies, and mass. <span class="tag">FE 1-2 min</span></span></div></li>
+  </ol>
+  <p class="read note">End to end, from the optimiser's start to a graded CAD: 15 minutes at 10 mm, 23 minutes at 6 mm, with nothing done by hand.</p>
+
+  <div class="figs">
+    <figure>
+      <img src="img/field.jpg" alt="The 10 mm compliance field: blocky green metal wrapping the whole inside, tied to the three mounts" width="774" height="638">
+      <figcaption><b>The field</b> (10 mm, compliance). Metal wraps the whole inside as one thick envelope. No separate bars.</figcaption>
+    </figure>
+    <figure>
+      <img src="img/organic.jpg" alt="The organic shape: one smooth, lumpy body over both halves" width="774" height="638">
+      <figcaption><b>The organic shape.</b> The whole field smoothed into one body. Skin and ribs are never told apart.</figcaption>
+    </figure>
+    <figure>
+      <img src="img/cad.jpg" alt="The 10 mm CAD: four views of the two halves with exact mount bosses, seal bores and bolt holes" width="1400" height="1167">
+      <figcaption><b>The CAD</b> (11.76 kg). Exact interfaces in a lumpy body, with ragged edges along the split's seams.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section>
+  <div class="eyebrow">What we got</div>
+  <h2>The numbers so far</h2>
+  <div class="read stack note">
+    <p><b>Field check:</b> the optimiser's own model with every voxel metal or air, in peak drive: the worst bearing tilt, and the metal it placed beyond the frozen skin, mounts and bosses (every run had the same 7.73 kg in all).</p>
+    <p><b>The other columns</b> are FE and the grade on the drawn CAD. Beds: how far the bearing seats move. Tilt: against its pass line, where 1 × is three quarters of the tilt the bearing type allows (a 25 % margin for the model) and under 1 passes. Undercut: the share of each half's surface (motor side / cover) that the two-part mould cannot release.</p>
+  </div>
+  <div class="wide">
+    <table>
+      <thead><tr><th>Design</th><th>Optimiser</th><th>Field check (drive)</th><th>Beds, drive / reverse</th><th>Tilt, drive / reverse</th><th>First mode</th><th>Mass</th><th>Undercut</th></tr></thead>
+      <tbody>
+        <tr><td>10 mm, tilt as the goal (p-norm)</td><td class="num">122 s</td><td class="num">3.09 × · 3.50 kg</td><td colspan="5">not drawn: in the optimiser's own model its bearings move 2.4-5.4 mm</td></tr>
+        <tr><td>10 mm, stiffness as the goal (compliance)</td><td class="num">131 s</td><td class="num">1.38 × · 4.85 kg</td><td class="num ok">24 / 51 µm</td><td class="num"><span class="ok">0.73</span> / <span class="no">1.42</span></td><td class="num ok">828 Hz, clear</td><td class="num no">11.79 kg</td><td class="num no">1.5 / 1.6 %</td></tr>
+        <tr><td>6 mm, stiffness as the goal (compliance)</td><td class="num">888 s</td><td class="num">1.06 × · 5.29 kg</td><td class="num ok">23 / 55 µm</td><td class="num"><span class="ok">0.89</span> / <span class="no">1.51</span></td><td class="num no">764 Hz, 2 clashes</td><td class="num no">10.39 kg</td><td class="num no">7.3 / 6.2 %</td></tr>
+        <tr><td>The reference housing</td><td>-</td><td>-</td><td class="num">52 / 138 µm</td><td>-</td><td>-</td><td class="num">7.73 kg</td><td>-</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="pair">
+    <div class="callout">
+      <div class="stack">
+        <h3>Stiffness fixed the support</h3>
+        <p>Both compliance designs are held by all three mounts. In peak drive their bearing beds move half as much as the reference housing's, and both <b>pass</b> the bearing tilt: the case they were optimised for.</p>
+        <p>Both <b>fail</b> the tilt in peak reverse only, at the same bearing (the intermediate shaft's, cover side). The optimiser never saw that case.</p>
+      </div>
+    </div>
+    <div class="callout">
+      <div class="stack">
+        <h3>6 mm: a clean test of the voxel size</h3>
+        <p>Only the voxel changed. The optimiser's own check improved: tilt 1.06 × against 1.38 ×, compliance 716 against 915 N·mm.</p>
+        <p>Drawn and judged, it is much the same housing: 1.4 kg lighter, the same bearing-bed movement, a lower first mode (764 Hz) that now meets two gear-mesh frequencies, and four to five times the undercut. It looks the same: one lump.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="pair">
+    <figure>
+      <img src="img/organic6.jpg" alt="The 6 mm organic shape from four cameras: one smooth, lumpy body, ragged on the motor side" width="1400" height="1167">
+      <figcaption><b>The 6 mm organic shape.</b> Its 19.24 kg includes the inside, which stays filled until the CAD cuts it out. The ragged blades on the motor side are already here, so they come from the field and the smoothing, not from the cuts.</figcaption>
+    </figure>
+    <figure>
+      <img src="img/cad6.jpg" alt="The 6 mm CAD from the same four cameras, with exact bores, mounts and bolt holes" width="1400" height="1167">
+      <figcaption><b>The 6 mm CAD</b> (10.36 kg), from the same cameras. The organic shape with its bores, holes and inside cut. The same envelope as at 10 mm.</figcaption>
+    </figure>
+  </div>
+
+  <div class="pair">
+    <figure>
+      <img src="img/floating.jpg" alt="The p-norm field: a core tied to the mounts by a few thin struts" width="774" height="638">
+      <figcaption><b>Why we switched to stiffness.</b> With bearing tilt as the goal, the core was tied to the mounts by a few thin struts (one mount by none) and swung 2-5 mm as a whole. The tilt, measured each bearing against its own shaft, could not see that.</figcaption>
+    </figure>
+    <div class="callout">
+      <div class="stack">
+        <h3>A field is lighter than its CAD</h3>
+        <p>In peak drive the CADs tilt less than their fields said (0.73 against 1.38, and 0.89 against 1.06), because the drawing adds 2.7 to 4 kg of metal beyond the budget. So the CAD is not yet a faithful copy of the field, in mass or in stiffness.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="eyebrow">The gap</div>
+  <h2>What we are missing</h2>
+  <div class="wide">
+    <table>
+      <thead><tr><th>Step</th><th>Theirs</th><th>Ours</th><th>What we are missing</th></tr></thead>
+      <tbody>
+        <tr><td><b>The load paths</b></td><td>Bars and webs between the interfaces; the flow is readable</td><td>One thick envelope round the inside</td><td class="missing"><b>A run that lets bars show:</b> less metal, no mould rule while exploring, and possibly no frozen full skin (only the interfaces kept)</td></tr>
+        <tr><td><b>The reading</b></td><td>A designer turns bars into ribs on a skin</td><td>The whole field smoothed at once</td><td class="missing"><b>A reading step:</b> find the bars (centre lines and thickness), build them as smooth ribs, make the skin a thin even wall round the inside, join them smoothly, open windows</td></tr>
+        <tr><td><b>The finish</b></td><td>Fair surfaces, an even wall, flat machined faces</td><td>Faceted lumps, ragged blades, knife edges at the split</td><td class="missing"><b>Clean geometry:</b> smooth surfaces, an even wall, one fillet size, flat faces where things are bolted</td></tr>
+        <tr><td><b>The intent</b></td><td>An outer limit surface, regular rib patterns</td><td>None</td><td class="missing"><b>Guidance:</b> an outer limit, rib patterns and symmetry where the loads allow, set by you or the agent</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="callout gap read">
+    <div class="stack">
+      <h3>Why ours come out as one lump</h3>
+      <ul class="plain">
+        <li>The frozen 4 mm skin already closes the box, so the optimiser thickens it instead of building bars.</li>
+        <li>The mould rule fills each stick from the split, so any strut becomes a curtain.</li>
+        <li>The drawing smooths everything together, so whatever bars there were melt into one body.</li>
+        <li>Not the voxel size: at 6 mm it is the same lump.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="read">
+  <div class="eyebrow">Next</div>
+  <h2>What I propose</h2>
+  <ol class="steps">
+    <li><div><strong>Peak reverse in the optimisation too.</strong><span>Both designs fail the tilt only in the case the optimiser never saw. Both cases share one stiffness matrix, so with one factorisation the second case costs only an extra solve. It changes the load cases, so it is your call.</span></div></li>
+    <li><div><strong>A mass sweep that shows the bars.</strong><span>No mould rule while exploring, only the interfaces kept, budgets from about 10 to 40 %. A few minutes each at 10 mm, so a full sweep is affordable in the loop.</span></div></li>
+    <li><div><strong>The reading step on the clearest result.</strong><span>Bars become smooth ribs, the skin becomes a thin wall round the inside, the two are joined with smooth blends, and windows open where the field is empty. Then the mould rule is checked on the result, not imposed on the field.</span></div></li>
+    <li><div><strong>Then mass and castability.</strong><span>A drawing that keeps the optimiser's mass, and no blades or knife edges at the split.</span></div></li>
+  </ol>
+</section>
+
+<footer>
+  Pictures: our own runs on the EV two-stage reducer contract (10 October 2026). The two reference pictures are described, not reproduced. Numbers come from the optimiser's log, the FE judge and the grade of each design.
+</footer>
+
+</div>

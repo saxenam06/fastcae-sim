@@ -101,7 +101,7 @@ From what the loop had to build, and what broke. Each goes to its feature when t
   - statics and modes;
   - each seat's rigid fit, and its tilt against its shaft's line;
   - an equilibrium check on every solve (it caught a stray bolt moment);
-  - the double factor where the penalties stop the single one refining.
+  - the couplings as exact constraints, so that the single-precision factor refines. The night's penalties stalled it, and the prototype's fallback to a double factor broke the engineer's rule: single precision only, so that the factor fits the card.
 - **The design space and the optimiser:**
   - voxels that keep thin walls whole (a cell is wall where it touches the wall);
   - the objective as a choice: compliance, or the seats' tilt against their shafts over their lines, by an adjoint. The night's adjoint took the seat's own rotation;

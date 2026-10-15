@@ -2,13 +2,14 @@
 
 zenryx designs housings from requirements. A gearbox's functional interfaces, loads, package, targets and one manufacturing process go in. Housings come out that are FE-proven and pass the process's rules, each labelled with its rung, together with the whole campaign: every hypothesis, decision and physical consequence. A general platform; the first family is an EV two-stage reducer housing. This page holds the plan of record every other feature follows, and its decisions.
 
-**PBI key:** PRD · **State:** the plan of record. PRD-3 (the engineer's questions before P0) is under way: the direction for the contract is decided (Decisions, first row). The calculation chain from the contract to a graded design is written up (Docs) · **Updated:** 2026-10-08 21:35 by Claude
+**PBI key:** PRD · **State:** the plan of record. PRD-3 (the engineer's questions before P0) is under way: the direction for the contract is decided (Decisions, first row). The calculation chain from the contract to a graded design is written up (Docs). PRD-5, the agents' role from the first end-to-end runs, is written for the engineer's review · **Updated:** 2026-10-11 05:26 by Claude
 **Code:** none - the plan and decisions the other features follow
 
 ## Now
 
 | PBI | Goal | Who · laptop · branch | Since | Where it stands |
 |---|---|---|---|---|
+| PRD-5 | **The agents' role, from the first end-to-end runs** (the engineer, 11 October 01:26-01:38: after the pipeline runs end to end and its failures and the cases needing a person are known, how agents become native to the process, support creativity, and turn the runs into training data; read beside the MechanicalAI and micro1 posts) | Claude · LAPTOP-IR8VEG53 · `product/end-to-end` | 2026-10-11 05:20 | **Written, for the engineer to review:** [the agents' role](2026-10-11-the-agents-role.md). The view as of now in seven points. The evidence: the pipeline as it runs, the night's 18 failures with who cured them, the engineer's ten corrections and what each became. The five seams where agents become native (the formulation, the reading, the failed line, the broken run, the engineer); the hypotheses an agent would put now; four datasets (graded tasks, campaign trajectories, repair trajectories, the engineer's corrections); five proposed changes to the plan. Three variations of the design are running through the pipeline as its evidence (a lighter budget, a 10 mm scout, thinner members). |
 
 ## Next
 
