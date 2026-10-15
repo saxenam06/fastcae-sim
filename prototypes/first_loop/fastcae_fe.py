@@ -5,7 +5,9 @@ Copied from fastcae's tag, function by function, unchanged:
 - fastcae-v1:src/fastcae/simulate/solve.py: QA, QB, QUAD, ON_HOST_DOF, _gradients,
   _shape_gradients, _elasticity, _b_matrix, stiffness, _mtlayer, SINGLE, REFINE_TOL,
   REFINE_MOST, _factor_and_solve, FACTORS, _direct, _refined;
-- fastcae-v1:src/fastcae/simulate/gpu.py: release.
+- fastcae-v1:src/fastcae/simulate/gpu.py: release;
+- fastcae-v1:src/fastcae/simulate/solve.py (11 October, for the Designs page's stress contours): NODE_L,
+  nodal_stress, von_mises.
 The one change: _direct imported `release` from `.gpu`; here it is the function below, in the same
 module (the import line removed). PHY-1 copies them into src/zenryx/physics/ with a parity check on
 a reference mesh; until then the first loop's prototype runs these.
@@ -349,3 +351,55 @@ def release() -> None:
                     # Past this many bytes kept, the pool gives memory back at a synchronize.
                     wp.set_mempool_release_threshold(device, 0)
                 wp.synchronize_device(device)
+
+
+# --- copied 11 October (fastcae-v1:src/fastcae/simulate/solve.py), unchanged ---
+
+NODE_L = np.vstack([np.eye(4), 0.5 * (np.eye(4)[EDGES[:, 0]] + np.eye(4)[EDGES[:, 1]])])
+
+
+def nodal_stress(
+    nodes: np.ndarray,
+    tets: np.ndarray,
+    young: np.ndarray,
+    poisson: np.ndarray,
+    u: np.ndarray,
+    n_nodes: int,
+    chunk: int = 50_000,
+) -> tuple[np.ndarray, np.ndarray]:
+    """Stress at every node (SIXX SIYY SIZZ SIXY SIXZ SIYZ) averaged over the elements round it, and
+    von Mises likewise averaged from each element's own value there."""
+    total = np.zeros((n_nodes, 6))
+    vm_total = np.zeros(n_nodes)
+    count = np.zeros(n_nodes)
+    for start in range(0, len(tets), chunk):
+        t = tets[start : start + chunk]
+        g, _ = _gradients(np, nodes[t[:, :4]])
+        gn = _shape_gradients(np, g, NODE_L)  # (m, 10 points, 10 nodes, 3)
+        ue = u[t]  # (m, 10, 3)
+        grad = np.einsum("mpnj,mni->mpij", gn, ue)
+        eps = 0.5 * (grad + grad.transpose(0, 1, 3, 2))
+        e, nu = young[start : start + chunk, None], poisson[start : start + chunk, None]
+        lam = e * nu / ((1 + nu) * (1 - 2 * nu))
+        mu = e / (2 * (1 + nu))
+        tr = eps[..., 0, 0] + eps[..., 1, 1] + eps[..., 2, 2]
+        s = np.empty(eps.shape[:2] + (6,))
+        for i in range(3):
+            s[..., i] = 2 * mu * eps[..., i, i] + lam * tr
+        s[..., 3] = 2 * mu * eps[..., 0, 1]
+        s[..., 4] = 2 * mu * eps[..., 0, 2]
+        s[..., 5] = 2 * mu * eps[..., 1, 2]
+        vm = von_mises(s)
+        np.add.at(total, t.ravel(), s.reshape(-1, 6))
+        np.add.at(vm_total, t.ravel(), vm.ravel())
+        np.add.at(count, t.ravel(), 1.0)
+    with np.errstate(invalid="ignore", divide="ignore"):
+        return total / count[:, None], vm_total / count
+
+
+def von_mises(s: np.ndarray) -> np.ndarray:
+    """Von Mises of stresses given as (..., 6): xx yy zz xy xz yz."""
+    xx, yy, zz, xy, xz, yz = (s[..., i] for i in range(6))
+    return np.sqrt(
+        0.5 * ((xx - yy) ** 2 + (yy - zz) ** 2 + (zz - xx) ** 2) + 3.0 * (xy**2 + yz**2 + xz**2)
+    )
