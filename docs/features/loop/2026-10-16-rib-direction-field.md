@@ -67,7 +67,10 @@ The set-up: 4 mm cubes, 13,104 of them (the wall one layer, the band six), 1,670
 | **Today's free columns**, with our optimiser's lump rule (`--max-member 16`, p 40) | 13.5 N·mm | **15.2 N·mm** | 0.028 mrad | 0.240 kg |
 | The field, ribs up to 12 mm (`RIB_T_MOST=12`) | 21.1 N·mm | **22.4 N·mm** | 0.044 mrad | 0.238 kg |
 | **Step 2:** thickness by place (12 mm at a boss's, bolt's or the lug's edge to 6 mm 30 mm away; `--by-place`) | 22.7 N·mm | **26.5 N·mm** | 0.049 mrad | 0.221 kg |
-| **Steps 1 + 2:** with the end rules (`--by-place --ends`; drawn with the gate) | 26.8 N·mm | (running) | | |
+| **Steps 1 + 2:** with the end rules (`--by-place --ends`; drawn with the gate) | 26.8 N·mm | **27.0 N·mm** | 0.064 mrad | 0.206 kg |
+| fastcae's rules, the bend rule at every point, p 8 (`f4`) | emptied its ribs (0.06 kg): infeasible where the start's directions converge | | | |
+| fastcae's rules, the end rule on the thickness (`f5`) | 50.6 N·mm at 0.12 kg (half its budget placed) | TetGen refused the smooth drawing | | |
+| **fastcae's rules** (`f6`: the end rule on the share of the local cap, the bend rule away from the anchors at p 4) | 42.0 N·mm at 0.18 kg, every rule held | not judged yet | | |
 
 - **The method works end to end:** the field draws ribs (spokes from the bearing's boss to the bolts and the lug, a second family crossing them), nobody laid them; the derivatives agree with central differences within 3·10⁻⁶ (`gradcheck.py`).
 - **The smeared model is fair:** it reads 12 % stiffer than FE of its own drawing, as it does for the free columns (12 %).
@@ -94,6 +97,10 @@ The set-up: 4 mm cubes, 13,104 of them (the wall one layer, the band six), 1,670
 | draft_deg, tip_mm, fillet_edge_mm, fillet_root_mm | the drawing (`draw.implicit`): one smooth solid, drafted faces, rounded tops, filleted roots | 1°, 2 mm, 3 mm |
 
 **What the rules leave free, so production's variety can appear** (none of it is laid down; each appears where the load calls for it): spokes from a boss and rings round it (the arrival rule's two allowed ways), parallel ribs and grids (one or two families), ties from a bore to a bolt or the lug (the end rule's anchors), tapered ribs (the height cap by place and the slope rule), thick roots (thickness by place), and webs converging on the lug. Not yet: triangles (a third family), brackets standing off the wall and side-wall lattices (the field on a wall's surface, next).
+
+## 7b. On our housing (16 October, the engineer: "apply the same for our housing ... run the entire workflow")
+
+[The housing's page](2026-10-16-rib-field-housing.md) is the working record (`prototypes/rib_housing/`): the set-up, the model and the stages are the product's own; the free cubes are rib cubes plus **solid zones** (the bosses round the bores, the mounts' corridors), because ribs alone left the beds 30 × their lines; each mount has a least arm (no modes held, so a lug may otherwise hang by a thread). The drawing is the product's, its members' signed distance replaced by the ribs' (the stripe phase's smooth distance) and the solid zones' columns.
 
 ## 8. Next (for the engineer)
 

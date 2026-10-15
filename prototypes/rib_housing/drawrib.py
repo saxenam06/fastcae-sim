@@ -38,6 +38,7 @@ import model as toymodel  # noqa: E402
 import rules  # noqa: E402
 
 L_LEAST = 20.0  # mm: a shorter rib piece is not drawn (the toy's gate)
+PLAN_OUT: Path | None = None  # where `rib_sdf` writes each half's plan reading (`plan_<design>_<half>.npz`)
 OUTLINE_SIGMA = 3.0  # mm: a group's and a solid zone's outline blurred (the product's LOOP_VOXEL_SMOOTH)
 
 
@@ -74,9 +75,21 @@ def columns_of(vox, hf, x) -> dict:
     hs[hf.zcols] = so["hs"]
     zone = np.zeros(n_cols, bool)
     zone[hf.zcols] = True
+    # each column on the split (beside the side walls) or on a wall: no unmodelled cell between the
+    # split and its base (the product's `run_columns`)
+    n = np.asarray(vox.model["n"], int)
+    ks = int(vox.model["k_split"])
+    kind = np.full(int(np.prod(n)), -1, np.int8)
+    kind[vox.elem] = 0
+    off = np.concatenate([np.zeros(tuple(n[:2]) + (1,), np.int64),
+                          np.cumsum(kind.reshape(tuple(n)) < 0, axis=2)], axis=2)
+    k0 = np.where(half == 1, ks, base + 1)
+    k1 = np.where(half == 1, base, ks)
+    on_split = (off[ij[:, 0], ij[:, 1], np.maximum(k1, k0)] - off[ij[:, 0], ij[:, 1], k0]) == 0
     zone_len = np.zeros(n_cols)  # how far from its base a column's solid zone reaches (mm)
     np.maximum.at(zone_len, hf.col[hf.in_zone], (hf.pos[hf.in_zone] + 1.0) * hf.a)
     return {
+        "on_split": on_split,
         "zone_len": zone_len,
         "run_of_group": [int(g.name.rsplit("run", 1)[1]) for g in hf.groups],
         "ij": ij,
@@ -168,6 +181,9 @@ def rib_sdf(cols, half, f, xs, ys, zs, footprint, smooth_mm, smooth_range) -> np
     spacing = float(cols["spacing"])
     sig = OUTLINE_SIGMA / h
     report = []
+    plan = {"x": xs, "y": ys, "fam": np.zeros(PX.shape, np.int8), "rib_h": np.zeros(PX.shape, np.float32),
+            "solid": np.zeros(PX.shape, bool), "solid_h": np.zeros(PX.shape, np.float32),
+            "theta": np.full(PX.shape, np.nan, np.float32), "area": np.zeros(PX.shape, bool)}
     for g in np.unique(cols["group"][cols["half"] == (0 if lower else 1)]):
         sel = np.flatnonzero(cols["group"] == g)
         ii, jj = cols["ij"][sel, 0], cols["ij"][sel, 1]
@@ -180,28 +196,59 @@ def rib_sdf(cols, half, f, xs, ys, zs, footprint, smooth_mm, smooth_range) -> np
         present = grid(1.0, 0.0)
         area = map_coordinates(gaussian_filter(present, sig), at, order=1) / np.maximum(
             map_coordinates(gaussian_filter(np.ones(n[:2]), sig), at, order=1), 1e-9) >= 0.5
-        base_c = _carried(grid(cols["base"][sel].astype(float)))
-        base_f = np.rint(base_c[cell_i, cell_j]).astype(np.int64)
+        # each point's base: its family's (on the split outside the cup's outline, on a wall inside
+        # it: the product's parting on `footprint`), so the cliff between them follows the outline,
+        # not the columns' staircase
+        fam_c = np.where(cols["on_split"][sel], 1, 2)
+        own_fam = grid(fam_c, 0)[cell_i, cell_j]
+        fam_f = np.where(footprint, 2, 1)
+        has = {c: bool((fam_c == c).any()) for c in (1, 2)}
+        fam_f = np.where(((fam_f == 1) & has[1]) | ((fam_f == 2) & has[2]), fam_f, own_fam)
+        base_f = np.zeros(PX.shape, np.int64)
+        for c in (1, 2):
+            if has[c]:
+                bc = _carried(grid(np.where(fam_c == c, cols["base"][sel], np.nan).astype(float)))
+                base_f = np.where(fam_f == c, np.rint(bc[cell_i, cell_j]).astype(np.int64), base_f)
         o_base = (h * ((ks - 1) - base_f)) if lower else (h * (base_f - ks))  # mm from the split
         face = (lo[2] + h * (base_f + 1)) if lower else (lo[2] + h * base_f)
+
+        def by_fam(v, keep=None, fam_c=fam_c, fam_f=fam_f, has=has, grid=grid):
+            """A column quantity read at the points from its own family's columns only."""
+            out_ = np.zeros(PX.shape)
+            for c in (1, 2):
+                if has[c]:
+                    m_ = (fam_c == c) if keep is None else (fam_c == c) & keep
+                    if m_.any():
+                        g_ = map_coordinates(_carried(grid(np.where(m_, v, np.nan))), at, order=1)
+                        out_ = np.where(fam_f == c, g_, out_)
+            return out_
         th = cols["theta"][sel]
         v2 = [map_coordinates(_carried(grid(np.cos(2 * th))), at, order=1),
               map_coordinates(_carried(grid(np.sin(2 * th))), at, order=1)]
         theta = 0.5 * np.arctan2(v2[1], v2[0])
+        plan["theta"] = np.where(area, theta, plan["theta"])
+        plan["area"] |= area
         ribs_g = 0
         for k in range(2):
             rho = map_coordinates(_carried(grid(cols["rho"][k][sel])), at, order=1)
-            hk = map_coordinates(_carried(grid(cols["h"][k][sel])), at, order=1)
+            hk = by_fam(cols["h"][k][sel])
             phase, _ = toydraw.stripes(theta + k * np.pi / 2, area, spacing, step)
-            rib = (np.cos(phase) >= np.cos(np.pi * np.clip(rho, 0.0, 1.0))) & area
-            rib &= (rho * spacing >= rules.T_LEAST) & (hk >= rules.H_LEAST)
-            rib = fill_diagonals(_pieces(rib, step)[:, :, None])[:, :, 0]
+            # the rib's side as a smooth distance (mm, positive inside): half its thickness less the
+            # distance from its centre-line (the phase's zero, `spacing` a turn), its ends where it
+            # thins under `T_LEAST` or drops under `H_LEAST`; the group's outline cuts it
+            d_mid = spacing * np.abs(np.angle(np.exp(1j * phase))) / (2.0 * np.pi)
+            a_k = 0.5 * np.clip(rho, 0.0, 1.0) * spacing - d_mid
+            a_k = np.minimum(a_k, np.minimum(rho * spacing - rules.T_LEAST, hk - rules.H_LEAST))
+            a_k = np.where(area, a_k, np.minimum(a_k, -step))
+            rib = _pieces(a_k > 0, step)
+            a_k = np.where((a_k > 0) & ~rib, -step, a_k)  # the short pieces dropped
             ribs_g += int(rib.sum())
+            plan["fam"] = np.where(rib, plan["fam"] | (1 << k), plan["fam"]).astype(np.int8)
+            plan["rib_h"] = np.where(rib, np.maximum(plan["rib_h"], hk), plan["rib_h"])
             if not rib.any():
                 continue
             e_end = o_base + hk
             z_end = (zsp - e_end) if lower else (zsp + e_end)
-            a_k = _signed(rib, step)
             z_end = _smoothed(z_end, a_k, step, smooth_mm, smooth_range)
             gx_, gy_ = np.gradient(z_end, step, step)
             slope = np.sqrt(1.0 + gx_ * gx_ + gy_ * gy_)[:, :, None]
@@ -217,7 +264,6 @@ def rib_sdf(cols, half, f, xs, ys, zs, footprint, smooth_mm, smooth_range) -> np
             # a column holds solid from half a cube (the product's columns), its height within its zone
             hs_eff = np.minimum(cols["hs"][sel], cols["zone_len"][sel])
             held = cols["zone"][sel] & (hs_eff >= 0.5 * h)
-            hs_c = grid(np.where(held, hs_eff, np.nan))
             # the outline: where the columns' heights, read cubic between the columns (the zone's
             # other columns at none), reach half a cube: a smooth line, not the columns' steps
             level = grid(np.where(cols["zone"][sel], hs_eff, 0.0), 0.0)
@@ -231,7 +277,9 @@ def rib_sdf(cols, half, f, xs, ys, zs, footprint, smooth_mm, smooth_range) -> np
                     if dsc["half"] == half:
                         a_zone = np.maximum(a_zone, dsc["r"] - np.hypot(PX - dsc["centre"][0], PY - dsc["centre"][1]))
                 a_s = np.minimum(_signed(solid, step), a_zone)
-                hsf = map_coordinates(_carried(hs_c), at, order=1)
+                hsf = by_fam(hs_eff, keep=held)
+                plan["solid"] |= a_s > 0
+                plan["solid_h"] = np.where(a_s > 0, np.maximum(plan["solid_h"], hsf), plan["solid_h"])
                 e_end = o_base + hsf
                 z_end = (zsp - e_end) if lower else (zsp + e_end)
                 z_end = _smoothed(z_end, a_s, step, smooth_mm, smooth_range)
@@ -245,6 +293,8 @@ def rib_sdf(cols, half, f, xs, ys, zs, footprint, smooth_mm, smooth_range) -> np
         report.append(f"group {int(g)}: {len(sel):,} columns, rib area {ribs_g * step * step / 100:.0f} cm2, "
                       f"solid area {solid_n * step * step / 100:.0f} cm2")
     out[:, :, side] = part
+    if PLAN_OUT is not None:
+        np.savez_compressed(PLAN_OUT.parent / f"plan_{PLAN_OUT.name}_{half}.npz", **plan)
     from zenryx.domains.gearbox.housing import say
 
     for r in report:
@@ -312,6 +362,8 @@ def main() -> None:
     env = housing.recipe()["env"]
     if not (housing.OUT / "contract.json").exists():
         shutil.copy(housing.ROOT / "data" / "first_loop" / "contract.json", housing.OUT / "contract.json")
+    global PLAN_OUT
+    PLAN_OUT = housing.OUT / design
     pdraw.draw(stem, design, housing.OUT, housing.CONTRACT, pdraw.DrawSettings.from_env(env))
 
 
