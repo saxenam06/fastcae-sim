@@ -2,7 +2,9 @@
 
 **Moving to a cloud session (15 October): start at [the handover](features/loop/2026-10-15-handover-cloud.md).** The final workflow is wired end to end (LOP-31: `src/zenryx/workflow/recipes/final.json`; since LOP-33 every stage in `src/zenryx`, run by `python -m zenryx.workflow.run` or the Contract page's Run button, `python -m zenryx.api.server`); the design on the Designs tab is `baseline2_lw8` drawn smooth, its stiffness against the cube drawing the first thing open.
 
-**Updated:** 2026-10-15 15:01 by Claude. Committed on `product/end-to-end` through 15 October (`c5cde98` docs, `42ec2c5` UI, `b322b53` product code, `3b08850` the workflow, then the wiring); not pushed until the engineer says.
+**Now (16 October 00:58): LOP-34, [the rib-direction field](features/loop/2026-10-16-rib-direction-field.md)** (the engineer: "lets build this"): ribs and brackets drawn along directions the optimiser chooses, no library; a toy first.
+
+**Updated:** 2026-10-16 00:58 by Claude. Committed on `product/end-to-end` through 15 October (`c5cde98` docs, `42ec2c5` UI, `b322b53` product code, `3b08850` the workflow, then the wiring); not pushed until the engineer says.
 - **Now, 14 October: LOP-29, the modes in the optimiser** ([the night's record](features/loop/2026-10-14-record-night.md)).
   - **Where it stands:** `baseline2_fm500f` passes every graded FE line with the housing's first mode held inside the optimisation (36.1 µm against 52.2, tilt 0.69, first mode 824 Hz against 500, the gear orders clear by 12 % or more, 4.39 kg, oil-tight); castability fails (to discuss). The fixed set: one 4 mm shell, the sealing land and the bolts' bosses, the mounts' lugs; rigid couplings in the optimiser and FE; no plan mixing.
   - **Kept (the engineer, 12:00-12:12):** the first-mode limit on the lowest six modes, the gentle sharpening, the safety margin 1.5, the massless rule for metal joined to nothing.
