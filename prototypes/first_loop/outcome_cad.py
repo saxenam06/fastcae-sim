@@ -557,7 +557,7 @@ def voxel_cols_as_spline(run: str, sigma_mm: float, round_mm: float) -> dict:
         # drawing's own plan grid (SPLINE_PLAN_SUB), the families' joined; the drawing reads it in place of its binary outline
         import voxel_fair as vf
 
-        along_, iso_, band_ = (VOXEL_FAIR + [2.0, 2.5][len(VOXEL_FAIR) - 1 :])[:3]
+        along_, iso_, band_, inward_ = (VOXEL_FAIR + [2.0, 2.5, 1.0][len(VOXEL_FAIR) - 1 :])[:4]
         r_ = int(round(h / SPLINE_PLAN_SUB))
         plan_sdf = {}
         for hf_ in (0, 1):
@@ -568,9 +568,9 @@ def voxel_cols_as_spline(run: str, sigma_mm: float, round_mm: float) -> dict:
                 met_c = np.zeros(tuple(n[:2]), bool)
                 met_c[ii[mine], jj[mine]] = True
                 plan_sdf[(hf_, lay_)] = vf.fair_group(np.kron(met_c, np.ones((r_, r_), bool)), SPLINE_PLAN_SUB, iso_, along_,
-                                                      band_).astype(np.float32)  # fmt: skip
-        say(f"the members faired in plan: along each member {along_:g} mm, every way {iso_:g} mm, within {band_:g} mm of the "
-            "columns' outline")  # fmt: skip
+                                                      band_, inward_).astype(np.float32)  # fmt: skip
+        say(f"the members faired in plan: along each member {along_:g} mm, every way {iso_:g} mm, out at most {band_:g} mm "
+            f"and in at most {inward_:g} mm from the columns' outline")  # fmt: skip
     # each column's free end on one scale, voxels out from the split (as a `--top` spline run's `E`), so a node between
     # columns of different bases reads a free end, not one column's base with another's length: read as lengths, a node by
     # a seat's ring took the ring's base (z 82) with a split column's length (76 mm), a stick to z 162 (`lw8s8_fine`)
@@ -622,7 +622,7 @@ def _bilateral(z: np.ndarray, mask: np.ndarray, sig_s: float, sig_r: float) -> n
 VOXEL_ROUND = float(os.environ.get("LOOP_VOXEL_ROUND", "3"))
 VOXEL_FILLET = float(os.environ.get("LOOP_VOXEL_FILLET", "4"))
 # (LOP-30, the engineer 15 October 13:49: "straighten the features ... remove this vertical edgy stretchy shapes")
-# LOOP_VOXEL_FAIR="<along mm>[:<every way mm>[:<held near fixed metal, mm>]]": with LOOP_VOXEL_SMOOTH, the members' plan
+# LOOP_VOXEL_FAIR="<along mm>[:<every way mm>[:<out mm>[:<in mm>]]]" (2, 2.5, 1 by default): with LOOP_VOXEL_SMOOTH, the members' plan
 # outline faired (`voxel_fair.fair_group`) and read by the drawing as a distance; empty, the blurred outline as before
 VOXEL_FAIR = [float(v) for v in os.environ.get("LOOP_VOXEL_FAIR", "").split(":") if v.strip()]
 

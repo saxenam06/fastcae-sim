@@ -43,9 +43,11 @@ def gpu_mb() -> float | None:
 
 
 def holders(marker: str) -> list[int]:
-    """The python processes whose command line holds the marker (not this guard)."""
+    """The python processes whose command line holds the marker (not this guard, nor `run_final.py`, which only orchestrates:
+    given `--design <marker>` it held the marker itself and its flow waited on it for ever, 15 October 15:00)."""
     ps = ("Get-CimInstance Win32_Process -Filter \"Name='python.exe'\" | Where-Object { $_.CommandLine -like '*" + marker.replace("'", "''")
-          + "*' -and $_.CommandLine -notlike '*memory_guard*' } | ForEach-Object { $_.ProcessId }")  # fmt: skip
+          + "*' -and $_.CommandLine -notlike '*memory_guard*' -and $_.CommandLine -notlike '*run_final*' } | "
+          "ForEach-Object { $_.ProcessId }")  # fmt: skip
     try:
         out = subprocess.run(["powershell.exe", "-NoProfile", "-Command", ps], capture_output=True, text=True, timeout=60)
         return [int(v) for v in out.stdout.split() if v.strip().isdigit()]

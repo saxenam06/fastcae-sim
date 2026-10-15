@@ -1,0 +1,26 @@
+{
+  "recipe": "final",
+  "version": 1,
+  "agreed": "The engineer, 14-15 October 2026: the agreed baseline (fm500_run.sh: the empty start with the 4 mm shell fixed, the protected interfaces, no towers, the least metal with every line at 1/1.5, the modes 12 % from the orders, the first mode at least 500 Hz, the 16 mm lump rule) with the least member width in plan of 8 mm (baseline2_lw8, 14 October 13:42), drawn smooth from its own field with no new optimisation (12:21-12:28: LOOP_VOXEL_SMOOTH, the tops smoothed edge-preservingly; baseline2_lw8_smooth). The fairing (LOOP_VOXEL_FAIR, LOOP_SMOOTH; 13:49) is not in: drawn with it, mount-1 parted from its arm (baseline2_lw8_fair, final_lw8), open in the handover of 15 October.",
+  "contract": "checks/data/contracts/ev_reducer_posed.json",
+  "design": "final",
+  "budget_kg": 7.73,
+  "voxel_mm": 4,
+  "optimiser_args": [
+    "--max-member", "16", "--band", "24", "--height-field", "4", "--empty", "--protect", "--shell-fixed",
+    "--no-towers", "--objective", "mass_tilt", "--safety", "1.5", "--modes", "0.12", "--first-mode", "500",
+    "--least-width", "8"
+  ],
+  "env": {
+    "LOOP_MEMBER_P": "40",
+    "LOOP_EXACT_WALLS": "1",
+    "LOOP_LEAST_MEMBER": "8",
+    "LOOP_CAST_AFTER": "1",
+    "GUARD_FLOOR": "600",
+    "GUARD_STRIKES": "4",
+    "LOOP_VOXEL_SMOOTH": "3",
+    "LOOP_DRAW_SMOOTH": "6",
+    "LOOP_DRAW_SMOOTH_RANGE": "15",
+    "LOOP_DRAW_FINE": "1"
+  }
+}

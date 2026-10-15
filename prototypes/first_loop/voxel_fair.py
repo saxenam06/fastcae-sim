@@ -88,7 +88,7 @@ def along_smooth(f: np.ndarray, ti: np.ndarray, tj: np.ndarray, cell: float, alo
     return num / den
 
 
-def fair_group(metal: np.ndarray, cell: float, iso_mm: float, along_mm: float, band_mm: float) -> np.ndarray:
+def fair_group(metal: np.ndarray, cell: float, iso_mm: float, along_mm: float, band_mm: float, inward_mm: float = 1.0) -> np.ndarray:
     """One group's faired plan distance (mm, positive inside) on the fine grid of `cell` mm, `metal` its metal columns'
     cells: smoothed every way and along each member, then held within `band_mm` of the columns' own outline either way,
     so the 4 mm steps and the wobbles straighten while no member parts from a wall, thins away or grows where there was no
@@ -104,7 +104,9 @@ def fair_group(metal: np.ndarray, cell: float, iso_mm: float, along_mm: float, b
         d_fair = coh * d_al + (1.0 - coh) * d_iso
     else:
         d_fair = d_iso
-    out = np.clip(d_fair, d - band_mm, d + band_mm)
+    # outward up to `band_mm`, inward at most `inward_mm`: drawn back 2.5 mm, an arm's end parted from mount-1's lug
+    # (`baseline2_lw8_fair`, 15 October 14:20, stopped by `propose.py`'s mount check)
+    out = np.clip(d_fair, d - inward_mm, d + band_mm)
     # no gap opened inside the metal: a place more than 2 mm inside the columns stays metal (a member 4 mm wide, one column,
     # may still straighten: it weighs nothing in the model)
     return np.where(d > 2.0, np.maximum(out, 0.25), out)
