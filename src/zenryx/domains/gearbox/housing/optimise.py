@@ -16,6 +16,11 @@ sharpness raised by √2 as soon as the design settles at it with every mode lim
 `EVERY` iterations after the last), up to `BETA_MOST`; the run stops once settled at the last. Every
 run ends with the binary check: the field at 0.5, all metal or air, read by the same model.
 
+Every `SAVE_EVERY` iterations the field as it stands is checked (the binary check) and saved as a
+run of its own, `<stem>_it<N>`, which can be drawn and judged later (`--run`). A stop asked for
+while it runs (the file `stop_<design>` in the folder: the Run panel's stop, the engineer, 15
+October) ends it after the iteration under way, checked and saved as if it had settled.
+
 The method's fixed settings are the agreed baseline's (`propose.py`'s, since 11 October); the
 recipe's optimiser arguments give the rest, and only those (`parse`).
 """
@@ -26,7 +31,7 @@ import argparse
 import json
 import math
 import time
-from collections.abc import Mapping
+from collections.abc import Callable, Mapping
 from pathlib import Path
 
 import numpy as np
@@ -63,6 +68,7 @@ MEMBER_ALPHA = 0.6  # the greatest member: a ball's share of placed metal at mos
 # GCMMA's most inner iterations (each one more solve, no adjoints) before a step is taken anyway,
 # and its test: a step is taken when every function there stays within PROMISE of the subproblem's
 PROMISE, INNER_MOST = 1e-3, 2
+SAVE_EVERY = 50  # iterations between the saved states (the engineer, 15 October)
 # settled: the objective within a share of itself over a window of iterations at one sharpness;
 # SETTLE_BETA moves on to the next sharpness, SETTLE_STOP ends the run at the last
 SETTLE_WINDOW, SETTLE_BETA, SETTLE_STOP = 5, 0.005, 0.002
@@ -109,7 +115,13 @@ def _uniform_start(vox: Voxels, target: float, beta: float) -> np.ndarray:
     return np.full(vox.n_design, 0.5 * (lo_v + hi_v))
 
 
-def solve(model: dict, budget_kg: float, iterations: int = ITERATIONS) -> dict:
+def solve(
+    model: dict,
+    budget_kg: float,
+    iterations: int = ITERATIONS,
+    stop: Path | None = None,
+    on_save: Callable[[dict, int], None] | None = None,
+) -> dict:
     """GCMMA over the model's free voxels under a mass ceiling (kg of free voxels): the least metal
     with every line held. Returns the field (`phys`, `x`), the history and the binary check."""
     vox = Voxels(model)
@@ -167,8 +179,60 @@ def solve(model: dict, budget_kg: float, iterations: int = ITERATIONS) -> dict:
     def named(rat):
         return {f"{k[0][0]} {k[0][1]} case {k[1]}": v for k, v in rat.items()}
 
+    def checked(x, beta, done: int, note: str, stopped: int | None = None) -> dict:
+        """The field at x as a run: its densities and the binary check (the field at 0.5, all metal
+        or air, read by the same model), after `done` iterations."""
+        phys = vox.physical(x, beta)[free_e]
+        # the binary check: the field at 0.5, all metal or air, read by the same model
+        dens_bin = np.ones(len(elem))
+        dens_bin[free_e] = (phys >= 0.5).astype(float)
+        b_ = vox.with_modes(vox.analyse(dens_bin, PENAL, adjoints=False))
+        vox.release(b_)
+        binary = {
+            "worst": float(b_["ratio_vector"].max()),
+            "ratios": named(b_["ratios"]),
+            "metal_voxels": int((phys >= 0.5).sum()),
+            "mass_kg": float((phys >= 0.5).sum()) * density * h**3,
+            "value": float(b_["value"]),
+            "shares": False,
+            "greatest_share": share_of(dens_bin)[2],
+            "beds": named(b_["beds"]),
+            "bed_worst": float(b_["bed_vector"].max()),
+            "modes_hz": [round(float(v_), 1) for v_ in b_["modes_hz"]],
+            "mode_gaps": [float(v_) for v_ in modes_of(b_)[0]],
+        }
+        say(
+            "the binary check: the nominal field at 0.5, all metal or air, reads "
+            f"{binary['worst']:.4f}x its line (voxel model), "
+            f"{binary['mass_kg']:.3f} kg placed, compliance {binary['value']:.1f} N mm, "
+            "the worst bed "
+            f"{binary['bed_worst']:.4f}x the "
+            f"design to beat's, the greatest member's share {binary['greatest_share']:.3f}, modes "
+            + ", ".join(f"{v_:.0f}" for v_ in binary["modes_hz"][:10])
+            + " Hz, gaps "
+            + ", ".join(f"{v_:+.3f}" for v_ in binary["mode_gaps"])
+        )
+        return {
+            "phys": phys,
+            "x": x,
+            "free_e": free_e,
+            "elem": elem,
+            "frozen": frozen,
+            "ijk": vox.ijk,
+            "history": history,
+            "n_dof": vox.n_dof,
+            "ratios": named(state["ratios"]),
+            "joint": vox.joint_note,
+            "beta": beta,
+            "binary": binary,
+            "settled": note,
+            "stopped_at": stopped,
+            "iteration": done,
+        }
+
     history = []
     settled = ""
+    stopped_at = None
     n_tilt, n_beds = len(vox.keys), len(vox.bed_keys)
     n_modes = 2 * len(mode_orders) + FLOOR_MODES
     first_mode = 2 + n_tilt + n_beds
@@ -366,50 +430,18 @@ def solve(model: dict, budget_kg: float, iterations: int = ITERATIONS) -> dict:
             )
             say(settled)
             break
-    phys = vox.physical(x, beta)[free_e]
-    # the binary check: the field at 0.5, all metal or air, read by the same model
-    dens_bin = np.ones(len(elem))
-    dens_bin[free_e] = (phys >= 0.5).astype(float)
-    b_ = vox.with_modes(vox.analyse(dens_bin, PENAL, adjoints=False))
-    vox.release(b_)
-    binary = {
-        "worst": float(b_["ratio_vector"].max()),
-        "ratios": named(b_["ratios"]),
-        "metal_voxels": int((phys >= 0.5).sum()),
-        "mass_kg": float((phys >= 0.5).sum()) * density * h**3,
-        "value": float(b_["value"]),
-        "shares": False,
-        "greatest_share": share_of(dens_bin)[2],
-        "beds": named(b_["beds"]),
-        "bed_worst": float(b_["bed_vector"].max()),
-        "modes_hz": [round(float(v_), 1) for v_ in b_["modes_hz"]],
-        "mode_gaps": [float(v_) for v_ in modes_of(b_)[0]],
-    }
-    say(
-        "the binary check: the nominal field at 0.5, all metal or air, reads "
-        f"{binary['worst']:.4f}x its line (voxel model), "
-        f"{binary['mass_kg']:.3f} kg placed, compliance {binary['value']:.1f} N mm, the worst bed "
-        f"{binary['bed_worst']:.4f}x the "
-        f"design to beat's, the greatest member's share {binary['greatest_share']:.3f}, modes "
-        + ", ".join(f"{v_:.0f}" for v_ in binary["modes_hz"][:10])
-        + " Hz, gaps "
-        + ", ".join(f"{v_:+.3f}" for v_ in binary["mode_gaps"])
-    )
-    return {
-        "phys": phys,
-        "x": x,
-        "free_e": free_e,
-        "elem": elem,
-        "frozen": frozen,
-        "ijk": vox.ijk,
-        "history": history,
-        "n_dof": vox.n_dof,
-        "ratios": named(state["ratios"]),
-        "joint": vox.joint_note,
-        "beta": beta,
-        "binary": binary,
-        "settled": settled,
-    }
+        if on_save is not None and it % SAVE_EVERY == 0 and it < iterations:
+            # the field as it stands, checked and saved; Lanczos's start kept, so the run goes on as
+            # before
+            start = getattr(vox, "_mode_start", None)
+            on_save(checked(x, beta, it, ""), it)
+            vox._mode_start = start
+        if stop is not None and stop.exists():
+            stopped_at = it
+            settled = f"stopped at iteration {it} by the engineer: the field as it stood"
+            say(settled)
+            break
+    return checked(x, beta, len(history), settled, stopped_at)
 
 
 def stem_of(
@@ -469,72 +501,86 @@ def run(
         )
     stem = stem_of(design, budget, voxel, a, member_p, least_mm)
     say(f"budget {budget:g} kg: {model['frozen_kg']:.2f} frozen, {free_kg:.2f} to place; {stem}")
-    result = solve(model, free_kg, iterations)
-    np.savez_compressed(
-        out / f"{stem}.npz",
-        phys=result["phys"],
-        x=result["x"],
-        free_e=result["free_e"],
-        elem=result["elem"],
-        frozen=result["frozen"],
-        ijk=result["ijk"],
-        lo=model["lo"],
-        n=model["n"],
-        h=voxel,
-        k_split=model["k_split"],
-        beta=result["beta"],
-        height_min=np.asarray(model["height_min"], np.float32),
-    )
-    projection = dict(PROJECTION, every=EVERY, beta_most=BETA_MOST, settle=SETTLE)
-    record = {
-        "layout": "contract",
-        "objective": OBJECTIVE,
-        "budget_kg": budget,
-        "frozen_kg": model["frozen_kg"],
-        "voxel_mm": voxel,
-        "cavity": "cup",
-        "joint": result["joint"],
-        "element": "hex8 with Wilson's incompatible modes",
-        "factor": "the single-precision factor, refined",
-        "route": "split",
-        "casting": "each half's columns one piece from the joint out to the last metal (anchored)",
-        "projection": projection,
-        "penalty_ramp": PENALTY_RAMP,
-        "band_mm": a.band,
-        "mount_reach": "disc",
-        "max_member": model["max_member"],
-        "height_field": {"radius_mm": a.height_field},
-        "empty": True,
-        "least_kg": model["least_kg"],
-        "protect": True,
-        "shell_fixed": True,
-        "towers": False,
-        "modes": model["modes"],
-        "flange": True,
-        "flange_whole": True,
-        "drawing_clear": True,
-        "couplings": "kinematic",
-        "beds_mm": model["beds_mm"],
-        "safety": a.safety,
-        "safety_beds": a.safety,
-        "least_height_mm": least_mm,
-        "least_width_mm": a.least_width,
-        "loose": {"mass": 1e-6, "stiffness": 1e-6},
-        "skin": {
-            "wall_mm": 0.0,
-            "mass_share": 1.0,
-            "stiffness_share": 1.0,
+    stop = out / f"stop_{design}"
+    stop.unlink(missing_ok=True)  # a stop left from an earlier run stops nothing now
+
+    def write(name: str, result: dict, **extra) -> None:
+        np.savez_compressed(
+            out / f"{name}.npz",
+            phys=result["phys"],
+            x=result["x"],
+            free_e=result["free_e"],
+            elem=result["elem"],
+            frozen=result["frozen"],
+            ijk=result["ijk"],
+            lo=model["lo"],
+            n=model["n"],
+            h=voxel,
+            k_split=model["k_split"],
+            beta=result["beta"],
+            height_min=np.asarray(model["height_min"], np.float32),
+        )
+        projection = dict(PROJECTION, every=EVERY, beta_most=BETA_MOST, settle=SETTLE)
+        record = {
+            "layout": "contract",
+            "objective": OBJECTIVE,
+            "budget_kg": budget,
+            "frozen_kg": model["frozen_kg"],
+            "voxel_mm": voxel,
+            "cavity": "cup",
+            "joint": result["joint"],
+            "element": "hex8 with Wilson's incompatible modes",
+            "factor": "the single-precision factor, refined",
+            "route": "split",
+            "casting": "each half's columns one piece from the joint out to the last metal "
+            "(anchored)",
+            "projection": projection,
+            "penalty_ramp": PENALTY_RAMP,
+            "band_mm": a.band,
+            "mount_reach": "disc",
+            "max_member": model["max_member"],
+            "height_field": {"radius_mm": a.height_field},
             "empty": True,
-            "flange": {"kg": model["flange_kg"]},
-        },
-        "cases": list(CASES),
-        "fast": True,
-        "history": result["history"],
-        "ratios": result["ratios"],
-        "binary": result["binary"],
-        "unknowns": result["n_dof"],
-        "seconds": time.time() - t0,
-    }
-    (out / f"{stem}.json").write_text(json.dumps(record, indent=1), encoding="utf-8")
+            "least_kg": model["least_kg"],
+            "protect": True,
+            "shell_fixed": True,
+            "towers": False,
+            "modes": model["modes"],
+            "flange": True,
+            "flange_whole": True,
+            "drawing_clear": True,
+            "couplings": "kinematic",
+            "beds_mm": model["beds_mm"],
+            "safety": a.safety,
+            "safety_beds": a.safety,
+            "least_height_mm": least_mm,
+            "least_width_mm": a.least_width,
+            "loose": {"mass": 1e-6, "stiffness": 1e-6},
+            "skin": {
+                "wall_mm": 0.0,
+                "mass_share": 1.0,
+                "stiffness_share": 1.0,
+                "empty": True,
+                "flange": {"kg": model["flange_kg"]},
+            },
+            "cases": list(CASES),
+            "fast": True,
+            "history": result["history"],
+            "ratios": result["ratios"],
+            "binary": result["binary"],
+            "unknowns": result["n_dof"],
+            "seconds": time.time() - t0,
+            "iterations": result["iteration"],
+            **extra,
+        }
+        (out / f"{name}.json").write_text(json.dumps(record, indent=1), encoding="utf-8")
+
+    def save(result: dict, it: int) -> None:
+        write(f"{stem}_it{it:03d}", result, saved_at=it, saved_of=stem)
+        say(f"saved the field at iteration {it}: {stem}_it{it:03d}")
+
+    result = solve(model, free_kg, iterations, stop=stop, on_save=save)
+    stop.unlink(missing_ok=True)
+    write(stem, result, **({"stopped_at": result["stopped_at"]} if result["stopped_at"] else {}))
     say(f"done in {time.time() - t0:.0f} s; {stem}")
     return stem, result["settled"]

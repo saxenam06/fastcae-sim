@@ -167,7 +167,9 @@ def propose(
         missed = max(
             [binary.get("worst") or 0.0, *(binary.get("beds") or {}).values()], default=0.0
         )
-        if missed > FEASIBLE:
+        if missed > FEASIBLE and rec.get("stopped_at"):  # the engineer's stop: judged as it stood
+            steps[-1]["note"] = f"{settled}; its metal-or-air check reads {missed:.2f} x its lines"
+        elif missed > FEASIBLE:
             steps[-1].update(
                 ok=False, note=f"its metal-or-air check misses its lines: {missed:.2f} x"
             )

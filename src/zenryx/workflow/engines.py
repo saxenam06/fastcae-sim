@@ -45,12 +45,14 @@ class LocalEngines:
         self._running: list[subprocess.Popen] = []
         self._stopped = ""
         self._design = ""
+        self._stage = ""
         self.cancelled = False
 
     # --- running a stage
     # ---------------------------------------------------------------------------------------------
 
     def _args(self, stage: str, design: str = "", run: str = "") -> list[str]:
+        self._stage = stage
         return [
             self.py,
             "-m",
@@ -136,11 +138,19 @@ class LocalEngines:
         )
         return json.loads(line.split(" ", 1)[1]) if line else {}
 
-    def cancel(self) -> None:
-        """Ends the stage running (each process by its tree) and refuses any stage after it."""
+    def cancel(self) -> str:
+        """During the optimisation: asks it to stop after the iteration under way and finish (its
+        field checked and saved, then drawn and judged as any run's): "finish". Else: ends the stage
+        running (each process by its tree) and refuses any stage after it: "stop"."""
+        if self._stage == "optimise" and self._running:
+            (self.out / f"stop_{self._design}").write_text(
+                "the engineer's stop\n", encoding="utf-8"
+            )
+            return "finish"
         self.cancelled = True
         for proc in list(self._running):
             kill_tree(proc.pid)
+        return "stop"
 
     def close(self) -> str:
         """What the memory guard did, if it stopped a stage."""

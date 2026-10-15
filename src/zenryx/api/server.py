@@ -182,11 +182,16 @@ def create_app(
         with lock:
             if live.get("state", {}).get("id") != run_id:
                 raise HTTPException(409, f"run {run_id} is not going")
-            live["state"]["cancel"] = True
             engines = live["engines"]
-        if hasattr(engines, "cancel"):
-            engines.cancel()  # the stage running is ended; on_stage stops the next
-        return {"id": run_id, "cancel": True}
+        how = engines.cancel() if hasattr(engines, "cancel") else "stop"
+        with lock:
+            if (
+                how == "finish"
+            ):  # the optimisation stops and finishes: its field is drawn and judged
+                live["state"]["stopping"] = True
+            else:  # the stage running is ended; on_stage stops the next
+                live["state"]["cancel"] = True
+        return {"id": run_id, "cancel": how != "finish", "finish": how == "finish"}
 
     return app
 

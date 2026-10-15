@@ -192,10 +192,12 @@ class RemoteOptimise:
     def __getattr__(self, name: str):  # every stage but the optimisation is the local engines'
         return getattr(self.local, name)
 
-    def cancel(self) -> None:
+    def cancel(self) -> str:
+        """A job on RunPod cannot be asked to finish: the run stops."""
         self.cancelled = True
         if hasattr(self.local, "cancel"):
             self.local.cancel()
+        return "stop"
 
     def optimise(
         self,

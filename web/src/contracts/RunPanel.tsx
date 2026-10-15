@@ -42,6 +42,7 @@ type Run = {
   log: string[];
   error?: string;
   result?: Last;
+  stopping?: boolean;
 };
 
 const LABEL: Record<string, string> = {
@@ -147,9 +148,22 @@ export function RunPanel() {
         </div>
         <div className="run-actions">
           {going ? (
-            <button type="button" className="run-btn" data-kind="cancel" onClick={() => void cancel()}>
-              Cancel
-            </button>
+            run?.stage === "optimise" ? (
+              <button
+                type="button"
+                className="run-btn"
+                data-kind="cancel"
+                disabled={run.stopping}
+                title="Ends the optimisation after this iteration; its field is checked, drawn and judged"
+                onClick={() => void cancel()}
+              >
+                {run.stopping ? "Stopping after this iteration…" : "Stop the optimisation here"}
+              </button>
+            ) : (
+              <button type="button" className="run-btn" data-kind="cancel" onClick={() => void cancel()}>
+                Cancel
+              </button>
+            )
           ) : (
             <button type="button" className="run-btn" onClick={() => void start()}>
               Run the final workflow

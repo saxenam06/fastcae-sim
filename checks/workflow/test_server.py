@@ -1,7 +1,7 @@
 """The API the Run button calls (PLT-5), on fake engines.
 
 A run starts, reports its stages, ends with the workflow's state; one run at a time; a cancel
-stops it."""
+stops it; a stop during the optimisation finishes it, drawn and judged."""
 
 import threading
 import time
@@ -72,3 +72,23 @@ def test_one_run_at_a_time_and_a_cancel(tmp_path) -> None:
     assert s["status"] == "cancelled"
     assert "judge" not in [x["stage"] for x in s["stages"]]
     assert client.post("/api/runs/nope/cancel").status_code == 409
+
+
+class FinishingEngines(SlowEngines):
+    """A stop during the optimisation finishes it (`LocalEngines.cancel` says "finish")."""
+
+    def cancel(self):
+        self.release.set()
+        return "finish"
+
+
+def test_a_stop_during_the_optimisation_is_judged(tmp_path) -> None:
+    out = tmp_path / "first_loop"
+    out.mkdir()
+    client = TestClient(create_app(lambda o: FinishingEngines(o), out=out))
+    first = client.post("/api/runs", json={}).json()
+    said = client.post(f"/api/runs/{first['id']}/cancel").json()
+    assert said["finish"] and not said["cancel"]
+    s = wait_until(client, first["id"])
+    assert s["status"] == "done" and s["stopping"], s
+    assert "judge" in [x["stage"] for x in s["stages"]]
