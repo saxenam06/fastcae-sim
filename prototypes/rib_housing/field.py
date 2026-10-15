@@ -140,8 +140,41 @@ class Group:
         return out
 
 
+def solid_zone(vox) -> np.ndarray:
+    """Each free cube: may it hold solid metal? Within a bearing's handbook boss (0.625 D + 5 mm of
+    its axis, the product's own boss zone) in its half, or in a mount's corridor (the product's set-up:
+    within the mount's reach of the shell plus the band, at the mount's height and the band's past it,
+    to the split): production's bosses and brackets (16 October: ribs alone left the beds 15-20 x
+    their lines; the reference meets them with solid bosses and arms)."""
+    m = vox.model
+    info, s = m["info"], m["info"]["settings"]
+    h, lo = float(m["h"]), np.asarray(m["lo"], float)
+    ijk = vox.ijk[vox.free_e]
+    xyz = lo + (ijk + 0.5) * h
+    split = info["z"]["split"]
+    band = 24.0
+    zone = np.zeros(len(xyz), bool)
+    below = xyz[:, 2] < split
+    for b in info["bearings"]:
+        b_below = 0.5 * (b["z"][0] + b["z"][1]) < split
+        r = np.hypot(xyz[:, 0] - b["axis"][0], xyz[:, 1] - b["axis"][1])
+        zone |= (r < 0.625 * b["D"] + 5.0) & (below == b_below)
+    fixed_xyz = lo + (vox.ijk[vox.frozen] + 0.5) * h
+    for mt in info["mounts"]:
+        cx, cy = mt["centre"]
+        d_fixed = np.hypot(fixed_xyz[:, 0] - cx, fixed_xyz[:, 1] - cy)
+        shell = d_fixed[d_fixed > s["mount_diameter"] / 2 + h]  # the shell nearest, past the lug
+        reach = float(shell.min()) + band if len(shell) else band
+        z_lo, z_hi = mt["z"][0] - band, mt["z"][1] + band
+        z_lo, z_hi = (z_lo, max(z_hi, split)) if mt["z"][1] <= split else (min(z_lo, split), z_hi)
+        zone |= (np.hypot(xyz[:, 0] - cx, xyz[:, 1] - cy) <= reach) & (xyz[:, 2] >= z_lo) & (xyz[:, 2] <= z_hi)
+    return zone
+
+
 class HousingField:
-    """Every group's field, the free cubes' stiffness from the design vector, and the chain back."""
+    """Every group's field, the free cubes' stiffness from the design vector, and the chain back.
+    Beside the ribs, the solid zones (`solid_zone`: bosses and brackets) hold today's free columns:
+    one height a column of solid metal, filtered over the plan, SIMP on each cube's share."""
 
     def __init__(self, vox, groups: list[dict], c_local: np.ndarray, c_iso: np.ndarray):
         info = vox.model["info"]
@@ -165,12 +198,46 @@ class HousingField:
             self.local_of_col[grp.cols] = np.arange(len(grp.cols))
         self.c_local, self.c_iso = c_local, c_iso
         self.density = float(vox.density)
+        # the solid zones' columns: a variable each, the plan filter a cone of 6 mm within a group
+        self.in_zone = solid_zone(vox)
+        zcols = np.unique(self.col[self.in_zone])
+        self.zcols = zcols
+        self.n_rib = self.size
+        self.size = self.n_rib + len(zcols)
+        xy = np.zeros((n_cols, 2))
+        lay = np.zeros(n_cols, int)
+        for i, grp in enumerate(self.groups):
+            xy[grp.cols] = grp.xy
+            lay[grp.cols] = i
+        from scipy.spatial import cKDTree
 
-    def start(self, value: float = 0.6) -> np.ndarray:
+        pts = np.column_stack([xy[zcols, 0] + 1e6 * lay[zcols], xy[zcols, 1]])
+        tree = cKDTree(pts)
+        pp = tree.sparse_distance_matrix(tree, 6.0, output_type="coo_matrix")
+        wmat = sp.coo_matrix((np.maximum(0.0, 6.0 - pp.data), (pp.row, pp.col)), shape=(len(zcols),) * 2).tocsr()
+        wmat = (wmat + sp.eye(len(zcols)) * 6.0).tocsr()
+        self.W = (sp.diags(1.0 / np.asarray(wmat.sum(axis=1)).ravel()) @ wmat).tocsr()
+        self.zone_of_col = np.full(n_cols, -1)
+        self.zone_of_col[zcols] = np.arange(len(zcols))
+        self.penal = 1.0
+
+    def start(self, value: float = 0.6, solid: float = 0.3) -> np.ndarray:
         x = np.full(self.size, value)
         for grp in self.groups:  # the turns start at none
             x[grp.offset + 4 * grp.n : grp.offset + 5 * grp.n] = 0.5
+        x[self.n_rib :] = solid
         return x
+
+    def solid(self, x) -> dict:
+        """The solid zones' cubes' shares of their columns' heights."""
+        hs = self.col_len_mm[self.zcols] * (self.W @ x[self.n_rib :])
+        zc = self.zone_of_col[self.col]
+        on = self.in_zone & (zc >= 0)
+        z0 = self.pos * self.a
+        h = np.where(on, hs[np.maximum(zc, 0)], 0.0)
+        g = np.where(on, np.clip((h - z0) / self.a, 0.0, 1.0), 0.0)
+        dg = np.where(on & (h > z0) & (h < z0 + self.a), 1.0 / self.a, 0.0)
+        return {"g": g, "dg": dg, "zc": zc, "on": on, "hs": hs}
 
     def per_column(self, x) -> dict:
         """Every column's families (rho, height, ...) and direction, from the design vector."""
@@ -187,8 +254,12 @@ class HousingField:
         return {"theta": theta, "fam": fam}
 
     def stiffness(self, x) -> tuple[np.ndarray, dict]:
+        """Each free cube's stiffness: the solid share s of it isotropic (SIMP), the rest (1 - s) its
+        ribs' laminates, so a cube is never more than full."""
         pc = self.per_column(x)
         col, pos, a = self.col, self.pos, self.a
+        so = self.solid(x)
+        u = 1.0 - so["g"]
         c = np.broadcast_to(ERSATZ * self.c_iso, (len(col), 6, 6)).copy()
         for k, f in enumerate(pc["fam"]):
             z0 = pos * a
@@ -196,13 +267,20 @@ class HousingField:
             g = np.clip((h - z0) / a, 0.0, 1.0)
             dg = np.where((h > z0) & (h < z0 + a), 1.0 / a, 0.0)
             crib, dcrib = toymodel.rib_tensor(pc["theta"][col] + k * np.pi / 2, self.c_local)
-            c += (g * f["rho"][col])[:, None, None] * crib
+            c += (u * g * f["rho"][col])[:, None, None] * crib
             f.update(g=g, dg=dg, crib=crib, dcrib=dcrib)
+        c += (so["g"] ** self.penal)[:, None, None] * self.c_iso
+        pc["solid"], pc["u"] = so, u
         return c, pc
 
     def mass(self, pc) -> float:
-        a3 = self.a**3
-        return sum(float((f["g"] * f["rho"][self.col]).sum()) for f in pc["fam"]) * a3 * self.density
+        return sum(self.masses(pc))
+
+    def masses(self, pc) -> tuple[float, float]:
+        """(the ribs' kg, the solid zones' kg)."""
+        a3 = self.a**3 * self.density
+        return (sum(float((pc["u"] * f["g"] * f["rho"][self.col]).sum()) for f in pc["fam"]) * a3,
+                float(pc["solid"]["g"].sum()) * a3)
 
     def back(self, pc, d_c: np.ndarray | None = None, mass: bool = False) -> np.ndarray:
         """The derivatives by the design vector of one function, given its derivative by every free
@@ -211,6 +289,8 @@ class HousingField:
         d_rho, d_r = [], []
         d_th = np.zeros(n_cols)
         a3 = self.a**3 * self.density
+        u = pc["u"]
+        e_u = np.zeros(len(col))  # the function's derivative by each cube's rib share (1 - s)
         for f in pc["fam"]:
             rho = f["rho"][col]
             via_rho = f["g"] + rho * f["dg"] * f["dh_drho"][col]
@@ -219,9 +299,10 @@ class HousingField:
                 e_rib = np.full(len(col), a3)
             else:
                 e_rib = np.einsum("epq,epq->e", d_c, f["crib"])
-                d_th += np.bincount(col, np.einsum("epq,epq->e", d_c, f["dcrib"]) * f["g"] * rho, n_cols)
-            d_rho.append(np.bincount(col, e_rib * via_rho, n_cols))
-            d_r.append(np.bincount(col, e_rib * via_r, n_cols))
+                d_th += np.bincount(col, np.einsum("epq,epq->e", d_c, f["dcrib"]) * f["g"] * rho * u, n_cols)
+            e_u += e_rib * f["g"] * rho
+            d_rho.append(np.bincount(col, e_rib * u * via_rho, n_cols))
+            d_r.append(np.bincount(col, e_rib * u * via_r, n_cols))
         out = np.zeros(self.size)
         for grp in self.groups:
             cl, bt, n = grp.cols, grp.B.T, grp.n
@@ -230,6 +311,15 @@ class HousingField:
                 out[o + 2 * k * n : o + (2 * k + 1) * n] = bt @ (grp.rho_most * d_rho[k][cl])
                 out[o + (2 * k + 1) * n : o + (2 * k + 2) * n] = bt @ d_r[k][cl]
             out[o + 4 * n : o + 5 * n] = np.pi * (bt @ d_th[cl])
+        # the solid zones: d / d g = (p g^(p-1)) (d_c : C_iso), or the mass's a^3 density
+        so = pc["solid"]
+        if mass:
+            e_g = np.full(len(col), a3)
+        else:
+            e_g = np.einsum("epq,pq->e", d_c, self.c_iso) * self.penal * np.maximum(so["g"], 1e-12) ** (self.penal - 1)
+        e_g = e_g - e_u  # the ribs' share gives way to the solid's
+        dh = np.bincount(np.maximum(so["zc"], 0), np.where(so["on"], e_g * so["dg"], 0.0), len(self.zcols))
+        out[self.n_rib :] = self.W.T @ (dh * self.col_len_mm[self.zcols])
         return out
 
     def align(self, energy_free: np.ndarray, pc) -> None:

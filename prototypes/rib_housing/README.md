@@ -14,5 +14,8 @@ Run with the product on the path and, in the cloud container, the GPU stand-ins:
 | `ribmodel.py` | The product's model with every free cube a rib cube (the toy's laminate, plain hexahedra in the product's corner order); the fixed cubes the product's element, assembled once; PARDISO; every seat's tilt and bed (the product's measures) and their derivatives by every rib cube's stiffness |
 | `field.py` | The rib-direction field over the columns: per group two families (thickness and height shares as B-splines), the directions a smooth turn from the strains' start; thickness by place at the hard points (bores with their rings, bolts' bosses, mounts' lugs); fastcae's rules (`prototypes/rib_field/rules.py`) per group with the housing's anchors |
 | `optimise.py <label> [iterations] [--voxel=<mm>] [--start=<npz>]` | The product's problem (least placed metal, every tilt and bed at 1/1.5 of its line, the peak drive) with the rules, by MMA; state every 5 iterations |
-| `gradcheck.py [voxel mm]` | The derivatives against central differences (5 mm by default) |
+| `gradcheck.py [voxel mm] [--solid]` | The derivatives against central differences (5 mm by default; `--solid` a solid zone's variables only) |
+| `drawrib.py <label> [<design>] [--voxel=<mm>]` | The state drawn by the product's drawing: written as a run of the product's format (`rib_<label>`), the members' signed distance replaced by the ribs' (stripes per group and family) and the solid zones' columns |
 | `setup_probe.py`, `model_probe.py` | The set-up's size; one analysis's time and memory |
+| `parity_probe.py` | The rib model against the product's on the reference's own field (`ref/lop33`'s `baseline2_lw8`): within 1-4 % |
+| `boss_probe.py [voxel mm]` | What the solid zones (bosses and mounts' corridors) buy: the lines with ribs alone, ribs and full zones, the zones alone, every cube solid |

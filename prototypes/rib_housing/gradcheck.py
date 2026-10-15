@@ -32,8 +32,12 @@ def main() -> None:
     d_bed = hf.back(pc, out["d_bed"][int(np.argmax(out["beds"]))])
     d_mass = hf.back(pc, mass=True)
     i_t, i_b = int(np.argmax(out["ratios"])), int(np.argmax(out["beds"]))
-    picks = [int(np.argmax(np.abs(d_tilt[: 2 * n]))), int(2 * n + np.argmax(np.abs(d_tilt[2 * n : 4 * n]))),
+    nr = hf.n_rib
+    picks = [int(nr + np.argmax(np.abs(d_tilt[nr:]))), int(nr + np.argmax(np.abs(d_bed[nr:]))),
+             int(np.argmax(np.abs(d_tilt[: 2 * n]))), int(2 * n + np.argmax(np.abs(d_tilt[2 * n : 4 * n]))),
              int(4 * n + np.argmax(np.abs(d_tilt[4 * n : 5 * n]))), int(n + np.argmax(np.abs(d_tilt[n : 2 * n])))]
+    if "--solid" in sys.argv:
+        picks = picks[:2]
     worst = 0.0
     for k in picks:
         for name, an, fn in (
@@ -52,7 +56,7 @@ def main() -> None:
                     best = (err, fd)
             worst = max(worst, best[0])
             print(f"{name} by x[{k}]: analytic {an:.6e}, central {best[1]:.6e}, relative {best[0]:.2e}", flush=True)
-    for name, g, dg, _ in hf.rules(x)[:4]:
+    for name, _g, dg, _ in hf.rules(x)[:4]:
         k = int(np.argmax(np.abs(dg)))
         xp, xm = x.copy(), x.copy()
         xp[k] += 1e-5

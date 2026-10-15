@@ -38,6 +38,8 @@ def save(label, hf, x, history, extra):
         theta=pc["theta"],
         rho=np.stack([f["rho"] for f in pc["fam"]]),
         h=np.stack([f["h"] for f in pc["fam"]]),
+        zcols=hf.zcols,
+        hs=hf.solid(x)["hs"],
         **{f"theta0_{g.name}": g.theta0 for g in hf.groups},
     )
     (housing.OUT / f"{label}.json").write_text(
@@ -103,12 +105,16 @@ def main() -> None:
             names.append(name)
         f, df = np.array(f), np.array(df)
         worst = int(np.argmax(f))
-        row = {"it": it, "placed_kg": mass, "tilt_worst": float(out["ratios"].max()),
+        ribs_kg, solid_kg = hf.masses(pc)
+        row = {"it": it, "placed_kg": mass, "ribs_kg": ribs_kg, "solid_kg": solid_kg,
+               "tilts": out["ratios"].tolist(), "beds": out["beds"].tolist(),
+               "tilt_worst": float(out["ratios"].max()),
                "bed_worst": float(out["beds"].max()), "worst": names[worst], "worst_g": float(f[worst]),
                "violated": [n for n, v in zip(names, f, strict=True) if v > 0.01],
                "seconds": time.time() - t1}
         history.append(row)
-        print(f"it {it:3d}: placed {mass:.3f} kg, tilt {row['tilt_worst']:.3f}, bed {row['bed_worst']:.3f} of "
+        print(f"it {it:3d}: placed {mass:.3f} kg (ribs {ribs_kg:.3f}, solid {solid_kg:.3f}), "
+              f"tilt {row['tilt_worst']:.3f}, bed {row['bed_worst']:.3f} of "
               f"their lines; the worst {names[worst]} {f[worst]:+.3f}; {len(row['violated'])} over; "
               f"{row['seconds']:.0f} s", flush=True)
         if opt is None:
