@@ -1,6 +1,7 @@
 """cuDSS's direct solver as nvmath exposes it, on the CPU, for the checks only: Intel's PARDISO
-(`pypardiso`, which factors in double: a stand-in for tracing and parity on a machine without a card,
-never the product's factor) when it is installed, else SciPy's SuperLU (fine for small models only).
+(`pypardiso`, which factors in double: a stand-in for tracing and parity on a machine without a
+card, never the product's factor) when it is installed, else SciPy's SuperLU (fine for small
+models only).
 
 The solver keeps a reference to its matrix, as cuDSS does: the optimiser writes new values into the
 matrix in place and factorises again (`fast_factor.GpuStiffness.factor`). The callers refine every
@@ -41,10 +42,12 @@ class DirectSolver:
 
     def factorize(self) -> None:
         a = sp.csr_matrix(self.a)
+        # PARDISO keeps a factor's memory until told: one refactorised in place lets the last go
+        self.free()
         try:
             import pypardiso
 
-            solver = pypardiso.PyPardisoSolver()
+            solver = self._pardiso = pypardiso.PyPardisoSolver()
             a64 = a.astype(np.float64)
             a64.sort_indices()
             solver.factorize(a64)
@@ -68,3 +71,6 @@ class DirectSolver:
 
     def free(self) -> None:
         self._solve = None
+        if getattr(self, "_pardiso", None) is not None:
+            self._pardiso.free_memory(everything=True)
+            self._pardiso = None

@@ -191,6 +191,39 @@ def fe_glue(surface: float, size: float) -> None:
         print(f"  modes npz {k}: {'identical' if same else 'DIFFERENT'}")
 
 
+TRACE = ROOT / "data" / "ot" / "data" / "first_loop"  # the prototype's run on the CPU stand-in (the trace's own tree)
+RECIPE_ARGS = ["--max-member", "16", "--band", "24", "--height-field", "4", "--empty", "--protect", "--shell-fixed", "--no-towers",
+               "--objective", "mass_tilt", "--safety", "1.5", "--modes", "0.12", "--first-mode", "500", "--least-width", "8"]  # fmt: skip
+
+
+def optimise(voxel: float, iterations: int) -> None:
+    """The moved optimiser against the prototype's run of the same iterations at the same voxel (`TRACE`, the run the
+    trace made: `topo_free.py 7.73 <voxel> <iterations> ... --tag trace`), both on this machine's stand-in factor."""
+    from zenryx.domains.gearbox.housing.optimise import run
+
+    folder = OUT / "opt"
+    folder.mkdir(parents=True, exist_ok=True)
+    shutil.copy(TRACE / "contract.json", folder / "contract.json")
+    env = {"LOOP_MEMBER_P": "40", "LOOP_LEAST_MEMBER": "8"}
+    stem, _ = run("trace", 7.73, voxel, RECIPE_ARGS, folder, CONTRACT, env, iterations=iterations)
+    a, b = np.load(folder / f"{stem}.npz"), np.load(TRACE / f"{stem}.npz")
+    for k in sorted(set(a.files) | set(b.files)):
+        if k not in a.files or k not in b.files:
+            print(f"  npz {k}: only in {'src' if k in a.files else 'the prototype'}")
+            continue
+        same = a[k].shape == b[k].shape and np.array_equal(a[k], b[k])
+        diff = float(np.abs(a[k].astype(float) - b[k].astype(float)).max()) if a[k].shape == b[k].shape and not same else None
+        print(f"  npz {k}: {'identical' if same else f'largest difference {diff:.3g}' if diff is not None else 'DIFFERENT shapes'}")
+    ra, rb = json.loads((folder / f"{stem}.json").read_text()), json.loads((TRACE / f"{stem}.json").read_text())
+    for i, (ha, hb) in enumerate(zip(ra["history"], rb["history"], strict=False)):
+        worst = _compare(_numbers({k: v for k, v in ha.items() if k not in ("seconds", "clock", "mma_seconds")}),
+                         _numbers({k: v for k, v in hb.items() if k not in ("seconds", "clock", "mma_seconds")}))  # fmt: skip
+        print(f"  iteration {i + 1}: the largest relative difference {worst[0]:.2e} at {worst[1]}")
+    worst = _compare(_numbers(ra["binary"]), _numbers(rb["binary"]))
+    print(f"  the binary check: the largest relative difference {worst[0]:.2e} at {worst[1]}")
+    print(f"  frozen kg {ra['frozen_kg']!r} against {rb['frozen_kg']!r}; least kg {ra['least_kg']!r} against {rb['least_kg']!r}")
+
+
 def _compare(a: dict, b: dict) -> tuple[float, str]:
     keys = sorted(set(a) & set(b))
     missing = sorted(set(a) ^ set(b))
@@ -208,6 +241,8 @@ if __name__ == "__main__":
         judge()
     elif what == "fe-glue-side":
         fe_glue_side(sys.argv[2], float(sys.argv[3]), float(sys.argv[4]))
+    elif what == "optimise":
+        optimise(float(sys.argv[2]) if len(sys.argv) > 2 else 5.0, int(sys.argv[3]) if len(sys.argv) > 3 else 2)
     elif what == "fe-glue":
         fe_glue(float(sys.argv[2]) if len(sys.argv) > 2 else 16.0, float(sys.argv[3]) if len(sys.argv) > 3 else 16.0)
     else:
