@@ -1,5 +1,5 @@
 """A drawn design judged by the product's own stages, on this machine (LOP-34; a prototype):
-`judge.py <design> [--folder=<dir>] [--most=<unknowns>] [--skip=fe,castable,look]`.
+`judge.py <design> [--folder=<dir>] [--most=<unknowns>] [--skip=fe,castable,look] [--no-coarse]`.
 
 The oil-tight gate (`oiltight.check`), FE (`fe.judge`: on the CPU through the GPU stand-ins of
 `checks/support/gpu_on_cpu`), castability (`castable.castability`), the grade
@@ -53,7 +53,19 @@ def main() -> None:
         return got
 
     fe._mesh = cached_mesh
-    times, result = {}, {"design": design, "folder": str(folder), "meshed_most": most}
+    surface = "FE's own (decimated to its surface ladder)"
+    if "--no-coarse" in sys.argv:
+        # a design already remeshed at FE's scale (`remesh.py`) goes to TetGen as it is: FE's
+        # decimation folded the rib drawings' surfaces (`rib_h3`), and the remesh leaves nothing to
+        # decimate
+        import numpy as np
+
+        from zenryx.domains.gearbox.housing import mesh as mr
+
+        mr.coarse = lambda tm, edge, keep_near=None: (np.asarray(tm.vertices, float),  # noqa: ARG005
+                                                      np.asarray(tm.faces, np.int64))
+        surface = "remeshed, not decimated"
+    times, result = {}, {"design": design, "folder": str(folder), "meshed_most": most, "surface": surface}
     t = time.time()
     result["oiltight"] = bool(oiltight.check(design, folder, housing.CONTRACT)["tight"])
     times["oiltight"] = time.time() - t

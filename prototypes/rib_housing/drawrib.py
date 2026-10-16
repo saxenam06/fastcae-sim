@@ -1,7 +1,7 @@
 """The housing's rib field drawn through the product's own drawing (LOP-34; a prototype).
 
 `drawrib.py <label> [<design>] [--voxel=<mm>]` reads `optimise.py`'s state
-(`data/rib_housing/<label>.npz`), writes it as a run of the product's format (`rib_<label>.npz` and
+(`data/rib_housing/<label>.npz`), writes it as a run of the product's format (`run_<label>.npz` and
 `.json`: each free cube's metal share as `phys`), then calls `zenryx.domains.gearbox.housing.draw.draw`
 with the members' signed distance (`columns.members_sdf`) replaced by the ribs' (`rib_sdf`), so the
 least walls, the protected interfaces, the fillets, the kept-clear cuts, the exact cuts and the files
@@ -47,7 +47,7 @@ LUG_INSET = float(os.environ.get("RIB_LUG_INSET", 0.0))
 # Taubin's passes on each half's contoured body before the exact cuts (the prototype's LOOP_SMOOTH,
 # the repo's cure when FE cannot mesh a drawing: `baseline2_fm500f`); 0 off. The rib drawing's sub-
 # 7 mm steps and edges made FE's decimation fold its surface where the reference's did not (`rib_h3`)
-SMOOTH_PASSES = int(os.environ.get("RIB_SMOOTH", 10))
+SMOOTH_PASSES = int(os.environ.get("RIB_SMOOTH", 0))  # (10 passes made the decimation fold more: off)
 LUG_NEAR = 8.0  # mm: past a lug's radius, how far "near" reaches
 # mm: a rib thinner than this is not drawn: the field's own least (`field.T_MIN`, the recipe's 8 mm
 # least width), under which a rib carries nothing in the model. (`h2`'s field held 3 mm: its ribs'
@@ -355,7 +355,7 @@ def write_run(label: str, vox, model, hf, x, cols) -> str:
     so, u = pc["solid"], pc["u"]
     share = so["g"] + u * sum(f["g"] * f["rho"][hf.col] for f in pc["fam"])
     phys = np.clip(share, 0.0, 1.0)
-    stem = f"rib_{label}"
+    stem = f"run_{label}"  # (not `rib_<label>`: a design of that name overwrote it, and it the design)
     np.savez_compressed(
         housing.OUT / f"{stem}.npz",
         phys=phys,
