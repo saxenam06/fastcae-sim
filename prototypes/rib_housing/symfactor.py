@@ -25,17 +25,25 @@ import numpy as np
 import scipy.sparse as sp
 
 MEMORY_REPORT: list[dict] = []  # each factor's PARDISO memory report (KB) and times
+HEADROOM_MB = 800.0  # left free beyond what PARDISO says its factor needs
+
+
+def _available_mb() -> float:
+    with open("/proc/meminfo", encoding="ascii") as fh:
+        info = {ln.split(":")[0]: float(ln.split()[1]) for ln in fh}
+    return info["MemAvailable"] / 1024.0
 
 
 class SingleSym:
     """PARDISO's single-precision symmetric indefinite factor of a symmetric matrix's upper
     triangle, kept for any number of solves."""
 
-    def __init__(self, a: sp.spmatrix):
+    def __init__(self, a: sp.spmatrix, upper: bool = False):
         import pypardiso
 
         self.lib = pypardiso.PyPardisoSolver().libmkl  # pypardiso's own search for mkl_rt
-        up = sp.triu(sp.csr_matrix(a), format="csr").astype(np.float32)
+        up = sp.csr_matrix(a) if upper else sp.triu(sp.csr_matrix(a), format="csr")
+        up = up.astype(np.float32, copy=False)
         up.sort_indices()
         self.n = up.shape[0]
         self.data = np.ascontiguousarray(up.data, np.float32)
@@ -50,6 +58,13 @@ class SingleSym:
         t0 = time.time()
         self._call(11, np.zeros((1, self.n), np.float32))
         predicted = {k: int(self.iparm[k - 1]) for k in (15, 16, 17)}
+        need_mb = (predicted[16] + predicted[17]) / 1024.0
+        free_mb = _available_mb()
+        print(f"PARDISO's single factor of {self.n:,} unknowns: {self.iparm[17]:,} entries, "
+              f"{need_mb:,.0f} MB to factor and solve, {free_mb:,.0f} MB available", flush=True)
+        if need_mb > free_mb - HEADROOM_MB:
+            self.free_memory()
+            raise MemoryError(f"the factor needs {need_mb:,.0f} MB, {free_mb:,.0f} MB available")
         t1 = time.time()
         self._call(22, np.zeros((1, self.n), np.float32))
         MEMORY_REPORT.append({"n": self.n, "kb": predicted, "factor_nnz": int(self.iparm[17]),
@@ -100,10 +115,73 @@ def _factorize(self) -> None:
     self._solve = solver.solve
 
 
+class _Lean:
+    """What `SingleFactor` asks of its solver (`reset_operands`, `solve`, `free`), over `SingleSym`."""
+
+    def __init__(self, up: sp.csr_matrix):
+        self.sym = SingleSym(up, upper=True)
+        self.b = None
+
+    def reset_operands(self, a=None, b=None) -> None:  # noqa: ARG002 (cuDSS's signature)
+        if b is not None:
+            self.b = b
+
+    def solve(self) -> np.ndarray:
+        return np.asfortranarray(self.sym.solve(np.asarray(self.b)).astype(np.float32))
+
+    def free(self) -> None:
+        self.sym.free_memory()
+
+
+def _lean_single_factor(self, k: sp.csr_matrix) -> None:
+    """`zenryx.physics.factor.SingleFactor.__init__` with its copies cut: the stiffness's upper
+    triangle scaled by its diagonal in place (S K S, as the product's) and factored in single
+    precision; no double scaled copy and no full float32 copy beside it."""
+    import cupy as cp
+
+    from zenryx.physics.factor import release
+
+    self.k, self.cp, self.kind = k, cp, None
+    self.scale = 1.0 / np.sqrt(k.diagonal())
+    up = sp.triu(k, format="csr")
+    rows = np.repeat(np.arange(up.shape[0], dtype=np.int32), np.diff(up.indptr))
+    up.data *= self.scale[rows] * self.scale[up.indices]
+    del rows
+    up = sp.csr_matrix((up.data.astype(np.float32), up.indices, up.indptr), shape=up.shape)
+    release()
+    self.a, self.b = None, None
+    t0 = time.time()
+    self.solver = _Lean(up)
+    del up
+    self.factor_s = time.time() - t0
+    probe = self.backsolve(np.ones(k.shape[0]))
+    if not np.all(np.isfinite(probe)):
+        self.close()
+        raise RuntimeError("the single-precision factor broke down: the stiffness is singular")
+    self.kind = "SYMMETRIC"
+
+
+def _lean_block_diag(mats, *args, **kwargs):
+    """scipy's `block_diag`, the input list emptied once joined (FE's two halves' blocks are not
+    used again, and they held 1.8 GB beside their join)."""
+    out = _BLOCK_DIAG(mats, *args, **kwargs)
+    if isinstance(mats, list):
+        mats.clear()
+    return out
+
+
+_BLOCK_DIAG = sp.block_diag
+
+
 def use() -> None:
     from nvmath.sparse.advanced import DirectSolver
 
+    from zenryx.domains.gearbox.housing import fe
+    from zenryx.physics import factor
+
     DirectSolver.factorize = _factorize
+    factor.SingleFactor.__init__ = _lean_single_factor
+    fe.sp.block_diag = _lean_block_diag
     # the stand-in's sparse matrices are SciPy's, already on the host: FE's assembly
     # (`zenryx.physics.tet10.stiffness(..., gpu=True)`) asks them for CuPy's `.get()`
     if not hasattr(sp.csr_matrix, "get"):
