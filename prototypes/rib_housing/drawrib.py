@@ -417,7 +417,9 @@ def main() -> None:
 
         pdraw.mr.contour = smoothed_contour  # the body before the exact cuts, which follow
     pdraw.extra_placed = lambda z: placed  # noqa: ARG005  (the solid zones' cubes, for the cube check)
-    env = housing.recipe()["env"]
+    env = dict(housing.recipe()["env"])
+    if os.environ.get("RIB_DRAW_FINE"):  # the drawing's grid (mm) in place of the recipe's LOOP_DRAW_FINE
+        env["LOOP_DRAW_FINE"] = os.environ["RIB_DRAW_FINE"]
     if not (housing.OUT / "contract.json").exists():
         shutil.copy(housing.ROOT / "data" / "first_loop" / "contract.json", housing.OUT / "contract.json")
     global PLAN_OUT
