@@ -2,10 +2,11 @@
 `judge.py <design> [--folder=<dir>] [--most=<unknowns>] [--skip=fe,castable,look]`.
 
 The oil-tight gate (`oiltight.check`), FE (`fe.judge`: on the CPU through the GPU stand-ins of
-`checks/support/gpu_on_cpu`, PARDISO in double), castability (`castable.castability`), the grade
+`checks/support/gpu_on_cpu`), castability (`castable.castability`), the grade
 (`zenryx.workflow.grade.grade_all` over the folder) and the pictures (`look.look`). The container
-holds 15 GB, so FE factorises with PARDISO's symmetric factor (`symfactor.py`) and its mesh is held under
-`--most` unknowns (the product's 2.18 M by default); judge the reference the same way, like for like.
+holds 15 GB, so FE factorises as the product does, in single precision refined to double, with
+PARDISO's symmetric factor (`symfactor.py`), its mesh held under `--most` unknowns (the product's
+2.18 M by default) and kept (`fe_mesh_<design>_<most>.pkl`); judge the reference the same way.
 Writes into the folder (`data/rib_housing` by default) what each stage writes, and
 `judged_<design>.json`: what ran, each stage's time, the grade's row.
 """
@@ -33,10 +34,25 @@ def main() -> None:
     from zenryx.domains.gearbox.housing import castable, fe, look, oiltight
     from zenryx.workflow import grade
 
+    import pickle
+
     import symfactor
 
-    symfactor.use()  # PARDISO's symmetric factor: half the general LU's memory
+    symfactor.use()  # the product's single factor on the CPU: PARDISO's, symmetric, in single
     fe.MESHED_MOST = most
+    # FE's mesh kept beside the design (git-ignored data), so a judgement retried costs no meshing
+    mesh_of = fe._mesh
+    cache = folder / f"fe_mesh_{design}_{most}.pkl"
+
+    def cached_mesh(info, out, size, surface):
+        if cache.exists() and cache.stat().st_mtime > (out / f"{design}.json").stat().st_mtime:
+            print(f"FE's mesh from {cache.name}", flush=True)
+            return pickle.loads(cache.read_bytes())
+        got = mesh_of(info, out, size, surface)
+        cache.write_bytes(pickle.dumps(got, protocol=pickle.HIGHEST_PROTOCOL))
+        return got
+
+    fe._mesh = cached_mesh
     times, result = {}, {"design": design, "folder": str(folder), "meshed_most": most}
     t = time.time()
     result["oiltight"] = bool(oiltight.check(design, folder, housing.CONTRACT)["tight"])
@@ -62,6 +78,7 @@ def main() -> None:
         look.look(design, folder, face=True)
         times["look"] = time.time() - t
     result["seconds"] = times
+    result["factors"] = symfactor.MEMORY_REPORT  # PARDISO's memory (KB) and times, factor by factor
     (folder / f"judged_{design}.json").write_text(json.dumps(result, indent=1, default=str), encoding="utf-8")
 
 
