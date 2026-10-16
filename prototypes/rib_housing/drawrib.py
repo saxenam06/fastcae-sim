@@ -40,6 +40,7 @@ import rules  # noqa: E402
 
 L_LEAST = 20.0  # mm: a shorter rib piece is not drawn (the toy's gate)
 END_SLOPE = 1.0  # a rib's height past its least, a mm from where it ends (its end tapered)
+LUG_JOIN = 2.0  # mm: how far inside a lug's radius the members reach (they join its side)
 # mm: a rib thinner than this is not drawn. The field's own least (`rules.T_LEAST`, 3 mm) drew
 # ribs whose median was 4.6 mm and a tenth under 2.3 mm: FE meshed `rib_h2` at 6.3 M unknowns, twice
 # the reference's; the product's FE holds a least member of about 4 mm (CLAUDE.md, the FE ceiling)
@@ -113,6 +114,10 @@ def columns_of(vox, hf, x) -> dict:
         "columns": int(n_cols),
         "pc": pc,
         "discs": fieldmod.zone_discs(vox),
+        "lugs": [{"half": "motor_side" if m["z"][1] <= vox.model["info"]["z"]["split"] else "cover",
+                  "centre": list(m["centre"]),
+                  "r": vox.model["info"]["settings"]["mount_diameter"] / 2 - LUG_JOIN}
+                 for m in vox.model["info"]["mounts"]],
     }
 
 
@@ -184,6 +189,13 @@ def rib_sdf(cols, half, f, xs, ys, zs, footprint, smooth_mm, smooth_range) -> np
     cell_i = np.clip(np.floor(CI + 0.5).astype(int), 0, n[0] - 1)
     cell_j = np.clip(np.floor(CJ + 0.5).astype(int), 0, n[1] - 1)
     rnd = float(cols["round_mm"])
+    # each lug's core kept the product's own (members join its side, LUG_JOIN deep): filled by the
+    # members, its end faces met the brackets' rooms' exact cuts at its hole's rim, and FE's
+    # coarsening folded the rim there (`rib_h2t4`, mount-1)
+    off_lugs = np.full(PX.shape, 1e6)
+    for lug in cols["lugs"]:
+        if lug["half"] == half:
+            off_lugs = np.minimum(off_lugs, np.hypot(PX - lug["centre"][0], PY - lug["centre"][1]) - lug["r"])
     spacing = float(cols["spacing"])
     sig = OUTLINE_SIGMA / h
     report = []
@@ -253,6 +265,7 @@ def rib_sdf(cols, half, f, xs, ys, zs, footprint, smooth_mm, smooth_range) -> np
             d_end = distance_transform_edt(gate > 0) * step
             hk = np.minimum(hk, rules.H_LEAST + END_SLOPE * d_end)
             a_k = np.where(area, a_k, np.minimum(a_k, -step))
+            a_k = np.minimum(a_k, off_lugs)
             rib = _pieces(a_k > 0, step)
             a_k = np.where((a_k > 0) & ~rib, -step, a_k)  # the short pieces dropped
             ribs_g += int(rib.sum())
@@ -290,7 +303,7 @@ def rib_sdf(cols, half, f, xs, ys, zs, footprint, smooth_mm, smooth_range) -> np
                 for dsc in cols["discs"]:
                     if dsc["half"] == half:
                         a_zone = np.maximum(a_zone, dsc["r"] - np.hypot(PX - dsc["centre"][0], PY - dsc["centre"][1]))
-                a_s = np.minimum(_signed(solid, step), a_zone)
+                a_s = np.minimum(np.minimum(_signed(solid, step), a_zone), off_lugs)
                 hsf = by_fam(hs_eff, keep=held)
                 plan["solid"] |= a_s > 0
                 plan["solid_h"] = np.where(a_s > 0, np.maximum(plan["solid_h"], hsf), plan["solid_h"])
