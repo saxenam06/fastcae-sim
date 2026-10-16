@@ -17,6 +17,7 @@ echo "drawn (exit $?): $(grep -E 'kg \(motor side' "$out/draw_$design.log" | tai
 grep -E "holds [0-9]+ of the layout" "$out/draw_$design.log" >> "$log"
 "$py" prototypes/rib_housing/plan_view.py "$design" >> "$log" 2>&1
 for half in motor_side cover; do
+  "$py" prototypes/rib_housing/self_cross.py "$design" "$half" 7 --first-round 2>&1 | grep -vE "Warning|warn" | tail -8 >> "$log"
   for edge in 7 7.49; do
     "$py" prototypes/rib_housing/crossings.py "$design" "$half" "$edge" 2>&1 | grep -vE "Warning|warn" | tail -4 >> "$log"
   done

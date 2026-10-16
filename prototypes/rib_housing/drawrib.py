@@ -41,7 +41,13 @@ import rules  # noqa: E402
 L_LEAST = 20.0  # mm: a shorter rib piece is not drawn (the toy's gate)
 END_SLOPE = 1.0  # a rib's height past its least, a mm from where it ends (its end tapered)
 LUG_JOIN = 2.0  # mm: how far inside a lug's radius the members reach (they join its side)
-LUG_INSET = 1.5  # mm: near a lug the members end this far inside its end planes
+# mm: near a lug the members end this far inside its end planes (0: off; at 1.5 its small steps were
+# among the places FE's decimation folded, `rib_h3`, so off)
+LUG_INSET = float(os.environ.get("RIB_LUG_INSET", 0.0))
+# Taubin's passes on each half's contoured body before the exact cuts (the prototype's LOOP_SMOOTH,
+# the repo's cure when FE cannot mesh a drawing: `baseline2_fm500f`); 0 off. The rib drawing's sub-
+# 7 mm steps and edges made FE's decimation fold its surface where the reference's did not (`rib_h3`)
+SMOOTH_PASSES = int(os.environ.get("RIB_SMOOTH", 10))
 LUG_NEAR = 8.0  # mm: past a lug's radius, how far "near" reaches
 # mm: a rib thinner than this is not drawn: the field's own least (`field.T_MIN`, the recipe's 8 mm
 # least width), under which a rib carries nothing in the model. (`h2`'s field held 3 mm: its ribs'
@@ -327,7 +333,7 @@ def rib_sdf(cols, half, f, xs, ys, zs, footprint, smooth_mm, smooth_range) -> np
     # cuts they lay 0.05 mm off the lug's own exact end faces, and FE's coarsening folded the two
     # (`rib_h2f`, mount-1's hole rim)
     for lug in cols["lugs"]:
-        if lug["half"] != half:
+        if lug["half"] != half or LUG_INSET <= 0:
             continue
         near = np.hypot(PX - lug["centre"][0], PY - lug["centre"][1]) < lug["r_full"] + LUG_NEAR
         if near.any():
@@ -399,6 +405,17 @@ def main() -> None:
     placed = placed.reshape(tuple(int(v) for v in model["n"]))
     pdraw.run_columns = lambda z, sigma, rnd: cols  # noqa: ARG005
     pdraw.members_sdf = rib_sdf
+    if SMOOTH_PASSES:
+        contour_of = pdraw.mr.contour
+
+        def smoothed_contour(rho, lo, h, level=0.5):
+            import trimesh
+
+            surface = contour_of(rho, lo, h, level)
+            trimesh.smoothing.filter_taubin(surface, lamb=0.5, nu=0.53, iterations=SMOOTH_PASSES)
+            return surface
+
+        pdraw.mr.contour = smoothed_contour  # the body before the exact cuts, which follow
     pdraw.extra_placed = lambda z: placed  # noqa: ARG005  (the solid zones' cubes, for the cube check)
     env = housing.recipe()["env"]
     if not (housing.OUT / "contract.json").exists():
