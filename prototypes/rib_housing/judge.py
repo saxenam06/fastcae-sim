@@ -4,8 +4,8 @@
 The oil-tight gate (`oiltight.check`), FE (`fe.judge`: on the CPU through the GPU stand-ins of
 `checks/support/gpu_on_cpu`, PARDISO in double), castability (`castable.castability`), the grade
 (`zenryx.workflow.grade.grade_all` over the folder) and the pictures (`look.look`). The container
-holds 15 GB, so FE's mesh is held under `--most` unknowns (1.2 M by default: `fe.MESHED_MOST`, the
-surface coarsened by FE's own ladder); judge the reference the same way to compare like for like.
+holds 15 GB, so FE factorises with PARDISO's symmetric factor (`symfactor.py`) and its mesh is held under
+`--most` unknowns (the product's 2.18 M by default); judge the reference the same way, like for like.
 Writes into the folder (`data/rib_housing` by default) what each stage writes, and
 `judged_<design>.json`: what ran, each stage's time, the grade's row.
 """
@@ -20,7 +20,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import housing  # noqa: E402
 
-MOST = 1_200_000
+MOST = 2_180_000  # the product's own ceiling (`fe.MESHED_MOST`), with the symmetric factor (`symfactor`)
 
 
 def main() -> None:
@@ -33,6 +33,9 @@ def main() -> None:
     from zenryx.domains.gearbox.housing import castable, fe, look, oiltight
     from zenryx.workflow import grade
 
+    import symfactor
+
+    symfactor.use()  # PARDISO's symmetric factor: half the general LU's memory
     fe.MESHED_MOST = most
     times, result = {}, {"design": design, "folder": str(folder), "meshed_most": most}
     t = time.time()

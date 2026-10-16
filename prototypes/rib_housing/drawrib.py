@@ -11,9 +11,9 @@ namespace for this process only.
 The ribs, per column group and family (the de-homogenisation, the toy's `draw.py`): on the drawing's
 fine plan grid the directions, shares and heights read from the columns; a stripe pattern along the
 directions `SPACING` mm apart (`prototypes/rib_field/draw.stripes`, Knöppel et al. 2015); a point a
-rib's where cos(phase) >= cos(pi rho), so each rib is rho x SPACING thick; under `rules.T_LEAST`
+rib's where cos(phase) >= cos(pi rho), so each rib is rho x SPACING thick; under `T_DRAW`
 thick or `rules.H_LEAST` tall none, and a piece shorter than `L_LEAST` (its area under L_LEAST x
-T_LEAST) dropped. Each rib's free end is its column's height past the column's base, on one scale
+T_DRAW) dropped. Each rib's free end is its column's height past the column's base, on one scale
 from the split (as the product's `E`), its edge rounded (`round_inter`). The solid zones (bosses and
 brackets) are drawn as the product draws a column: its outline where its height holds metal, its
 free end its height.
@@ -22,6 +22,7 @@ free end its height.
 from __future__ import annotations
 
 import json
+import os
 import shutil
 import sys
 from pathlib import Path
@@ -39,6 +40,10 @@ import rules  # noqa: E402
 
 L_LEAST = 20.0  # mm: a shorter rib piece is not drawn (the toy's gate)
 END_SLOPE = 1.0  # a rib's height past its least, a mm from where it ends (its end tapered)
+# mm: a rib thinner than this is not drawn. The field's own least (`rules.T_LEAST`, 3 mm) drew
+# ribs whose median was 4.6 mm and a tenth under 2.3 mm: FE meshed `rib_h2` at 6.3 M unknowns, twice
+# the reference's; the product's FE holds a least member of about 4 mm (CLAUDE.md, the FE ceiling)
+T_DRAW = float(os.environ.get("RIB_T_DRAW", 4.0))
 PLAN_OUT: Path | None = None  # where `rib_sdf` writes each half's plan reading (`plan_<design>_<half>.npz`)
 OUTLINE_SIGMA = 3.0  # mm: a group's and a solid zone's outline blurred (the product's LOOP_VOXEL_SMOOTH)
 
@@ -132,14 +137,14 @@ def _signed(mask: np.ndarray, step: float) -> np.ndarray:
 
 
 def _pieces(mask: np.ndarray, step: float) -> np.ndarray:
-    """The rib pieces kept: each at least `L_LEAST` x `rules.T_LEAST` in area."""
+    """The rib pieces kept: each at least `L_LEAST` x `T_DRAW` in area."""
     from scipy.ndimage import label
 
     lab, n = label(mask)
     if not n:
         return mask
     area = np.bincount(lab.ravel(), minlength=n + 1) * step * step
-    keep = area >= L_LEAST * rules.T_LEAST
+    keep = area >= L_LEAST * T_DRAW
     keep[0] = False
     return keep[lab]
 
@@ -236,10 +241,10 @@ def rib_sdf(cols, half, f, xs, ys, zs, footprint, smooth_mm, smooth_range) -> np
             phase, _ = toydraw.stripes(theta + k * np.pi / 2, area, spacing, step)
             # the rib's side as a smooth distance (mm, positive inside): half its thickness less the
             # distance from its centre-line (the phase's zero, `spacing` a turn), its ends where it
-            # thins under `T_LEAST` or drops under `H_LEAST`; the group's outline cuts it
+            # thins under `T_DRAW` or drops under `H_LEAST`; the group's outline cuts it
             d_mid = spacing * np.abs(np.angle(np.exp(1j * phase))) / (2.0 * np.pi)
             a_k = 0.5 * np.clip(rho, 0.0, 1.0) * spacing - d_mid
-            gate = np.minimum(rho * spacing - rules.T_LEAST, hk - rules.H_LEAST)
+            gate = np.minimum(rho * spacing - T_DRAW, hk - rules.H_LEAST)
             a_k = np.minimum(a_k, gate)
             # a rib's end tapers: near where it ends its height falls to the least
             # height at a slope of one (a full-height narrow tip read as a shard)
