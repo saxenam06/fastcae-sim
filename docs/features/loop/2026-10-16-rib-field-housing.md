@@ -1,6 +1,6 @@
 # The rib-direction field on our housing: the plan, the state, the learnings (LOP-34)
 
-**Read this first after a compaction or in a new session.** It is the working memory of this job.
+**Read this first after a compaction or in a new session.** It is the working memory of this job. **Superseded on 16 October ~10:00 IST by the restart, [the rib field on the walls](2026-10-16-rib-field-walls.md):** this page is the first attempt's record.
 
 **The engineer's brief (16 October, before leaving for the day):** "Once you are done with this test model, apply the same for our housing, and run the entire workflow from contract to optimization to drawing, and then to FE, and then to solve, and then prepare a picture with the final designs, and do that in the prototype folder so that we do not disturb the current pipeline ... Once we agree, then we will plug this into the running pipeline ... transferring the entire thought process from this test model with the rules to our production housing ... Once one entire workflow is complete, then you are done. Keep documenting the status and the learnings as you move forward."
 
