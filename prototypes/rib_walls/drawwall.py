@@ -48,7 +48,15 @@ import wallfield as wfm  # noqa: E402
 OUT = optimise.OUT
 T_DRAW = wfm.T_MIN + 0.5 * wfm.T_RAMP  # mm: the model carries half of a rib this thick
 H_LEAST = 8.0  # mm: a lower rib is not drawn (twice the root fillet; the recipe's least member)
-L_LEAST = 20.0  # mm: a shorter rib piece is not drawn (the toy's gate)
+L_LEAST = 30.0  # mm: a shorter rib piece is not drawn (20, the toy's gate, left stubs that read as noise)
+# mm: a boss standing less than this past its face is drawn flush with it (16 October: w5c's bosses
+# at their least, 2 mm, drew 2 mm sheets over the end faces with 3 mm rounded edges, and FE's 7 mm
+# decimation made a flat tet at every rung of the cover)
+BOSS_SNAP = 4.0
+# mm: the members end this far past each bolt's head socket (16 October: the product's own cut, 2 mm
+# past it, put their cut face on the bolt boss's edge, 10 mm out, where it meets the flange's face;
+# the two cylinders made hairline strips and FE's tets flat beside two bolts)
+SOCKET_CLEAR = 5.0
 END_SLOPE = 1.0  # a rib's height past its least, a mm from where it ends (its end tapered)
 ROUND = 3.0  # mm: the free edges' radius
 BAND = 24.0  # mm: the design space's band off the shell (the recipe's --band)
@@ -200,9 +208,10 @@ def plan_fields(ctx: dict, half: str, xs, ys) -> dict:
         if b["half"] != half:
             continue
         xr, xh = wf.boss_x(x, i)
+        hb = wfm.BOSS_TALL[0] + wfm.BOSS_TALL[1] * float(xh)
         out["bosses"].append({"name": b["name"], "axis": b["axis"], "z_out": b["z_out"],
                               "R": b["r0"] + wfm.BOSS_GROW[0] + wfm.BOSS_GROW[1] * float(xr),
-                              "h": wfm.BOSS_TALL[0] + wfm.BOSS_TALL[1] * float(xh)})
+                              "h": hb if hb >= BOSS_SNAP else 0.0})
     out["webs"] = []
     for i, w in enumerate(wf.webs):
         if w["half"] != half:
@@ -242,6 +251,14 @@ def wall_sdf(ctx, half, f, xs, ys, zs, footprint, smooth_mm, smooth_range) -> np
         along = p0 * u[0] + p1 * u[1]
         cross = np.abs(p0 * u[1] - p1 * u[0])
         webs.append((w, np.maximum(cross - 0.5 * w["t"], np.maximum(w["r_lug"] - 2.0 - along, along - w["l_cap"]))))
+    s_ = layout["settings"]
+    t_f = float(s_["flange_thickness"])
+    d_sock, h_sock = s_["bolt_socket"]
+    z_s = (split - t_f - h_sock, split - t_f) if lower else (split + t_f, split + t_f + h_sock)
+    socket_r = np.full(PX.shape, np.inf)
+    for c in layout["bolts"]:
+        socket_r = np.minimum(socket_r, np.hypot(PX - c[0], PY - c[1]))
+    sockets = [(z_s, d_sock / 2 + SOCKET_CLEAR)]
     for kz in side:
         zc = zs[kz]
         sl = np.full(PX.shape, np.inf)
@@ -272,6 +289,10 @@ def wall_sdf(ctx, half, f, xs, ys, zs, footprint, smooth_mm, smooth_range) -> np
         for w, plan_d in webs:
             dz = max(w["z"][0] - zc, zc - w["z"][1])
             sl = np.minimum(sl, round_inter(plan_d, np.full(PX.shape, dz), ROUND))
+        # clear of each bolt's head socket by SOCKET_CLEAR
+        for (z0_s, z1_s), r_s in sockets:
+            if z0_s - 1.0 <= zc <= z1_s + 1.0:
+                sl = np.maximum(sl, r_s - socket_r)
         out[:, :, kz] = sl
     rib_area = sum(int(fm["rib"].sum()) for fm in pf["fam"]) * step * step / 100.0
     say(f"{half}: end-wall ribs over {rib_area:.0f} cm2 of plan (families {[int(fm['rib'].sum()) for fm in pf['fam']]} "

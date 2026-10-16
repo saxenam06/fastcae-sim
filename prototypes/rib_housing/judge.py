@@ -1,5 +1,5 @@
 """A drawn design judged by the product's own stages, on this machine (LOP-34; a prototype):
-`judge.py <design> [--folder=<dir>] [--most=<unknowns>] [--skip=fe,castable,look] [--no-coarse]`.
+`judge.py <design> [--folder=<dir>] [--most=<unknowns>] [--skip=fe,castable,look] [--no-coarse] [--flat=<shape>] [--needles]`.
 
 The oil-tight gate (`oiltight.check`), FE (`fe.judge`: on the CPU through the GPU stand-ins of
 `checks/support/gpu_on_cpu`), castability (`castable.castability`), the grade
@@ -31,12 +31,12 @@ def main() -> None:
     folder = Path(opt.get("folder", housing.OUT))
     most = int(opt.get("most", MOST))
     skip = set(filter(None, opt.get("skip", "").split(",")))
-    from zenryx.domains.gearbox.housing import castable, fe, look, oiltight
-    from zenryx.workflow import grade
-
     import pickle
 
     import symfactor
+
+    from zenryx.domains.gearbox.housing import castable, fe, look, oiltight
+    from zenryx.workflow import grade
 
     symfactor.use()  # the product's single factor on the CPU: PARDISO's, symmetric, in single
     fe.MESHED_MOST = most
@@ -65,7 +65,21 @@ def main() -> None:
         mr.coarse = lambda tm, edge, keep_near=None: (np.asarray(tm.vertices, float),  # noqa: ARG005
                                                       np.asarray(tm.faces, np.int64))
         surface = "remeshed, not decimated"
-    times, result = {}, {"design": design, "folder": str(folder), "meshed_most": most, "surface": surface}
+    if "--needles" in sys.argv:
+        # the coarsened surface's needles merged before TetGen (`prototypes/rib_walls/needles.py`: the
+        # product's collapse falls back to the needled surface when its own would cross itself)
+        sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "rib_walls"))
+        import needles
+
+        needles.use()
+        surface += ", its needles merged"
+    if "flat" in opt:
+        # a stricter flat-tet line, so FE takes its next surface rung (16 October: walls_w5c's cover
+        # meshed with a tet of shape 1.3e-6, just over the product's 1e-6, and the single factor did
+        # not refine, residual 30; the meshes that solved held 1e-4 and over)
+        fe.FLAT_TET = float(opt["flat"])
+    times, result = {}, {"design": design, "folder": str(folder), "meshed_most": most, "surface": surface,
+                         "flat_tet": fe.FLAT_TET}
     t = time.time()
     result["oiltight"] = bool(oiltight.check(design, folder, housing.CONTRACT)["tight"])
     times["oiltight"] = time.time() - t
