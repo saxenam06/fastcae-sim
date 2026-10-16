@@ -4,7 +4,7 @@
 
 **The engineer's goal (16 October, ~10:00 IST):** "beat every line of production housing and provide a plausible realistic and production quality design", by the rib field on the walls (chosen over feature families from a library and over redrawing a passing design). The mass line is the production housing's, 7.73 kg: our optimised designs pass at 4.5-5 kg, so up to about 2.5-3 kg is there to buy a clean, production-like form.
 
-**Updated:** 2026-10-16 13:05 (IST) by Claude, cloud session, branch `product/end-to-end`. Code in `prototypes/rib_walls/`; outputs in `data/rib_walls/`.
+**Updated:** 2026-10-16 13:45 (IST) by Claude, cloud session, branch `product/end-to-end`. Code in `prototypes/rib_walls/`; outputs in `data/rib_walls/`.
 
 ## Why the first attempt failed (`prototypes/rib_housing/`, [its record](2026-10-16-rib-field-housing.md))
 
@@ -69,6 +69,29 @@ FE (the 2 mm drawing, the needles merged, 1.06 M unknowns, residual 1e-11): **5.
 **The cure (next): the de-homogenisation's second stage.** Freeze the layout the field found (the end walls' stripes, regular radial fins round every tube), and size those discrete ribs with the model reading them as metal (each cube's share of the drawn ribs), so the model and the drawing are one geometry.
 
 Getting FE to mesh `w5c` taught three things about the judge (prototype only, the product's FE untouched): `judge.py --needles` (`needles.py`) merges the coarsened surface's needles (edges of 1e-4 mm, where the product's collapse falls back) and keeps the surface fine round a flat tet before meshing again (32,000 tets under 1e-5 in one cell had stopped the single factor, residual 30); the members end 5 mm past each bolt's head socket (`SOCKET_CLEAR`: on the boss's edge they made hairlines); a boss under 4 mm proud is drawn flush (`BOSS_SNAP`).
+
+## The engineer's review (16 October ~13:30 IST): stopped
+
+Against the plate's clean result (the toy with fastcae's rules, `prototypes/rib_field/`), the engineer judged `walls_w5c` "noisy sketchy stretchy bad unorganised distorted ribs", and said **"Stop everything"**. Nothing runs. The pictures: [`look_walls_w5c.png`](2026-10-16-rib-field-walls/look_walls_w5c.png), [`look_face_walls_w5c.png`](2026-10-16-rib-field-walls/look_face_walls_w5c.png), [`field_w5c.png`](2026-10-16-rib-field-walls/field_w5c.png) (the field on the walls), [`look_walls_w5b.png`](2026-10-16-rib-field-walls/look_walls_w5b.png) (the drums), [`section_walls_w5c_cover.png`](2026-10-16-rib-field-walls/section_walls_w5c_cover.png) (the land's chamfer where the cover's last flat tets sat).
+
+What was measured, in answer to the review:
+
+- **The rules were thin.** The plate held all of fastcae's rules: ribs end on a boss or an edge, never in air (the arrival rule), the bend rule, a rib no higher than the boss it meets, a least length, and the drawing's gate. The housing held two (constant thickness along a rib, tapered tops), on the end walls only. That is the main reason for the look.
+- **The ribs live in patches:** in the converged field 275 and 345 of the 2,291 end-wall points carry a live rib (12-15 %), often in patches narrower than the 40 mm spacing; the drawn stripes are cut at the patches' edges, which makes the stubs.
+- **The ribs are low, not sunk:** the model's stand 22 mm (median), the drawn ones 12-18 mm, because the drawing tapers each rib's height to its ends (8 mm plus 1 mm a mm from the end) and most pieces are short. They reach 4 mm into the wall, so they are joined to it; about 9.5 mm thick, the bottom of the agreed 8-12.
+- **What was dropped between the field and the drawing:** the fins on the inner side walls (never drawn), patches narrower than the spacing, pieces under 30 mm, 4.6 % of the bosses' and webs' cubes. The model on the drawing reads tilt 2.76 against the field's 1.00.
+- **The needles:** where the members meet the product's exact parts at nearly the same place (the flange's top, the land's edge, the bolt sockets), the 2 mm drawing grid and the exact cuts leave vertices 1e-4 mm apart; no rule kept a member clearly into or clearly clear of an exact part. The plate had no such parts, and its judge solved in double precision, which tolerates a flat tet; the housing uses the product's single factor, which one flat tet stops.
+- **The needle merge did not change the shape:** 12 of 11,542 triangles removed, vertices moved at most 0.02 mm, FE's mass 5.43 kg against the drawing's 5.42. But a repair is the wrong direction (the engineer: "you must enforce rules such that these issues don't even come").
+- **The "wait for rib_h3c's judgement" task** was an idle loop left from the first attempt (a log line that never came); it computed nothing, and ended on its time limit.
+
+## Next, proposed and waiting for the engineer's word: rules upstream, so these issues never arise for any contract
+
+1. **Every wall gets the plate's rules:** a rib ends on a boss, a bolt's boss, a lug or a rim, never in air; a least length and a bend limit; no higher than the boss it meets; at least 8 mm tall or none (no taper to nothing mid-wall).
+2. **No near-coincident faces:** a member overlaps an exact part by at least a drawing cell or keeps at least 3 mm clear of it; nothing thinner than two drawing cells; a boss flush or at least 4 mm proud.
+3. **The model sizes exactly what is drawn:** the layout frozen (the end walls' stripes, regular fins round every tube, the inner ones too) and its discrete ribs sized as metal, so nothing drops between the two.
+4. **A geometry gate before FE** that refuses a drawing with needles, slivers or coincident faces, instead of repairing the mesh.
+
+Each step pictured before any long run. Step 3 alone mends the model's gap to the drawing, not the look: the look needs 1, 2 and 4.
 
 ## How to resume
 

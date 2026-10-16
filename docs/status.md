@@ -2,7 +2,7 @@
 
 **Moving to a cloud session (15 October): start at [the handover](features/loop/2026-10-15-handover-cloud.md).** The final workflow is wired end to end (LOP-31: `src/zenryx/workflow/recipes/final.json`; since LOP-33 every stage in `src/zenryx`, run by `python -m zenryx.workflow.run` or the Contract page's Run button, `python -m zenryx.api.server`); the design on the Designs tab is `baseline2_lw8` drawn smooth, its stiffness against the cube drawing the first thing open.
 
-**Now (16 October 00:58): LOP-34, [the rib-direction field](features/loop/2026-10-16-rib-direction-field.md)** (the engineer: "lets build this"): ribs and brackets drawn along directions the optimiser chooses, no library; a toy first.
+**Now (16 October 00:58): LOP-34, [the rib-direction field](features/loop/2026-10-16-rib-direction-field.md)** (the engineer: "lets build this"): ribs and brackets drawn along directions the optimiser chooses, no library; a toy first. **13:45 IST: stopped by the engineer; nothing runs.** On the housing, the rib field on the walls (`walls_w5c`) fails FE and looks noisy; next, waiting for the engineer's word, the plate's rules on every wall and a geometry gate before FE: [the walls page](features/loop/2026-10-16-rib-field-walls.md).
 
 **Updated:** 2026-10-16 00:58 by Claude. Committed on `product/end-to-end` through 15 October (`c5cde98` docs, `42ec2c5` UI, `b322b53` product code, `3b08850` the workflow, then the wiring); not pushed until the engineer says.
 - **Now, 14 October: LOP-29, the modes in the optimiser** ([the night's record](features/loop/2026-10-14-record-night.md)).
