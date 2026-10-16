@@ -19,9 +19,9 @@
 5. **The drawing, production-quality:** each rib a plate of one thickness along it (draft, rounded top, root fillets, tapered ends), standing on the exact shell; the bosses and webs as their CAD shapes; the product's exact cuts. **Looked at before FE**, each step pictured for the engineer.
 6. **Judged** by the product's FE on the CPU (validated on the reference: statics to 1 µm, modes within 0.4 %), castability, oil-tight, the grade.
 
-## Settings proposed (for the engineer's word before the first run)
+## Settings (agreed by the engineer, 16 October ~10:25 IST)
 
-| Setting | Proposed | Why |
+| Setting | Agreed | Why |
 |---|---|---|
 | Least rib thickness | 8 mm | the product's least member width (`--least-width 8`); thinner plates fold FE's 7 mm surface |
 | Thickest rib | 12 mm (at a boss), 8-10 away | production's 6-12 mm, thickest at the roots |
