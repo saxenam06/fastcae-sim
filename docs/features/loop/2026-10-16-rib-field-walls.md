@@ -4,7 +4,7 @@
 
 **The engineer's goal (16 October, ~10:00 IST):** "beat every line of production housing and provide a plausible realistic and production quality design", by the rib field on the walls (chosen over feature families from a library and over redrawing a passing design). The mass line is the production housing's, 7.73 kg: our optimised designs pass at 4.5-5 kg, so up to about 2.5-3 kg is there to buy a clean, production-like form.
 
-**Updated:** 2026-10-16 10:20 (IST) by Claude, cloud session, branch `product/end-to-end`. Code in `prototypes/rib_walls/`; outputs in `data/rib_walls/`.
+**Updated:** 2026-10-16 12:05 (IST) by Claude, cloud session, branch `product/end-to-end`. Code in `prototypes/rib_walls/`; outputs in `data/rib_walls/`.
 
 ## Why the first attempt failed (`prototypes/rib_housing/`, [its record](2026-10-16-rib-field-housing.md))
 
@@ -37,11 +37,25 @@
 | Step | State |
 |---|---|
 | 1. The walls (`surface.py`) | **Done.** 91,523 free cubes mapped: none inside the shell, the distance a true one (its gradient 1.000); motor side 25,181 over faces across the pull and 29,234 beside faces along it, cover 18,577 and 18,531. Distances up to 100 mm only in the mounts' reach (the brackets' room). `data/rib_walls/walls_4.png` |
-| 2. The field and features in the model, derivatives checked | next |
-| 3. A 5 mm trial, the field pictured on the walls | |
+| 2. The field and features in the model, derivatives checked | **Done** (`wallfield.py`, `wallrules.py`, `gradcheck.py`; 5 mm). The frame against the toy's checked rotation: equal; a plate stores nothing across itself. A tilt, a bed and the mass by every field kind (two thicknesses, two heights, the turn) agree to 10⁻⁶-10⁻⁸; the bosses' radius and height to 10⁻⁵; the rules to 10⁻⁹. Fixed on the way: the shares made smooth (C¹: the linear ones' kinks read 0.3-5 % off), the features joined as a union (1 − Π(1 − v), not a clipped sum), each web's spread kept to the angles whose ray meets the wall (mounts 2 and 3 stand 105 mm off it; their rays miss past 20°, and a web there ran "402 mm" into nothing), and no reach inside a web's share (it jumped where a ray grazed a room). |
+| 3. A 5 mm trial, the field pictured on the walls | **Running.** Three trials so far, each changing one thing the last one showed (below). |
 | 4. The 4 mm run | |
 | 5. The drawing, pictured before FE | |
 | 6. FE, castability, the grade, the sheet beside the reference | |
+
+## What the model holds, beyond the agreed settings (each a castability or a fault the trials showed)
+
+- **Side walls carry fins along the pull only.** On a face along the pull only family 0 stands, at angle 0 (along the pull), its thickness and height read at the split above its foot: a fin of one section from the flange down its wall, as production's side-wall ribs. A rib across the pull on a side wall, or one whose height changed down the wall, is an undercut for the two-part mould. On the end walls both families and their turn stay free (drawn along the pull, any direction casts).
+- **A ring boss stands on the wall under it** (`w5b`): a round boss on the bearing's axis from whatever lies under it in its half (a cap on the bore's end wall, a collar down a tall tube to the wall below, or hanging from the split) up to its height past the bearing's outer end. Capped only (`w5a`), the seats at the far ends of the cover's tall tubes (intermediate +z: a 66 mm tube; output +z) held 1.6 and 1.17 x their bed line with every boss at its largest. A collar ending short of the wall below would be an undercut.
+- **The webs run from the lug's far end to the split** (`w5c`), joining the flange: production's gusseted lug as the engineer gave it on 13 October (`LOOP_LUG_WEBS`). Over the lug's 30 mm height alone (`w5b`) the webs sat at their 16 mm cap and were among the beds' strongest levers (the bed's derivative by a web's thickness -11 to -16), and the bosses grew into drums instead.
+
+## The trials (5 mm, the product's problem: least metal, every line at 1/1.5, the budget's remainder 3.81 kg)
+
+| Trial | Changed | Placed (kg) | Lines | What it showed |
+|---|---|---|---|---|
+| `w5a` | (the first) | 4.32 at it 19, still rising | bed intermediate +z 1.63 x, tilt 1.12 x | the bosses capped only cannot hold the tall tubes' seats; stopped |
+| `w5b` | bosses standing on the wall under them | 4.71 (ribs 0.66, features 4.05) | all held (1.000, 1.004) | over the budget 23.5 %: 8.63 kg in all; drawn (2 mm) 7.96 kg: the bosses drums (the cover's intermediate one 81 mm in radius), few ribs (`look_walls_w5b.png`) |
+| `w5c` | webs from the lug to the split | 2.35 (ribs 0.49, features 1.86) | all held (0.999, 1.007), every rule met | 6.27 kg in all at 5 mm, under production's 7.73; most bosses back at their least; drawn (2 mm) 5.58 kg, 13 of 13 bolts, 2.9 % of the feature cubes lost (`look_walls_w5c.png`): the motor side reads as a casting (compact ring bosses, gusseted lugs to the flange); the cover's intermediate +z tower a plain 76 mm drum, its end-wall ribs scattered short pieces (they live in patches only); being judged by FE |
 
 ## How to resume
 

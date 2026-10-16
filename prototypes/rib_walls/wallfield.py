@@ -22,10 +22,12 @@ changed down the wall, would be an undercut). On the end walls (and the plate un
 opening) both families and their turn are free: drawn along the pull from the wall, any direction
 casts.
 
-The features, each a solid share s of the cube (their sum, at most 1): a ring boss round each
-bearing over the faces across the pull (outer radius and height), and per mount two webs from the
-lug to the wall over the lug's height (thickness, at least `WEB_LEAST`, and spread). A cube is
-s x solid + (1 - s) x its ribs, its mass likewise.
+The features, each a solid share v of the cube, joined as a union (s = 1 - prod(1 - v)): a ring boss
+round each bearing (its outer radius, and its height past the bearing's outer end and the wall),
+standing on whatever wall lies under it (a cap on the bore's end wall, a collar down a tall tube),
+and per mount two webs from the lug to the wall, from its far end to the split (thickness, at least
+`WEB_LEAST`, and spread). A cube is s x solid + (1 - s) x its ribs, its mass likewise. Every
+share is a smooth step over the cube (C1), so the derivatives hold across the cubes' edges.
 """
 
 from __future__ import annotations
@@ -48,7 +50,7 @@ TALL = 5.0  # a rib at most this many times its thickness tall (fastcae's talles
 KNOT = 16.0  # mm
 ERSATZ = 1e-4
 BOSS_GROW = (6.0, 30.0)  # mm: a ring boss's outer radius past the bore, least and range
-BOSS_TALL = (2.0, 22.0)  # mm: its height off the wall, least and range
+BOSS_TALL = (2.0, 22.0)  # mm: its height past the bearing's outer end and the wall, least and range
 WEB_LEAST, WEB_MOST = 8.0, 16.0  # mm: a bracket web's thickness
 WEB_SPREAD = (math.radians(10.0), math.radians(50.0))  # each web's angle off the lug-wall line
 PAIRS = [(0, 0), (1, 1), (2, 2), (1, 2), (0, 2), (0, 1)]  # the product's Voigt order
@@ -183,17 +185,27 @@ class WallField:
         for mt in layout["mounts"]:
             self.hard.append((mt["centre"], s["mount_diameter"] / 2, mt["z"]))
         self.tcap, self.hard_dist = self.thickness_cap(self.read_at)
-        # the ring bosses: one per bearing, over faces across the pull in its half
+        # the ring bosses: one per bearing, a round boss on its axis, standing on whatever wall lies under
+        # it in its half (or hanging from the split) up to its height past the bearing's outer end and
+        # the wall: a cap on a bore's own end wall, a collar down a tall tube to the wall below (16
+        # October: capped only, the seats at the cover's tall tubes' far ends kept 1.6 x their bed
+        # line); castable along the pull by construction
         self.bosses = []
+        wall = float(s["wall"])
         for b in layout["bearings"]:
             below = 0.5 * (b["z"][0] + b["z"][1]) < split
-            on = np.flatnonzero(cm["across"] & (cm["lower"] == below)
-                                & (np.hypot(cm["centre"][:, 0] - b["axis"][0], cm["centre"][:, 1] - b["axis"][1])
-                                   < b["D"] / 2 + BOSS_GROW[0] + BOSS_GROW[1] + self.a))
-            r = np.hypot(cm["centre"][on, 0] - b["axis"][0], cm["centre"][on, 1] - b["axis"][1])
-            self.bosses.append({"name": f"{b['shaft']} {b['side']}", "cubes": on, "r": r, "r0": b["D"] / 2,
-                                "axis": list(b["axis"]), "half": "motor_side" if below else "cover"})
-        # the brackets: two webs per mount from the lug to the wall, over the lug's height. Each mount's
+            z_out = min(b["z"]) - wall if below else max(b["z"]) + wall  # the bearing's outer end's face
+            reach = BOSS_TALL[0] + BOSS_TALL[1] + self.a
+            zc = cm["centre"][:, 2]
+            r_all = np.hypot(cm["centre"][:, 0] - b["axis"][0], cm["centre"][:, 1] - b["axis"][1])
+            on = np.flatnonzero((cm["lower"] == below) & (r_all < b["D"] / 2 + BOSS_GROW[0] + BOSS_GROW[1] + self.a)
+                                & ((zc >= z_out - reach) if below else (zc <= z_out + reach)))
+            # how far each cube stands out past the bearing's end (mm, toward the outside)
+            past = (z_out - zc[on]) if below else (zc[on] - z_out)
+            self.bosses.append({"name": f"{b['shaft']} {b['side']}", "cubes": on, "r": r_all[on], "r0": b["D"] / 2,
+                                "past": past, "z_out": z_out, "axis": list(b["axis"]),
+                                "half": "motor_side" if below else "cover"})
+        # the brackets: two webs per mount from the lug to the wall, up to the split. Each mount's
         # spread is kept to the angles whose ray at the lug's mid-height meets the wall (4 degrees in):
         # past them a web would run beside the wall or into nothing (mounts 2 and 3 stand 105 mm off
         # the wall, and their rays miss it past 20 degrees). A web runs to the wall itself (the free
@@ -212,11 +224,17 @@ class WallField:
             span = float(np.clip(most_off, WEB_SPREAD[0] + math.radians(2.0), WEB_SPREAD[0] + WEB_SPREAD[1]))
             span -= WEB_SPREAD[0]
             l_cap = float(reach[off <= WEB_SPREAD[0] + span + math.radians(1.0)].max()) + 2.0
-            in_z = np.flatnonzero((cm["centre"][:, 2] >= mt["z"][0]) & (cm["centre"][:, 2] <= mt["z"][1])
+            # from the lug's far end to the split, joining the flange (production's gusseted lug, the
+            # engineer's LOOP_LUG_WEBS of 13 October; over the lug's height alone the webs were the
+            # beds' strongest lever at their thickest, and the bosses grew to drums instead); the
+            # bracket's kept-clear room over the lug holds no free cube
+            z_lo, z_hi = (mt["z"][0], split) if half == "motor_side" else (split, mt["z"][1])
+            in_z = np.flatnonzero((cm["centre"][:, 2] >= z_lo) & (cm["centre"][:, 2] <= z_hi)
                                   & (cm["lower"] == (half == "motor_side"))
                                   & (np.hypot(cm["centre"][:, 0] - cxy[0], cm["centre"][:, 1] - cxy[1])
                                      < l_cap + 2.0 * self.a))
             self.webs.append({"name": mt["name"], "centre": cxy, "zmid": zmid, "half": half, "phi0": phi0,
+                              "z_span": (float(z_lo), float(z_hi)),
                               "span": span, "l_cap": l_cap, "reach0": float(reach.min()),
                               "r_lug": s["mount_diameter"] / 2, "cubes": in_z, "all_rooms": all_rooms})
         self.size = self.n_field + 2 * len(self.bosses) + 2 * len(self.webs)
@@ -353,7 +371,7 @@ class WallField:
             Rb = bs["r0"] + BOSS_GROW[0] + BOSS_GROW[1] * xr
             hb = BOSS_TALL[0] + BOSS_TALL[1] * xh
             gr, dgr = share(Rb - bs["r"], a)
-            gh, dgh = share(hb - cm["d"][bs["cubes"]], a)
+            gh, dgh = share(hb - bs["past"], a)
             feats.append({"kind": "boss", "i": i, "cubes": bs["cubes"], "v": gr * gh,
                           "d0": dgr * gh * BOSS_GROW[1], "d1": gr * dgh * BOSS_TALL[1]})
         for i, wb in enumerate(self.webs):

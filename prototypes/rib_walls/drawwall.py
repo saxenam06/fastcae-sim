@@ -19,8 +19,9 @@ shallower one):
 - **the side walls' fins:** outside the footprint, radial in plan at family 0's stripe pattern round
   the outline, each its thickness and its height out from its wall (read at the split above its foot,
   as the model reads it), from the flange down to where its wall ends;
-- **the ring bosses** round each bearing on its end wall (their outer radius and height), and **each
-  lug's two webs** (their thickness and spread) over the lug's height, from the lug to the wall.
+- **the ring bosses** round each bearing (their outer radius, and their height past the bearing's
+  outer end), standing on the wall under them; and **each lug's two webs** (their thickness and
+  spread), from the lug's far end to the split, from the lug to the wall.
 """
 
 from __future__ import annotations
@@ -50,6 +51,7 @@ H_LEAST = 8.0  # mm: a lower rib is not drawn (twice the root fillet; the recipe
 L_LEAST = 20.0  # mm: a shorter rib piece is not drawn (the toy's gate)
 END_SLOPE = 1.0  # a rib's height past its least, a mm from where it ends (its end tapered)
 ROUND = 3.0  # mm: the free edges' radius
+BAND = 24.0  # mm: the design space's band off the shell (the recipe's --band)
 
 
 def rebuild(label: str, voxel: float, state: Path | None = None):
@@ -198,11 +200,10 @@ def plan_fields(ctx: dict, half: str, xs, ys) -> dict:
         if b["half"] != half:
             continue
         xr, xh = wf.boss_x(x, i)
-        out["bosses"].append({"name": b["name"], "axis": b["axis"],
+        out["bosses"].append({"name": b["name"], "axis": b["axis"], "z_out": b["z_out"],
                               "R": b["r0"] + wfm.BOSS_GROW[0] + wfm.BOSS_GROW[1] * float(xr),
                               "h": wfm.BOSS_TALL[0] + wfm.BOSS_TALL[1] * float(xh)})
     out["webs"] = []
-    mounts = {m["name"]: m for m in layout["mounts"]}
     for i, w in enumerate(wf.webs):
         if w["half"] != half:
             continue
@@ -211,7 +212,7 @@ def plan_fields(ctx: dict, half: str, xs, ys) -> dict:
         for sgn in (1.0, -1.0):
             out["webs"].append({"name": w["name"], "centre": w["centre"], "psi": w["phi0"] + sgn * alpha,
                                 "t": wfm.WEB_MOST * float(xt), "r_lug": w["r_lug"], "l_cap": w["l_cap"],
-                                "z": mounts[w["name"]]["z"]})
+                                "z": w["z_span"]})
     return out
 
 
@@ -244,23 +245,30 @@ def wall_sdf(ctx, half, f, xs, ys, zs, footprint, smooth_mm, smooth_range) -> np
     for kz in side:
         zc = zs[kz]
         sl = np.full(PX.shape, np.inf)
-        # the end walls' ribs and the bosses, off their face along the pull
+        # the end walls' ribs, off their face along the pull
         y_e = np.where(F, (zw - zc) if lower else (zc - zw), np.inf)
         into = -y_e - wall  # no deeper than the wall's inner face
         for fam in pf["fam"]:
             if fam["rib"].any():
                 sl = np.minimum(sl, np.maximum(round_inter(-fam["a"], y_e - fam["h"], ROUND), into))
-        for b, rho in zip(pf["bosses"], boss_rho, strict=True):
-            sl = np.minimum(sl, np.maximum(round_inter(rho - b["R"], y_e - b["h"], ROUND), into))
-        # the fins: out from the walls at this level, from the flange down to where their wall ends
+        # the side walls at this level: the distance out from them in plan
         y_s = np.full(PX.shape, np.inf)
         for cx, cy, R, zlo, zhi in pf["pcs"]:
             if zlo <= zc <= zhi:
                 y_s = np.minimum(y_s, np.hypot(PX - cx, PY - cy) - R)
+        # the bosses: round, from the wall under them to their height past the bearing's outer end,
+        # within the design space's band off the shell, as the model's cubes (the inside and the
+        # kept-clear spaces are cut after)
+        band = np.minimum(y_e, y_s) - BAND
+        for b, rho in zip(pf["bosses"], boss_rho, strict=True):
+            past = (b["z_out"] - zc) if lower else (zc - b["z_out"])
+            boss = round_inter(rho - b["R"], np.full(PX.shape, past - b["h"]), ROUND)
+            sl = np.minimum(sl, np.maximum(boss, band))
+        # the fins: out from the walls at this level, from the flange down to where their wall ends
         if fins["rib"].any():
             f_s = np.maximum(round_inter(-fins["a"], y_s - fins["h"], ROUND), -y_s - wall)
             sl = np.minimum(sl, np.where(fins["ring"], f_s, np.inf))
-        # the webs, over their lug's height
+        # the webs, from their lug's far end to the split
         for w, plan_d in webs:
             dz = max(w["z"][0] - zc, zc - w["z"][1])
             sl = np.minimum(sl, round_inter(plan_d, np.full(PX.shape, dz), ROUND))
