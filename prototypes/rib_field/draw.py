@@ -108,7 +108,8 @@ def stripes(theta: np.ndarray, active: np.ndarray, spacing: float, step: float) 
         (np.concatenate(vals), (np.concatenate(rows), np.concatenate(cols))),
         shape=(2 * n_pts, 2 * n_pts),
     ).tocsc()
-    _, vec = eigsh(lmat, k=1, sigma=-1e-4, which="LM")
+    # a fixed start: ARPACK's random one shifted the stripes from one drawing of a field to the next
+    _, vec = eigsh(lmat, k=1, sigma=-1e-4, which="LM", v0=np.ones(lmat.shape[0]))
     psi = vec[0::2, 0] + 1j * vec[1::2, 0]
     phase = np.zeros(shape)
     amp = np.zeros(shape)

@@ -31,6 +31,14 @@ import rules  # noqa: E402
 import toy  # noqa: E402
 
 toy.TALL = 5.0  # fastcae's tallest_ratio, as the toy's --fastcae
+# The housing's ribs at least the product's own least member width (the final recipe's
+# `--least-width 8`), not fastcae's values scaled for the toy (3 mm least, 6 far, 12 near): `h2`
+# placed ribs of median 4.6 mm, and FE's 7 mm surface folded plates thinner than its triangles
+# (16 October). A rib under T_MIN carries nothing (as the product's least member does for a
+# column), reaching its full share over T_RAMP; thickness by place from T_NEAR at a hard point to
+# T_FAR (`rules.transport` reads the same values).
+T_MIN, T_RAMP = 8.0, 2.0  # mm
+rules.T_NEAR, rules.T_FAR, rules.T_LEAST = 14.0, 10.0, T_MIN
 KNOT = 16.0  # mm
 SPACING = 24.0  # mm: between the ribs' centres when drawn
 THETA_SMOOTH = 8.0  # mm: the start's directions smoothed over this
@@ -136,8 +144,10 @@ class Group:
             rho = self.rho_most * (self.B @ xr)
             r = self.B @ xh
             cap, dcap = toy.smin(self.hcap, toy.TALL * SPACING * rho)
-            out.append({"rho": rho, "r": r, "h": r * cap, "cap": cap,
-                        "dh_drho": r * dcap * toy.TALL * SPACING})
+            # the share that carries: none under T_MIN thick, all from T_MIN + T_RAMP
+            s_, ds_ = rules.smoothstep((rho * SPACING - T_MIN) / T_RAMP)
+            out.append({"rho": rho * s_, "drho": s_ + rho * ds_ * SPACING / T_RAMP, "raw": rho,
+                        "r": r, "h": r * cap, "cap": cap, "dh_drho": r * dcap * toy.TALL * SPACING})
         return out
 
 
@@ -317,7 +327,7 @@ class HousingField:
         """Every column's families (rho, height, ...) and direction, from the design vector."""
         n_cols = len(self.col_len_mm)
         theta = np.zeros(n_cols)
-        fam = [{k: np.zeros(n_cols) for k in ("rho", "r", "h", "cap", "dh_drho")} for _ in range(2)]
+        fam = [{k: np.zeros(n_cols) for k in ("rho", "drho", "raw", "r", "h", "cap", "dh_drho")} for _ in range(2)]
         for grp in self.groups:
             xg = grp.x_of(x)
             grp.set_theta(xg)
@@ -367,7 +377,8 @@ class HousingField:
         e_u = np.zeros(len(col))  # the function's derivative by each cube's rib share (1 - s)
         for f in pc["fam"]:
             rho = f["rho"][col]
-            via_rho = f["g"] + rho * f["dg"] * f["dh_drho"][col]
+            # by the raw share: the carrying share's slope (T_MIN's ramp) and the height's cap
+            via_rho = f["g"] * f["drho"][col] + rho * f["dg"] * f["dh_drho"][col]
             via_r = rho * f["dg"] * f["cap"][col]
             if mass:
                 e_rib = np.full(len(col), a3)

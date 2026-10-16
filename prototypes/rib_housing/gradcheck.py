@@ -1,6 +1,6 @@
 """The housing field's derivatives against central differences (LOP-34; a prototype): a tilt, a bed
 and the mass by a few design variables (a thickness, a height and a turn), and one rule.
-`gradcheck.py [voxel mm]` (5 mm by default: the least width needs two cubes of 8 mm)."""
+`gradcheck.py [voxel mm] [--solid] [--picks=<i,...>] [--steps=<h,...>]` (5 mm by default: the least width needs two cubes of 8 mm)."""
 
 from __future__ import annotations
 
@@ -13,6 +13,10 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import field as fieldmod  # noqa: E402
 import housing  # noqa: E402
 import ribmodel  # noqa: E402
+
+
+STEPS = tuple(float(v) for v in next((a.split("=")[1] for a in sys.argv if a.startswith("--steps=")),
+                                        "1e-3,1e-4").split(","))
 
 
 def main() -> None:
@@ -38,6 +42,9 @@ def main() -> None:
              int(4 * n + np.argmax(np.abs(d_tilt[4 * n : 5 * n]))), int(n + np.argmax(np.abs(d_tilt[n : 2 * n])))]
     if "--solid" in sys.argv:
         picks = picks[:2]
+    only = next((a.split("=")[1] for a in sys.argv if a.startswith("--picks=")), None)
+    if only:
+        picks = [int(v) for v in only.split(",")]
     worst = 0.0
     for k in picks:
         for name, an, fn in (
@@ -46,7 +53,7 @@ def main() -> None:
             ("mass", d_mass[k], lambda xx: hf.mass(hf.stiffness(xx)[1])),
         ):
             best = None
-            for h in (1e-3, 1e-4):
+            for h in STEPS:
                 xp, xm = x.copy(), x.copy()
                 xp[k] += h
                 xm[k] -= h

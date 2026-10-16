@@ -43,10 +43,10 @@ END_SLOPE = 1.0  # a rib's height past its least, a mm from where it ends (its e
 LUG_JOIN = 2.0  # mm: how far inside a lug's radius the members reach (they join its side)
 LUG_INSET = 1.5  # mm: near a lug the members end this far inside its end planes
 LUG_NEAR = 8.0  # mm: past a lug's radius, how far "near" reaches
-# mm: a rib thinner than this is not drawn. The field's own least (`rules.T_LEAST`, 3 mm) drew
-# ribs whose median was 4.6 mm and a tenth under 2.3 mm: FE meshed `rib_h2` at 6.3 M unknowns, twice
-# the reference's; the product's FE holds a least member of about 4 mm (CLAUDE.md, the FE ceiling)
-T_DRAW = float(os.environ.get("RIB_T_DRAW", 4.0))
+# mm: a rib thinner than this is not drawn: the field's own least (`field.T_MIN`, the recipe's 8 mm
+# least width), under which a rib carries nothing in the model. (`h2`'s field held 3 mm: its ribs'
+# median was 4.6 mm, and FE's 7 mm surface folded them; `rib_h2t4` drew them from 4 mm.)
+T_DRAW = float(os.environ.get("RIB_T_DRAW", fieldmod.T_MIN))
 PLAN_OUT: Path | None = None  # where `rib_sdf` writes each half's plan reading (`plan_<design>_<half>.npz`)
 OUTLINE_SIGMA = 3.0  # mm: a group's and a solid zone's outline blurred (the product's LOOP_VOXEL_SMOOTH)
 
@@ -106,7 +106,7 @@ def columns_of(vox, hf, x) -> dict:
         "base": base,
         "group": hf.group_of_col.copy(),
         "theta": pc["theta"],
-        "rho": np.stack([f["rho"] for f in pc["fam"]]),
+        "rho": np.stack([f["raw"] for f in pc["fam"]]),  # drawn at its raw thickness (from T_DRAW)
         "h": np.stack([f["h"] for f in pc["fam"]]),
         "hs": hs,
         "zone": zone,
