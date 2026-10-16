@@ -4,7 +4,7 @@
 
 **The engineer's brief (16 October, before leaving for the day):** "Once you are done with this test model, apply the same for our housing, and run the entire workflow from contract to optimization to drawing, and then to FE, and then to solve, and then prepare a picture with the final designs, and do that in the prototype folder so that we do not disturb the current pipeline ... Once we agree, then we will plug this into the running pipeline ... transferring the entire thought process from this test model with the rules to our production housing ... Once one entire workflow is complete, then you are done. Keep documenting the status and the learnings as you move forward."
 
-**Updated:** 2026-10-16 09:45 (IST) by Claude, cloud session, branch `product/end-to-end`.
+**Updated:** 2026-10-16 10:00 (IST) by Claude, cloud session, branch `product/end-to-end`.
 
 ## 1. Where things stand (rewrite at every milestone)
 
@@ -36,7 +36,19 @@
     - (The run record was named `rib_<label>`, as the design: the later drawing's run record overwrote `rib_h3.json`. Run records are now `run_<label>`; `rib_h3n` is `h3` drawn again, inset off.)
   - **The remesh route failed:** remeshed at 6 mm, `rib_h3n`'s halves crossed themselves too (270 faces on the motor side, 77 on the cover), and TetGen refused at once.
   - **The 2 mm drawing meshes** (the repo's own precedent, the spline record: "the 1 mm drawing still fails FE's mesher: judge the 2 mm one"; `RIB_DRAW_FINE=2`, the recipe's `LOOP_DRAW_FINE` is 1): **`rib_h3c`**, 7.01 kg (motor side 4.42, cover 2.59; the 2 mm grid's outlines draw the cover 0.3 kg heavier than the 1 mm one), 13 of 13 bolts, all mounts held; FE's coarsening takes the motor side to 20 k triangles and the cover to 12 k with nothing TetGen skips (the reference's: 16 k and 11 k). **Meshed at 1,651,425 unknowns** at the same rung as the reference (TetGen's radius-edge 3, dihedral 10°).
-  - **Now: `rib_h3c` judged** (`judge_sheet.sh rib_h3c`, detached, from 04:11 UTC; logs `data/rib_housing/judge_rib_h3c.log` and `judge_sheet_rib_h3c.log`, last line `DONE`): FE (the modes about 20 min), castability, grade, pictures, then `sheet_rib_h3c.png` beside the reference. Start every long job detached (`setsid nohup`): the session's worker restarted twice (02:25, 03:58 UTC) and took a foreground drawing with it each time.
+  - **One whole workflow done: `rib_h3c` judged** (16 October 04:11-04:21 UTC; the pictures and the sheet in [the page's folder](2026-10-16-rib-field-housing/)): contract → layout → the rib field optimised (`h3`) → the product's drawing (2 mm) → oil-tight → FE (1.65 M unknowns, the single factor 40 s, the modes 5 min; peak 10.0 GB) → castability → the grade → the pictures.
+
+    | | `rib_h3c` (the rib field) | `baseline2_lw8_smooth` (the reference, judged the same way) |
+    |---|---|---|
+    | Mass | 7.01 kg (passes, 7.73 to beat) | 4.52 kg |
+    | Worst seat, peak drive | **55.1 µm: fails** (52.2 to beat) | 49.0 µm |
+    | Worst tilt against its line | 0.99 (passes, 1 % margin) | 0.79 |
+    | First mode | 749 Hz (passes, 500) | 513 Hz |
+    | Gear orders | clear | 1159 Hz 2.8 % from s2 (mesh noise: 1177 Hz on the laptop) |
+    | Oil-tight | yes | yes |
+    | Verdict | fails one line, the displacement, by 5.5 % | passes on the laptop's FE |
+
+    The rib design is 2.5 kg heavier than the reference and 5.5 % softer at its worst seat: at the same lines the ribs, held to 8-14 mm and 24 mm apart, cost metal the free columns do not (the toy's finding, on the housing). It is stiffer in its modes (first 749 against 513 Hz) and clears the gear orders. The model held every line at 1/1.5, and FE reads the worst seat 5.5 % over the line itself: the drawing (stripes, the 2 mm grid) is softer than the model's smeared ribs by more than the safety covers at that seat.
   - **The chain: `finish.sh h2`** (pid in the shell; log `data/rib_housing/finish_h2.log`): when `h2` ends it draws `rib_h2`, pictures its plan, judges it (`judge.py`: oil-tight, FE on the CPU under 1.2 M unknowns, castability, grade, pictures), judges the reference `baseline2_lw8_smooth` the same way (`data/rib_housing/ref`), and writes `sheet_h2.png`. If a stage failed, its own log says why (`draw_h2.log`, `judge_rib_h2.log`, `judge_ref.log`); rerun from that stage by hand.
   - **The drawing's look, still open** (seen on `t5`'s drawings and close-ups, `closeup.py`): a rib that thins to its least thickness ends as a narrow tall shard (it should taper down); some families run along the side walls as skirts; the trial's design (6.85 kg drawn) is far heavier than the reference (4.52 kg), because the ribs, held to 6-12 mm and 24 mm apart, need the whole budget to hold the lines (as on the toy: 1.5-1.9 x softer than free columns at equal mass).
   - **Then:** this page's results (§5), the method page, the loop page; the sheet copied into `docs/features/loop/2026-10-16-rib-field-housing/`; commit.
