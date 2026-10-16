@@ -3,7 +3,8 @@ judge only): `checks/support/gpu_on_cpu`'s `DirectSolver` factorises with PARDIS
 (`pypardiso`'s default, matrix type 11), which keeps both triangles; FE's matrices (the reduced
 stiffness, the shifted K - sigma M of the modes) are symmetric, so the symmetric indefinite factor
 (type -2, Bunch-Kaufman pivoting) on the upper triangle holds about half the memory. Double
-precision, as the stand-in's. `use()` patches the stand-in in place; `check()` compares both
+precision, as the stand-in's. `use()` patches the stand-in in place (and gives SciPy's CSR the `.get()` FE's
+assembly asks of CuPy's); `check()` compares both
 factors' solves on a symmetric indefinite matrix."""
 
 from __future__ import annotations
@@ -28,6 +29,10 @@ def use() -> None:
     from nvmath.sparse.advanced import DirectSolver
 
     DirectSolver.factorize = _factorize
+    # the stand-in's sparse matrices are SciPy's, already on the host: FE's assembly
+    # (`zenryx.physics.tet10.stiffness(..., gpu=True)`) asks them for CuPy's `.get()`
+    if not hasattr(sp.csr_matrix, "get"):
+        sp.csr_matrix.get = lambda self: self
 
 
 def check(n: int = 3000) -> float:
