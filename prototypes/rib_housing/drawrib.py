@@ -41,6 +41,8 @@ import rules  # noqa: E402
 L_LEAST = 20.0  # mm: a shorter rib piece is not drawn (the toy's gate)
 END_SLOPE = 1.0  # a rib's height past its least, a mm from where it ends (its end tapered)
 LUG_JOIN = 2.0  # mm: how far inside a lug's radius the members reach (they join its side)
+LUG_INSET = 1.5  # mm: near a lug the members end this far inside its end planes
+LUG_NEAR = 8.0  # mm: past a lug's radius, how far "near" reaches
 # mm: a rib thinner than this is not drawn. The field's own least (`rules.T_LEAST`, 3 mm) drew
 # ribs whose median was 4.6 mm and a tenth under 2.3 mm: FE meshed `rib_h2` at 6.3 M unknowns, twice
 # the reference's; the product's FE holds a least member of about 4 mm (CLAUDE.md, the FE ceiling)
@@ -116,7 +118,9 @@ def columns_of(vox, hf, x) -> dict:
         "discs": fieldmod.zone_discs(vox),
         "lugs": [{"half": "motor_side" if m["z"][1] <= vox.model["info"]["z"]["split"] else "cover",
                   "centre": list(m["centre"]),
-                  "r": vox.model["info"]["settings"]["mount_diameter"] / 2 - LUG_JOIN}
+                  "r": vox.model["info"]["settings"]["mount_diameter"] / 2 - LUG_JOIN,
+                  "r_full": vox.model["info"]["settings"]["mount_diameter"] / 2,
+                  "z": list(m["z"])}
                  for m in vox.model["info"]["mounts"]],
     }
 
@@ -319,6 +323,16 @@ def rib_sdf(cols, half, f, xs, ys, zs, footprint, smooth_mm, smooth_range) -> np
                 part = np.minimum(part, f_s.astype(np.float32))
         report.append(f"group {int(g)}: {len(sel):,} columns, rib area {ribs_g * step * step / 100:.0f} cm2, "
                       f"solid area {solid_n * step * step / 100:.0f} cm2")
+    # near each lug the members end LUG_INSET inside its end planes: ended at the brackets' rooms'
+    # cuts they lay 0.05 mm off the lug's own exact end faces, and FE's coarsening folded the two
+    # (`rib_h2f`, mount-1's hole rim)
+    for lug in cols["lugs"]:
+        if lug["half"] != half:
+            continue
+        near = np.hypot(PX - lug["centre"][0], PY - lug["centre"][1]) < lug["r_full"] + LUG_NEAR
+        if near.any():
+            slab = np.maximum(zz - (lug["z"][1] - LUG_INSET), (lug["z"][0] + LUG_INSET) - zz).astype(np.float32)
+            part = np.where(near[:, :, None], np.maximum(part, slab), part)
     out[:, :, side] = part
     if PLAN_OUT is not None:
         np.savez_compressed(PLAN_OUT.parent / f"plan_{PLAN_OUT.name}_{half}.npz", **plan)
